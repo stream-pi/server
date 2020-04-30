@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>in.dubbadhar</groupId>
+    <artifactId>StreamPiServer</artifactId>
+    <version>0.7</version>
+
+    <name>StreamPiClient</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <client.plugin.version>0.1.23</client.plugin.version>
+        <javafxVersion>14</javafxVersion>
+        <mainClassName>in.dubbadhar.StreamPiServer.Main</mainClassName>
+    </properties>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafxVersion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafxVersion}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-configuration2 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-configuration2</artifactId>
+            <version>2.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.typhon0</groupId>
+            <artifactId>AnimateFX</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+
+    </dependencies>
+
+
+    <repositories>
+        <repository>
+            <id>gluon-releases</id>
+            <url>http://nexus.gluonhq.com/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <release>11</release>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.4</version>
+                <configuration>
+                    <mainClass>${mainClassName}</mainClass>
+                </configuration>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <!--excludes>
+                                    <exclude>org.openjfx:javafx-controls:jar:11</exclude>
+                                    <exclude>org.openjfx:javafx-controls:jar:*:11</exclude>
+                                    <exclude>org.openjfx:javafx-graphics:jar:11</exclude>
+                                    <exclude>org.openjfx:javafx-graphics:jar:*:11</exclude>
+                                    <exclude>org.openjfx:javafx-base:jar:11</exclude>
+                                    <exclude>org.openjfx:javafx-base:jar:*:11</exclude>
+                                </excludes-->
+                            </artifactSet>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <transformers>
+                                <transformer implementation=
+                                                     "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>${mainClassName}</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.gluonhq</groupId>
+                <artifactId>client-maven-plugin</artifactId>
+                <version>${client.plugin.version}</version>
+                <configuration>
+                    <target>linux-aarch64</target>
+                    <!-- Uncomment to run on iOS: -->
+                    <!--target>android</target-->
+                    <!--nativeImageArgs>-H:EnableURLProtocols=https</nativeImageArgs-->
+                    <!--graalvmHome>D:\Coding\jdks\graalvm11-20</graalvmHome-->
+                    <!--reflectionList>
+                        <list>javafx.fxml.FXMLLoader</list>
+                        <list>Gramophy.dashController</list>
+                        <list>javafx.scene.control.Button</list>
+                        <list>javafx.scene.control.Label</list>
+                        <list>javafx.geometry.Insets</list>
+                        <list>javafx.scene.control.Label</list>
+                        <list>javafx.scene.control.ListView</list>
+                        <list>javafx.scene.CacheHint</list>
+                        <list>javafx.scene.paint.Paint</list>
+                        <list>javafx.scene.control.ScrollPane</list>
+                        <list>javafx.scene.control.ScrollPane$ScrollBarPolicy</list>
+                        <list>javafx.scene.control.Slider</list>
+                        <list>javafx.scene.image.Image</list>
+                        <list>javafx.scene.image.ImageView</list>
+                        <list>javafx.scene.layout.Priority</list>
+                        <list>javafx.scene.layout.AnchorPane</list>
+                        <list>javafx.scene.layout.HBox</list>
+                        <list>javafx.scene.layout.Region</list>
+                        <list>javafx.scene.layout.StackPane</list>
+                        <list>javafx.scene.layout.VBox</list>
+                        <list>javafx.scene.text.Font</list>
+                        <list>javafx.scene.control.TextField</list>
+                    </reflectionList-->
+                    <mainClass>${mainClassName}</mainClass>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>gluon-releases</id>
+            <url>http://nexus.gluonhq.com/nexus/content/repositories/releases/</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>gluon-snapshots</id>
+            <url>https://nexus.gluonhq.com/nexus/content/repositories/public-snapshots</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>

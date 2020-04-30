@@ -1,0 +1,47 @@
+{
+    bg-color: #1b1b1b;
+    font-color: white;
+}
+
+Label{
+    -fx-font-family: "Roboto";
+    -fx-font-size : 14;
+    -fx-text-fill : font-color;
+}
+
+.pane{
+    -fx-background-color: bg-color;
+}
+
+.alert-pane{
+    -fx-background-color: rgba(0,0,0,0.5);
+}
+
+.alert-pane VBox{
+    -fx-background-color: bg-color;
+    -fx-background-radius: 5px;
+}
+
+.flat-btn{
+    -fx-background:none;
+    -fx-background-color:transparent;
+    -fx-border:none;
+    -fx-text-fill:cyan;
+    -fx-font-family:"Roboto";
+}
+
+.h1{
+    -fx-font-size:32px;
+}
+
+.h2{
+    -fx-font-size:24px;
+}
+
+.h3{
+    -fx-font-size:18px;
+}
+
+.h4{
+    -fx-font-size:16px;
+}
