@@ -11,18 +11,22 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import org.apache.commons.configuration2.Configuration;
 
 public class dashBase extends StackPane {
 
     BorderPane alertPane;
+    Configuration config;
 
     private final Image appIcon = new Image(getClass().getResource("app_icon.png").toExternalForm());
 
-    public dashBase()
+    public void initNodes()
     {
         //First add stylesheets and fonts
         Font.loadFont(getClass().getResource("Roboto.ttf").toExternalForm().replace("%20",""), 13);
         getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+
+        setStyle("bg-color: "+config.getString("bg-color")+";font-color: "+config.getString("font-color")+";");
 
         //Alert Pane
         alertPane = new BorderPane();
@@ -65,12 +69,14 @@ public class dashBase extends StackPane {
         alertPane.setOpacity(0);
 
         setPrefSize(1280,720);
+
+
     }
 
 
 
-    private final Label alertTitle;
-    private final Label alertMessage;
+    private Label alertTitle;
+    private Label alertMessage;
     public void showAlert(String title, String message)
     {
         alertTitle.setText(title);
