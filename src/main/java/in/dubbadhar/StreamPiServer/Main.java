@@ -6,10 +6,12 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
     public void start(Stage stage) {
-        Scene s = new Scene(new dash());
+        dash d = new dash();
+        Scene s = new Scene(d);
         stage.setScene(s);
         stage.show();
         stage.setTitle("StreamPi Server - 0.7 - ALPHA");
+        stage.setOnCloseRequest(event -> d.closeServer());
     }
 
     public static void main(String[] args) {

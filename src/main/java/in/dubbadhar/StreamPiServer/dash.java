@@ -21,6 +21,8 @@ public class dash extends dashBase {
         {
             e.printStackTrace();
         }
+
+        startServer();
     }
 
     public void setupConfig() throws Exception
@@ -30,5 +32,21 @@ public class dash extends dashBase {
         config = builder.getConfiguration();
     }
 
-    
+
+    Thread serverThread;
+    server s;
+    public void startServer(){
+        s = new server(config.getInt("server-port"), this);
+        serverThread = new Thread(s, "Server Thread");
+        serverThread.setDaemon(false);
+        serverThread.start();
+    }
+
+    public void closeServer()
+    {
+        if(serverThread.isAlive())
+        {
+            s.close();
+        }
+    }
 }

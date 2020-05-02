@@ -18,6 +18,8 @@ public class dashBase extends StackPane {
     BorderPane alertPane;
     Configuration config;
 
+    Label listeningSubHeadingLabel;
+
     private final Image appIcon = new Image(getClass().getResource("app_icon.png").toExternalForm());
 
     public void initNodes()
@@ -57,7 +59,7 @@ public class dashBase extends StackPane {
         ImageView appIconImgView = new ImageView(appIcon);
         Label listeningLabel = new Label("Listening for StreamPi");
         listeningLabel.getStyleClass().add("h2");
-        Label listeningSubHeadingLabel = new Label("Server running at X.X.X.X, Port XXXX");
+        listeningSubHeadingLabel = new Label();
         listeningSubHeadingLabel.getStyleClass().add("h3");
         listeningForClientPane.getChildren().addAll(appIconImgView, listeningLabel, listeningSubHeadingLabel);
 

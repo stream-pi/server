@@ -5,4 +5,9 @@ public class io {
     {
 
     }
+
+    public void pln(String txt)
+    {
+        System.out.println(Thread.currentThread().getName()+": "+txt);
+    }
 }
