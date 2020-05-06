@@ -1,7 +1,5 @@
 package in.dubbadhar.StreamPiServer;
 
-import animatefx.animation.FadeIn;
-import animatefx.animation.FadeOut;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
@@ -11,12 +9,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
-import org.apache.commons.configuration2.Configuration;
+
+import java.util.HashMap;
 
 public class dashBase extends StackPane {
 
     BorderPane alertPane;
-    Configuration config;
+    HashMap<String,String> config;
 
     Label listeningSubHeadingLabel;
 
@@ -28,7 +27,7 @@ public class dashBase extends StackPane {
         Font.loadFont(getClass().getResource("Roboto.ttf").toExternalForm().replace("%20",""), 13);
         getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
-        setStyle("bg-color: "+config.getString("bg-color")+";font-color: "+config.getString("font-color")+";");
+        setStyle("bg-color: "+config.get("bg-color")+";font-color: "+config.get("font-color")+";");
 
         //Alert Pane
         alertPane = new BorderPane();
@@ -84,18 +83,13 @@ public class dashBase extends StackPane {
         alertTitle.setText(title);
         alertMessage.setText(message);
 
-        FadeIn f = new FadeIn(alertPane);
-        f.setSpeed(3);
-        alertPane.setOpacity(0);
+        alertPane.setOpacity(1);
         alertPane.toFront();
-        f.play();
     }
 
     public void hideAlert()
     {
-        FadeOut f = new FadeOut(alertPane);
-        f.setSpeed(3);
-        f.play();
-        f.setOnFinished(event->alertPane.toBack());
+        alertPane.setOpacity(0);
+        alertPane.toFront();
     }
 }

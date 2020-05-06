@@ -10,7 +10,6 @@ import java.net.UnknownHostException;
 
 public class server implements Runnable{
 
-    io io;
     ServerSocket serverSocket;
     Socket socket;
 
@@ -27,11 +26,12 @@ public class server implements Runnable{
     DataOutputStream dos;
     OutputStream os;
 
+    fileTransferConnection fileTransferConnection;
+
     @Override
     public void run() {
         try
         {
-            io = new io();
             io.pln("Server starting on "+port+" ...");
             serverSocket = new ServerSocket(port);
             io.pln("... Server started!");
