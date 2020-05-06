@@ -29,7 +29,9 @@ public class io {
         HashMap<String,String> toReturn = new HashMap<>();
 
         String content = readFileRaw(io.class.getResource("config.properties").toExternalForm().substring(5));
-        for(String eachLine : content.split("\r\n"))
+        String splitChar = "\n";
+        if(content.contains("\r\n")) splitChar = "\r\n";
+        for(String eachLine : content.split(splitChar))
         {
             String[] confPart = eachLine.split(" = ");
             toReturn.put(confPart[0],confPart[1]);
