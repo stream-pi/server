@@ -1,4 +1,4 @@
-package com.StreamPi.StreamPiServer;
+package com.StreamPi.Server;
 
 import com.StreamPi.StreamPiActionAPI.ActionAPI;
 import java.io.File;

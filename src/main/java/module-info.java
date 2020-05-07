@@ -4,5 +4,5 @@ module in.dubbadhar.StreamPiServer {
     requires javafx.graphics;
     requires javafx.controls;
 
-    exports in.dubbadhar.StreamPiServer;
+    exports com.StreamPi.Server;
 }

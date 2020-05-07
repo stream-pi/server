@@ -1,4 +1,4 @@
-package com.StreamPi.StreamPiServer;
+package com.StreamPi.Server;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

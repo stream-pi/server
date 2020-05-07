@@ -1,4 +1,4 @@
-package com.StreamPi.StreamPiServer;
+package com.StreamPi.Server;
 
 public class fileTransferConnection{
     int port;

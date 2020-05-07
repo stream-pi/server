@@ -1,4 +1,4 @@
-package com.StreamPi.StreamPiServer;
+package com.StreamPi.Server;
 
 import java.io.FileReader;
 import java.util.HashMap;
