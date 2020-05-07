@@ -1,4 +1,4 @@
-package in.dubbadhar.StreamPiServer;
+package com.StreamPi.StreamPiServer;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

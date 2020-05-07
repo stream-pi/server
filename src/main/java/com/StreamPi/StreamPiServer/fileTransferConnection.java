@@ -1,4 +1,4 @@
-package in.dubbadhar.StreamPiServer;
+package com.StreamPi.StreamPiServer;
 
 public class fileTransferConnection{
     int port;

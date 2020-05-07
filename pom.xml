@@ -16,7 +16,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <client.plugin.version>0.1.23</client.plugin.version>
         <javafxVersion>14</javafxVersion>
-        <mainClassName>in.dubbadhar.StreamPiServer.Main</mainClassName>
+        <mainClassName>com.StreamPi.StreamPiServer.Main</mainClassName>
     </properties>
 
 

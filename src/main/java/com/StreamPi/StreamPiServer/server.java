@@ -1,4 +1,4 @@
-package in.dubbadhar.StreamPiServer;
+package com.StreamPi.StreamPiServer;
 
 import javafx.application.Platform;
 
@@ -6,7 +6,6 @@ import java.io.*;
 import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class server implements Runnable{
 

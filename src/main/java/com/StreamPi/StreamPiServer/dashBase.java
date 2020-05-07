@@ -1,4 +1,4 @@
-package in.dubbadhar.StreamPiServer;
+package com.StreamPi.StreamPiServer;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
