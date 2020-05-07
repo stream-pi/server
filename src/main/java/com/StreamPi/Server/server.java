@@ -14,6 +14,7 @@ public class server implements Runnable{
 
     int port;
     dash dash;
+
     public server(int port, dash dash)
     {
         this.port = port;
@@ -50,14 +51,15 @@ public class server implements Runnable{
 
             io.pln("Connected!");
 
+            writeStr("asd");
             while(socket.isConnected())
             {
                 io.pln("Listening for data ...\n");
-                String header = dis.readUTF();
-                io.pln("Data header : "+header);
+                String dataStr = dis.readUTF();
+                io.pln("Data header : "+dataStr);
             }
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -76,6 +78,14 @@ public class server implements Runnable{
         catch (Exception e)
         {
             e.printStackTrace();
+        }
+    }
+
+    public void writeStr(String txt) throws Exception
+    {
+        if(socket.isConnected())
+        {
+            dos.writeUTF(txt);
         }
     }
 }
