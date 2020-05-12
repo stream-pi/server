@@ -3,6 +3,7 @@ module com.StreamPi.Server {
     requires javafx.base;
     requires javafx.graphics;
     requires javafx.controls;
-
+    requires AnimateFX;
+    
     exports com.StreamPi.Server;
 }
