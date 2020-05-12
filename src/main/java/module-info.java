@@ -1,4 +1,4 @@
-module in.dubbadhar.StreamPiServer {
+module com.StreamPi.Server {
     requires com.StreamPi.StreamPiActionAPI;
     requires javafx.base;
     requires javafx.graphics;
