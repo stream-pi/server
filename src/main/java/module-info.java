@@ -1,5 +1,5 @@
 module com.StreamPi.Server {
-    requires com.StreamPi.StreamPiActionAPI;
+    requires com.StreamPi.ActionAPI;
     requires javafx.base;
     requires javafx.graphics;
     requires javafx.controls;

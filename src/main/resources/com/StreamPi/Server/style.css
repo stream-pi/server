@@ -17,12 +17,27 @@ Label{
     -fx-background-radius: 5px;
 }
 
-.flat-btn{
+.flat-btn-cyan{
     -fx-background:none;
     -fx-background-color:transparent;
     -fx-border:none;
     -fx-text-fill:cyan;
     -fx-font-family:"Roboto";
+}
+
+Button {
+    -fx-background:none;
+    -fx-background-color:transparent;
+    -fx-font-family:"Roboto";
+}
+
+TextField {
+    -fx-background-color:transparent;
+    -fx-background:none;
+    -fx-text-fill:white;
+    -fx-font-family:"Roboto";
+    -fx-border-color:green;
+    -fx-border-width: 0 0 1 0;
 }
 
 .h1{

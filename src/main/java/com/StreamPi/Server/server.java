@@ -55,8 +55,9 @@ public class server implements Runnable{
             while(socket.isConnected())
             {
                 io.pln("Listening for data ...\n");
-                String dataStr = dis.readUTF();
-                io.pln("Data header : "+dataStr);
+                String rawData = dis.readUTF();
+
+                io.pln("Raw Data : "+rawData);
             }
         }
         catch (Exception e)

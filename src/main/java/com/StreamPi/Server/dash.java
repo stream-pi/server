@@ -1,6 +1,6 @@
 package com.StreamPi.Server;
 
-import com.StreamPi.StreamPiActionAPI.ActionAPI;
+import com.StreamPi.ActionAPI.Action;
 import java.io.File;
 import java.lang.module.Configuration;
 import java.lang.module.ModuleFinder;
@@ -50,7 +50,7 @@ public class dash extends dashBase {
         }
     }
 
-    List<ActionAPI> plugins = new ArrayList<>();
+    List<Action> plugins = new ArrayList<>();
     public void printPlugins() throws Exception {
         ModuleFinder finder = ModuleFinder.of(Paths.get("pluginroot/"));
         ModuleLayer parent = ModuleLayer.boot();
@@ -61,11 +61,11 @@ public class dash extends dashBase {
             Configuration cf = parent.configuration().resolve(finder, ModuleFinder.of(), Set.of(moduleName));
             ClassLoader scl = ClassLoader.getSystemClassLoader();
             ModuleLayer layer = parent.defineModulesWithOneLoader(cf, scl);
-            ActionAPI test = (ActionAPI) layer.findLoader(moduleName).loadClass(moduleName+".Action").getDeclaredConstructor().newInstance();
+            Action test = (Action) layer.findLoader(moduleName).loadClass(moduleName+".Action").getDeclaredConstructor().newInstance();
             plugins.add(test);
         }
 
-        for(ActionAPI eachActionPlugin : plugins)
+        for(Action eachActionPlugin : plugins)
         {
             System.out.println("-----Custom Action Info-----" +
                     "\nName : "+eachActionPlugin.getName() +
