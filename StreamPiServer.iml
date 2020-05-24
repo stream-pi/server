@@ -10,15 +10,19 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:14" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:mac:14" level="project" />
-    <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:14" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:mac:14" level="project" />
-    <orderEntry type="library" name="Maven: org.openjfx:javafx-base:14" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:mac:14" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:14" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:win:14" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:14" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:win:14" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-base:14" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-base:win:14" level="project" />
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.3" level="project" />
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
-    <orderEntry type="library" name="Maven: com.StreamPi:StreamPiActionAPI:0.1" level="project" />
+    <orderEntry type="library" name="Maven: io.github.typhon0:AnimateFX:1.2.1" level="project" />
+    <orderEntry type="library" name="Maven: com.StreamPi:ActionAPI:0.1" level="project" />
   </component>
 </module>

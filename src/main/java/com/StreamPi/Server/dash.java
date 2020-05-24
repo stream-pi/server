@@ -75,8 +75,6 @@ public class dash extends dashBase {
                     "\nVersion : "+eachActionPlugin.getVersion() +
                     "\n---------------------------");
 
-            System.out.println("\nAction on Client :");
-            eachActionPlugin.actionOnClient();
             System.out.println("\nAction on Server :");
             eachActionPlugin.actionOnServer();
         }
