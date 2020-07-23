@@ -1,6 +1,8 @@
 package com.StreamPi.Server;
 
 import javafx.application.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Inet4Address;
@@ -11,6 +13,7 @@ public class server implements Runnable{
 
     ServerSocket serverSocket;
     Socket socket;
+    Logger logger;
 
     int port;
     dash dash;
@@ -32,16 +35,19 @@ public class server implements Runnable{
     public void run() {
         try
         {
-            io.pln("Server starting on "+port+" ...");
+            logger = LoggerFactory.getLogger(server.class);
+
+
+            logger.info("Server starting on "+port+" ...");
             serverSocket = new ServerSocket(port);
-            io.pln("... Server started!");
+            logger.info("... Server started!");
 
             String ip = Inet4Address.getLocalHost().getHostAddress();
             Platform.runLater(()->{
-                dash.listeningSubHeadingLabel.setText("Server running at "+ ip +", Port "+port);
+//                dash.listeningSubHeadingLabel.setText("Server running at "+ ip +", Port "+port);
             });
 
-            io.pln("Listening for StreamPis ...");
+            logger.info("Listening for StreamPis ...");
             socket = serverSocket.accept();
             is = socket.getInputStream();
             os = socket.getOutputStream();
@@ -49,15 +55,15 @@ public class server implements Runnable{
             dis = new DataInputStream(is);
             dos = new DataOutputStream(os);
 
-            io.pln("Connected!");
+            logger.info("Connected!");
 
             writeStr("asd");
             while(socket.isConnected())
             {
-                io.pln("Listening for data ...\n");
+                logger.info("Listening for data ...\n");
                 String rawData = dis.readUTF();
 
-                io.pln("Raw Data : "+rawData);
+                logger.debug("Raw Data : "+rawData);
             }
         }
         catch (Exception e)
@@ -74,7 +80,7 @@ public class server implements Runnable{
         try
         {
             serverSocket.close();
-            io.pln("Socket closed!\nQuitting Thread");
+            logger.info("Socket closed!\nQuitting Thread");
         }
         catch (Exception e)
         {

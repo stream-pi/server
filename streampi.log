@@ -1,0 +1,31 @@
+24-07-2020 01:37:09 INFO  io:30 - Reading config file : config.properties ...
+24-07-2020 01:37:09 INFO  io:15 - Reading file config.properties ...
+24-07-2020 01:37:09 INFO  io:24 - ... File Read Done!
+24-07-2020 01:37:09 INFO  io:41 - ... Config Read Done!
+24-07-2020 01:37:09 INFO  dash:79 - Registering external plugins ...
+24-07-2020 01:37:09 INFO  server:41 - Server starting on 1420 ...
+24-07-2020 01:37:09 INFO  server:43 - ... Server started!
+24-07-2020 01:37:09 INFO  server:50 - Listening for StreamPis ...
+24-07-2020 01:37:09 DEBUG dash:113 - -----Custom Plugin Debug-----
+Action Typeconstant
+Name : Test Action Name
+Author : Author
+Repo : Repo link
+Description : Test Action
+Version : 1.0
+Full Module Name : com.StreamPi.TestAction
+---------------------------
+24-07-2020 01:37:09 DEBUG dash:113 - -----Custom Plugin Debug-----
+Action Typeconstant
+Name : Test Action Name
+Author : Author
+Repo : Repo link
+Description : Test Action
+Version : 1.0
+Full Module Name : com.StreamPi.TestAction2
+---------------------------
+24-07-2020 01:37:09 DEBUG dash:127 - All plugins registered!
+24-07-2020 01:37:11 INFO  server:83 - Socket closed!
+Quitting Thread
+24-07-2020 01:37:11 INFO  server:83 - Socket closed!
+Quitting Thread

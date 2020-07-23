@@ -1,30 +1,50 @@
 package com.StreamPi.Server;
 
 import com.StreamPi.ActionAPI.Action;
+import javafx.concurrent.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.lang.module.Configuration;
+import java.lang.module.ModuleDescriptor;
 import java.lang.module.ModuleFinder;
+import java.lang.module.ModuleReference;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class dash extends dashBase {
+public class dash extends base {
+
+    Logger logger;
 
     public dash()
     {
         try {
+            //Set up logger
+            logger = LoggerFactory.getLogger(dash.class);
+            //Initial Setup
+
             setupConfig();
             initNodes();
 
-            printPlugins();
+            new Thread(new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    registerPlugins();
+                    return null;
+                }
+            }).start();
+
+            startServer();
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-
-        startServer();
     }
 
     public void setupConfig() throws Exception
@@ -44,39 +64,66 @@ public class dash extends dashBase {
 
     public void closeServer()
     {
-        if(serverThread.isAlive())
+        if(serverThread!=null)
         {
-            s.close();
+            if(serverThread.isAlive())
+            {
+                s.close();
+            }
         }
     }
 
-    List<Action> plugins = new ArrayList<>();
-    public void printPlugins() throws Exception {
-        ModuleFinder finder = ModuleFinder.of(Paths.get("pluginroot/"));
-        ModuleLayer parent = ModuleLayer.boot();
+    List<Action> plugins;
 
-        for(String moduleNameJAR : new File("pluginroot/").list())
-        {
-            String moduleName = moduleNameJAR.replace(".jar","");
-            Configuration cf = parent.configuration().resolve(finder, ModuleFinder.of(), Set.of(moduleName));
-            ClassLoader scl = ClassLoader.getSystemClassLoader();
-            ModuleLayer layer = parent.defineModulesWithOneLoader(cf, scl);
-            Action test = (Action) layer.findLoader(moduleName).loadClass(moduleName+".Action").getDeclaredConstructor().newInstance();
-            plugins.add(test);
-        }
+    synchronized public void registerPlugins() throws Exception{
+        logger.info("Registering external plugins ...");
+        Path pluginsDir = Paths.get(config.get("plugin-repository")); // Directory with plugins JARs
+
+        // Search for plugins in the plugins directory
+        ModuleFinder pluginsFinder = ModuleFinder.of(pluginsDir);
+
+        // Find all names of all found plugin modules
+        List<String> p = pluginsFinder
+                .findAll()
+                .stream()
+                .map(ModuleReference::descriptor)
+                .map(ModuleDescriptor::name)
+                .collect(Collectors.toList());
+
+        // Create configuration that will resolve plugin modules
+        // (verify that the graph of modules is correct)
+        Configuration pluginsConfiguration = ModuleLayer
+                .boot()
+                .configuration()
+                .resolve(pluginsFinder, ModuleFinder.of(), p);
+
+        // Create a module layer for plugins
+        ModuleLayer layer = ModuleLayer
+                .boot()
+                .defineModulesWithOneLoader(pluginsConfiguration, ClassLoader.getSystemClassLoader());
+
+        // Now you can use the new module layer to find service implementations in it
+        plugins = ServiceLoader
+                .load(layer, Action.class).stream()
+                .map(ServiceLoader.Provider::get)
+                .collect(Collectors.toList());
 
         for(Action eachActionPlugin : plugins)
         {
-            System.out.println("-----Custom Action Info-----" +
+            logger.debug("-----Custom Plugin Debug-----" +
+                    "\nAction Type"+eachActionPlugin.getActionType() +
                     "\nName : "+eachActionPlugin.getName() +
                     "\nAuthor : "+eachActionPlugin.getAuthor() +
                     "\nRepo : "+eachActionPlugin.getRepo() +
                     "\nDescription : "+eachActionPlugin.getDescription()+
                     "\nVersion : "+eachActionPlugin.getVersion() +
+                    "\nFull Module Name : "+eachActionPlugin.getModuleName() +
                     "\n---------------------------");
 
             System.out.println("\nAction on Server :");
             eachActionPlugin.actionOnServer();
         }
+
+        logger.debug("All plugins registered!");
     }
 }

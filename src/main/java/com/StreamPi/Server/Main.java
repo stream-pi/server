@@ -10,7 +10,7 @@ public class Main extends Application {
         Scene s = new Scene(d);
         stage.setScene(s);
         stage.show();
-        stage.setTitle("StreamPi Server - 0.7 - ALPHA");
+        stage.setTitle("StreamPi Server - "+ServerInfo.VERSION);
         stage.setOnCloseRequest(event -> d.closeServer());
     }
 
