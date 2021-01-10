@@ -1,0 +1,189 @@
+.root {
+  -fx-font-family : 'Roboto';
+}
+
+.settings_about_streampi_header
+{
+    -fx-font-size : 25;
+}
+
+.settings_about_donate_hyperlink
+{
+    -fx-font-size : 19;
+    -fx-font-weight : bold;
+}
+
+.settings_about_license_label
+{
+    -fx-font-size : 16;
+}
+
+.settings_plugins_each_action, .settings_themes_each_theme, .settings_clients_each_client
+{
+    -fx-border-width : 0 0 1 0;
+    -fx-border-color : grey;
+}
+
+.settings_plugins_each_action_heading, .settings_themes_each_theme_heading, .settings_client_nick_name_label
+{
+    -fx-font-size : 19;
+}
+
+.action_box
+{
+    -fx-border-width: 1px;
+    -fx-shape: "M100,100 h200 a20,20 0 0 1 20,20 v200 a20,20 0 0 1 -20,20 h-200 a20,20 0 0 1 -20,-20 v-200 a20,20 0 0 1 20,-20 z";
+}
+
+.action_box_icon_present
+{
+
+}
+
+.action_box_icon_not_present
+{
+
+}
+
+.action_box_valid
+{
+    -fx-border-color: grey;
+}
+
+.action_box_invalid
+{
+    -fx-border-color: red;
+}
+
+.action_box_display_text_label
+{
+    -fx-font-size : 16;
+    -fx-background-color : transparent;
+}
+
+.action_details_pane_action_heading_label
+{
+    -fx-font-size : 16;
+}
+
+.settings_client_socket_connection_label
+{
+    -fx-font-size : 16;
+}
+
+
+.alert_header
+{
+    -fx-padding: 5;
+}
+
+.alert_pane
+{
+    -fx-background-color : white;
+    -fx-border-color : white;
+    -fx-border-width : 5;
+    -fx-border-radius : 5; 
+    -fx-background-radius : 5;
+    -fx-max-height : 300;
+    -fx-max-width : 410;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0.0 , 0 );
+}
+
+.alert_header_icon
+{
+    -fx-icon-size : 30;
+}
+
+.alert_error_icon
+{
+    -fx-icon-color: RED;
+}
+
+.alert_information_icon
+{
+    -fx-icon-color: BLUE;
+}
+
+.alert_warning_icon
+{
+    -fx-icon-color: #ffcc00;
+}
+
+.alert_content_pane
+{
+    -fx-background-color: white;
+    -fx-padding: 5;
+}
+
+.alert_pane_parent, .combobox_pane_parent
+{
+    -fx-background-color : rgba(0,0,0,0.5);
+}
+
+.alert_pane_header_text
+{
+    -fx-font-size: 18;
+}
+
+.alert_button_bar
+{
+    -fx-background-color: white;
+    -fx-alignment: CENTER_RIGHT;
+    -fx-spacing: 5;
+    -fx-padding: 5;
+}
+
+.alert_scroll_pane {
+    -fx-background: #FFFFFF;
+    -fx-border-color:#FFFFFF;
+    /*-fx-focus-color: #FFFFFF;
+    -fx-faint-focus-color:#FFFFFF;*/
+}
+
+.dashboard_plugins_pane_action_icon_imageview
+{
+    -fx-width:20;
+    -fx-height:20;
+}
+
+.donate_request_popup_patreon_link
+{
+    -fx-padding : 10 0 0 0;
+    -fx-font-size : 15;
+}
+
+
+.first_time_use_pane
+{
+    -fx-padding : 5;   
+}
+
+.first_time_use_pane_heading_label
+{
+    -fx-font-size: 20;
+}
+
+.first_time_use_pane_stackpane
+{
+
+}
+
+.first_time_use_pane_welcome
+{
+
+}
+
+.first_time_use_pane_license
+{
+    -fx-spacing : 10;
+}
+
+.first_time_use_pane_final_config
+{
+
+}
+
+.first_time_use_pane_final_config_label
+{
+    -fx-padding: 0 0 30 0;
+}

@@ -1,0 +1,11 @@
+target/
+.idea/
+data/
+streampi.log
+streampi.log.lck
+Server.iml
+
+.settings/
+.project
+.factorypath
+.classpath
