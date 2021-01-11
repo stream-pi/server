@@ -124,7 +124,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             if(getConfig().isFirstTimeUse())
             {
                 Stage stage = new Stage();
-                Scene s = new Scene(new FirstTimeUse(this, this), 600, 500);                                                    
+                Scene s = new Scene(new FirstTimeUse(this, this), 512, 300);       
+                stage.setResizable(false);
                 stage.setScene(s); 
                 stage.setTitle("StreamPi Server Setup");
                 stage.initModality(Modality.APPLICATION_MODAL);
