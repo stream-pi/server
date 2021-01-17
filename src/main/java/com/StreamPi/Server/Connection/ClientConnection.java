@@ -221,10 +221,10 @@ public class ClientConnection extends Thread{
             throw new MinorException(e.getShortMessage()+" (Client '"+socket.getRemoteSocketAddress()+"' )");
         }
 
-        if(!commsStandard.isEqual(ServerInfo.getInstance().getCommAPIVersion()))
+        if(!commsStandard.isEqual(ServerInfo.getInstance().getCommStandardVersion()))
         {
             String errTxt = "Server and Client Communication standards do not match. Make sure you are on the latest version of server and client.\n" +
-                    "Server Comms. Standard : "+ServerInfo.getInstance().getCommAPIVersion().getText()+
+                    "Server Comms. Standard : "+ServerInfo.getInstance().getCommStandardVersion().getText()+
                     "\nClient Comms. Standard : "+commsStandard.getText();
 
             disconnect(errTxt);
@@ -237,9 +237,7 @@ public class ClientConnection extends Thread{
         client.setStartupDisplayHeight(Double.parseDouble(arr[7]));
         client.setDefaultProfileID(arr[9]);
         client.setDefaultThemeFullName(arr[10]);
-
-        client.debugPrint();
-
+        
         //call get profiles command.
         serverListener.clearTemp();
     }

@@ -105,7 +105,7 @@ public class NormalActionPlugins
         return null;
     }
 
-    private List<NormalAction> normalPlugins;
+    private List<NormalAction> normalPlugins = null;
     HashMap<String, Integer> normalPluginsHashmap;
 
     public void registerPlugins() throws SevereException, MinorException
@@ -126,6 +126,7 @@ public class NormalActionPlugins
         }
 
         ArrayList<NormalAction> errorModules = new ArrayList<>();
+        ArrayList<String> errorModuleError = new ArrayList<>();
 
         ArrayList<Action> pluginsConfigs = new ArrayList<>();
 
@@ -327,6 +328,7 @@ public class NormalActionPlugins
             } catch (Exception e) {
                 e.printStackTrace();
                 errorModules.add(eachPlugin);
+                errorModuleError.add(e.getMessage());
             }
         }
 
@@ -341,10 +343,11 @@ public class NormalActionPlugins
         if(errorModules.size() > 0)
         {
             StringBuilder errors = new StringBuilder("The following action modules could not be loaded:");
-            for(NormalAction e : errorModules)
+            for(int i = 0; i<errorModules.size(); i++)
             {
-                normalPlugins.remove(e);
-                errors.append("\n * ").append(e);
+                normalPlugins.remove(errorModules.get(i));
+                errors.append("\n * ").append(errorModules.get(i).getModuleName()).append("\n(")
+                    .append(errorModuleError.get(i)).append(")");
             }
 
             throw new MinorException("Plugins", errors.toString());

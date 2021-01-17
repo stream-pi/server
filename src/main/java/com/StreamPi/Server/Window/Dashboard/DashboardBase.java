@@ -102,9 +102,6 @@ public class DashboardBase extends HBox implements DashboardInterface {
         {
             getActionDetailsPane().setClient(clientConnection.getClient());
             getActionGridPane().setClient(clientConnection.getClient());
-
-            logger.info("Current selected client details:");
-            clientConnection.getClient().debugPrint();
         }
     }
 

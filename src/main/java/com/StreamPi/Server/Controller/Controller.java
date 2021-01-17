@@ -162,35 +162,42 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             {
                 try
                 {
-                    
-        
-                
                     getSettingsPane().getGeneralSettings().loadDataFromConfig();
 
-                    Platform.runLater(()->{
-                        getDashboardPane().getPluginsPane().clearData();
-                        getDashboardPane().getPluginsPane().loadOtherActions();
-                    });
-
-                    NormalActionPlugins.setPluginsLocation(getConfig().getPluginsPath());
-                    NormalActionPlugins.getInstance().init();
-                    Platform.runLater(()->getDashboardPane().getPluginsPane().loadData());
-
-                    getSettingsPane().getPluginsSettings().loadPlugins();
-
-
+                    //themes
                     getSettingsPane().getThemesSettings().setThemes(getThemes());
                     getSettingsPane().getThemesSettings().setCurrentThemeFullName(getCurrentTheme().getFullName());
                     getSettingsPane().getThemesSettings().loadThemes();
 
+                    //clients
                     getSettingsPane().getClientsSettings().loadData();
 
+                    try
+                    {
+
+                        //Plugins 
+                        Platform.runLater(()->{
+                            getDashboardPane().getPluginsPane().clearData();
+                            getDashboardPane().getPluginsPane().loadOtherActions();
+                        });
+
+                        NormalActionPlugins.setPluginsLocation(getConfig().getPluginsPath());
+                        NormalActionPlugins.getInstance().init();
+
+                        Platform.runLater(()->getDashboardPane().getPluginsPane().loadData());
+
+                        getSettingsPane().getPluginsSettings().loadPlugins();
+                    }
+                    catch (MinorException e)
+                    {
+                        getSettingsPane().getPluginsSettings().showPluginInitError();
+                        handleMinorException(e);
+                    }
+
+                    //Server
                     mainServer.setPort(getConfig().getPort());
                     mainServer.start();
-                }
-                catch (MinorException e)
-                {
-                    handleMinorException(e);
+
                 }
                 catch (SevereException e)
                 {

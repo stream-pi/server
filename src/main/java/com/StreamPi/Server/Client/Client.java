@@ -20,7 +20,7 @@ public class Client {
     private final Platform platform;
     private ClientConnection connectionHandler;
     private final Version version;
-    private final Version commAPIVersion;
+    private final Version commStandardVersion;
     private final Version themeAPIVersion;
     private final ReleaseStatus releaseStatus;
 
@@ -35,11 +35,11 @@ public class Client {
 
     private int totalNoOfProfiles;
 
-    public Client(Version version, ReleaseStatus releaseStatus, Version commAPIVersion, Version themeAPIVersion, String nickName, Platform platform, SocketAddress remoteSocketAddress)
+    public Client(Version version, ReleaseStatus releaseStatus, Version commStandardVersion, Version themeAPIVersion, String nickName, Platform platform, SocketAddress remoteSocketAddress)
     {
         this.version = version;
         this.releaseStatus = releaseStatus;
-        this.commAPIVersion = commAPIVersion;
+        this.commStandardVersion = commStandardVersion;
         this.themeAPIVersion = themeAPIVersion;
         this.nickName = nickName;
         this.remoteSocketAddress = remoteSocketAddress;
@@ -162,9 +162,9 @@ public class Client {
         return version;
     }
 
-    public Version getCommAPIVersion()
+    public Version getCommStandardVersion()
     {
-        return commAPIVersion;
+        return commStandardVersion;
     }
 
     public Version getThemeAPIVersion()
@@ -191,21 +191,7 @@ public class Client {
     {
         startupDisplayWidth = width;
     }
-
-    public void debugPrint()
-    {
-        System.out.println("Client Info : "+
-                "\nNickname : "+nickName+
-                "\nRemote address : "+remoteSocketAddress+
-                "\nPlatform : "+platform.getUIName()+
-                "\nVersion : "+version.getText()+
-                "\nComm API Version : "+commAPIVersion.getText()+
-                "\nTheme API Version : "+themeAPIVersion.getText()+
-                "\nDisplay Width : "+startupDisplayWidth+
-                "\nDisplay Height : "+startupDisplayHeight+
-                "\nDefault Profile ID : "+defaultProfileID);
-    }
-
+    
     private int getMaxRows(int eachActionSize)
     {
         return (int) (startupDisplayHeight / eachActionSize);

@@ -22,7 +22,7 @@ public class ServerInfo {
 
     private Version minThemeSupportVersion;
     private Version minPluginSupportVersion;
-    private Version commAPIVersion;
+    private Version commStandardVersion;
 
     private static ServerInfo instance = null;
     
@@ -30,15 +30,10 @@ public class ServerInfo {
     private boolean startMinimised = false; 
 
     private ServerInfo(){
-
-        try {
-            version = new Version("1.0.0");
-            minThemeSupportVersion = new Version("1.0.0");
-            minPluginSupportVersion = new Version("1.0.0");
-            commAPIVersion = new Version("1.0.0");
-        } catch (MinorException e) {
-            e.printStackTrace();
-        }
+        version = new Version(1,0,0);
+        minThemeSupportVersion = new Version(1,0,0);
+        minPluginSupportVersion = new Version(1,0,0);
+        commStandardVersion = new Version(1,0,0);
 
         releaseStatus = ReleaseStatus.EA;
         prePath = "data/";
@@ -116,8 +111,8 @@ public class ServerInfo {
         return minPluginSupportVersion;
     }
 
-    public Version getCommAPIVersion()
+    public Version getCommStandardVersion()
     {
-        return commAPIVersion;
+        return commStandardVersion;
     }
 }

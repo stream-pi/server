@@ -161,11 +161,22 @@ public class PluginsSettings extends VBox {
 
     private ArrayList<PluginProperties> pluginProperties;
 
+
+    public void showPluginInitError()
+    {
+        Platform.runLater(()->{
+            pluginsSettingsVBox.getChildren().add(new Label("Plugin init error. Resolve issues and restart."));
+            saveButton.setVisible(false);
+        });
+    }
+
     public void loadPlugins() throws MinorException {
 
         pluginProperties.clear();
 
         List<NormalAction> actions = NormalActionPlugins.getInstance().getPlugins();
+
+        System.out.println("asdasdasdasd"+actions.size());
 
         Platform.runLater(()-> pluginsSettingsVBox.getChildren().clear());
 

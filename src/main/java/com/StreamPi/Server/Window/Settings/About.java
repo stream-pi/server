@@ -94,7 +94,7 @@ public class About extends VBox{
         ServerInfo serverInfo = ServerInfo.getInstance();
 
         Label versionText = new Label(serverInfo.getVersion().getText() + " - "+ serverInfo.getPlatformType().getUIName() + " - "+ serverInfo.getReleaseStatus().getUIName());
-        Label commAPILabel = new Label("CommAPI "+serverInfo.getCommAPIVersion().getText());
+        Label commStandardLabel = new Label("CommStandard "+serverInfo.getCommStandardVersion().getText());
         Label minThemeAPILabel = new Label("Min ThemeAPI "+serverInfo.getMinThemeSupportVersion().getText());
         Label minActionAPILabel = new Label("Min ActionAPI "+serverInfo.getMinPluginSupportVersion().getText());
 
@@ -103,7 +103,7 @@ public class About extends VBox{
 
         setSpacing(3);
 
-        getChildren().addAll(appIconImageView, licenseLabel, licenseTextArea, links, donateButton, gap, versionText, commAPILabel, minThemeAPILabel, minActionAPILabel, currentActionAPILabel);
+        getChildren().addAll(appIconImageView, licenseLabel, licenseTextArea, links, donateButton, gap, versionText, commStandardLabel, minThemeAPILabel, minActionAPILabel, currentActionAPILabel);
     }
 
     public void openWebpage(String url) {
