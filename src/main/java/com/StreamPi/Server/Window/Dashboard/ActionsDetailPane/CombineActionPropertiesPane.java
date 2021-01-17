@@ -108,7 +108,7 @@ public class CombineActionPropertiesPane extends VBox {
         actionDetailsPane.clear();
         actionDetailsPane.setAction(action);
         try {
-            actionDetailsPane.renderActionProperties(true);
+            actionDetailsPane.renderActionProperties();
         } catch (MinorException e) {
             e.printStackTrace();
         }

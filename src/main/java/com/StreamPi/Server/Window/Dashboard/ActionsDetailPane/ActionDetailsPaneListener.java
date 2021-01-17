@@ -13,7 +13,7 @@ public interface ActionDetailsPaneListener {
 
     void saveAction();
 
-    void saveAction(Action action);
+    void saveAction(Action action, boolean runAsync);
 
     void clear();
 

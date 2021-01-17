@@ -27,11 +27,13 @@ public class OnSaveActionTask extends Task<Void>
 
     private Logger logger;
 
+
     public OnSaveActionTask(ClientConnection connection, Action action, String displayNameText, boolean isCombineChild,
         boolean isShowDisplayText, boolean isDefaultDisplayTextColour, String displayTextFontColour, boolean isClearIcon,
         boolean isHideIcon, DisplayTextAlignment displayTextAlignment, boolean isTransparentBackground, String backgroundColour,
         CombineActionPropertiesPane combineActionPropertiesPane, ClientProfile clientProfile, boolean sendIcon, ActionBox actionBox,
-        ArrayList<UIPropertyBox> actionClientProperties, ExceptionAndAlertHandler exceptionAndAlertHandler, Button saveButton, Button deleteButton)
+        ArrayList<UIPropertyBox> actionClientProperties, ExceptionAndAlertHandler exceptionAndAlertHandler, Button saveButton, Button deleteButton,
+        boolean runAsync)
     {
         this.saveButton = saveButton;
         this.deleteButton = deleteButton;
@@ -57,6 +59,12 @@ public class OnSaveActionTask extends Task<Void>
 
 
         logger = Logger.getLogger(getClass().getName());
+
+
+        if(runAsync)
+            new Thread(this).start();
+        else
+            runTask();
     }
 
     private Button saveButton;
@@ -87,6 +95,8 @@ public class OnSaveActionTask extends Task<Void>
             deleteButton.setDisable(state);
         });
     }
+
+    
     private void runTask()
     {
         action.setDisplayText(displayNameText);
@@ -164,7 +174,7 @@ public class OnSaveActionTask extends Task<Void>
         {
             logger.info("Saving action ... "+action.isHasIcon()+"+"+sendIcon);
 
-            if(action.isHasIcon())
+            /*if(action.isHasIcon())
             {
                 if(clientProfile.getActionByID(action.getID()).getIconAsByteArray() == null)
                 {
@@ -178,7 +188,7 @@ public class OnSaveActionTask extends Task<Void>
                        sendIcon = true;
                    }
                }
-            }
+            }*/
 
             connection.saveActionDetails(clientProfile.getID(), action);
 

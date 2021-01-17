@@ -487,7 +487,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     }
 
     @Override
-    public boolean onNormalActionClicked(NormalAction action) {
+    public synchronized boolean onNormalActionClicked(NormalAction action) {
         try{
             getLogger().info("Action "+action.getID()+" clicked!");
             

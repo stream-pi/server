@@ -21,7 +21,7 @@ public class OnDeleteActionTask extends Task<Void>
     public OnDeleteActionTask(ClientConnection connection, Action action, boolean isCombineChild,
         CombineActionPropertiesPane combineActionPropertiesPane, ClientProfile clientProfile, ActionBox actionBox,
         ActionDetailsPane actionDetailsPane,
-        ExceptionAndAlertHandler exceptionAndAlertHandler)
+        ExceptionAndAlertHandler exceptionAndAlertHandler, boolean runAsync)
     {
         this.connection = connection;
         this.action = action;
@@ -33,6 +33,11 @@ public class OnDeleteActionTask extends Task<Void>
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
 
         logger = Logger.getLogger(getClass().getName());
+
+        if(runAsync)
+            new Thread(this).start();
+        else
+            runTask();
     }
 
     private ClientConnection connection;
@@ -63,12 +68,16 @@ public class OnDeleteActionTask extends Task<Void>
 
                 try {
 
+                    
+                    actionDetailsPane.saveAction(combineActionPropertiesPane.getCombineAction(), false);
+                    
+                    System.out.println(combineActionPropertiesPane.getCombineAction().getDisplayText()+"@#@#@#@#@#@#");
                     actionDetailsPane.onActionClicked(
                             combineActionPropertiesPane.getCombineAction(),
                             actionBox
                     );
 
-                    actionDetailsPane.saveAction(combineActionPropertiesPane.getCombineAction());
+
 
                 } catch (MinorException e) {
                     e.printStackTrace();

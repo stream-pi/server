@@ -179,6 +179,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     System.out.println("ABABABABABBABABBABABABCCCCCCCCCCCCCCCCCC");
 
                     action.setIcon(iconFileByteArray);
+                    setSendIcon(true);
 
                     System.out.println(action.getIconAsByteArray().length);
                 }
@@ -350,10 +351,13 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         this.action = action;
         this.actionBox = actionBox;
 
+        System.out.println(action.getActionType());
+
+
         logger.info("Action Display text : "+action.getDisplayText());
         clear();
 
-        renderActionProperties(false);
+        renderActionProperties();
     }
 
     private TextField displayNameTextField;
@@ -389,12 +393,17 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         return isCombineChild;
     }
 
-    public void renderActionProperties(boolean isCombineChild) throws MinorException
+    public void renderActionProperties() throws MinorException
     {
-        this.isCombineChild = isCombineChild;
+
+        if(action.getLocation().getCol() == -1) //Combine Child action
+            isCombineChild = true;
+        else
+            isCombineChild = false;           
+
         displayNameTextField.setText(action.getDisplayText());
 
-
+        System.out.println(action.getDisplayText()+"@@@@::::"+isCombineChild);
 
         if(isCombineChild)
         {
@@ -689,35 +698,33 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     }
 
     @Override
-    public void saveAction(Action action)
+    public void saveAction(Action action, boolean runAsync)
     {
-        new Thread(
-            new OnSaveActionTask(
-                ClientConnections.getInstance().getClientConnectionBySocketAddress(
-                    getClient().getRemoteSocketAddress()
-                ),
-                action,
-                displayNameTextField.getText(),
-                isCombineChild(),
-                !hideDisplayTextCheckBox.isSelected(),
-                displayTextColourDefaultCheckBox.isSelected(), 
-                "#" + displayTextColourPicker.getValue().toString().substring(2),
-                clearIconButton.isDisable(),
-                !hideIconCheckBox.isSelected(),
-                displayTextAlignmentComboBox.getSelectionModel().getSelectedItem(),
-                actionBackgroundColourTransparentCheckBox.isSelected(),
-                "#" + actionBackgroundColourPicker.getValue().toString().substring(2),
-                getCombineActionPropertiesPane(), 
-                clientProfile, sendIcon, actionBox, actionClientProperties, exceptionAndAlertHandler,
-                saveButton, deleteButton
-            )
-        ).start();
+        new OnSaveActionTask(
+            ClientConnections.getInstance().getClientConnectionBySocketAddress(
+                getClient().getRemoteSocketAddress()
+            ),
+            action,
+            displayNameTextField.getText(),
+            isCombineChild(),
+            !hideDisplayTextCheckBox.isSelected(),
+            displayTextColourDefaultCheckBox.isSelected(), 
+            "#" + displayTextColourPicker.getValue().toString().substring(2),
+            clearIconButton.isDisable(),
+            !hideIconCheckBox.isSelected(),
+            displayTextAlignmentComboBox.getSelectionModel().getSelectedItem(),
+            actionBackgroundColourTransparentCheckBox.isSelected(),
+            "#" + actionBackgroundColourPicker.getValue().toString().substring(2),
+            getCombineActionPropertiesPane(), 
+            clientProfile, sendIcon, actionBox, actionClientProperties, exceptionAndAlertHandler,
+            saveButton, deleteButton, runAsync
+        );
     }
 
     @Override
     public void saveAction()
     {
-        saveAction(action);
+        saveAction(action, true);
     }
 
     public void setFolderButtonVisible(boolean visible)
@@ -789,16 +796,15 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     public void onDeleteButtonClicked()
     {
-        new Thread( 
-            new OnDeleteActionTask(
-                ClientConnections.getInstance().getClientConnectionBySocketAddress(
-                    getClient().getRemoteSocketAddress()
-                ),
-                action,
-                isCombineChild(),
-                getCombineActionPropertiesPane(), 
-                clientProfile, actionBox, this, exceptionAndAlertHandler
-            ) 
-        ).start();
+        new OnDeleteActionTask(
+            ClientConnections.getInstance().getClientConnectionBySocketAddress(
+                getClient().getRemoteSocketAddress()
+            ),
+            action,
+            isCombineChild(),
+            getCombineActionPropertiesPane(), 
+            clientProfile, actionBox, this, exceptionAndAlertHandler,
+            !isCombineChild
+        );
     }
 }
