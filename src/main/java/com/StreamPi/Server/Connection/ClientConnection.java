@@ -707,6 +707,13 @@ public class ClientConnection extends Thread{
     {
         StringBuilder finalQuery = new StringBuilder("save_action_details::");
 
+
+        //failsafes
+
+        if(action.getDisplayText().endsWith(":"))
+            action.setDisplayText(action.getDisplayText()+" ");
+
+
         finalQuery.append(profileID)
                 .append("::")
                 .append(action.getID())
