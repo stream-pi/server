@@ -29,7 +29,6 @@ public class About extends VBox{
 
     public About(HostServices hostServices)
     {
-        
         getStyleClass().add("about");
         this.hostServices = hostServices;
 
@@ -40,8 +39,8 @@ public class About extends VBox{
         appIconImageView.setFitHeight(196);
         appIconImageView.setFitWidth(182);
 
-        Label headerLabel = new Label("StreamPi");
-        headerLabel.getStyleClass().add("settings_about_streampi_header");
+        // Label headerLabel = new Label("StreamPi");
+        // headerLabel.getStyleClass().add("settings_about_streampi_header");
 
         Label licenseLabel = new Label("License");
         licenseLabel.getStyleClass().add("settings_about_license_label");
@@ -79,7 +78,7 @@ public class About extends VBox{
             openWebpage("https://twitter.com/Stream_Pi");
         });
 
-        links.setSpacing(15);
+        links.setSpacing(30);
         links.setAlignment(Pos.CENTER);
         links.getChildren().addAll(github, discord, website, twitter);
 
@@ -104,7 +103,7 @@ public class About extends VBox{
 
         setSpacing(3);
 
-        getChildren().addAll(appIconImageView, headerLabel, licenseLabel, licenseTextArea, links, donateButton, gap, versionText, commAPILabel, minThemeAPILabel, minActionAPILabel, currentActionAPILabel);
+        getChildren().addAll(appIconImageView, licenseLabel, licenseTextArea, links, donateButton, gap, versionText, commAPILabel, minThemeAPILabel, minActionAPILabel, currentActionAPILabel);
     }
 
     public void openWebpage(String url) {
