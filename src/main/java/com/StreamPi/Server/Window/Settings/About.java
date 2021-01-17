@@ -45,8 +45,6 @@ public class About extends VBox{
         VBox.setMargin(licenseLabel, new Insets(20, 0 , 10 ,0));
 
         TextArea licenseTextArea = new TextArea(License.getLicense());
-
-
         licenseTextArea.setWrapText(false);
         licenseTextArea.setEditable(false);
         licenseTextArea.setMaxWidth(550);
@@ -85,8 +83,6 @@ public class About extends VBox{
         });
         donateButton.getStyleClass().add("settings_about_donate_hyperlink");
 
-        Region gap = new Region();
-        VBox.setVgrow(gap, Priority.ALWAYS);
 
         ServerInfo serverInfo = ServerInfo.getInstance();
 
@@ -100,7 +96,7 @@ public class About extends VBox{
 
         setSpacing(3);
 
-        getChildren().addAll(appIconImageView, licenseLabel, licenseTextArea, links, donateButton, gap, versionText, commStandardLabel, minThemeAPILabel, minActionAPILabel, currentActionAPILabel);
+        getChildren().addAll(appIconImageView, licenseLabel, licenseTextArea, links, donateButton, versionText, commStandardLabel, minThemeAPILabel, minActionAPILabel, currentActionAPILabel);
     }
 
     public void openWebpage(String url) {

@@ -42,7 +42,7 @@ public class FinalConfigPane extends VBox
         serverPortTextField = new TextField("2004");
 
         HBoxInputBox serverNickNameInputBox = new HBoxInputBox("Server Nickname", serverNicknameTextField, 200);
-        HBoxInputBox serverPortInputBox = new HBoxInputBox("Server Nickname", serverPortTextField);
+        HBoxInputBox serverPortInputBox = new HBoxInputBox("Server Port", serverPortTextField);
 
         Button confirmButton = new Button("Confirm");
         confirmButton.setOnAction(event -> onConfirmButtonClicked());
