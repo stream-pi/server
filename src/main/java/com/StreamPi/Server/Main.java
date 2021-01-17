@@ -36,7 +36,7 @@ public class Main extends Application {
             if(r[0].equals("-DStreamPi.startupRunnerFileName"))
                 ServerInfo.getInstance().setRunnerFileName(r[1]);
             else if(r[0].equals("-DStreamPi.startupMode"))
-                ServerInfo.getInstance().setStartMinimised(r[1].equals("minimise"));
+                ServerInfo.getInstance().setStartMinimised(r[1].equals("min"));
         }
         
         
