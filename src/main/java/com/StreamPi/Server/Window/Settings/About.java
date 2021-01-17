@@ -39,9 +39,6 @@ public class About extends VBox{
         appIconImageView.setFitHeight(196);
         appIconImageView.setFitWidth(182);
 
-        // Label headerLabel = new Label("StreamPi");
-        // headerLabel.getStyleClass().add("settings_about_streampi_header");
-
         Label licenseLabel = new Label("License");
         licenseLabel.getStyleClass().add("settings_about_license_label");
 
@@ -52,7 +49,7 @@ public class About extends VBox{
 
         licenseTextArea.setWrapText(false);
         licenseTextArea.setEditable(false);
-        licenseTextArea.setMaxWidth(500);
+        licenseTextArea.setMaxWidth(550);
 
         VBox.setVgrow(licenseTextArea, Priority.ALWAYS);
 
@@ -94,7 +91,7 @@ public class About extends VBox{
         ServerInfo serverInfo = ServerInfo.getInstance();
 
         Label versionText = new Label(serverInfo.getVersion().getText() + " - "+ serverInfo.getPlatformType().getUIName() + " - "+ serverInfo.getReleaseStatus().getUIName());
-        Label commStandardLabel = new Label("CommStandard "+serverInfo.getCommStandardVersion().getText());
+        Label commStandardLabel = new Label("Comm Standard "+serverInfo.getCommStandardVersion().getText());
         Label minThemeAPILabel = new Label("Min ThemeAPI "+serverInfo.getMinThemeSupportVersion().getText());
         Label minActionAPILabel = new Label("Min ActionAPI "+serverInfo.getMinPluginSupportVersion().getText());
 
