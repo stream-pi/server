@@ -140,7 +140,17 @@ public class ClientsSettings extends VBox {
 
 
                             try {
-                                Integer.parseInt(clientProfileVBox.getRows());
+                                int rows = Integer.parseInt(clientProfileVBox.getRows());
+
+                                int actionsSize = Integer.parseInt(clientProfileVBox.getActionSize());
+                                double startupWidth = Double.parseDouble(clientSettingsVBox.getStartupWindowWidth());
+
+                                logger.info("@#@#@#@## : "+rows+","+actionsSize+","+startupWidth+","+(rows*actionsSize)+","+startupWidth);
+
+                                if((rows*actionsSize) > (startupWidth- 25))
+                                {
+                                    errors2.append("        Rows out of bounds of screen size. \n");
+                                }
                             }
                             catch (NumberFormatException e)
                             {
@@ -149,7 +159,18 @@ public class ClientsSettings extends VBox {
 
 
                             try {
-                                Integer.parseInt(clientProfileVBox.getCols());
+                                int cols = Integer.parseInt(clientProfileVBox.getCols());
+
+                                
+                                int actionsSize = Integer.parseInt(clientProfileVBox.getActionSize());
+                                double startupHeight = Double.parseDouble(clientSettingsVBox.getStartupWindowHeight());
+
+                                logger.info("@#@sd#@#@## : "+cols+","+actionsSize+","+startupHeight+","+(cols*actionsSize)+","+startupHeight);
+
+                                if((cols*actionsSize) > (startupHeight - 25))
+                                {
+                                    errors2.append("        Cols out of bounds of screen size. \n");
+                                }
                             }
                             catch (NumberFormatException e)
                             {
