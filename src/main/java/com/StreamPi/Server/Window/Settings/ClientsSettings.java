@@ -145,9 +145,10 @@ public class ClientsSettings extends VBox {
                                 int actionsSize = Integer.parseInt(clientProfileVBox.getActionSize());
                                 double startupWidth = Double.parseDouble(clientSettingsVBox.getStartupWindowWidth());
 
+
                                 if((rows*actionsSize) > (startupWidth - 25))
                                 {
-                                    errors2.append("        Rows out of bounds of screen size. \n");
+                                    errors2.append("        Rows out of bounds of screen size. \n"+startupWidth);
                                 }
                             }
                             catch (NumberFormatException e)
@@ -164,7 +165,7 @@ public class ClientsSettings extends VBox {
 
                                 if((cols*actionsSize) > (startupHeight - 25))
                                 {
-                                    errors2.append("        Cols out of bounds of screen size. \n");
+                                    errors2.append("        Cols out of bounds of screen size. \n"+startupHeight);
                                 }
                             }
                             catch (NumberFormatException e)
