@@ -73,9 +73,15 @@ public class About extends VBox{
             openWebpage("https://twitter.com/Stream_Pi");
         });
 
+        Hyperlink matrix = new Hyperlink("Matrix");
+        matrix.setOnAction(event -> {
+            openWebpage("https://matrix.to/#/#stream-pi_general:matrix.org");
+        });
+
+
         links.setSpacing(30);
         links.setAlignment(Pos.CENTER);
-        links.getChildren().addAll(github, discord, website, twitter);
+        links.getChildren().addAll(github, matrix, discord, website, twitter);
 
         Hyperlink donateButton = new Hyperlink("DONATE");
         donateButton.setOnAction(event -> {

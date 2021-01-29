@@ -146,7 +146,7 @@ public class ClientsSettings extends VBox {
                                 double startupWidth = Double.parseDouble(clientSettingsVBox.getStartupWindowWidth());
 
 
-                                if((rows*actionsSize) > (startupWidth - 25))
+                                if((rows*actionsSize) > (startupWidth - 25) && clientSettingsVBox.getPlatform()!= com.StreamPi.Util.Platform.Platform.ANDROID)
                                 {
                                     errors2.append("        Rows out of bounds of screen size. \n"+startupWidth);
                                 }
@@ -163,7 +163,7 @@ public class ClientsSettings extends VBox {
                                 int actionsSize = Integer.parseInt(clientProfileVBox.getActionSize());
                                 double startupHeight = Double.parseDouble(clientSettingsVBox.getStartupWindowHeight());
 
-                                if((cols*actionsSize) > (startupHeight - 25))
+                                if((cols*actionsSize) > (startupHeight - 25) && clientSettingsVBox.getPlatform()!= com.StreamPi.Util.Platform.Platform.ANDROID)
                                 {
                                     errors2.append("        Cols out of bounds of screen size. \n"+startupHeight);
                                 }
@@ -304,6 +304,12 @@ public class ClientsSettings extends VBox {
             return nickNameLabel.getText();
         }
 
+        private com.StreamPi.Util.Platform.Platform platform;
+
+        public com.StreamPi.Util.Platform.Platform getPlatform() {
+            return platform;
+        }
+
         private Label socketConnectionLabel;
 
         private ClientConnection connection;
@@ -323,6 +329,7 @@ public class ClientsSettings extends VBox {
         public ClientSettingsVBox(ClientConnection connection)
         {
             this.connection = connection;
+            this.platform = connection.getClient().getPlatform();
 
             clientProfileVBoxes = new ArrayList<>();
 
