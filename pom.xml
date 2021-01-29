@@ -16,7 +16,7 @@
 
         <client.plugin.version>0.1.35</client.plugin.version>
 
-        <JavaFXVersion>16-ea+5</JavaFXVersion>
+        <JavaFXVersion>16-ea+6</JavaFXVersion>
 
 
         <CommonsBeanUtilsVersion>1.9.4</CommonsBeanUtilsVersion>
