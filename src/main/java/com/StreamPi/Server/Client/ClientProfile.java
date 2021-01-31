@@ -1,17 +1,22 @@
+/*
+Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macropad
+Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+Written by : Debayan Sutradhar (rnayabed)
+*/
+
 package com.StreamPi.Server.Client;
 
 import com.StreamPi.ActionAPI.Action.Action;
-import com.StreamPi.ActionAPI.Action.ActionType;
-import com.StreamPi.ActionAPI.Action.DisplayTextAlignment;
-import com.StreamPi.ActionAPI.Action.Location;
-import com.StreamPi.ActionAPI.ActionProperty.ClientProperties;
-import com.StreamPi.ActionAPI.NormalAction.NormalAction;
-import com.StreamPi.Server.Action.NormalActionPlugins;
-import com.StreamPi.Server.Window.Dashboard.ActionGridPane.ActionBox;
-import com.StreamPi.Util.Exception.MinorException;
-import javafx.geometry.Dimension2D;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;

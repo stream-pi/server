@@ -497,7 +497,6 @@ public class ClientConnection extends Thread{
         logger.info("Registering profiles ...");
 
         int noOfProfiles = Integer.parseInt(sep[1]);
-        getClient().setTotalNoOfProfiles(noOfProfiles);
 
         for(int i = 2; i<(noOfProfiles + 2); i++)
         {

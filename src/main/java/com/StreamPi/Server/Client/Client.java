@@ -1,24 +1,34 @@
+/*
+Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macropad
+Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+Written by : Debayan Sutradhar (rnayabed)
+*/
+
 package com.StreamPi.Server.Client;
 
-import com.StreamPi.Server.Connection.ClientConnection;
-import com.StreamPi.ThemeAPI.Theme;
-import com.StreamPi.Util.Exception.MinorException;
 import com.StreamPi.Util.Platform.Platform;
 import com.StreamPi.Util.Platform.ReleaseStatus;
 import com.StreamPi.Util.Version.Version;
-import javafx.geometry.Dimension2D;
 
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Client {
     private String nickName;
     private final SocketAddress remoteSocketAddress;
     private final Platform platform;
-    private ClientConnection connectionHandler;
     private final Version version;
     private final Version commStandardVersion;
     private final Version themeAPIVersion;
@@ -32,8 +42,6 @@ public class Client {
 
     private String defaultProfileID;
     private String defaultThemeFullName;
-
-    private int totalNoOfProfiles;
 
     public Client(Version version, ReleaseStatus releaseStatus, Version commStandardVersion, Version themeAPIVersion, String nickName, Platform platform, SocketAddress remoteSocketAddress)
     {
@@ -58,16 +66,6 @@ public class Client {
 
     public String getDefaultThemeFullName() {
         return defaultThemeFullName;
-    }
-
-    public void setTotalNoOfProfiles(int totalNoOfProfiles)
-    {
-        this.totalNoOfProfiles = totalNoOfProfiles;
-    }
-
-    public int getTotalNoOfProfiles()
-    {
-        return totalNoOfProfiles;
     }
 
     public void setDefaultProfileID(String ID)
@@ -100,22 +98,7 @@ public class Client {
         return defaultProfileID;
     }
 
-    public void setConnectionHandler(ClientConnection connectionHandler)
-    {
-        this.connectionHandler = connectionHandler;
-    }
-
-    public ClientConnection getConnectionHandler()
-    {
-        return connectionHandler;
-    }
-
     //Client Profiles
-
-    /*public ArrayList<ClientProfile> getProfiles()
-    {
-        return profiles;
-    }*/
 
     public void setNickName(String nickName)
     {
@@ -130,7 +113,8 @@ public class Client {
         return clientProfiles;
     }
 
-    public void removeProfileFromID(String ID) throws MinorException {
+    public void removeProfileFromID(String ID)
+    {
         profiles.remove(ID);
     }
 

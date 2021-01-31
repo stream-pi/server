@@ -1,16 +1,29 @@
+/*
+Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macropad
+Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+Written by : Debayan Sutradhar (rnayabed)
+*/
+
 package com.StreamPi.Server.Action;
 
 import com.StreamPi.ActionAPI.Action.Action;
 import com.StreamPi.ActionAPI.Action.ActionType;
 import com.StreamPi.ActionAPI.Action.ServerConnection;
 import com.StreamPi.ActionAPI.Action.PropertySaver;
-import com.StreamPi.ActionAPI.ActionProperty.ClientProperties;
-import com.StreamPi.ActionAPI.ActionProperty.Property.ControlType;
 import com.StreamPi.ActionAPI.ActionProperty.Property.Property;
 import com.StreamPi.ActionAPI.ActionProperty.Property.Type;
 import com.StreamPi.ActionAPI.ActionProperty.ServerProperties;
 import com.StreamPi.ActionAPI.NormalAction.NormalAction;
-import com.StreamPi.Server.Controller.Controller;
 import com.StreamPi.Util.Exception.MinorException;
 import com.StreamPi.Util.Exception.SevereException;
 import com.StreamPi.Util.Exception.StreamPiException;
@@ -26,9 +39,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import javafx.scene.image.ImageView;
 import org.w3c.dom.NodeList;
-import org.kordamp.ikonli.javafx.FontIcon;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -45,9 +56,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.w3c.dom.Element;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
 
 public class NormalActionPlugins
 {
@@ -60,6 +68,11 @@ public class NormalActionPlugins
     private static String pluginsLocation = null;
 
 
+    /**
+     * Singleton class instance getter. Creates new one, when asked for the first time
+     *
+     * @return returns instance of NormalActionPlugins (one and only, always)
+     */
     public static synchronized NormalActionPlugins getInstance()
     {
         if(instance == null)
@@ -70,29 +83,50 @@ public class NormalActionPlugins
         return instance;
     }
 
+    /**
+     * Sets the folder location where the plugin JARs and their dependencies are stored
+     *
+     * @param location Folder location
+     */
     public static void setPluginsLocation(String location)
     {
         pluginsLocation = location;
     }
 
-
+    /**
+     * Private constructor
+     */
     private NormalActionPlugins()
     {
         logger = Logger.getLogger(NormalActionPlugins.class.getName());
         normalPluginsHashmap = new HashMap<>();
     }
 
+    /**
+     * init Method
+     */
     public void init() throws SevereException, MinorException
     {
         registerPlugins();
         initPlugins();
     }
 
+    /**
+     * Used to fetch list of all external Plugins
+     *
+     * @return List of plugins
+     */
     public List<NormalAction> getPlugins()
     {
         return normalPlugins;
     }
 
+    /**
+     * Returns a plugin by its module name
+     *
+     * @param name Module Name
+     * @return The plugin. If not found, then null is returned
+     */
     public NormalAction getPluginByModuleName(String name)
     {
         logger.info("Plugin being requested : "+name);
@@ -108,6 +142,9 @@ public class NormalActionPlugins
     private List<NormalAction> normalPlugins = null;
     HashMap<String, Integer> normalPluginsHashmap;
 
+    /**
+     * Used to register plugins from plugin location
+     */
     public void registerPlugins() throws SevereException, MinorException
     {
         logger.info("Registering external plugins from "+pluginsLocation+" ...");
@@ -146,7 +183,7 @@ public class NormalActionPlugins
  
 
 
-            String name="";
+            String name;
             Version version;
             try
             {
@@ -249,8 +286,10 @@ public class NormalActionPlugins
 
         sortedPlugins = new HashMap<>();
 
-        for (NormalAction eachPlugin : normalPlugins) {
-            try {
+        for (NormalAction eachPlugin : normalPlugins)
+        {
+            try
+            {
                 eachPlugin.setPropertySaver(propertySaver);
                 eachPlugin.setServerConnection(serverConnection);
                 eachPlugin.initProperties();
@@ -314,18 +353,9 @@ public class NormalActionPlugins
 
                 sortedPlugins.get(eachPlugin.getCategory()).add(eachPlugin);
 
-                /*logger.debug("-----Custom Plugin Debug-----" +
-                        "\nAction Type : " + eachPlugin.getActionType() +
-                        "\nName : " + eachPlugin.getName() +
-                        "\nFull Module Name : " + eachPlugin.getModuleName() +
-                        "\nAuthor : " + eachPlugin.getAuthor() +
-                        "\nCategory : " + eachPlugin.getCategory() +
-                        "\nRepo : " + eachPlugin.getRepo() +
-                        "\nVersion : " + eachPlugin.getVersion().getText() +
-                        "\n---------------------------");*/
-
-
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 e.printStackTrace();
                 errorModules.add(eachPlugin);
                 errorModuleError.add(e.getMessage());
@@ -360,6 +390,9 @@ public class NormalActionPlugins
         }
     }
 
+    /**
+     * Used to init plugins
+     */
     public void initPlugins() throws MinorException
     {
         StringBuilder errors = new StringBuilder("There were errors registering the following plugins. As a result, they have been omitted : ");
@@ -396,16 +429,29 @@ public class NormalActionPlugins
 
     HashMap<String, ArrayList<NormalAction>> sortedPlugins;
 
+    /**
+     * Gets list of sorted plugins
+     *
+     * @return Hashmap with category key, and list of plugins of each category
+     */
     public HashMap<String, ArrayList<NormalAction>> getSortedPlugins()
     {
         return sortedPlugins;
     }
 
+    /**
+     * @return Gets actions element from the config.xml in plugins folder
+     */
     private Element getActionsElement()
     {
         return (Element) document.getElementsByTagName("actions").item(0);
     }
 
+    /**
+     * Saves ServerProperties of every plugin in config.xml in plugins folder
+     *
+     * @throws MinorException Thrown when failed to save settings
+     */
     public void saveServerSettings() throws MinorException 
     {
         XMLConfigHelper.removeChilds(getActionsElement());
@@ -450,6 +496,10 @@ public class NormalActionPlugins
 
     private PropertySaver propertySaver = null;
 
+    /**
+     * Set PropertySaver class
+     * @param propertySaver instance of PropertySaver
+     */
     public void setPropertySaver(PropertySaver propertySaver)
     {
         this.propertySaver = propertySaver;
@@ -457,17 +507,29 @@ public class NormalActionPlugins
 
     private ServerConnection serverConnection = null;
 
+    /**
+     * Set setServerConnection class
+     * @param serverConnection instance of ServerConnection
+     */
     public void setServerConnection(ServerConnection serverConnection)
     {
         this.serverConnection = serverConnection;
     }
 
-
+    /**
+     * Get plugin from index from list
+     *
+     * @param index of plugin
+     * @return found plugin
+     */
     public NormalAction getActionFromIndex(int index)
     {
         return normalPlugins.get(index);
     }
 
+    /**
+     * Calls onShutDown method in every plugin
+     */
     public void shutDownActions()
     {
         if(normalPlugins != null)
@@ -488,6 +550,10 @@ public class NormalActionPlugins
         }
     }
 
+    /**
+     * Saves all Server Properties of each Plugin in config.xml in Plugins folder
+     * @throws MinorException thrown when failed to save
+     */
     public void save() throws MinorException
     {
         try
