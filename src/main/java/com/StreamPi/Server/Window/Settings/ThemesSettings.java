@@ -12,6 +12,8 @@ import com.StreamPi.ThemeAPI.Theme;
 import com.StreamPi.ThemeAPI.Themes;
 import com.StreamPi.Util.Exception.MinorException;
 import com.StreamPi.Util.Exception.SevereException;
+import com.StreamPi.Util.FormHelper.SpaceFiller;
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
@@ -21,6 +23,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +36,11 @@ public class ThemesSettings extends VBox
     private Controller controller;
 
     private Logger logger;
+    private HostServices hostServices;
 
-    public ThemesSettings()
+    public ThemesSettings(HostServices hostServices)
     {
-        
+        this.hostServices = hostServices;
         getStyleClass().add("themes_settings");
         logger = Logger.getLogger(ThemesSettings.class.getName());
 
@@ -95,8 +99,6 @@ public class ThemesSettings extends VBox
         {
             Theme theme = themes.getThemeList().get(i);
 
-            VBox vBox = new VBox();
-            vBox.setSpacing(5.0);
 
             Label shortNameLabel = new Label(theme.getShortName());
             shortNameLabel.getStyleClass().add("settings_themes_each_theme_heading");
@@ -104,6 +106,22 @@ public class ThemesSettings extends VBox
             Label authorLabel = new Label(theme.getAuthor());
 
             Label fullNameLabel = new Label(theme.getFullName());
+
+
+            HBox topRowHBox = new HBox(shortNameLabel);
+
+            if(theme.getWebsite() != null)
+            {
+                Button helpButton = new Button();
+                FontIcon questionIcon = new FontIcon("fas-question");
+                questionIcon.getStyleClass().add("settings_themes_theme_help_icon");
+                helpButton.setGraphic(questionIcon);
+                helpButton.setOnAction(event -> hostServices.showDocument(theme.getWebsite()));
+
+                topRowHBox.getChildren().addAll(new SpaceFiller(SpaceFiller.FillerType.HBox), helpButton);
+            }
+
+
 
             Label versionLabel = new Label("Version : "+theme.getVersion().getText());
 
@@ -166,7 +184,8 @@ public class ThemesSettings extends VBox
 
             hBox.setAlignment(Pos.TOP_RIGHT);
 
-            vBox.getChildren().addAll(shortNameLabel, authorLabel, versionLabel, fullNameLabel, hBox, region1);
+            VBox vBox = new VBox(topRowHBox, authorLabel, versionLabel, fullNameLabel, hBox, region1);
+            vBox.setSpacing(5.0);
 
 
             vBox.getStyleClass().add("settings_themes_each_theme");

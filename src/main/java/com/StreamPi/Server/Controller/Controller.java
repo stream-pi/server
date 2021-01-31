@@ -53,7 +53,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     {
         try
         {
-            getStage().setTitle("StreamPi Server - "+InetAddress.getLocalHost().getCanonicalHostName()+":"+Config.getInstance().getPort());                   //Sets title
+            getStage().setTitle("Stream-Pi Server - "+InetAddress.getLocalHost().getCanonicalHostName()+":"+Config.getInstance().getPort());                   //Sets title
             getStage().setOnCloseRequest(this::onCloseRequest);
         }
         catch (UnknownHostException e)
@@ -118,7 +118,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
                 Scene s = new Scene(new FirstTimeUse(this, this), 512, 300);       
                 stage.setResizable(false);
                 stage.setScene(s); 
-                stage.setTitle("StreamPi Server Setup");
+                stage.setTitle("Stream-Pi Server Setup");
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.setOnCloseRequest(event->Platform.exit());
                 stage.show();    
@@ -447,7 +447,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
 
         TrayIcon trayIcon = new TrayIcon(
             Toolkit.getDefaultToolkit().getImage(Main.class.getResource("app_icon.png")),
-            "StreamPi Server",
+            "Stream-Pi Server",
             popup
         );
 

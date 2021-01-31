@@ -637,7 +637,7 @@ public class ClientConnection extends Thread{
             {
                 action.setVersion(new Version(sep[4]));
 
-                action.setRepo(actionCopy.getRepo());
+                //action.setHelpLink(actionCopy.getHelpLink());
 
                 if(actionCopy.getVersion().getMajor() != action.getVersion().getMajor())
                 {

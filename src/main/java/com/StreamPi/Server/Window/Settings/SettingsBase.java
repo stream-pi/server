@@ -13,7 +13,6 @@ import javafx.scene.layout.VBox;
 
 public class SettingsBase extends VBox {
 
-
     private TabPane tabPane;
 
     private GeneralSettings generalSettings;
@@ -45,7 +44,7 @@ public class SettingsBase extends VBox {
         pluginsSettingsTab.setContent(pluginsSettings);
 
         Tab themesSettingsTab = new Tab("Themes");
-        themesSettings = new ThemesSettings();
+        themesSettings = new ThemesSettings(hostServices);
         themesSettingsTab.setContent(themesSettings);
 
         Tab clientsSettingsTab = new Tab("Clients");

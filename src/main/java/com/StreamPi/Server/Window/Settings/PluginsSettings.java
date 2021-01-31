@@ -205,22 +205,18 @@ public class PluginsSettings extends VBox {
             Label headingLabel = new Label(action.getName());
             headingLabel.getStyleClass().add("settings_plugins_each_action_heading");
 
-            HBox headerHBox = new HBox(headingLabel, new SpaceFiller(FillerType.HBox));
+            HBox headerHBox = new HBox(headingLabel);
 
 
-            if (action.getRepo()!=null)
+            if (action.getHelpLink()!=null)
             {
                 Button helpButton = new Button();
                 FontIcon questionIcon = new FontIcon("fas-question");
-                questionIcon.getStyleClass().add("dashboard_plugins_pane_action_help_icon");
+                questionIcon.getStyleClass().add("settings_plugins_plugin_help_icon");
                 helpButton.setGraphic(questionIcon);
+                helpButton.setOnAction(event -> hostServices.showDocument(action.getHelpLink()));
 
-                
-                helpButton.setOnAction(event -> {
-                    hostServices.showDocument(action.getRepo());
-                });
-
-                headerHBox.getChildren().add(helpButton);
+                headerHBox.getChildren().addAll(new SpaceFiller(FillerType.HBox),helpButton);
             }
 
 

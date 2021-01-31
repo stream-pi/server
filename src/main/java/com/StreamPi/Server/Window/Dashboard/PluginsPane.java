@@ -145,15 +145,12 @@ public class PluginsPane extends VBox {
 
                 HBox.setHgrow(eachNormalActionPluginButton, Priority.ALWAYS);
 
-                if(eachAction.getRepo() != null) {
+                if(eachAction.getHelpLink() != null) {
                     Button helpButton = new Button();
                     FontIcon questionIcon = new FontIcon("fas-question");
                     questionIcon.getStyleClass().add("dashboard_plugins_pane_action_help_icon");
                     helpButton.setGraphic(questionIcon);
-    
-                    helpButton.setOnAction(event -> {
-                        hostServices.showDocument(eachAction.getRepo());
-                    });
+                    helpButton.setOnAction(event -> hostServices.showDocument(eachAction.getHelpLink()));
 
                     hBox.getChildren().add(helpButton);
                 }
