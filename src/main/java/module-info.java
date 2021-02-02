@@ -1,10 +1,10 @@
-module com.StreamPi.Server {
-    uses com.StreamPi.ActionAPI.Action.Action;
-    uses com.StreamPi.ActionAPI.NormalAction.NormalAction;
+module com.stream_pi.server {
+    uses com.stream_pi.actionapi.action.Action;
+    uses com.stream_pi.actionapi.normalaction.NormalAction;
 
-    requires com.StreamPi.ActionAPI;
-    requires com.StreamPi.Util;
-    requires com.StreamPi.ThemeAPI;
+    requires com.stream_pi.actionapi;
+    requires com.stream_pi.util;
+    requires com.stream_pi.themeapi;
 
     requires org.kordamp.ikonli.javafx;
 
@@ -21,5 +21,5 @@ module com.StreamPi.Server {
 
     requires org.json;
 
-    exports com.StreamPi.Server;
+    exports com.stream_pi.server;
 }

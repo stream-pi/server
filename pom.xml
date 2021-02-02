@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.StreamPi</groupId>
-    <artifactId>Server</artifactId>
+    <groupId>com.stream_pi</groupId>
+    <artifactId>server</artifactId>
     <version>1.0.0</version>
 
     <properties>
@@ -33,7 +33,7 @@
         <IkonliFA5PackVersion>11.5.0</IkonliFA5PackVersion>
 
 
-        <MainClassName>com.StreamPi.Server.Main</MainClassName>
+        <MainClassName>com.stream_pi.server.Main</MainClassName>
     </properties>
 
 
@@ -69,20 +69,20 @@
         </dependency>
 
         <dependency>
-            <groupId>com.StreamPi</groupId>
-            <artifactId>ActionAPI</artifactId>
+            <groupId>com.stream_pi</groupId>
+            <artifactId>action_api</artifactId>
             <version>${ActionAPIVersion}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.StreamPi</groupId>
-            <artifactId>Util</artifactId>
+            <groupId>com.stream_pi</groupId>
+            <artifactId>util</artifactId>
             <version>${UtilVersion}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.StreamPi</groupId>
-            <artifactId>ThemeAPI</artifactId>
+            <groupId>com.stream_pi</groupId>
+            <artifactId>themeapi</artifactId>
             <version>${ThemeAPIVersion}</version>
         </dependency>
 
