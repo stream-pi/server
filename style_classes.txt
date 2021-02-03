@@ -1,0 +1,90 @@
+dashboard
+    Action Detail Pane - action_details_pane
+        Heading HBox - action_details_pane_heading_box
+            Heading Label - action_details_pane_heading_label
+        Scroll Pane - action_details_pane_scroll_pane
+            VBox (Content Pane) - action_details_pane_vbox
+        Bottom Button Bar - action_details_pane_button_bar
+
+    Action Grid Pane (Scroll Pane) - action_grid_pane_parent
+        Main Grid Pane - action_grid_pane
+
+        Action Box - action_box
+            Is Icon Present ?
+                yes : action_box_icon_present
+                no : action_box_icon_not_present
+            Is Action Valid (is plugin by module name found) ?
+                yes : action_box_valid
+                no : action_box_invalid
+
+            Display Text Label - action_box_display_text_label
+
+    Client & Profile Selector Pane - client_and_profile_selector_pane
+        Stack VBox - client_and_profile_selector_pane_stack
+            "No Clients Connected" Label - client_and_profile_selector_pane_no_clients_connected_label
+            Client Combo Box - client_and_profile_selector_pane_client_selector_combo_box
+            Profile Combo Box - client_and_profile_selector_pane_profile_selector_combo_box
+
+    Plugins Pane - plugins_pane
+        "Plugins" Label - plugins_pane_top_label
+
+        Accordion - plugins_pane_accordion
+            Category - plugins_pane_each_plugin_category_titled_pane
+                VBox - plugins_pane_each_plugin_box_parent
+                    HBox - plugins_pane_each_plugin_box
+                        Each Plugin Button - plugins_pane_each_plugin_button
+                            Icon - plugins_pane_each_plugin_button_icon
+                            OR
+                            ImageView (NOT RECOMMENDED FOR USE) - plugins_pane_each_plugin_button_imageview
+
+        HBox - plugins_pane_settings_button
+            Settings Button - plugins_pane_settings_button
+
+settings
+    General - general_settings
+    Plugins - plugins_settings
+        Scroll Pane (CENTER) - plugins_settings_scroll_pane
+            VBox - plugins_settings_vbox
+                "No Plugins Present Label" - plugins_pane_no_plugins_installed_label
+
+                Each Plugin Box - plugins_settings_each_plugin_box
+                    Header HBox - plugins_settings_each_plugin_header
+                        Heading - plugins_settings_each_plugin_heading_label
+                        Help Button - plugins_settings_each_plugin_help_button
+                            Help Icon - plugins_settings_each_plugin_help_icon
+
+                    Author Label - plugins_settings_each_plugin_author_label
+                    Module Label - plugins_settings_each_plugin_module_label
+                    Version Label - plugins_settings_each_plugin_version_label
+
+                    Server Properties Box - plugins_settings_each_plugin_server_properties_box
+
+                    buttonBarHBox - plugins_settings_each_plugin_button_bar
+
+    Themes - themes_settings
+        Scroll Pane (CENTER) - themes_settings_scroll_pane
+            VBox - themes_settings_vbox
+                Each Theme Box - theme_settings_each_theme_box
+                    Heading HBox - themes_settings_each_theme_header
+                        Heading Label - themes_settings_each_theme_heading
+                        Help Button - themes_settings_each_theme_help_button
+                            Help Icon - themes_settings_each_theme_help_icon
+
+                    Author Label - themes_settings_each_theme_author_label
+                    Full Name Label - themes_settings_each_theme_full_name_label
+                    Version Label - themes_settings_each_theme_version_label
+
+                    Toggle Button HBox - themes_settings_each_theme_toggle_button_parent
+                        Toggle Button - themes_settings_each_theme_toggle_button
+
+
+
+    Client - clients_settings
+        Scroll Pane (CENTER) - clients_settings_scroll_pane
+            VBox - clients_settings_vbox
+                Each Client Box - clients_settings_each_client_box
+
+    About - about
+        License Label - about_license_label
+
+

@@ -35,7 +35,7 @@ public class DashboardBase extends HBox implements DashboardInterface {
 
         setPluginsPane(new PluginsPane(hostServices));
 
-        setClientDetailsPane(new ClientDetailsPane(this));
+        setClientDetailsPane(new ClientAndProfileSelectorPane(this));
 
         setActionGridPane(new ActionGridPane(exceptionAndAlertHandler));
 
@@ -57,15 +57,15 @@ public class DashboardBase extends HBox implements DashboardInterface {
         return pluginsPane;
     }
 
-    private ClientDetailsPane clientDetailsPane;
-    private void setClientDetailsPane(ClientDetailsPane clientDetailsPane)
+    private ClientAndProfileSelectorPane clientAndProfileSelectorPane;
+    private void setClientDetailsPane(ClientAndProfileSelectorPane clientAndProfileSelectorPane)
     {
-        this.clientDetailsPane = clientDetailsPane;
-        leftPane.getChildren().add(this.clientDetailsPane);
+        this.clientAndProfileSelectorPane = clientAndProfileSelectorPane;
+        leftPane.getChildren().add(this.clientAndProfileSelectorPane);
     }
-    public ClientDetailsPane getClientDetailsPane()
+    public ClientAndProfileSelectorPane getClientDetailsPane()
     {
-        return clientDetailsPane;
+        return clientAndProfileSelectorPane;
     }
 
     private ActionGridPane actionGridPane;

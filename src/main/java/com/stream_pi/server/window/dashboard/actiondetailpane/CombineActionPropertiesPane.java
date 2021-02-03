@@ -86,10 +86,7 @@ public class CombineActionPropertiesPane extends VBox {
             upButton.setOnAction(this::onUpButtonClicked);
 
             downButton.setOnAction(this::onDownButtonClicked);
-
-            System.out.println("67878678678678");
             getChildren().add(actionHBox);
-            System.out.println("9mhmmn");
             i++;
         }
     }
@@ -140,7 +137,6 @@ public class CombineActionPropertiesPane extends VBox {
 
             if(currentIndex < getChildren().size() - 1)
             {
-
                 Property current = combineAction.getClientProperties().getSingleProperty(currentIndex+"");
                 Property belowOne = combineAction.getClientProperties().getSingleProperty((currentIndex+1)+"");
 

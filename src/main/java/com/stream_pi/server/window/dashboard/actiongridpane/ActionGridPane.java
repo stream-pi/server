@@ -28,7 +28,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     {
         logger = Logger.getLogger(ActionGridPane.class.getName());
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
-        getStyleClass().add("action_grid_pane_scroll_pane");
+        getStyleClass().add("action_grid_pane_parent");
 
         VBox.setVgrow(this, Priority.ALWAYS);
 

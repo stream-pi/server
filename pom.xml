@@ -14,7 +14,7 @@
         <maven.compiler.target>11</maven.compiler.target>
 
 
-        <client.plugin.version>0.1.35</client.plugin.version>
+        <client.plugin.version>0.1.36</client.plugin.version>
 
         <JavaFXVersion>16-ea+6</JavaFXVersion>
 
@@ -133,13 +133,16 @@
                 <artifactId>client-maven-plugin</artifactId>
                 <version>${client.plugin.version}</version>
                 <configuration>
+                    <nativeImageArgs>
+                        <list>--initialize-at-build-time=com.sun.org.apache.xml.internal.serializer.ToXMLStream</list>
+                        <!--list>-Dsvm.targetName=android</list-->
+                    </nativeImageArgs>
                     <bundlesList>
                         <list>com.sun.org.apache.xerces.internal.impl.msg.XMLMessages</list>
                     </bundlesList>
                     <reflectionList>
                         <list>java.util.logging.FileHandler</list>
                     </reflectionList>
-                    <nativeImageArgs>--report-unsupported-elements-at-runtime,--initialize-at-build-time=com.sun.org.apache.xml.internal.serializer.ToXMLStream,-Dsvm.targetname=android,--enable-https,--enable-http,-H:Log=registerResource</nativeImageArgs>
                     <mainClass>${MainClassName}</mainClass>
                 </configuration>
             </plugin>

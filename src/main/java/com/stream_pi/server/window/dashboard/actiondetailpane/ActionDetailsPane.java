@@ -74,8 +74,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         setSpacing(10.0);
 
-        // VBox.setVgrow(this, Priority.SOMETIMES);
-
         clientPropertiesVBox = new VBox();
         clientPropertiesVBox.setSpacing(10.0);
 
@@ -86,8 +84,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         vbox.setSpacing(10.0);
 
         getStyleClass().add("action_details_pane");
-        // setPadding(new Insets(5,50,5,50));
-        // setMinHeight(245);
 
         scrollPane = new ScrollPane();
         VBox.setMargin(scrollPane, new Insets(0, 0, 0, 10));
@@ -135,17 +131,17 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         });
 
         buttonBar = new HBox(openFolderButton, returnButtonForCombineActionChild, saveButton, deleteButton);
+        buttonBar.getStyleClass().add("action_details_pane_button_bar");
         buttonBar.setPadding(new Insets(10, 10, 10, 0));
         buttonBar.setAlignment(Pos.CENTER_RIGHT);
         buttonBar.setVisible(false);
         buttonBar.setSpacing(10.0);
 
         actionHeadingLabel = new Label();
-
-        actionHeadingLabel.getStyleClass().add("action_details_pane_action_heading_label");
+        actionHeadingLabel.getStyleClass().add("action_details_pane_heading_label");
 
         HBox headingHBox = new HBox(actionHeadingLabel);
-
+        headingHBox.getStyleClass().add("action_details_pane_heading_box");
         headingHBox.setPadding(new Insets(5, 10, 0, 10));
 
         getChildren().addAll(headingHBox, scrollPane, buttonBar);
@@ -346,9 +342,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         this.action = action;
         this.actionBox = actionBox;
 
-        System.out.println(action.getActionType());
-
-
         logger.info("action Display text : "+action.getDisplayText());
         clear();
 
@@ -391,14 +384,10 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     public void renderActionProperties() throws MinorException
     {
 
-        if(action.getLocation().getCol() == -1) //Combine Child action
-            isCombineChild = true;
-        else
-            isCombineChild = false;           
+        //Combine Child action
+        isCombineChild = action.getLocation().getCol() == -1;
 
         displayNameTextField.setText(action.getDisplayText());
-
-        System.out.println(action.getDisplayText()+"@@@@::::"+isCombineChild);
 
         if(isCombineChild)
         {
@@ -485,8 +474,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     public void renderCombineActionProperties()
     {
-        try {
-            logger.info("@@@@@ : "+action.getClientProperties().getSize());
+        try
+        {
             combineActionPropertiesPane = new CombineActionPropertiesPane(getActionAsCombineAction(action),
                     getClientProfile(),
                     this

@@ -9,6 +9,7 @@ import com.stream_pi.actionapi.otheractions.CombineAction;
 import com.stream_pi.actionapi.otheractions.FolderAction;
 import com.stream_pi.server.action.NormalActionPlugins;
 
+import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.HostServices;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -35,8 +36,6 @@ public class PluginsPane extends VBox {
         getStyleClass().add("plugins_pane");
         setPadding(new Insets(10));
 
-        setSpacing(10.0);
-
         this.hostServices = hostServices;
 
         initUI();
@@ -47,21 +46,23 @@ public class PluginsPane extends VBox {
     public void initUI()
     {
         pluginsAccordion = new Accordion();
+        pluginsAccordion.getStyleClass().add("plugins_pane_accordion");
         pluginsAccordion.setCache(true);
-
-        Region r = new Region();
-        VBox.setVgrow(r, Priority.ALWAYS);
-
         settingsButton = new Button();
+        settingsButton.getStyleClass().add("plugins_pane_settings_button");
 
         FontIcon cog = new FontIcon("fas-cog");
 
         settingsButton.setGraphic(cog);
 
         HBox settingsHBox = new HBox(settingsButton);
+        settingsHBox.getStyleClass().add("plugins_pane_settings_button_parent");
         settingsHBox.setAlignment(Pos.CENTER_RIGHT);
 
-        getChildren().addAll(new Label("Plugins"), pluginsAccordion, r, settingsHBox);
+        Label pluginsLabel = new Label("Plugins");
+        pluginsLabel.getStyleClass().add("plugins_pane_top_label");
+
+        getChildren().addAll(pluginsLabel, pluginsAccordion, new SpaceFiller(SpaceFiller.FillerType.VBox), settingsHBox);
     }
 
     public Button getSettingsButton()
@@ -81,16 +82,17 @@ public class PluginsPane extends VBox {
         for(String eachCategory : sortedPlugins.keySet())
         {
             VBox vBox = new VBox();
-            vBox.setSpacing(5);
-
+            vBox.getStyleClass().add("plugins_pane_each_plugin_box_parent");
 
             TitledPane pane = new TitledPane(eachCategory, vBox);
+            pane.getStyleClass().add("plugins_pane_each_plugin_category_titled_pane");
             for(NormalAction eachAction : sortedPlugins.get(eachCategory))
             {
                 if(!eachAction.isVisibleInPluginsPane())
                     continue;
 
                 Button eachNormalActionPluginButton = new Button();
+                eachNormalActionPluginButton.getStyleClass().add("plugins_pane_each_plugin_button");
                 HBox.setHgrow(eachNormalActionPluginButton, Priority.ALWAYS);
                 eachNormalActionPluginButton.setMaxWidth(Double.MAX_VALUE);
                 eachNormalActionPluginButton.setAlignment(Pos.CENTER_LEFT);
@@ -100,7 +102,7 @@ public class PluginsPane extends VBox {
                 if(graphic == null)
                 {
                     FontIcon cogs = new FontIcon("fas-cogs");
-                    cogs.getStyleClass().add("dashboard_plugins_pane_action_icon");
+                    cogs.getStyleClass().add("plugins_pane_each_plugin_button_icon");
                     eachNormalActionPluginButton.setGraphic(cogs);
                 }
                 else
@@ -108,12 +110,13 @@ public class PluginsPane extends VBox {
                     if(graphic instanceof FontIcon)
                     {
                         FontIcon fi = (FontIcon) graphic;
+                        fi.getStyleClass().add("plugins_pane_each_plugin_button_icon");
                         eachNormalActionPluginButton.setGraphic(fi);
                     }
                     else if(graphic instanceof ImageView)
                     {
                         ImageView iv = (ImageView) graphic;
-                        iv.getStyleClass().add("dashboard_plugins_pane_action_icon_imageview");
+                        iv.getStyleClass().add("plugins_pane_each_plugin_button_imageview");
                         iv.setPreserveRatio(false);
                         eachNormalActionPluginButton.setGraphic(iv);
                     }
@@ -136,7 +139,7 @@ public class PluginsPane extends VBox {
             
 
                 HBox hBox = new HBox(eachNormalActionPluginButton);
-                hBox.setSpacing(5.0);
+                hBox.getStyleClass().add("plugins_pane_each_plugin_box");
                 hBox.setAlignment(Pos.TOP_LEFT);
 
                 HBox.setHgrow(eachNormalActionPluginButton, Priority.ALWAYS);
@@ -204,8 +207,10 @@ public class PluginsPane extends VBox {
     public void loadOtherActions()
     {
         VBox vBox = new VBox();
+        vBox.getStyleClass().add("plugins_pane_each_plugin_box_parent");
 
         Button folderActionButton = new Button("Folder");
+        folderActionButton.getStyleClass().add("plugins_pane_each_plugin_button");
         folderActionButton.setMaxWidth(Double.MAX_VALUE);
         folderActionButton.setAlignment(Pos.CENTER_LEFT);
         FontIcon folder = new FontIcon("fas-folder");
@@ -227,6 +232,7 @@ public class PluginsPane extends VBox {
 
 
         Button combineActionButton = new Button("Combine");
+        combineActionButton.getStyleClass().add("plugins_pane_each_plugin_button");
         combineActionButton.setMaxWidth(Double.MAX_VALUE);
         combineActionButton.setAlignment(Pos.CENTER_LEFT);
         FontIcon list = new FontIcon("fas-list");
@@ -245,13 +251,18 @@ public class PluginsPane extends VBox {
         });
 
 
+        HBox.setHgrow(folderActionButton, Priority.ALWAYS);
+        HBox h1 = new HBox(folderActionButton);
+        h1.getStyleClass().add("plugins_pane_each_plugin_box");
 
+        HBox.setHgrow(combineActionButton, Priority.ALWAYS);
+        HBox h2 = new HBox(combineActionButton);
+        h2.getStyleClass().add("plugins_pane_each_plugin_box");
 
-
-        vBox.getChildren().addAll(folderActionButton, combineActionButton);
-        vBox.setSpacing(5);
+        vBox.getChildren().addAll(h1, h2);
 
         TitledPane pane = new TitledPane("StreamPi", vBox);
+        pane.getStyleClass().add("plugins_pane_each_plugin_category_titled_pane");
 
         pluginsAccordion.getPanes().add(pane);
         pluginsAccordion.setCache(true);

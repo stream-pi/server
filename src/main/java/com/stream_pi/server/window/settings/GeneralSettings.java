@@ -34,7 +34,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.logging.Logger;
 
-public class GeneralSettings extends ScrollPane {
+public class GeneralSettings extends VBox {
 
     private final TextField serverNameTextField;
     private final TextField portTextField;
@@ -60,15 +60,11 @@ public class GeneralSettings extends ScrollPane {
     {
         this.hostServices = hostServices;
 
-        getStyleClass().add("general_settings_scroll_pane");
-
 
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
         this.serverListener = serverListener;
 
         logger = Logger.getLogger(GeneralSettings.class.getName());
-
-        setHbarPolicy(ScrollBarPolicy.NEVER);
 
         serverNameTextField = new TextField();
 
@@ -87,13 +83,13 @@ public class GeneralSettings extends ScrollPane {
         checkForUpdatesButton = new Button("Check for updates");
         checkForUpdatesButton.setOnAction(event->checkForUpdates());
 
+        getStyleClass().add("general_settings");
 
-        VBox vBox = new VBox();
-        vBox.prefWidthProperty().bind(widthProperty());
-        vBox.setAlignment(Pos.CENTER);
-        vBox.setSpacing(5);
+        prefWidthProperty().bind(widthProperty());
+        setAlignment(Pos.CENTER);
+        setSpacing(5);
 
-        vBox.getChildren().addAll(
+        getChildren().addAll(
                 getUIInputBox("Server Name", serverNameTextField),
                 getUIInputBox("Port", portTextField),
                 getUIInputBox("action Grid Pane action Box Size", actionGridPaneActionBoxSize),
@@ -112,13 +108,11 @@ public class GeneralSettings extends ScrollPane {
         saveButton = new Button("Save");
         saveButton.setOnAction(event->save());
 
-        vBox.getChildren().addAll(toggleButtons, checkForUpdatesButton, saveButton);
+        getChildren().addAll(toggleButtons, checkForUpdatesButton, saveButton);
 
-        vBox.setPadding(new Insets(10));
+        setPadding(new Insets(10));
 
 
-        vBox.getStyleClass().add("general_settings");
-        setContent(vBox);
     }
 
     private HBox getUIInputBoxWithDirectoryChooser(String labelText, TextField textField)

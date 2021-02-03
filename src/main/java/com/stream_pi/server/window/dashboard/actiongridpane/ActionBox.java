@@ -64,7 +64,6 @@ public class ActionBox extends StackPane{
 
     public void baseInit()
     {
-
         displayTextLabel = new Label();
         displayTextLabel.setWrapText(true);
         displayTextLabel.setTextAlignment(TextAlignment.CENTER);

@@ -46,12 +46,10 @@ public class ClientsSettings extends VBox {
 
         clientSettingsVBoxArrayList = new ArrayList<>();
 
-        setPadding(new Insets(10.0));
-
         logger = Logger.getLogger(ClientsSettings.class.getName());
 
         clientsSettingsVBox = new VBox();
-        clientsSettingsVBox.setSpacing(20.0);
+        clientsSettingsVBox.getStyleClass().add("clients_settings_vbox");
         clientsSettingsVBox.setAlignment(Pos.TOP_CENTER);
 
         setAlignment(Pos.TOP_CENTER);
@@ -329,6 +327,8 @@ public class ClientsSettings extends VBox {
             this.platform = connection.getClient().getPlatform();
 
             clientProfileVBoxes = new ArrayList<>();
+
+            getStyleClass().add("clients_settings_each_client_box");
 
             initUI();
             loadValues();

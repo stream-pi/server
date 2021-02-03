@@ -50,14 +50,11 @@ public class PluginsSettings extends VBox {
         pluginProperties = new ArrayList<>();
         logger = Logger.getLogger(PluginsSettings.class.getName());
 
-        setPadding(new Insets(10));
-
         pluginsSettingsVBox = new VBox();
-        pluginsSettingsVBox.setSpacing(10.0);
+        pluginsSettingsVBox.getStyleClass().add("plugins_settings_vbox");
         pluginsSettingsVBox.setAlignment(Pos.TOP_CENTER);
 
         ScrollPane scrollPane = new ScrollPane();
-        
         scrollPane.getStyleClass().add("plugins_settings_scroll_pane");
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.maxWidthProperty().bind(widthProperty().multiply(0.8));
@@ -176,14 +173,14 @@ public class PluginsSettings extends VBox {
 
         List<NormalAction> actions = NormalActionPlugins.getInstance().getPlugins();
 
-        System.out.println("asdasdasdasd"+actions.size());
-
         Platform.runLater(()-> pluginsSettingsVBox.getChildren().clear());
 
         if(actions.size() == 0)
         {
             Platform.runLater(()->{
-                pluginsSettingsVBox.getChildren().add(new Label("No Plugins Installed."));
+                Label l = new Label("No Plugins Installed.");
+                l.getStyleClass().add("plugins_pane_no_plugins_installed_label");
+                pluginsSettingsVBox.getChildren().add(l);
                 saveButton.setVisible(false);
             });
             return;
@@ -203,16 +200,18 @@ public class PluginsSettings extends VBox {
 
 
             Label headingLabel = new Label(action.getName());
-            headingLabel.getStyleClass().add("settings_plugins_each_action_heading");
+            headingLabel.getStyleClass().add("plugins_settings_each_plugin_heading_label");
 
             HBox headerHBox = new HBox(headingLabel);
+            headerHBox.getStyleClass().add("plugins_settings_each_plugin_header");
 
 
             if (action.getHelpLink()!=null)
             {
                 Button helpButton = new Button();
+                helpButton.getStyleClass().add("plugins_settings_each_plugin_help_button");
                 FontIcon questionIcon = new FontIcon("fas-question");
-                questionIcon.getStyleClass().add("settings_plugins_plugin_help_icon");
+                questionIcon.getStyleClass().add("plugins_settings_each_plugin_help_icon");
                 helpButton.setGraphic(questionIcon);
                 helpButton.setOnAction(event -> hostServices.showDocument(action.getHelpLink()));
 
@@ -222,12 +221,16 @@ public class PluginsSettings extends VBox {
 
 
             Label authorLabel = new Label(action.getAuthor());
+            authorLabel.getStyleClass().add("plugins_settings_each_plugin_author_label");
 
             Label moduleLabel = new Label(action.getModuleName());
+            moduleLabel.getStyleClass().add("plugins_settings_each_plugin_module_label");
 
             Label versionLabel = new Label("Version : "+action.getVersion().getText());
+            versionLabel.getStyleClass().add("plugins_settings_each_plugin_version_label");
 
             VBox serverPropertiesVBox = new VBox();
+            serverPropertiesVBox.getStyleClass().add("plugins_settings_each_plugin_server_properties_box");
             serverPropertiesVBox.setSpacing(10.0);
 
             List<Property> serverProperties = action.getServerProperties().get();
@@ -332,22 +335,18 @@ public class PluginsSettings extends VBox {
 
 
 
-            Region region1 = new Region();
-            region1.setPrefHeight(5);
-
-
             Platform.runLater(()->{
                 VBox vBox = new VBox();
+                vBox.getStyleClass().add("plugins_settings_each_plugin_box");
                 vBox.setSpacing(5.0);
                 vBox.getChildren().addAll(headerHBox, authorLabel, moduleLabel, versionLabel, serverPropertiesVBox);
 
                 if(action.getButtonBar()!=null)
-                    vBox.getChildren().add(new HBox(new SpaceFiller(SpaceFiller.FillerType.HBox), action.getButtonBar()));
-
-                vBox.getChildren().add(region1);
-                //vBox.setId(i+"");
-
-                vBox.getStyleClass().add("settings_plugins_each_action");
+                {
+                    HBox buttonBarHBox = new HBox(new SpaceFiller(SpaceFiller.FillerType.HBox), action.getButtonBar());
+                    buttonBarHBox.getStyleClass().add("plugins_settings_each_plugin_button_bar");
+                    vBox.getChildren().add(buttonBarHBox);
+                }
 
                 pluginsSettingsVBox.getChildren().add(vBox);
 

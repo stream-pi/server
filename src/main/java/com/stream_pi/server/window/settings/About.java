@@ -33,7 +33,7 @@ public class About extends VBox{
         appIconImageView.setFitWidth(182);
 
         Label licenseLabel = new Label("License");
-        licenseLabel.getStyleClass().add("settings_about_license_label");
+        licenseLabel.getStyleClass().add("about_license_label");
 
         VBox.setMargin(licenseLabel, new Insets(20, 0 , 10 ,0));
 
@@ -47,29 +47,19 @@ public class About extends VBox{
         HBox links = new HBox();
 
         Hyperlink github = new Hyperlink("GitHub");
-        github.setOnAction(event -> {
-            openWebpage("https://github.com/Stream-Pi");
-        });
+        github.setOnAction(event -> openWebpage("https://github.com/Stream-Pi"));
 
         Hyperlink discord = new Hyperlink("Discord");
-        discord.setOnAction(event -> {
-            openWebpage("https://discord.gg/BExqGmk");
-        });
+        discord.setOnAction(event -> openWebpage("https://discord.gg/BExqGmk"));
 
         Hyperlink website = new Hyperlink("Website");
-        website.setOnAction(event -> {
-            openWebpage("https://stream-pi.com");
-        });
+        website.setOnAction(event -> openWebpage("https://stream-pi.com"));
 
         Hyperlink twitter = new Hyperlink("Twitter");
-        twitter.setOnAction(event -> {
-            openWebpage("https://twitter.com/Stream_Pi");
-        });
+        twitter.setOnAction(event -> openWebpage("https://twitter.com/Stream_Pi"));
 
         Hyperlink matrix = new Hyperlink("Matrix");
-        matrix.setOnAction(event -> {
-            openWebpage("https://matrix.to/#/#stream-pi_general:matrix.org");
-        });
+        matrix.setOnAction(event -> openWebpage("https://matrix.to/#/#stream-pi_general:matrix.org"));
 
 
         links.setSpacing(30);

@@ -38,6 +38,7 @@ public class ThemesSettings extends VBox
         setPadding(new Insets(10));
 
         themesSettingsVBox = new VBox();
+        themesSettingsVBox.getStyleClass().add("themes_settings_vbox");
         themesSettingsVBox.setSpacing(10.0);
         themesSettingsVBox.setAlignment(Pos.TOP_CENTER);
 
@@ -91,31 +92,34 @@ public class ThemesSettings extends VBox
             Theme theme = themes.getThemeList().get(i);
 
             Label shortNameLabel = new Label(theme.getShortName());
-            shortNameLabel.getStyleClass().add("settings_themes_each_theme_heading");
+            shortNameLabel.getStyleClass().add("themes_settings_each_theme_heading");
 
             Label authorLabel = new Label(theme.getAuthor());
+            authorLabel.getStyleClass().add("themes_settings_each_theme_author_label");
 
             Label fullNameLabel = new Label(theme.getFullName());
-
+            fullNameLabel.getStyleClass().add("themes_settings_each_theme_full_name_label");
 
             HBox topRowHBox = new HBox(shortNameLabel);
+            topRowHBox.getStyleClass().add("themes_settings_each_theme_header");
+
+            Label versionLabel = new Label("Version : "+theme.getVersion().getText());
+            versionLabel.getStyleClass().add("themes_settings_each_theme_version_label");
 
             if(theme.getWebsite() != null)
             {
                 Button helpButton = new Button();
+                helpButton.getStyleClass().add("themes_settings_each_theme_help_button");
                 FontIcon questionIcon = new FontIcon("fas-question");
-                questionIcon.getStyleClass().add("settings_themes_theme_help_icon");
+                questionIcon.getStyleClass().add("themes_settings_each_theme_help_icon");
                 helpButton.setGraphic(questionIcon);
                 helpButton.setOnAction(event -> hostServices.showDocument(theme.getWebsite()));
 
                 topRowHBox.getChildren().addAll(new SpaceFiller(SpaceFiller.FillerType.HBox), helpButton);
             }
 
-
-
-            Label versionLabel = new Label("Version : "+theme.getVersion().getText());
-
             ToggleButton toggleButton = new ToggleButton();
+            toggleButton.getStyleClass().add("themes_settings_each_theme_toggle_button");
 
             toggleButton.setSelected(theme.getFullName().equals(currentThemeFullName));
             toggleButton.setId(theme.getFullName());
@@ -168,17 +172,14 @@ public class ThemesSettings extends VBox
             });
 
             HBox hBox = new HBox(toggleButton);
-
-            Region region1 = new Region();
-            region1.setPrefHeight(5);
+            hBox.getStyleClass().add("themes_settings_each_theme_toggle_button_parent");
 
             hBox.setAlignment(Pos.TOP_RIGHT);
 
-            VBox vBox = new VBox(topRowHBox, authorLabel, versionLabel, fullNameLabel, hBox, region1);
-            vBox.setSpacing(5.0);
+            VBox vBox = new VBox(topRowHBox, authorLabel, fullNameLabel, versionLabel, hBox);
 
 
-            vBox.getStyleClass().add("settings_themes_each_theme");
+            vBox.getStyleClass().add("theme_settings_each_theme_box");
 
             Platform.runLater(()->themesSettingsVBox.getChildren().add(vBox));
 

@@ -13,16 +13,16 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
-public class ClientDetailsPane extends HBox {
+public class ClientAndProfileSelectorPane extends HBox {
 
     private DashboardInterface dashboard;
 
-    public ClientDetailsPane(DashboardInterface dashboard)
+    public ClientAndProfileSelectorPane(DashboardInterface dashboard)
     {
         this.dashboard = dashboard;
 
         VBox.setVgrow(this, Priority.NEVER);
-        getStyleClass().add("client_details_pane");
+        getStyleClass().add("client_and_profile_selector_pane");
         setPadding(new Insets(10));
         setMinHeight(90);
 
@@ -41,9 +41,11 @@ public class ClientDetailsPane extends HBox {
     public void initUI()
     {
         noClientsConnectedLabel = new Label("No Clients Connected");
+        noClientsConnectedLabel.getStyleClass().add("client_and_profile_selector_pane_no_clients_connected_label");
         noClientsConnectedLabel.managedProperty().bind(noClientsConnectedLabel.visibleProperty());
 
         clientsComboBox = new ComboBox<>();
+        clientsComboBox.getStyleClass().add("client_and_profile_selector_pane_client_selector_combo_box");
         clientsComboBox.setPromptText("Choose client");
 
         clientsComboBox.valueProperty().addListener((observableValue, oldVal, newVal) -> {
@@ -86,6 +88,7 @@ public class ClientDetailsPane extends HBox {
 
 
         clientProfilesComboBox = new ComboBox<>();
+        clientProfilesComboBox.getStyleClass().add("client_and_profile_selector_pane_profile_selector_combo_box");
         clientProfilesComboBox.setPromptText("Choose Profile");
         clientProfilesComboBox.valueProperty().addListener((observableValue, oldVal, newVal) -> {
             if(oldVal!=newVal && newVal!=null)
@@ -121,7 +124,7 @@ public class ClientDetailsPane extends HBox {
         clientProfilesComboBox.setButtonCell(clientProfilesComboBoxFactory.call(null));
 
         VBox stack = new VBox(noClientsConnectedLabel, clientsComboBox, clientProfilesComboBox);
-        stack.setSpacing(10);
+        stack.getStyleClass().add("client_and_profile_selector_pane_stack");
 
         getChildren().addAll(stack);
 
