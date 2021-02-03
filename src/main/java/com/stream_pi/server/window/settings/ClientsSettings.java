@@ -438,20 +438,21 @@ public class ClientsSettings extends VBox {
             startupWindowWidthTextField = new TextField();
 
             platformLabel = new Label();
-            platformLabel.getStyleClass().add("settings_client_platform_label");
+            platformLabel.getStyleClass().add("client_settings_each_client_platform_label");
 
             socketConnectionLabel = new Label();
-            socketConnectionLabel.getStyleClass().add("settings_client_socket_connection_label");
+            socketConnectionLabel.getStyleClass().add("client_settings_each_client_socket_connection_label");
 
             nicknameTextField = new TextField();
 
             nickNameLabel = new Label();
-            nickNameLabel.getStyleClass().add("settings_client_nick_name_label");
+            nickNameLabel.getStyleClass().add("client_settings_each_client_nick_name_label");
 
             versionLabel = new Label();
-            versionLabel.getStyleClass().add("settings_client_version_label");
+            versionLabel.getStyleClass().add("client_settings_each_client_version_label");
 
             profilesAccordion = new Accordion();
+            profilesAccordion.getStyleClass().add("client_settings_each_client_profiles_accordion");
             VBox.setMargin(profilesAccordion, new Insets(0,0,20,0));
 
 
@@ -535,6 +536,7 @@ public class ClientsSettings extends VBox {
             for(ClientProfile clientProfile : client.getAllClientProfiles())
             {
                 TitledPane titledPane = new TitledPane();
+                titledPane.getStyleClass().add("client_settings_each_client_accordion_each_titled_pane");
                 titledPane.setText(clientProfile.getName());
 
                 ClientProfileVBox clientProfileVBox = new ClientProfileVBox(clientProfile);
@@ -647,6 +649,7 @@ public class ClientsSettings extends VBox {
         {
             this.clientProfile = clientProfile;
 
+            getStyleClass().add("client_settings_each_client_accordion_each_profile_box");
             initUI();
             loadValues(clientProfile);
         }

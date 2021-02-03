@@ -2,23 +2,18 @@
   -fx-font-family : 'Roboto';
 }
 
-.settings_about_streampi_header
-{
-    -fx-font-size : 25;
-}
-
-.settings_about_donate_hyperlink
+.about_donate_hyperlink
 {
     -fx-font-size : 19;
     -fx-font-weight : bold;
 }
 
-.settings_about_license_label
+.about_license_label
 {
     -fx-font-size : 16;
 }
 
-.settings_plugins_each_action, .settings_themes_each_theme, .settings_clients_each_client
+.theme_settings_each_theme_box, .plugins_settings_each_plugin_box, .clients_settings_each_client_box
 {
     -fx-border-width : 0 0 1 0;
     -fx-border-color : grey;

@@ -83,7 +83,14 @@ settings
         Scroll Pane (CENTER) - clients_settings_scroll_pane
             VBox - clients_settings_vbox
                 Each Client Box - clients_settings_each_client_box
+                    Nick Name Label - client_settings_each_client_nick_name_label
+                    Socket Connection Label - client_settings_each_client_socket_connection_label
+                    Platform Label - client_settings_each_client_platform_label
+                    Version Label - client_settings_each_client_version_label
 
+                    Profiles Accordion - client_settings_each_client_profiles_accordion
+                        Each Titled Pane - client_settings_each_client_accordion_each_titled_pane
+                            Content VBox - client_settings_each_client_accordion_each_profile_box
     About - about
         License Label - about_license_label
         License Text Area - about_license_text_area
