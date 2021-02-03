@@ -38,6 +38,7 @@ public class About extends VBox{
         VBox.setMargin(licenseLabel, new Insets(20, 0 , 10 ,0));
 
         TextArea licenseTextArea = new TextArea(License.getLicense());
+        licenseTextArea.getStyleClass().add("about_license_text_area");
         licenseTextArea.setWrapText(false);
         licenseTextArea.setEditable(false);
         licenseTextArea.setMaxWidth(550);
@@ -45,6 +46,7 @@ public class About extends VBox{
         VBox.setVgrow(licenseTextArea, Priority.ALWAYS);
 
         HBox links = new HBox();
+        links.getStyleClass().add("about_links_box");
 
         Hyperlink github = new Hyperlink("GitHub");
         github.setOnAction(event -> openWebpage("https://github.com/Stream-Pi"));
@@ -61,8 +63,6 @@ public class About extends VBox{
         Hyperlink matrix = new Hyperlink("Matrix");
         matrix.setOnAction(event -> openWebpage("https://matrix.to/#/#stream-pi_general:matrix.org"));
 
-
-        links.setSpacing(30);
         links.setAlignment(Pos.CENTER);
         links.getChildren().addAll(github, matrix, discord, website, twitter);
 
@@ -70,20 +70,25 @@ public class About extends VBox{
         donateButton.setOnAction(event -> {
             openWebpage("https://www.patreon.com/streampi");
         });
-        donateButton.getStyleClass().add("settings_about_donate_hyperlink");
+        donateButton.getStyleClass().add("about_donate_hyperlink");
 
 
         ServerInfo serverInfo = ServerInfo.getInstance();
 
         Label versionText = new Label(serverInfo.getVersion().getText() + " - "+ serverInfo.getPlatformType().getUIName() + " - "+ serverInfo.getReleaseStatus().getUIName());
-        Label commStandardLabel = new Label("Comm Standard "+serverInfo.getCommStandardVersion().getText());
-        Label minThemeAPILabel = new Label("Min ThemeAPI "+serverInfo.getMinThemeSupportVersion().getText());
-        Label minActionAPILabel = new Label("Min ActionAPI "+serverInfo.getMinPluginSupportVersion().getText());
+        versionText.getStyleClass().add("about_version_label");
 
+        Label commStandardLabel = new Label("Comm Standard "+serverInfo.getCommStandardVersion().getText());
+        commStandardLabel.getStyleClass().add("about_comm_standard_label");
+
+        Label minThemeAPILabel = new Label("Min ThemeAPI "+serverInfo.getMinThemeSupportVersion().getText());
+        minThemeAPILabel.getStyleClass().add("about_min_theme_api_label");
+
+        Label minActionAPILabel = new Label("Min ActionAPI "+serverInfo.getMinPluginSupportVersion().getText());
+        minActionAPILabel.getStyleClass().add("about_min_action_api_label");
 
         Label currentActionAPILabel = new Label("ActionAPI "+ ActionAPI.API_VERSION.getText());
-
-        setSpacing(3);
+        currentActionAPILabel.getStyleClass().add("about_current_action_api_label");
 
         getChildren().addAll(appIconImageView, licenseLabel, licenseTextArea, links, donateButton, versionText, commStandardLabel, minThemeAPILabel, minActionAPILabel, currentActionAPILabel);
     }

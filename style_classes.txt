@@ -86,5 +86,14 @@ settings
 
     About - about
         License Label - about_license_label
+        License Text Area - about_license_text_area
+        Links HBox - about_links_box
+        DONATE Hyperlink - about_donate_hyperlink
+
+        Version Label - about_version_label
+        Comm Standard Label - about_comm_standard_label
+        Min Theme API Label - about_min_theme_api_label
+        Min Action API Label - about_min_action_api_label
+        Current Action API Label - about_current_action_api_label
 
 
