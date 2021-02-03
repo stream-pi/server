@@ -19,7 +19,7 @@
     -fx-border-color : grey;
 }
 
-.settings_plugins_each_action_heading, .settings_themes_each_theme_heading, .settings_client_nick_name_label
+.plugins_settings_each_plugin_heading_label, .themes_settings_each_theme_heading, .client_settings_each_client_nick_name_label
 {
     -fx-font-size : 19;
 }
@@ -56,16 +56,21 @@
     -fx-background-color : transparent;
 }
 
-.action_details_pane_action_heading_label
+.action_details_pane_heading_label
 {
     -fx-font-size : 16;
 }
 
-.settings_client_socket_connection_label
+.client_settings_each_client_socket_connection_label
 {
     -fx-font-size : 16;
 }
 
+
+.general_settings{
+    -fx-alignment : TOP_CENTER;
+    -fx-padding : 10;
+}
 
 .alert_header
 {
@@ -135,16 +140,16 @@
     -fx-faint-focus-color:#FFFFFF;*/
 }
 
-.dashboard_plugins_pane_action_icon_imageview
+.plugins_pane_each_plugin_button_imageview
 {
     -fx-width:20;
     -fx-height:20;
 }
 
-.donate_request_popup_patreon_link
+.about_donate_hyperlink
 {
     -fx-padding : 10 0 0 0;
-    -fx-font-size : 15;
+    -fx-font-size : 25;
 }
 
 

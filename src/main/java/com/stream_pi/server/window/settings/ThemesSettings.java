@@ -35,11 +35,8 @@ public class ThemesSettings extends VBox
         getStyleClass().add("themes_settings");
         logger = Logger.getLogger(ThemesSettings.class.getName());
 
-        setPadding(new Insets(10));
-
         themesSettingsVBox = new VBox();
         themesSettingsVBox.getStyleClass().add("themes_settings_vbox");
-        themesSettingsVBox.setSpacing(10.0);
         themesSettingsVBox.setAlignment(Pos.TOP_CENTER);
 
         ScrollPane scrollPane = new ScrollPane();

@@ -42,6 +42,7 @@ dashboard
 
 settings
     General - general_settings
+
     Plugins - plugins_settings
         Scroll Pane (CENTER) - plugins_settings_scroll_pane
             VBox - plugins_settings_vbox
@@ -49,7 +50,7 @@ settings
 
                 Each Plugin Box - plugins_settings_each_plugin_box
                     Header HBox - plugins_settings_each_plugin_header
-                        Heading - plugins_settings_each_plugin_heading_label
+                        Heading Label - plugins_settings_each_plugin_heading_label
                         Help Button - plugins_settings_each_plugin_help_button
                             Help Icon - plugins_settings_each_plugin_help_icon
 
