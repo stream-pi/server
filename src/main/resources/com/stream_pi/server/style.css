@@ -111,7 +111,7 @@
     -fx-padding: 5;
 }
 
-.alert_pane_parent, .combobox_pane_parent
+.alert_pane_parent
 {
     -fx-background-color : rgba(0,0,0,0.5);
 }
@@ -243,4 +243,9 @@
 .client_and_profile_selector_pane_stack
 {
     -fx-spacing: 5;
+}
+
+.plugins_settings, .themes_settings, .clients_settings
+{
+    -fx-padding: 0 10 0 0;
 }
