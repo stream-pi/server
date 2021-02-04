@@ -146,8 +146,9 @@ public class PluginsPane extends VBox {
 
                 if(eachAction.getHelpLink() != null) {
                     Button helpButton = new Button();
+                    helpButton.getStyleClass().add("plugins_pane_each_plugin_button_help_icon");
                     FontIcon questionIcon = new FontIcon("fas-question");
-                    questionIcon.getStyleClass().add("dashboard_plugins_pane_action_help_icon");
+                    questionIcon.getStyleClass().add("plugins_pane_each_plugin_button_help_button_icon");
                     helpButton.setGraphic(questionIcon);
                     helpButton.setOnAction(event -> hostServices.showDocument(eachAction.getHelpLink()));
 

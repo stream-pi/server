@@ -38,6 +38,7 @@ public class License {
             "Opensource Libraries used :\n"+
             "1. JavaFX - GNU General Public License with Classpath Exception\nhttp://openjdk.java.net/legal/gplv2+ce.html\n\n"+
             "2. JSON - The JSON License\nhttps://www.json.org/license.html\n\n"+
-            "3. Ikonli - Apache License\nhttps://github.com/kordamp/ikonli/blob/master/LICENSE\n\n";
+            "3. Ikonli - Apache License\nhttps://github.com/kordamp/ikonli/blob/master/LICENSE\n\n"+
+            "4. Roboto Font - Apache License 2.0\nhttp://www.apache.org/licenses/LICENSE-2.0\n\n";
     }
 }

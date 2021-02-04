@@ -36,6 +36,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.File;
@@ -111,9 +112,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         saveButton.setOnAction(event -> onSaveButtonClicked());
 
         deleteButton = new Button("Delete action");
+        deleteButton.getStyleClass().add("action_details_pane_delete_button");
         FontIcon deleteIcon = new FontIcon("fas-trash");
-        deleteIcon.setIconColor(Paint.valueOf("#FF0000"));
-        deleteButton.setTextFill(Paint.valueOf("#FF0000"));
+        deleteIcon.getStyleClass().add("action_details_pane_delete_button_icon");
         deleteButton.setGraphic(deleteIcon);
 
         deleteButton.setOnAction(event -> onDeleteButtonClicked());
@@ -150,6 +151,24 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 DisplayTextAlignment.CENTER, DisplayTextAlignment.BOTTOM));
 
         displayTextAlignmentComboBox.managedProperty().bind(displayTextAlignmentComboBox.visibleProperty());
+
+        Callback<ListView<DisplayTextAlignment>, ListCell<DisplayTextAlignment>> displayTextAlignmentComboBoxFactory = new Callback<>() {
+            @Override
+            public ListCell<DisplayTextAlignment> call(ListView<DisplayTextAlignment> displayTextAlignment) {
+                return new ListCell<>() {
+                    @Override
+                    protected void updateItem(DisplayTextAlignment displayTextAlignment, boolean b) {
+                        super.updateItem(displayTextAlignment, b);
+
+                        if (displayTextAlignment != null) {
+                            setText(displayTextAlignment.getUIName());
+                        }
+                    }
+                };
+            }
+        };
+        displayTextAlignmentComboBox.setCellFactory(displayTextAlignmentComboBoxFactory);
+        displayTextAlignmentComboBox.setButtonCell(displayTextAlignmentComboBoxFactory.call(null));
 
         actionClientProperties = new ArrayList<>();
 

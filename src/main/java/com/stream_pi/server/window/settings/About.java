@@ -41,7 +41,7 @@ public class About extends VBox{
         licenseTextArea.getStyleClass().add("about_license_text_area");
         licenseTextArea.setWrapText(false);
         licenseTextArea.setEditable(false);
-        licenseTextArea.setMaxWidth(550);
+        licenseTextArea.setMaxWidth(600);
 
         VBox.setVgrow(licenseTextArea, Priority.ALWAYS);
 

@@ -123,10 +123,9 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
     public void initThemes() throws SevereException {
         clearStylesheets();
-
         registerThemes();
-        applyDefaultStylesheet();
         applyDefaultTheme();
+        applyDefaultStylesheet();
     }
 
     public Stage getStage()

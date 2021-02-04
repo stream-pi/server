@@ -79,8 +79,6 @@
 
 .alert_pane
 {
-    -fx-background-color : white;
-    -fx-border-color : white;
     -fx-border-width : 5;
     -fx-border-radius : 5; 
     -fx-background-radius : 5;
@@ -110,7 +108,6 @@
 
 .alert_content_pane
 {
-    -fx-background-color: white;
     -fx-padding: 5;
 }
 
@@ -126,18 +123,20 @@
 
 .alert_button_bar
 {
-    -fx-background-color: white;
     -fx-alignment: CENTER_RIGHT;
     -fx-spacing: 5;
     -fx-padding: 5;
 }
 
 .alert_scroll_pane {
-    -fx-background: #FFFFFF;
-    -fx-border-color:#FFFFFF;
     -fx-max-height : 300;
     /*-fx-focus-color: #FFFFFF;
     -fx-faint-focus-color:#FFFFFF;*/
+}
+
+.plugins_pane
+{
+    -fx-spacing: 5;
 }
 
 .plugins_pane_each_plugin_button_imageview
@@ -196,4 +195,52 @@
 .first_time_use_welcome_pane_next_to_continue_label
 {
     -fx-font-size: 15;
+}
+
+.scroll-pane
+{
+    -fx-focus-color:transparent;
+    -fx-faint-focus-color:transparent;
+}
+
+.plugins_settings_scroll_pane, .themes_settings_scroll_pane, .clients_settings_scroll_pane
+{
+    -fx-padding: 10 0 0 0;
+}
+
+.plugins_settings_each_plugin_box, .theme_settings_each_theme_box, .clients_settings_each_client_box
+{
+    -fx-spacing : 5;
+    -fx-padding : 0 0 5 0;
+}
+
+.plugins_pane_each_plugin_box_parent, .plugins_pane_each_plugin_box
+{
+    -fx-spacing : 5;
+}
+
+.about
+{
+    -fx-spacing : 5;
+}
+
+.about_links_box
+{
+    -fx-spacing : 15;
+}
+
+
+.action_details_pane_delete_button
+{
+    -fx-text-fill : red;
+}
+
+.action_details_pane_delete_button_icon
+{
+    -fx-icon-color:red;
+}
+
+.client_and_profile_selector_pane_stack
+{
+    -fx-spacing: 5;
 }

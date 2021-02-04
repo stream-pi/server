@@ -1,15 +1,20 @@
 dashboard
-    Action Detail Pane - action_details_pane
+    Action Details Pane - action_details_pane
         Heading HBox - action_details_pane_heading_box
             Heading Label - action_details_pane_heading_label
         Scroll Pane - action_details_pane_scroll_pane
             VBox (Content Pane) - action_details_pane_vbox
         Bottom Button Bar - action_details_pane_button_bar
+            Delete Button - action_details_pane_delete_button
+                Icon - action_details_pane_delete_button_icon
 
     Action Grid Pane (Scroll Pane) - action_grid_pane_parent
         Main Grid Pane - action_grid_pane
 
         Action Box - action_box
+            if folder back button :
+                Icon : folder_action_back_button_icon
+
             Is Icon Present ?
                 yes : action_box_icon_present
                 no : action_box_icon_not_present
@@ -35,7 +40,10 @@ dashboard
                         Each Plugin Button - plugins_pane_each_plugin_button
                             Icon - plugins_pane_each_plugin_button_icon
                             OR
-                            ImageView (NOT RECOMMENDED FOR USE) - plugins_pane_each_plugin_button_imageview
+                            ImageView (NOT RECOMMENDED FOR USE) - plugins_pane_each_plugin_button_imageview]
+
+                        Help Button - plugins_pane_each_plugin_button_help_icon
+                            Icon - plugins_pane_each_plugin_button_help_button_icon
 
         HBox - plugins_pane_settings_button
             Settings Button - plugins_pane_settings_button

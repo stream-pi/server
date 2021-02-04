@@ -68,7 +68,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
         try {
             File filex = new File(ServerInfo.getInstance().getPrePath());
 
-            System.out.println("SAX : "+filex.exists());
             if(!filex.exists())
             { 
                 filex.mkdirs();
