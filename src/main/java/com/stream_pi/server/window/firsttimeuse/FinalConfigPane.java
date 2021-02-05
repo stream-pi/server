@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -101,6 +102,8 @@ public class FinalConfigPane extends VBox
         else
         {
             Alert alert = new Alert(AlertType.ERROR);
+            alert.setResizable(false);
+            alert.getDialogPane().setPrefHeight(250);
             alert.setContentText("Please rectify the following errors and try again:\n"+errors.toString());
             alert.show();
         }

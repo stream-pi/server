@@ -70,7 +70,7 @@
 
         <dependency>
             <groupId>com.stream_pi</groupId>
-            <artifactId>action_api</artifactId>
+            <artifactId>actionapi</artifactId>
             <version>${ActionAPIVersion}</version>
         </dependency>
 

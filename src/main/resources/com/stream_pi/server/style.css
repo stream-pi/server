@@ -211,7 +211,7 @@
 .plugins_settings_each_plugin_box, .theme_settings_each_theme_box, .clients_settings_each_client_box
 {
     -fx-spacing : 5;
-    -fx-padding : 0 0 5 0;
+    -fx-padding : 10 0 10 0;
 }
 
 .plugins_pane_each_plugin_box_parent, .plugins_pane_each_plugin_box
