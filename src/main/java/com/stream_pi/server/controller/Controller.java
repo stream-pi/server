@@ -502,11 +502,23 @@ public class Controller extends Base implements PropertySaver, ServerConnection
         }
         catch (Exception e)
         {
-            handleMinorException(new MinorException(
-                "action Execution Failed!",
-                "Error running action at ["+action.getLocation().getRow()+","+action.getLocation().getCol()+"] ("+action.getDisplayText()+")\n"+
-                "Check stacktrace/log to know what exactly happened\n\nMessage : \n"+e.getMessage() )
-            );
+            //check if its windows UAC related
+            if(e.getMessage().contains("operation requires elevation"))
+            {
+                handleMinorException(new MinorException(
+                        "Action Execution Failed!",
+                        "Error running action at ["+action.getLocation().getRow()+","+action.getLocation().getCol()+"] ("+action.getDisplayText()+")\n"+
+                                "This action requires higher UAC privileges. Re-launch Stream-Pi Server with 'Administrator Privileges' in order to run this command.")
+                );
+            }
+            else
+            {
+                handleMinorException(new MinorException(
+                        "Action Execution Failed!",
+                        "Error running action at ["+action.getLocation().getRow()+","+action.getLocation().getCol()+"] ("+action.getDisplayText()+")\n"+
+                                "Check stacktrace/log to know what exactly happened\n\nMessage : \n"+e.getMessage() )
+                );
+            }
             return false;
         }
     }
