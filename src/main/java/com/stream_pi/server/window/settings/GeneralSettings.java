@@ -92,8 +92,8 @@ public class GeneralSettings extends VBox {
         getChildren().addAll(
                 getUIInputBox("Server Name", serverNameTextField),
                 getUIInputBox("Port", portTextField),
-                getUIInputBox("action Grid Pane action Box Size", actionGridPaneActionBoxSize),
-                getUIInputBox("action Grid Pane action Box Gap", actionGridPaneActionBoxGap),
+                getUIInputBox("Grid Pane - Box Size", actionGridPaneActionBoxSize),
+                getUIInputBox("Grid Pane - Box Gap", actionGridPaneActionBoxGap),
                 getUIInputBoxWithDirectoryChooser("Plugins Path", pluginsPathTextField),
                 getUIInputBoxWithDirectoryChooser("Themes Path", themesPathTextField)
         );
