@@ -104,20 +104,8 @@ public class ClientConnection extends Thread{
     }
 
 
-    public void writeToStream(String text) throws SevereException
+    public synchronized void writeToStream(String text) throws SevereException
     {
-        /*try
-        {
-            logger.debug(text);
-            dos.writeUTF(text);
-            dos.flush();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            throw new SevereException("Unable to write to io Stream!");
-        }*/
-
         try
         {
             byte[] txtBytes = text.getBytes();
@@ -138,7 +126,7 @@ public class ClientConnection extends Thread{
 
     }
 
-    public void sendIcon(String profileID, String actionID, byte[] icon) throws SevereException
+    public synchronized void sendIcon(String profileID, String actionID, byte[] icon) throws SevereException
     {
         try
         {
