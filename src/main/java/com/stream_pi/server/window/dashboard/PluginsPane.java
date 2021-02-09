@@ -1,12 +1,12 @@
 package com.stream_pi.server.window.dashboard;
-import com.stream_pi.actionapi.action.Action;
-import com.stream_pi.actionapi.action.ActionType;
-import com.stream_pi.actionapi.action.DisplayTextAlignment;
-import com.stream_pi.actionapi.actionproperty.property.Property;
-import com.stream_pi.actionapi.actionproperty.property.Type;
-import com.stream_pi.actionapi.normalaction.NormalAction;
-import com.stream_pi.actionapi.otheractions.CombineAction;
-import com.stream_pi.actionapi.otheractions.FolderAction;
+import com.stream_pi.action_api.action.Action;
+import com.stream_pi.action_api.action.ActionType;
+import com.stream_pi.action_api.action.DisplayTextAlignment;
+import com.stream_pi.action_api.actionproperty.property.Property;
+import com.stream_pi.action_api.actionproperty.property.Type;
+import com.stream_pi.action_api.normalaction.NormalAction;
+import com.stream_pi.action_api.otheractions.CombineAction;
+import com.stream_pi.action_api.otheractions.FolderAction;
 import com.stream_pi.server.action.NormalActionPlugins;
 
 import com.stream_pi.util.uihelper.SpaceFiller;
@@ -62,7 +62,7 @@ public class PluginsPane extends VBox {
         Label pluginsLabel = new Label("Plugins");
         pluginsLabel.getStyleClass().add("plugins_pane_top_label");
 
-        getChildren().addAll(pluginsLabel, pluginsAccordion, new SpaceFiller(SpaceFiller.FillerType.VBox), settingsHBox);
+        getChildren().addAll(pluginsLabel, pluginsAccordion, SpaceFiller.vertical(), settingsHBox);
     }
 
     public Button getSettingsButton()

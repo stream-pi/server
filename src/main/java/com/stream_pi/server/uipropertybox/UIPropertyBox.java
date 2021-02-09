@@ -1,7 +1,7 @@
 package com.stream_pi.server.uipropertybox;
 
-import com.stream_pi.actionapi.actionproperty.property.ControlType;
-import com.stream_pi.actionapi.actionproperty.property.Type;
+import com.stream_pi.action_api.actionproperty.property.ControlType;
+import com.stream_pi.action_api.actionproperty.property.Type;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;

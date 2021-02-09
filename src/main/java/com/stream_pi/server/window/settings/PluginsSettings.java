@@ -1,16 +1,15 @@
 package com.stream_pi.server.window.settings;
 
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
-import com.stream_pi.actionapi.actionproperty.property.ControlType;
-import com.stream_pi.actionapi.actionproperty.property.Property;
-import com.stream_pi.actionapi.actionproperty.property.Type;
-import com.stream_pi.actionapi.normalaction.NormalAction;
+import com.stream_pi.action_api.actionproperty.property.ControlType;
+import com.stream_pi.action_api.actionproperty.property.Property;
+import com.stream_pi.action_api.actionproperty.property.Type;
+import com.stream_pi.action_api.normalaction.NormalAction;
 import com.stream_pi.server.action.NormalActionPlugins;
 import com.stream_pi.server.connection.ServerListener;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.uihelper.SpaceFiller;
-import com.stream_pi.util.uihelper.SpaceFiller.FillerType;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -215,7 +214,7 @@ public class PluginsSettings extends VBox {
                 helpButton.setGraphic(questionIcon);
                 helpButton.setOnAction(event -> hostServices.showDocument(action.getHelpLink()));
 
-                headerHBox.getChildren().addAll(new SpaceFiller(FillerType.HBox),helpButton);
+                headerHBox.getChildren().addAll(SpaceFiller.horizontal() ,helpButton);
             }
 
 
@@ -251,7 +250,7 @@ public class PluginsSettings extends VBox {
                 Region region = new Region();
                 HBox.setHgrow(region, Priority.ALWAYS);
 
-                HBox hBox = new HBox(label, new SpaceFiller(SpaceFiller.FillerType.HBox));
+                HBox hBox = new HBox(label, SpaceFiller.horizontal());
                 //hBox.setId(j+"");
 
                 Node controlNode = null;
@@ -343,7 +342,7 @@ public class PluginsSettings extends VBox {
 
                 if(action.getButtonBar()!=null)
                 {
-                    HBox buttonBarHBox = new HBox(new SpaceFiller(SpaceFiller.FillerType.HBox), action.getButtonBar());
+                    HBox buttonBarHBox = new HBox(SpaceFiller.horizontal(), action.getButtonBar());
                     buttonBarHBox.getStyleClass().add("plugins_settings_each_plugin_button_bar");
                     vBox.getChildren().add(buttonBarHBox);
                 }

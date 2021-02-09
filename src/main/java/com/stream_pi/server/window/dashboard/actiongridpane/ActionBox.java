@@ -1,9 +1,9 @@
 package com.stream_pi.server.window.dashboard.actiongridpane;
 
-import com.stream_pi.actionapi.action.Action;
-import com.stream_pi.actionapi.action.ActionType;
-import com.stream_pi.actionapi.action.DisplayTextAlignment;
-import com.stream_pi.actionapi.action.Location;
+import com.stream_pi.action_api.action.Action;
+import com.stream_pi.action_api.action.ActionType;
+import com.stream_pi.action_api.action.DisplayTextAlignment;
+import com.stream_pi.action_api.action.Location;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiondetailpane.ActionDetailsPaneListener;
 import com.stream_pi.util.exception.MinorException;

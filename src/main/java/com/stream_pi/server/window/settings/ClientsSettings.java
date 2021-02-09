@@ -11,7 +11,6 @@ import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.uihelper.HBoxInputBox;
 import com.stream_pi.util.uihelper.SpaceFiller;
-import com.stream_pi.util.platform.ReleaseStatus;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
@@ -479,7 +478,7 @@ public class ClientsSettings extends VBox {
                     new HBoxInputBox("Nickname",nicknameTextField),
                     new HBox(
                         new Label("Theme"),
-                        new SpaceFiller(SpaceFiller.FillerType.HBox),
+                        SpaceFiller.horizontal(),
                         themesComboBox
                     ),
 
@@ -488,7 +487,7 @@ public class ClientsSettings extends VBox {
                     startupWindowWidthInputBox,
 
                     new HBox(new Label("Startup Profile"),
-                            new SpaceFiller(SpaceFiller.FillerType.HBox),
+                            SpaceFiller.horizontal(),
                             profilesComboBox),
 
                     addNewProfileButton,

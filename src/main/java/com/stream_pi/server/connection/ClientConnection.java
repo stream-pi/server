@@ -1,13 +1,13 @@
 package com.stream_pi.server.connection;
 
-import com.stream_pi.actionapi.action.Action;
-import com.stream_pi.actionapi.action.ActionType;
-import com.stream_pi.actionapi.action.DisplayTextAlignment;
-import com.stream_pi.actionapi.action.Location;
-import com.stream_pi.actionapi.actionproperty.ClientProperties;
-import com.stream_pi.actionapi.actionproperty.property.Property;
-import com.stream_pi.actionapi.actionproperty.property.Type;
-import com.stream_pi.actionapi.normalaction.NormalAction;
+import com.stream_pi.action_api.action.Action;
+import com.stream_pi.action_api.action.ActionType;
+import com.stream_pi.action_api.action.DisplayTextAlignment;
+import com.stream_pi.action_api.action.Location;
+import com.stream_pi.action_api.actionproperty.ClientProperties;
+import com.stream_pi.action_api.actionproperty.property.Property;
+import com.stream_pi.action_api.actionproperty.property.Type;
+import com.stream_pi.action_api.normalaction.NormalAction;
 import com.stream_pi.server.action.NormalActionPlugins;
 import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
@@ -32,7 +32,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ClientConnection extends Thread{
+public class ClientConnection extends Thread
+{
     private Socket socket;
     private ServerListener serverListener;
     private AtomicBoolean stop = new AtomicBoolean(false);

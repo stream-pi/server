@@ -2,8 +2,8 @@ package com.stream_pi.server.window.settings;
 
 import com.stream_pi.server.controller.Controller;
 import com.stream_pi.server.io.Config;
-import com.stream_pi.themeapi.Theme;
-import com.stream_pi.themeapi.Themes;
+import com.stream_pi.theme_api.Theme;
+import com.stream_pi.theme_api.Themes;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.HostServices;
@@ -112,7 +112,7 @@ public class ThemesSettings extends VBox
                 helpButton.setGraphic(questionIcon);
                 helpButton.setOnAction(event -> hostServices.showDocument(theme.getWebsite()));
 
-                topRowHBox.getChildren().addAll(new SpaceFiller(SpaceFiller.FillerType.HBox), helpButton);
+                topRowHBox.getChildren().addAll(SpaceFiller.horizontal(), helpButton);
             }
 
             ToggleButton toggleButton = new ToggleButton();

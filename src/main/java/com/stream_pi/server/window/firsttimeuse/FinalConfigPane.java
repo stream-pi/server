@@ -6,7 +6,6 @@ import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.uihelper.HBoxInputBox;
 import com.stream_pi.util.uihelper.SpaceFiller;
-import com.stream_pi.util.uihelper.SpaceFiller.FillerType;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -50,7 +49,7 @@ public class FinalConfigPane extends VBox
         HBox bBar = new HBox(confirmButton);
         bBar.setAlignment(Pos.CENTER_RIGHT);
 
-        getChildren().addAll(label, serverNickNameInputBox, serverPortInputBox, new SpaceFiller(FillerType.VBox), bBar);
+        getChildren().addAll(label, serverNickNameInputBox, serverPortInputBox, SpaceFiller.vertical(), bBar);
 
         setSpacing(10.0);
 

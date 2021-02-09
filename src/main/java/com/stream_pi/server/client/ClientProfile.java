@@ -16,7 +16,7 @@ Written by : Debayan Sutradhar (rnayabed)
 
 package com.stream_pi.server.client;
 
-import com.stream_pi.actionapi.action.Action;
+import com.stream_pi.action_api.action.Action;
 
 import java.util.HashMap;
 import java.util.Set;

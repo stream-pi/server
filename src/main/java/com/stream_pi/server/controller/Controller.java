@@ -1,8 +1,8 @@
 package com.stream_pi.server.controller;
 
-import com.stream_pi.actionapi.action.ServerConnection;
-import com.stream_pi.actionapi.action.PropertySaver;
-import com.stream_pi.actionapi.normalaction.NormalAction;
+import com.stream_pi.action_api.action.ServerConnection;
+import com.stream_pi.action_api.action.PropertySaver;
+import com.stream_pi.action_api.normalaction.NormalAction;
 import com.stream_pi.server.Main;
 import com.stream_pi.server.action.NormalActionPlugins;
 import com.stream_pi.server.connection.ClientConnections;

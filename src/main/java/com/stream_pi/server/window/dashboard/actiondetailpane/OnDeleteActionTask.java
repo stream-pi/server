@@ -2,7 +2,7 @@ package com.stream_pi.server.window.dashboard.actiondetailpane;
 
 import java.util.logging.Logger;
 
-import com.stream_pi.actionapi.action.Action;
+import com.stream_pi.action_api.action.Action;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.stream_pi.actionapi.action.Action;
-import com.stream_pi.actionapi.action.ActionType;
-import com.stream_pi.actionapi.action.DisplayTextAlignment;
-import com.stream_pi.actionapi.actionproperty.ClientProperties;
-import com.stream_pi.actionapi.actionproperty.property.Property;
-import com.stream_pi.actionapi.actionproperty.property.Type;
+import com.stream_pi.action_api.action.Action;
+import com.stream_pi.action_api.action.ActionType;
+import com.stream_pi.action_api.action.DisplayTextAlignment;
+import com.stream_pi.action_api.actionproperty.ClientProperties;
+import com.stream_pi.action_api.actionproperty.property.Property;
+import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;

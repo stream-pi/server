@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.stream_pi</groupId>
+    <groupId>com.stream-pi</groupId>
     <artifactId>server</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,16 +22,14 @@
         <CommonsBeanUtilsVersion>1.9.4</CommonsBeanUtilsVersion>
         <CommonsConfigurationVersion>2.7</CommonsConfigurationVersion>
 
-        <ActionAPIVersion>1.0.0</ActionAPIVersion>
-        <ThemeAPIVersion>1.0.0</ThemeAPIVersion>
-        <UtilVersion>1.0.0</UtilVersion>
-        <!--CommAPIVersion>1.0.0</CommAPIVersion-->
+        <ActionAPIVersion>1.0.0-SNAPSHOT</ActionAPIVersion>
+        <ThemeAPIVersion>1.0.0-SNAPSHOT</ThemeAPIVersion>
+        <UtilVersion>1.0.0-SNAPSHOT</UtilVersion>
 
         <Log4JVersion>2.14.0</Log4JVersion>
 
         <IkonliVersion>11.5.0</IkonliVersion>
         <IkonliFA5PackVersion>11.5.0</IkonliFA5PackVersion>
-
 
         <MainClassName>com.stream_pi.server.Main</MainClassName>
     </properties>
@@ -69,20 +67,20 @@
         </dependency>
 
         <dependency>
-            <groupId>com.stream_pi</groupId>
-            <artifactId>actionapi</artifactId>
+            <groupId>com.stream-pi</groupId>
+            <artifactId>action-api</artifactId>
             <version>${ActionAPIVersion}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.stream_pi</groupId>
+            <groupId>com.stream-pi</groupId>
             <artifactId>util</artifactId>
             <version>${UtilVersion}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.stream_pi</groupId>
-            <artifactId>themeapi</artifactId>
+            <groupId>com.stream-pi</groupId>
+            <artifactId>theme-api</artifactId>
             <version>${ThemeAPIVersion}</version>
         </dependency>
 

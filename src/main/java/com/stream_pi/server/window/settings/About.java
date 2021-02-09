@@ -1,6 +1,6 @@
 package com.stream_pi.server.window.settings;
 
-import com.stream_pi.actionapi.ActionAPI;
+import com.stream_pi.action_api.ActionAPI;
 import com.stream_pi.server.info.License;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.Main;

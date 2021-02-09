@@ -1,14 +1,14 @@
 package com.stream_pi.server.window.dashboard.actiondetailpane;
 
-import com.stream_pi.actionapi.action.Action;
-import com.stream_pi.actionapi.action.ActionType;
-import com.stream_pi.actionapi.action.DisplayTextAlignment;
-import com.stream_pi.actionapi.action.Location;
-import com.stream_pi.actionapi.actionproperty.property.ControlType;
-import com.stream_pi.actionapi.actionproperty.property.Property;
-import com.stream_pi.actionapi.actionproperty.property.Type;
-import com.stream_pi.actionapi.otheractions.CombineAction;
-import com.stream_pi.actionapi.otheractions.FolderAction;
+import com.stream_pi.action_api.action.Action;
+import com.stream_pi.action_api.action.ActionType;
+import com.stream_pi.action_api.action.DisplayTextAlignment;
+import com.stream_pi.action_api.action.Location;
+import com.stream_pi.action_api.actionproperty.property.ControlType;
+import com.stream_pi.action_api.actionproperty.property.Property;
+import com.stream_pi.action_api.actionproperty.property.Type;
+import com.stream_pi.action_api.otheractions.CombineAction;
+import com.stream_pi.action_api.otheractions.FolderAction;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
@@ -258,7 +258,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         normalActionsPropsVBox = new VBox(displayTextColourHBox,
 
-                new HBox(new Label("Alignment"), new SpaceFiller(SpaceFiller.FillerType.HBox),
+                new HBox(new Label("Alignment"), SpaceFiller.horizontal(),
                         displayTextAlignmentComboBox),
 
                 new HBoxInputBoxWithFileChooser("Icon", iconFileTextField, hideIconCheckBox,
@@ -601,7 +601,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 hBox.getChildren().add(helpButton);
             }
 
-            hBox.getChildren().add(new SpaceFiller(SpaceFiller.FillerType.HBox));
+            hBox.getChildren().add(SpaceFiller.horizontal());
 
             if(eachProperty.getControlType() == ControlType.COMBO_BOX)
             {

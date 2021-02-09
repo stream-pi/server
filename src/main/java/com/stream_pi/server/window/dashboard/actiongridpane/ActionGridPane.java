@@ -1,8 +1,8 @@
 package com.stream_pi.server.window.dashboard.actiongridpane;
 
-import com.stream_pi.actionapi.action.Action;
-import com.stream_pi.actionapi.action.Location;
-import com.stream_pi.actionapi.otheractions.FolderAction;
+import com.stream_pi.action_api.action.Action;
+import com.stream_pi.action_api.action.Location;
+import com.stream_pi.action_api.otheractions.FolderAction;
 import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.io.Config;

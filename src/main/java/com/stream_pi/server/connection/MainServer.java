@@ -1,7 +1,6 @@
 package com.stream_pi.server.connection;
 
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
-import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 
 import java.io.IOException;
