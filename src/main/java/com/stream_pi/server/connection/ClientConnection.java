@@ -16,6 +16,7 @@ import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertType;
+import com.stream_pi.util.comms.Message;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.exception.StreamPiException;
@@ -23,11 +24,11 @@ import com.stream_pi.util.platform.Platform;
 import com.stream_pi.util.platform.ReleaseStatus;
 import com.stream_pi.util.version.Version;
 import javafx.concurrent.Task;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+
+import java.io.*;
+import java.lang.reflect.Array;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,8 +39,8 @@ public class ClientConnection extends Thread
     private ServerListener serverListener;
     private AtomicBoolean stop = new AtomicBoolean(false);
 
-    private DataInputStream dis;
-    private DataOutputStream dos;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
 
     private Logger logger;
 
@@ -59,8 +60,8 @@ public class ClientConnection extends Thread
 
         try
         {
-            dis = new DataInputStream(socket.getInputStream());
-            dos = new DataOutputStream(socket.getOutputStream());
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -105,77 +106,18 @@ public class ClientConnection extends Thread
     }
 
 
-    public synchronized void writeToStream(String text) throws SevereException
+    public void sendIcon(String profileID, String actionID, byte[] icon) throws SevereException
     {
-        try
-        {
-            byte[] txtBytes = text.getBytes();
-
-            Thread.sleep(50);
-            dos.writeUTF("string:: ::");
-            dos.flush();
-            dos.writeInt(txtBytes.length);
-            dos.flush();
-            write(txtBytes);
-            dos.flush();
-        }
-        catch (IOException | InterruptedException e)
-        {
-            e.printStackTrace();
-            throw new SevereException("Unable to write to io Stream!");
-        }
-
+        Message message = new Message("action_icon");
+        message.setStringArrValue(profileID, actionID);
+        message.setByteArrValue(icon);
+        sendMessage(message);
     }
 
-    public synchronized void sendIcon(String profileID, String actionID, byte[] icon) throws SevereException
+    public void initAfterConnectionQueryReceive(Message message) throws StreamPiException
     {
-        try
-        {
-            logger.info("Sending action Icon...");
-            //Thread.sleep(50);
-            System.out.println("1");
-            dos.writeUTF("action_icon::"+profileID+"!!"+actionID+"!!::"+icon.length);
-            
-            System.out.println("2");
-            dos.flush();
-            
-            System.out.println("3");
-            dos.writeInt(icon.length);
-            
-            System.out.println("4");
-            dos.flush();
-            
-            System.out.println("5");
-            write(icon);
-            
-            System.out.println("6");
-            dos.flush();
-            
-            System.out.println("7");
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            throw new SevereException("Unable to write to io Stream!");
-        }
-    }
+        String[] ar = message.getStringArrValue();
 
-    public void write(byte[] array) throws SevereException
-    {
-        try
-        {
-            dos.write(array);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            throw new SevereException("Unable to write to io Stream!");
-        }
-    }
-
-
-    public void initAfterConnectionQueryReceive(String[] arr) throws StreamPiException
-    {
         logger.info("Setting up client object ...");
 
         Version clientVersion;
@@ -186,10 +128,10 @@ public class ClientConnection extends Thread
 
         try
         {
-            clientVersion = new Version(arr[1]);
-            releaseStatus = ReleaseStatus.valueOf(arr[2]);
-            commsStandard = new Version(arr[3]);
-            themesStandard = new Version(arr[4]);
+            clientVersion = new Version(ar[0]);
+            releaseStatus = ReleaseStatus.valueOf(ar[1]);
+            commsStandard = new Version(ar[2]);
+            themesStandard = new Version(ar[3]);
         }
         catch (MinorException e)
         {
@@ -207,12 +149,12 @@ public class ClientConnection extends Thread
             throw new MinorException(errTxt);
         }
 
-        client = new Client(clientVersion, releaseStatus, commsStandard, themesStandard, arr[5], Platform.valueOf(arr[8]), socket.getRemoteSocketAddress());
+        client = new Client(clientVersion, releaseStatus, commsStandard, themesStandard, ar[4], Platform.valueOf(ar[7]), socket.getRemoteSocketAddress());
 
-        client.setStartupDisplayWidth(Double.parseDouble(arr[6]));
-        client.setStartupDisplayHeight(Double.parseDouble(arr[7]));
-        client.setDefaultProfileID(arr[9]);
-        client.setDefaultThemeFullName(arr[10]);
+        client.setStartupDisplayWidth(Double.parseDouble(ar[5]));
+        client.setStartupDisplayHeight(Double.parseDouble(ar[6]));
+        client.setDefaultProfileID(ar[8]);
+        client.setDefaultThemeFullName(ar[9]);
         
         //call get profiles command.
         serverListener.clearTemp();
@@ -241,78 +183,47 @@ public class ClientConnection extends Thread
         {
             while(!stop.get())
             {
-                String msg = "";
 
                 try
                 {
-                    String raw = dis.readUTF();
+                    Message message = (Message) ois.readObject();
 
-                    int length = dis.readInt();
+                    String header = message.getHeader();
 
-                    System.out.println("SIZE TO READ : "+length);
-
-                    String[] precursor = raw.split("::");
-
-                    String inputType = precursor[0];
-                    String secondArg = precursor[1];
-
-
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-                    /*int count;
-                    int chunkSize = 512;
-                    while (length>0)
+                    switch (header)
                     {
-                        if(chunkSize > length)
-                            chunkSize = length;
-                        else
-                            chunkSize = 512;
+                        case "action_icon" :        onActionIconReceived(message);
+                        break;
 
-                        byte[] buffer = new byte[chunkSize];
-                        count = dis.read(buffer);
+                        case "disconnect" :         clientDisconnected(message);
+                            break;
 
-                        System.out.println(count);
+                        case "client_details" :     initAfterConnectionQueryReceive(message);
+                            getProfilesFromClient();
+                            getThemesFromClient();
+                            break;
 
-                        byteArrayOutputStream.write(buffer);
+                        case "profiles" :           registerProfilesFromClient(message);
+                            break;
 
-                        length-=count;
-                    }*/
+                        case "profile_details" :    registerProfileDetailsFromClient(message);
+                            break;
 
-                    /*byte[] buffer = new byte[8192];
-                    int read;
-                    while((read = dis.read(buffer)) != -1){
-                        System.out.println("READ : "+read);
-                        byteArrayOutputStream.write(buffer, 0, read);
-                    }
+                        case "action_details" :     registerActionToProfile(message);
+                            break;
 
-                    System.out.println("READ : "+byteArrayOutputStream.size());
+                        case "themes":              registerThemes(message);
+                            break;
 
-                    byteArrayOutputStream.close();
+                        case "action_clicked":      actionClicked(message);
+                            break;
 
-                    byte[] bArr = byteArrayOutputStream.toByteArray();*/
+                        default:                    logger.warning("Command '"+header+"' does not match records. Make sure client and server versions are equal.");
 
-                    byte[] bArr = new byte[length];
 
-                    dis.readFully(bArr);
-
-                    if(inputType.equals("string"))
-                    {
-                        msg = new String(bArr);
-                    }
-                    else if(inputType.equals("action_icon"))
-                    {
-                        String[] secondArgSep = secondArg.split("!!");
-
-                        String profileID = secondArgSep[0];
-                        String actionID = secondArgSep[1];
-
-                        getClient().getProfileByID(profileID).getActionByID(actionID).setIcon(bArr);
-
-                        //serverListener.clearTemp();
-                        continue;
                     }
                 }
-                catch (IOException e)
+                catch (IOException | ClassNotFoundException e)
                 {
                     logger.log(Level.SEVERE, e.getMessage());
                     e.printStackTrace();
@@ -329,42 +240,6 @@ public class ClientConnection extends Thread
 
                     return;
                 }
-
-                logger.info("Received text : '"+msg+"'");
-
-                String[] sep = msg.split("::");
-
-                String command = sep[0];
-
-                switch (command)
-                {
-                    case "disconnect" :         clientDisconnected(msg);
-                                                break;
-
-                    case "client_details" :     initAfterConnectionQueryReceive(sep);
-                                                getProfilesFromClient();
-                                                getThemesFromClient();
-                                                break;
-
-                    case "profiles" :           registerProfilesFromClient(sep);
-                                                break;
-
-                    case "profile_details" :    registerProfileDetailsFromClient(sep);
-                                                break;
-
-                    case "action_details" :     registerActionToProfile(sep);
-                                                break;
-
-                    case "themes":              registerThemes(sep);
-                                                break;
-
-                    case "action_clicked":      actionClicked(sep[1], sep[2]);
-                                                break;
-
-                    default:                    logger.warning("Command '"+command+"' does not match records. Make sure client and server versions are equal.");
-
-
-                }
             }
         }
         catch (StreamPiException e)
@@ -380,17 +255,22 @@ public class ClientConnection extends Thread
         }
     }
 
-
-
-
-
-
     // commands
+
+    private void onActionIconReceived(Message message)
+    {
+        String[] s = message.getStringArrValue();
+
+        String profileID = s[0];
+        String actionID = s[1];
+
+        getClient().getProfileByID(profileID).getActionByID(actionID).setIcon(message.getByteArrValue());
+    }
 
     public void initAfterConnectionQuerySend() throws SevereException
     {
         logger.info("Asking client details ...");
-        writeToStream("get_client_details::");
+        sendMessage(new Message("get_client_details"));
     }
 
     public void disconnect() throws SevereException {
@@ -404,8 +284,10 @@ public class ClientConnection extends Thread
         stop.set(true);
 
         logger.info("Sending client disconnect message ...");
-        writeToStream("disconnect::"+message+"::");
 
+        Message m = new Message("disconnect");
+        m.setStringValue(message);
+        sendMessage(m);
 
         try
         {
@@ -419,13 +301,29 @@ public class ClientConnection extends Thread
         }
     }
 
-    public void clientDisconnected(String message)
+    public synchronized void sendMessage(Message message) throws SevereException
+    {
+        try
+        {
+            oos.writeObject(message);
+            oos.flush();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            throw new SevereException("Unable to write to io Stream!");
+        }
+    }
+
+    public void clientDisconnected(Message message)
     {
         stop.set(true);
         String txt = "Disconnected!";
 
-        if(!message.equals("disconnect::::"))
-            txt = "Message : "+message.split("::")[1];
+        String msg = message.getStringValue();
+
+        if(!msg.isBlank())
+            txt = "Message : "+msg;
 
         new StreamPiAlert("Disconnected from "+getClient().getNickName()+".", txt, StreamPiAlertType.WARNING).show();;
         exitAndRemove();
@@ -434,26 +332,26 @@ public class ClientConnection extends Thread
     public void getProfilesFromClient() throws StreamPiException
     {
         logger.info("Asking client to send profiles ...");
-        writeToStream("get_profiles::");
+        sendMessage(new Message("get_profiles"));
     }
 
     public void getThemesFromClient() throws StreamPiException
     {
         logger.info("Asking clients to send themes ...");
-        writeToStream("get_themes::");
+        sendMessage(new Message("get_themes"));
     }
 
-    public void registerThemes(String[] sep)
+    public void registerThemes(Message message)
     {
-        for(int i =1; i<sep.length;i++)
-        {
-            String[] internal = sep[i].split("__");
+        String[] r = message.getStringArrValue();
 
+        for(int i =0; i<(r.length);i+=4)
+        {
             ClientTheme clientTheme = new ClientTheme(
-                    internal[0],
-                    internal[1],
-                    internal[2],
-                    internal[3]
+                    r[i],
+                    r[i+1],
+                    r[i+2],
+                    r[i+3]
             );
 
             try
@@ -468,15 +366,13 @@ public class ClientConnection extends Thread
         }
     }
 
-    public void registerProfilesFromClient(String[] sep) throws StreamPiException
+    public void registerProfilesFromClient(Message message) throws StreamPiException
     {
         logger.info("Registering profiles ...");
 
-        int noOfProfiles = Integer.parseInt(sep[1]);
+        String[] r = message.getStringArrValue();
 
-        for(int i = 2; i<(noOfProfiles + 2); i++)
-        {
-            String profileID = sep[i];
+        for (String profileID : r) {
             getProfileDetailsFromClient(profileID);
         }
     }
@@ -484,20 +380,24 @@ public class ClientConnection extends Thread
     public void getProfileDetailsFromClient(String ID) throws StreamPiException
     {
         logger.info("Asking client to send details of profile : "+ID);
-        writeToStream("get_profile_details::"+ID+"::");
+        Message message = new Message("get_profile_details");
+        message.setStringValue(ID);
+        sendMessage(message);
     }
 
 
-    public void registerProfileDetailsFromClient(String[] sep)
+    public void registerProfileDetailsFromClient(Message message)
     {
-        String ID = sep[1];
+        String[] r = message.getStringArrValue();
+
+        String ID = r[0];
         logger.info("Registering details for profile : "+ID);
 
-        String name = sep[2];
-        int rows = Integer.parseInt(sep[3]);
-        int cols = Integer.parseInt(sep[4]);
-        int actionSize = Integer.parseInt(sep[5]);
-        int actionGap = Integer.parseInt(sep[6]);
+        String name = r[1];
+        int rows = Integer.parseInt(r[2]);
+        int cols = Integer.parseInt(r[3]);
+        int actionSize = Integer.parseInt(r[4]);
+        int actionGap = Integer.parseInt(r[5]);
 
 
         ClientProfile clientProfile = new ClientProfile(name, ID, rows, cols, actionSize, actionGap);
@@ -521,32 +421,34 @@ public class ClientConnection extends Thread
         writeToStream("get_action_icon::"+profileID+"::"+actionID);
     }*/
 
-    public synchronized void registerActionToProfile(String[] sep) throws StreamPiException
+    public synchronized void registerActionToProfile(Message message) throws StreamPiException
     {
-        String profileID = sep[1];
+        String[] r = message.getStringArrValue();
 
-        String ID = sep[2];
-        ActionType actionType = ActionType.valueOf(sep[3]);
+        String profileID = r[0];
 
-        //4 - Version
-        //5 - ModuleName
+        String ID = r[1];
+        ActionType actionType = ActionType.valueOf(r[2]);
+
+        //3 - Version
+        //4 - ModuleName
 
         //display
-        String bgColorHex = sep[6];
+        String bgColorHex = r[5];
 
         //icon
-        boolean isHasIcon = sep[7].equals("true");
-        boolean isShowIcon = sep[8].equals("true");
+        boolean isHasIcon = r[6].equals("true");
+        boolean isShowIcon = r[7].equals("true");
 
         //text
-        boolean isShowDisplayText = sep[9].equals("true");
-        String displayFontColor = sep[10];
-        String displayText = sep[11];
-        DisplayTextAlignment displayTextAlignment = DisplayTextAlignment.valueOf(sep[12]);
+        boolean isShowDisplayText = r[8].equals("true");
+        String displayFontColor = r[9];
+        String displayText = r[10];
+        DisplayTextAlignment displayTextAlignment = DisplayTextAlignment.valueOf(r[11]);
 
         //location
-        String row = sep[13];
-        String col = sep[14];
+        String row = r[12];
+        String col = r[13];
 
         Location location = new Location(Integer.parseInt(row), Integer.parseInt(col));
 
@@ -566,35 +468,28 @@ public class ClientConnection extends Thread
 
         action.setLocation(location);
 
+        String root = r[14];
+        action.setParent(root);
 
         //client properties
 
-        int clientPropertiesSize = Integer.parseInt(sep[15]);
-
-        String root = sep[17];
-        action.setParent(root);
-
-        String[] clientPropertiesRaw = sep[16].split("!!");
+        int clientPropertiesSize = Integer.parseInt(r[15]);
 
         ClientProperties clientProperties = new ClientProperties();
 
         if(actionType == ActionType.FOLDER)
             clientProperties.setDuplicatePropertyAllowed(true);
 
-        for(int i = 0;i<clientPropertiesSize; i++)
+        for(int i = 16;i<((clientPropertiesSize*2) + 16); i+=2)
         {
-            String[] clientPraw = clientPropertiesRaw[i].split("__");
-
-            Property property = new Property(clientPraw[0], Type.STRING);
-
-            if(clientPraw.length > 1)
-                property.setRawValue(clientPraw[1]);
+            Property property = new Property(r[i], Type.STRING);
+            property.setRawValue(r[i+1]);
 
             clientProperties.addProperty(property);
         }
 
         action.setClientProperties(clientProperties);
-        action.setModuleName(sep[5]);
+        action.setModuleName(r[4]);
 
         //set up action
 
@@ -602,7 +497,7 @@ public class ClientConnection extends Thread
 
         if(actionType == ActionType.NORMAL)
         {
-            NormalAction actionCopy = NormalActionPlugins.getInstance().getPluginByModuleName(sep[5]);
+            NormalAction actionCopy = NormalActionPlugins.getInstance().getPluginByModuleName(r[4]);
 
             if(actionCopy == null)
             {
@@ -610,7 +505,7 @@ public class ClientConnection extends Thread
             }
             else
             {
-                action.setVersion(new Version(sep[4]));
+                action.setVersion(new Version(r[3]));
 
                 //action.setHelpLink(actionCopy.getHelpLink());
 
@@ -680,105 +575,104 @@ public class ClientConnection extends Thread
 
     public void saveActionDetails(String profileID, Action action) throws SevereException
     {
-        StringBuilder finalQuery = new StringBuilder("save_action_details::");
+        ArrayList<String> a = new ArrayList<>();
 
-
-        //failsafes
-
-        if(action.getDisplayText().endsWith(":"))
-            action.setDisplayText(action.getDisplayText()+" ");
-
-
-        finalQuery.append(profileID)
-                .append("::")
-                .append(action.getID())
-                .append("::")
-                .append(action.getActionType())
-                .append("::");
+        a.add(profileID);
+        a.add(action.getID());
+        a.add(action.getActionType()+"");
 
         if(action.getActionType() == ActionType.NORMAL)
         {
-            finalQuery.append(action.getVersion().getText());
+            a.add(action.getVersion().getText());
             System.out.println("VERSION :sdd "+action.getVersion().getText());
         }
+        else
+        {
+            a.add("no");
+        }
 
-        finalQuery.append("::");
 
         if(action.getActionType() == ActionType.NORMAL)
-            finalQuery.append(action.getModuleName());
+        {
+            a.add(action.getModuleName());
+        }
+        else
+        {
+            a.add("nut");
+        }
 
-        finalQuery.append("::");
 
         //display
 
-        finalQuery.append(action.getBgColourHex())
-                .append("::");
+        a.add(action.getBgColourHex());
 
         //icon
-        finalQuery.append(action.isHasIcon())
-                .append("::")
-                .append(action.isShowIcon())
-                .append("::");
+        a.add(action.isHasIcon()+"");
+        a.add(action.isShowIcon()+"");
 
         //text
-        finalQuery.append(action.isShowDisplayText())
-                .append("::")
-                .append(action.getDisplayTextFontColourHex())
-                .append("::")
-                .append(action.getDisplayText())
-                .append("::")
-                .append(action.getDisplayTextAlignment())
-                .append("::");
+        a.add(action.isShowDisplayText()+"");
+        a.add(action.getDisplayTextFontColourHex());
+        a.add(action.getDisplayText());
+        a.add(action.getDisplayTextAlignment()+"");
 
         //location
 
         if(action.getLocation() == null)
-            finalQuery.append("-1::-1::");
+        {
+            a.add("-1");
+            a.add("-1");
+        }
         else
-            finalQuery.append(action.getLocation().getRow())
-                    .append("::")
-                    .append(action.getLocation().getCol())
-                    .append("::");
+        {
+            a.add(action.getLocation().getRow()+"");
+            a.add(action.getLocation().getCol()+"");
+        }
+
+        a.add(action.getParent());
 
         //client properties
 
         ClientProperties clientProperties = action.getClientProperties();
 
-        finalQuery.append(clientProperties.getSize())
-                .append("::");
+
+        a.add(clientProperties.getSize()+"");
 
         for(Property property : clientProperties.get())
         {
-            finalQuery.append(property.getName())
-                    .append("__")
-                    .append(property.getRawValue())
-                    .append("__");
-
-            finalQuery.append("!!");
+            a.add(property.getName());
+            a.add(property.getRawValue());
         }
 
-        finalQuery.append("::")
-                .append(action.getParent())
-                .append("::");
 
-        writeToStream(finalQuery.toString());
+        Message message = new Message("save_action_details");
+        String[] x = new String[a.size()];
+        x = a.toArray(x);
 
+        message.setStringArrValue(x);
+        sendMessage(message);
     }
 
     public void deleteAction(String profileID, String actionID) throws SevereException
     {
-        writeToStream("delete_action::"+profileID+"::"+actionID);
+        Message message = new Message("delete_action");
+        message.setStringArrValue(profileID, actionID);
+        sendMessage(message);
     }
 
     public void saveClientDetails(String clientNickname, String screenWidth, String screenHeight, String defaultProfileID,
                                   String defaultThemeFullName) throws SevereException
     {
-        writeToStream("save_client_details::"+
-                clientNickname+"::"+
-                screenWidth+"::"+
-                screenHeight+"::"+
-                defaultProfileID+"::"+
-                defaultThemeFullName+"::");
+        Message message = new Message("save_client_details");
+        message.setStringArrValue(
+                clientNickname,
+                screenWidth,
+                screenHeight,
+                defaultProfileID,
+                defaultThemeFullName
+        );
+
+        sendMessage(message);
 
         client.setNickName(clientNickname);
         client.setStartupDisplayWidth(Double.parseDouble(screenWidth));
@@ -799,24 +693,36 @@ public class ClientConnection extends Thread
         else
             client.addProfile(clientProfile);
 
-        writeToStream("save_client_profile::"+
-                clientProfile.getID()+"::"+
-                clientProfile.getName()+"::"+
-                clientProfile.getRows()+"::"+
-                clientProfile.getCols()+"::"+
-                clientProfile.getActionSize()+"::"+
-                clientProfile.getActionGap()+"::");
+        Message message = new Message("save_client_profile");
+
+        message.setStringArrValue(
+                clientProfile.getID(),
+                clientProfile.getName(),
+                clientProfile.getRows()+"",
+                clientProfile.getCols()+"",
+                clientProfile.getActionSize()+"",
+                clientProfile.getActionGap()+""
+        );
+
+        sendMessage(message);
     }
 
     public void deleteProfile(String ID) throws SevereException
     {
-        writeToStream("delete_profile::"+ID+"::");
+        Message message = new Message("delete_profile");
+        message.setStringValue(ID);
+        sendMessage(message);
     }
 
-    public void actionClicked(String profileID, String actionID) {
+    public void actionClicked(Message message) {
 
         try
         {
+            String[] r = message.getStringArrValue();
+
+            String profileID = r[0];
+            String actionID = r[1];
+
             Action action = client.getProfileByID(profileID).getActionByID(actionID);
 
             if(action.getActionType() == ActionType.NORMAL)
@@ -870,8 +776,8 @@ public class ClientConnection extends Thread
 
     public void sendActionFailed(String profileID, String actionID) throws SevereException {
         logger.info("Sending failed status ...");
-        writeToStream("action_failed::"+
-                profileID+"::"+
-                actionID+"::");
+        Message message = new Message("action_failed");
+        message.setStringArrValue(profileID, actionID);
+        sendMessage(message);
     }
 }
