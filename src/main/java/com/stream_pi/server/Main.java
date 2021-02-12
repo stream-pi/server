@@ -32,7 +32,6 @@ public class Main extends Application {
      * Then a new instance of controller is created, and then initialised.
      */
     public void start(Stage stage) {
-
         for(String eachArg : getParameters().getRaw())
         {
             String[] r = eachArg.split("=");

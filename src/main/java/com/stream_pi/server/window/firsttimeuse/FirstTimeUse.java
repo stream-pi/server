@@ -35,17 +35,6 @@ public class FirstTimeUse extends VBox{
 
         VBox.setVgrow(stackPane, Priority.ALWAYS);
 
-        welcomePane = new WelcomePane();
-        licensePane = new LicensePane();
-        finalConfigPane = new FinalConfigPane(exceptionAndAlertHandler, serverListener);
-
-        stackPane.getChildren().addAll(
-            welcomePane,
-            licensePane,
-            finalConfigPane
-        );
-
-
         nextButton = new Button("Next");
         nextButton.setOnAction(event-> onNextButtonClicked());
 
@@ -55,6 +44,16 @@ public class FirstTimeUse extends VBox{
 
         HBox buttonBar = new HBox(previousButton, SpaceFiller.horizontal(), nextButton);
         buttonBar.setSpacing(10.0);
+
+        welcomePane = new WelcomePane();
+        licensePane = new LicensePane();
+        finalConfigPane = new FinalConfigPane(exceptionAndAlertHandler, serverListener, nextButton);
+
+        stackPane.getChildren().addAll(
+            welcomePane,
+            licensePane,
+            finalConfigPane
+        );
 
         getChildren().addAll(headingLabel, stackPane, buttonBar);
 
@@ -106,8 +105,9 @@ public class FirstTimeUse extends VBox{
 
             headingLabel.setText("");
 
-            nextButton.setDisable(false);
-            previousButton.setDisable(true);
+            nextButton.setText("Next");
+            nextButton.setOnAction(event-> onNextButtonClicked());
+            previousButton.setVisible(false);
         }
         else if (windowName == WindowName.LICENSE)
         {
@@ -119,8 +119,9 @@ public class FirstTimeUse extends VBox{
 
             headingLabel.setText("License Agreement");
 
-            nextButton.setDisable(false);
-            previousButton.setDisable(false);
+            nextButton.setText("Agree and Continue");
+            nextButton.setOnAction(event-> onNextButtonClicked());
+            previousButton.setVisible(true);
         }
         else if (windowName == WindowName.FINAL)
         {
@@ -132,8 +133,8 @@ public class FirstTimeUse extends VBox{
             
             headingLabel.setText("Finishing up ...");
 
-            nextButton.setDisable(true);
-            previousButton.setDisable(false);
+            finalConfigPane.makeChangesToNextButton();
+            previousButton.setVisible(true);
         }
     }
 

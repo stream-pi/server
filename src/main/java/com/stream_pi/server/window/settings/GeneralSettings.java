@@ -331,17 +331,12 @@ public class GeneralSettings extends VBox {
 
                     if(!closeOnX)
                     {
-                        System.out.println("XYZ");
                         if(!SystemTray.isSupported()) 
                         {
                             StreamPiAlert alert = new StreamPiAlert("Not Supported", "Tray System not supported on this platform ", StreamPiAlertType.ERROR);
                             alert.show();
 
                             closeOnX = true;
-                        }  
-                        else
-                        {
-                            System.out.println("YES");
                         }
                     }
 

@@ -8,6 +8,8 @@ module com.stream_pi.server {
 
     requires org.kordamp.ikonli.javafx;
 
+    requires org.apache.commons.lang3;
+
     requires java.xml;
 
     requires javafx.base;

@@ -22,14 +22,17 @@ public class FinalConfigPane extends VBox
 {
     private TextField serverNicknameTextField;
     private TextField serverPortTextField;
+    private Button nextButton;
 
     private ExceptionAndAlertHandler exceptionAndAlertHandler;
     private ServerListener serverListener;
 
-    public FinalConfigPane(ExceptionAndAlertHandler exceptionAndAlertHandler, ServerListener serverListener)
+    public FinalConfigPane(ExceptionAndAlertHandler exceptionAndAlertHandler, ServerListener serverListener,
+                           Button nextButton)
     {
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
         this.serverListener = serverListener;
+        this.nextButton = nextButton;
 
         getStyleClass().add("first_time_use_pane_final_config");
 
@@ -44,16 +47,17 @@ public class FinalConfigPane extends VBox
         HBoxInputBox serverNickNameInputBox = new HBoxInputBox("Server Nickname", serverNicknameTextField, 200);
         HBoxInputBox serverPortInputBox = new HBoxInputBox("Server Port", serverPortTextField);
 
-        Button confirmButton = new Button("Confirm");
-        confirmButton.setOnAction(event -> onConfirmButtonClicked());
-        HBox bBar = new HBox(confirmButton);
-        bBar.setAlignment(Pos.CENTER_RIGHT);
-
-        getChildren().addAll(label, serverNickNameInputBox, serverPortInputBox, SpaceFiller.vertical(), bBar);
+        getChildren().addAll(label, serverNickNameInputBox, serverPortInputBox);
 
         setSpacing(10.0);
 
         setVisible(false);
+    }
+
+    public void makeChangesToNextButton()
+    {
+        nextButton.setText("Confirm");
+        nextButton.setOnAction(event -> onConfirmButtonClicked());
     }
 
     private void onConfirmButtonClicked()

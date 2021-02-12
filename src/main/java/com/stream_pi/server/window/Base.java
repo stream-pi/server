@@ -11,6 +11,7 @@ import com.stream_pi.theme_api.Themes;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
+import com.stream_pi.util.iohelper.IOHelper;
 import com.stream_pi.util.loggerhelper.StreamPiLogFileHandler;
 
 import javafx.application.HostServices;
@@ -19,6 +20,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 public abstract class Base extends StackPane implements ExceptionAndAlertHandler, ServerListener {
@@ -77,7 +79,8 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
             logFileHandler.close();
     }
     
-    public void initBase() throws SevereException {
+    public void initBase() throws SevereException
+    {
         initLogger();
 
         getChildren().clear();
@@ -89,15 +92,15 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         getStage().setMinWidth(500);
         getStage().setMinHeight(500);
 
+        checkPrePathDirectory();
+
         config = Config.getInstance();
 
         stage.setWidth(config.getStartupWindowWidth());
         stage.setHeight(config.getStartupWindowHeight());
         stage.centerOnScreen();
 
-
         serverInfo = ServerInfo.getInstance();
-
 
         initThemes();
 
@@ -121,11 +124,31 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
     }
 
+    private void checkPrePathDirectory() throws SevereException
+    {
+        try {
+            File filex = new File(ServerInfo.getInstance().getPrePath());
+
+            if(!filex.exists())
+            {
+                filex.mkdirs();
+                IOHelper.unzip(Main.class.getResourceAsStream("Default.obj"), ServerInfo.getInstance().getPrePath());
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            getStage().show();
+            throw new SevereException(e.getMessage());
+        }
+    }
+
     public void initThemes() throws SevereException {
         clearStylesheets();
         registerThemes();
-        applyDefaultTheme();
         applyDefaultStylesheet();
+        applyDefaultTheme();
+        applyDefaultIconsStylesheet();
     }
 
     public Stage getStage()
@@ -141,6 +164,12 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         getStylesheets().add(Main.class.getResource("style.css").toExternalForm());
 
         logger.info("... Done!");
+    }
+
+    public void applyDefaultIconsStylesheet()
+    {
+        Font.loadFont(Main.class.getResourceAsStream("Roboto.ttf"), 13);
+        getStylesheets().add(Main.class.getResource("default_icons.css").toExternalForm());
     }
 
     public DashboardBase getDashboardPane()

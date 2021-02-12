@@ -47,8 +47,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
 {
     MainServer mainServer;
 
-    final SystemTray systemTray;
-
     public void setupDashWindow() throws SevereException
     {
         try
@@ -63,29 +61,11 @@ public class Controller extends Base implements PropertySaver, ServerConnection
         }
     }
 
-    private void checkPrePathDirectory() throws SevereException
-    {
-        try {
-            File filex = new File(ServerInfo.getInstance().getPrePath());
-
-            if(!filex.exists())
-            { 
-                filex.mkdirs();
-                IOHelper.unzip(Main.class.getResourceAsStream("Default.obj"), ServerInfo.getInstance().getPrePath());
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            throw new SevereException(e.getMessage());
-        }
-    }
 
     @Override
     public void init()
     {
         try {
-            checkPrePathDirectory();
 
             initBase();
             setupDashWindow();
@@ -145,7 +125,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     {
         try
         {
-            if(ServerInfo.getInstance().isStartMinimised())
+            if(ServerInfo.getInstance().isStartMinimised() && SystemTray.isSupported())
                 minimiseApp();
             else
                 getStage().show();
@@ -343,7 +323,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
 
 
     public Controller(){
-        systemTray = SystemTray.getSystemTray();
         mainServer = null;
     }
 
@@ -351,22 +330,24 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     {
         try
         {
-            if(Config.getInstance().getCloseOnX())
+            if(!Config.getInstance().getCloseOnX())
             {
-                getConfig().setStartupWindowSize(
+                if(SystemTray.isSupported())
+                {
+                    minimiseApp();
+                    event.consume();
+                    return;
+                }
+            }
+
+            getConfig().setStartupWindowSize(
                     getWidth(),
                     getHeight()
-                );
-                getConfig().save();
-                onQuitApp();
-                NormalActionPlugins.getInstance().shutDownActions();
-                Platform.exit();
-            }
-            else
-            {
-                minimiseApp();
-                event.consume();
-            }
+            );
+            getConfig().save();
+            onQuitApp();
+            NormalActionPlugins.getInstance().shutDownActions();
+            Platform.exit();
         }
         catch (SevereException e)
         {
@@ -396,20 +377,13 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     {
         try
         {
+            SystemTray systemTray = SystemTray.getSystemTray();
 
-            if(SystemTray.isSupported())
-            {
-                if(getTrayIcon() == null)
-                    initIconTray();
-                
-                systemTray.add(getTrayIcon());   
-                //getStage().setIconified(true);
-                getStage().hide(); 
-            }
-            else
-            {
-                new StreamPiAlert("System Tray Error", "Your System does not support System Tray", StreamPiAlertType.ERROR).show();
-            }
+            if(getTrayIcon() == null)
+                initIconTray(systemTray);
+
+            systemTray.add(getTrayIcon());
+            getStage().hide();
         }
         catch(Exception e)
         {
@@ -417,7 +391,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
         }
     }
 
-    public void initIconTray()
+    public void initIconTray(SystemTray systemTray)
     {
 
         Platform.setImplicitExit(false);
