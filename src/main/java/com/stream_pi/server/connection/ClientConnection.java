@@ -24,7 +24,6 @@ import com.stream_pi.util.platform.Platform;
 import com.stream_pi.util.platform.ReleaseStatus;
 import com.stream_pi.util.version.Version;
 import javafx.concurrent.Task;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.*;
 import java.lang.reflect.Array;
@@ -120,7 +119,7 @@ public class ClientConnection extends Thread
 
         Message message = new Message("action_icon");
         message.setStringArrValue(profileID, actionID);
-        message.setByteArrValue(ArrayUtils.toObject(icon));
+        message.setByteArrValue(icon);
         sendMessage(message);
     }
 
@@ -274,7 +273,7 @@ public class ClientConnection extends Thread
         String profileID = s[0];
         String actionID = s[1];
 
-        getClient().getProfileByID(profileID).getActionByID(actionID).setIcon(ArrayUtils.toPrimitive(message.getByteArrValue()));
+        getClient().getProfileByID(profileID).getActionByID(actionID).setIcon(message.getByteArrValue());
     }
 
     public void initAfterConnectionQuerySend() throws SevereException
