@@ -12,8 +12,10 @@ import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.iohelper.IOHelper;
+import com.stream_pi.util.loggerhelper.StreamPiLogFallbackHandler;
 import com.stream_pi.util.loggerhelper.StreamPiLogFileHandler;
 
+import com.stream_pi.util.platform.Platform;
 import javafx.application.HostServices;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
@@ -54,37 +56,57 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
     private Logger logger = null;
     private StreamPiLogFileHandler logFileHandler = null;
-    
+
+
+    private StreamPiLogFallbackHandler logFallbackHandler = null;
+
+    @Override
     public void initLogger() throws SevereException
     {
         try
         {
-            if(logger != null)
+            if(logger != null || logFileHandler != null)
                 return;
 
+            closeLogger();
             logger = Logger.getLogger("");
-            logFileHandler = new StreamPiLogFileHandler(ServerInfo.getInstance().getPrePath()+"../streampi.log");
-            logger.addHandler(logFileHandler);
+
+            if(new File(ServerInfo.getInstance().getPrePath()).getAbsoluteFile().getParentFile().canWrite())
+            {
+                String path = ServerInfo.getInstance().getPrePath()+"../streampi.log";
+
+                if(ServerInfo.getInstance().getPlatformType() == Platform.ANDROID)
+                    path = ServerInfo.getInstance().getPrePath()+"streampi.log";
+
+                logFileHandler = new StreamPiLogFileHandler(path);
+                logger.addHandler(logFileHandler);
+            }
+            else
+            {
+                logFallbackHandler = new StreamPiLogFallbackHandler();
+                logger.addHandler(logFallbackHandler);
+            }
+
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            throw new SevereException("Cant get logger started!");
+
+            logFallbackHandler = new StreamPiLogFallbackHandler();
+            logger.addHandler(logFallbackHandler);
         }
     }
-    
+
     public void closeLogger()
     {
         if(logFileHandler != null)
             logFileHandler.close();
+        else if(logFallbackHandler != null)
+            logFallbackHandler.close();
     }
     
     public void initBase() throws SevereException
     {
-        initLogger();
-
-        getChildren().clear();
-
         stage = (Stage) getScene().getWindow();
 
         getStage().getIcons().add(new Image(Main.class.getResourceAsStream("app_icon.png")));
@@ -92,17 +114,8 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         getStage().setMinWidth(500);
         getStage().setMinHeight(500);
 
-        checkPrePathDirectory();
-
-        config = Config.getInstance();
-
-        stage.setWidth(config.getStartupWindowWidth());
-        stage.setHeight(config.getStartupWindowHeight());
-        stage.centerOnScreen();
-
         serverInfo = ServerInfo.getInstance();
 
-        initThemes();
 
         settingsBase = new SettingsBase(getHostServices(), this, this);
         settingsBase.prefWidthProperty().bind(widthProperty());
@@ -117,7 +130,24 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
         StreamPiAlert.setParent(alertStackPane);
 
-        getChildren().addAll(settingsBase, dashboardBase, alertStackPane);
+        getChildren().clear();
+        getChildren().addAll(alertStackPane);
+
+
+        initLogger();
+
+        checkPrePathDirectory();
+
+        getChildren().addAll(settingsBase, dashboardBase);
+
+        config = Config.getInstance();
+
+        initThemes();
+
+        stage.setWidth(config.getStartupWindowWidth());
+        stage.setHeight(config.getStartupWindowHeight());
+        stage.centerOnScreen();
+
 
         dashboardBase.toFront();
 
@@ -126,21 +156,35 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
     private void checkPrePathDirectory() throws SevereException
     {
-        try {
+        try
+        {
             File filex = new File(ServerInfo.getInstance().getPrePath());
 
-            if(!filex.exists())
+            if(filex.getAbsoluteFile().getParentFile().canWrite())
             {
-                filex.mkdirs();
-                IOHelper.unzip(Main.class.getResourceAsStream("Default.obj"), ServerInfo.getInstance().getPrePath());
+                if(!filex.exists())
+                {
+                    filex.mkdirs();
+                    IOHelper.unzip(Main.class.getResourceAsStream("Default.obj"), ServerInfo.getInstance().getPrePath());
+                }
+            }
+            else
+            {
+                setPrefSize(300,300);
+                clearStylesheets();
+                applyDefaultStylesheet();
+                applyDefaultIconsStylesheet();
+                getStage().show();
+                throw new SevereException("No storage permission. Give it!");
             }
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            getStage().show();
             throw new SevereException(e.getMessage());
         }
+
+
     }
 
     public void initThemes() throws SevereException {

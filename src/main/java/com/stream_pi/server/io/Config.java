@@ -26,7 +26,8 @@ import com.stream_pi.util.xmlconfighelper.XMLConfigHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class Config {
+public class Config
+{
 
     private static Config instance = null;
   
@@ -94,7 +95,7 @@ public class Config {
     //default getters
     public String getDefaultServerName()
     {
-        return "StreamPi Server";
+        return "Stream-Pi Server";
     }
 
     public int getDefaultPort()
@@ -149,7 +150,7 @@ public class Config {
     //default getters
     public String getDefaultCurrentThemeFullName()
     {
-        return "com.StreamPi.DefaultLight";
+        return "com.stream_pi.defaultlight";
     }
 
     public String getDefaultThemesPath()

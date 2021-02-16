@@ -94,6 +94,7 @@ public class FinalConfigPane extends VBox
                 Config.getInstance().save();
 
                 serverListener.othInit();
+                serverListener.initLogger();
 
                 ((Stage) getScene().getWindow()).close();
             }
