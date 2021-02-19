@@ -51,7 +51,6 @@ public class ClientConnection extends Thread
     public ClientConnection(Socket socket, ServerListener serverListener, ExceptionAndAlertHandler exceptionAndAlertHandler)
     {
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
-        //actionIconsToBeSent = new ArrayList__();
         this.socket = socket;
 
         this.serverListener = serverListener;
