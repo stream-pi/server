@@ -4,6 +4,7 @@ import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.SevereException;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -92,8 +93,11 @@ public class MainServer extends Thread{
         catch (SocketException e)
         {
             logger.info("Main Server stopped accepting calls ...");
-            e.printStackTrace(); //more likely stopped listening;
-        } catch (IOException e) {
+            exceptionAndAlertHandler.handleSevereException(new SevereException("Sorry","Unable to Start Server. Check logs, stacktrace. \n\n"+e.getMessage()));
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
             exceptionAndAlertHandler.handleSevereException(new SevereException("MainServer io Exception occurred!"));
             e.printStackTrace();
         }
