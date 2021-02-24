@@ -201,7 +201,7 @@ public class OnSaveActionTask extends Task<Void>
                 Platform.runLater(()->{
                     actionBox.clear();
                     actionBox.setAction(action);
-                    actionBox.baseInit();
+                    //actionBox.baseInit();
                     actionBox.init();
                 });
 

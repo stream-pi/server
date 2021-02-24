@@ -25,6 +25,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -384,6 +385,10 @@ public class Controller extends Base implements PropertySaver, ServerConnection
 
             systemTray.add(getTrayIcon());
             getStage().hide();
+
+            getStage().setOnShown(windowEvent -> {
+                systemTray.remove(getTrayIcon());
+            });
         }
         catch(Exception e)
         {
@@ -400,9 +405,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
         
         MenuItem showItem = new MenuItem("Show");
         showItem.addActionListener(l->{
-            systemTray.remove(getTrayIcon());
             Platform.runLater(()->{
-                //getStage().setIconified(false);
                 getStage().show();
             });
         });
@@ -438,15 +441,18 @@ public class Controller extends Base implements PropertySaver, ServerConnection
 
     @Override
     public void handleMinorException(MinorException e) {
-        getLogger().log(Level.SEVERE, e.getMessage());
+        getLogger().log(Level.SEVERE, e.getMessage(), e);
         e.printStackTrace();
 
-        Platform.runLater(()-> new StreamPiAlert(e.getTitle(), e.getShortMessage(), StreamPiAlertType.WARNING).show());
+
+        Platform.runLater(()->{
+            new StreamPiAlert(e.getTitle(), e.getShortMessage(), StreamPiAlertType.WARNING).show();
+        });
     }
 
     @Override
     public void handleSevereException(SevereException e) {
-        getLogger().log(Level.SEVERE, e.getMessage());
+        getLogger().log(Level.SEVERE, e.getMessage(), e);
         e.printStackTrace();
     
         Platform.runLater(()->{
@@ -502,6 +508,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
         Platform.runLater(() -> {
             getDashboardPane().getClientDetailsPane().refresh();
             getDashboardPane().getActionGridPane().clear();
+            getDashboardPane().getActionGridPane().setFreshRender(true);
             getDashboardPane().getActionDetailsPane().clear();
             getSettingsPane().getClientsSettings().loadData();
         });

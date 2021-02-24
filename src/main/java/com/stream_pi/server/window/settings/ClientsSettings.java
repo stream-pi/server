@@ -339,7 +339,7 @@ public class ClientsSettings extends VBox {
         }
 
         public void saveClientAndProfileDetails() throws SevereException, CloneNotSupportedException, MinorException {
-            System.out.println("IIN");
+
             getConnection().saveClientDetails(
                     nicknameTextField.getText(),
                     startupWindowWidthTextField.getText(),

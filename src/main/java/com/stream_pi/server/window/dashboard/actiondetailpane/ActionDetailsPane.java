@@ -558,6 +558,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         return combineAction;
     }
 
+    @Override
     public void onOpenFolderButtonClicked()
     {
         FolderAction folderAction = getActionAsFolderAction(action);

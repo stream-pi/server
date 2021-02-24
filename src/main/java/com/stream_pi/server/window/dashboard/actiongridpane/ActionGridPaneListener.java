@@ -7,4 +7,8 @@ public interface ActionGridPaneListener {
     void addActionToCurrentClientProfile(Action newAction);
 
     void renderFolder(FolderAction action);
+
+    String getCurrentParent();
+
+    void setCurrentParent(String currentParent);
 }

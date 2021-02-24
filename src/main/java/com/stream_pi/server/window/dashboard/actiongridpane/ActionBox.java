@@ -55,11 +55,12 @@ public class ActionBox extends StackPane{
 
     public void clear()
     {
-        setAction(null);
-        setInvalid(false);
-        setBackground(Background.EMPTY);
         setStyle(null);
+        setAction(null);
+        getStyleClass().clear();
+        setBackground(Background.EMPTY);
         getChildren().clear();
+        baseInit();
     }
 
     public void baseInit()
@@ -79,7 +80,7 @@ public class ActionBox extends StackPane{
         setMaxSize(size, size);
 
         getStyleClass().add("action_box");
-        getStyleClass().add("action_box_icon_not_present");
+        setIcon(null);
         getStyleClass().add("action_box_valid");
 
 
@@ -104,7 +105,7 @@ public class ActionBox extends StackPane{
                     action.setLocation(new Location(getRow(),
                             getCol()));
 
-                    action.setParent(getStreamPiParent());
+                    action.setParent(actionGridPaneListener.getCurrentParent());
 
                     action.setIDRandom();
 
@@ -143,7 +144,7 @@ public class ActionBox extends StackPane{
                         Action newAction = (Action) action.clone();
 
                         newAction.setIDRandom();
-                        newAction.setParent(getStreamPiParent());
+                        newAction.setParent(actionGridPaneListener.getCurrentParent());
 
                         content.put(Action.getDataFormat(), newAction);
 
@@ -211,11 +212,15 @@ public class ActionBox extends StackPane{
 
     private int size;
     private ActionGridPaneListener actionGridPaneListener;
-    public ActionBox(int size, ActionDetailsPaneListener actionDetailsPaneListener, ActionGridPaneListener actionGridPaneListener)
+    public ActionBox(int size, ActionDetailsPaneListener actionDetailsPaneListener, ActionGridPaneListener actionGridPaneListener,
+                     int col, int row)
     {
         this.actionGridPaneListener = actionGridPaneListener;
         this.actionDetailsPaneListener = actionDetailsPaneListener;
         this.size = size;
+
+        this.col = col;
+        this.row = row;
         baseInit();
     }
 
@@ -244,7 +249,6 @@ public class ActionBox extends StackPane{
             getStyleClass().add("action_box_icon_present");
             getStyleClass().remove("action_box_icon_not_present");
 
-
             setBackground(
                     new Background(
                             new BackgroundImage(new Image(
@@ -257,20 +261,12 @@ public class ActionBox extends StackPane{
         }
     }
 
-    private Action action;
+    private Action action = null;
     private ExceptionAndAlertHandler exceptionAndAlertHandler;
 
-    private String parent;
 
-    public String getStreamPiParent() {
-        return parent;
-    }
-
-    public void setStreamPiParent(String parent) {
-        this.parent = parent;
-    }
-
-    public ActionBox(int size, Action action, ActionDetailsPaneListener actionDetailsPaneListener, ExceptionAndAlertHandler exceptionAndAlertHandler, ActionGridPaneListener actionGridPaneListener)
+    public ActionBox(int size, Action action, ActionDetailsPaneListener actionDetailsPaneListener, ExceptionAndAlertHandler exceptionAndAlertHandler, ActionGridPaneListener actionGridPaneListener,
+                     int col, int row)
     {
         this.actionGridPaneListener = actionGridPaneListener;
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
@@ -278,12 +274,18 @@ public class ActionBox extends StackPane{
         this.actionDetailsPaneListener = actionDetailsPaneListener;
         this.size = size;
 
+        this.col = col;
+        this.row = row;
 
 
         baseInit();
 
         init();
 
+    }
+
+    public Action getAction() {
+        return action;
     }
 
     public void setAction(Action action)

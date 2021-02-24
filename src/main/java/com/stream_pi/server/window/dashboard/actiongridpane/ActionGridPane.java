@@ -47,6 +47,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
     private String currentParent;
 
+    @Override
     public void setCurrentParent(String currentParent) {
         this.currentParent = currentParent;
     }
@@ -81,6 +82,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     }
 
 
+    @Override
     public String getCurrentParent() {
         return currentParent;
     }
@@ -108,19 +110,49 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         return stackPane;
     }
 
-    public void renderGrid() throws SevereException {
-        clear();
+    private ActionBox[][] actionBoxes;
+    private boolean isFreshRender = true;
+    private Node folderBackButton = null;
+    public void renderGrid() throws SevereException
+    {
 
         actionsGridPane.setHgap(Config.getInstance().getActionGridActionGap());
         actionsGridPane.setVgap(Config.getInstance().getActionGridActionGap());
 
+        if(isFreshRender)
+        {
+            clear();
+            actionBoxes = new ActionBox[cols][rows];
+        }
+
         boolean isFolder = false;
 
-        if(!getCurrentParent().equals("root"))
+        if(getCurrentParent().equals("root"))
+        {
+            if(folderBackButton != null)
+            {
+                actionsGridPane.getChildren().remove(folderBackButton);
+                folderBackButton = null;
+
+                actionBoxes[0][0] = addBlankActionBox(0,0);
+            }
+        }
+        else
         {
             isFolder = true;
 
-            actionsGridPane.add(getFolderBackButton(), 0,0);
+            if(folderBackButton != null)
+            {
+                actionsGridPane.getChildren().remove(folderBackButton);
+                folderBackButton = null;
+            }
+            else
+            {
+                actionsGridPane.getChildren().remove(actionBoxes[0][0]);
+            }
+
+            folderBackButton = getFolderBackButton();
+            actionsGridPane.add(folderBackButton, 0,0);
         }
 
         for(int row = 0; row<rows; row++)
@@ -130,16 +162,34 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
                 if(row == 0 && col == 0 && isFolder)
                     continue;
 
-                ActionBox actionBox = new ActionBox(Config.getInstance().getActionGridActionSize(), actionDetailsPaneListener, this);
-
-                actionBox.setStreamPiParent(currentParent);
-                actionBox.setRow(row);
-                actionBox.setCol(col);
-
-                actionsGridPane.add(actionBox, row, col);
-
+                if(isFreshRender)
+                {
+                    actionBoxes[col][row] = addBlankActionBox(col, row);
+                }
+                else
+                {
+                    if(actionBoxes[col][row].getAction() != null)
+                    {
+                        actionBoxes[col][row].clear();
+                    }
+                }
             }
         }
+
+        isFreshRender = false;
+    }
+
+    public void setFreshRender(boolean freshRender)
+    {
+        isFreshRender = freshRender;
+    }
+
+    public ActionBox addBlankActionBox(int col, int row) throws SevereException {
+        ActionBox actionBox = new ActionBox(Config.getInstance().getActionGridActionSize(), actionDetailsPaneListener, this,
+                col, row);
+
+        actionsGridPane.add(actionBox, row, col);
+        return actionBox;
     }
 
     public void renderActions()
@@ -198,7 +248,15 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         }
 
 
-        ActionBox actionBox = new ActionBox(Config.getInstance().getActionGridActionSize(), action, actionDetailsPaneListener, exceptionAndAlertHandler, this);
+        Location location = action.getLocation();
+
+        ActionBox actionBox = actionBoxes[location.getCol()][location.getRow()];
+        actionBox.clear();
+        actionBox.setAction(action);
+
+        actionBox.init();
+
+        /*ActionBox actionBox = new ActionBox(Config.getInstance().getActionGridActionSize(), action, actionDetailsPaneListener, exceptionAndAlertHandler, this);
 
         Location location = action.getLocation();
 
@@ -217,7 +275,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         }
 
         System.out.println(location.getCol()+","+location.getRow());
-        actionsGridPane.add(actionBox, location.getRow(), location.getCol());
+        actionsGridPane.add(actionBox, location.getRow(), location.getCol());*/
 
     }
 
