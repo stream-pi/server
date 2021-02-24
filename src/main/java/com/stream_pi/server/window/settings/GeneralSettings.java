@@ -24,6 +24,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
+import org.json.JSONObject;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.awt.SystemTray;
@@ -395,14 +396,13 @@ public class GeneralSettings extends VBox {
             @Override
             protected Void call() throws Exception {
 
-                    /*try
+                    try
                 {
                     Platform.runLater(()->checkForUpdatesButton.setDisable(true));
 
 
                     String jsonRaw = readUrl("https://stream-pi.com/API/get_latest.php?TYPE=SERVER");
 
-                    System.out.println(jsonRaw);
                     JSONObject jsonObject = new JSONObject(jsonRaw);
 
                     String latestVersionRaw = jsonObject.getString("Version");
@@ -446,7 +446,7 @@ public class GeneralSettings extends VBox {
                 finally
                 {
                     Platform.runLater(()->checkForUpdatesButton.setDisable(false));
-                }*/
+                }
                 return null;
             }
         }).start();;
