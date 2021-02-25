@@ -55,14 +55,16 @@ public class MainServer extends Thread{
             logger.info("Stopping listening for connections ...");
             if(serverSocket!=null)
                 if(!serverSocket.isClosed())
+                {
+                    stop.set(true);
                     serverSocket.close();
+                }
         } catch (IOException e) {
             e.printStackTrace();
         }
         finally {
             logger.info("... Done!");
         }
-        stop.set(true);
     }
 
     @Override
@@ -72,12 +74,6 @@ public class MainServer extends Thread{
         try {
 
             logger.info("Starting server on port "+port+" ...");
-            /*Server server = ServerBuilder.forPort(port)
-                    .addService(new ConnectionService(serverListener))
-                    .build();
-
-            server.start();
-            logger.info("... Done!");*/
 
             serverSocket = new ServerSocket(port);
 
@@ -92,9 +88,12 @@ public class MainServer extends Thread{
         }
         catch (SocketException e)
         {
-            logger.info("Main Server stopped accepting calls ...");
-            exceptionAndAlertHandler.handleSevereException(new SevereException("Sorry","Unable to Start Server. Check logs, stacktrace. \n\n"+e.getMessage()));
-            e.printStackTrace();
+            if(!e.getMessage().contains("Socket closed"))
+            {
+                logger.info("Main Server stopped accepting calls ...");
+                exceptionAndAlertHandler.handleSevereException(new SevereException("Sorry","Another Server Instance probably running. Unable to Start Server \n\n"+e.getMessage()));
+                e.printStackTrace();
+            }
         }
         catch (IOException e)
         {

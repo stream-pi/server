@@ -7,9 +7,10 @@ import com.stream_pi.server.info.ServerInfo;
 
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertType;
+import com.stream_pi.util.checkforupdates.CheckForUpdates;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
-import com.stream_pi.util.startatboot.SoftwareType;
+import com.stream_pi.util.platform.PlatformType;
 import com.stream_pi.util.startatboot.StartAtBoot;
 import com.stream_pi.util.version.Version;
 import javafx.application.HostServices;
@@ -24,7 +25,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
-import org.json.JSONObject;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.awt.SystemTray;
@@ -113,6 +113,12 @@ public class GeneralSettings extends VBox {
         setPadding(new Insets(10));
 
 
+    }
+
+    private void checkForUpdates()
+    {
+        new CheckForUpdates(checkForUpdatesButton, hostServices,
+                PlatformType.SERVER, ServerInfo.getInstance().getVersion());
     }
 
     private HBox getUIInputBoxWithDirectoryChooser(String labelText, TextField textField)
@@ -315,7 +321,7 @@ public class GeneralSettings extends VBox {
                         }
                         else
                         {
-                            StartAtBoot startAtBoot = new StartAtBoot(SoftwareType.SERVER, ServerInfo.getInstance().getPlatformType());
+                            StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatformType());
                             if(startOnBoot)
                             {
                                 startAtBoot.create(new File(ServerInfo.getInstance().getRunnerFileName()));
@@ -387,86 +393,5 @@ public class GeneralSettings extends VBox {
                 return null;
             }
         }).start();
-    }
-
-    public void checkForUpdates()
-    {
-        new Thread(new Task<Void>()
-        {
-            @Override
-            protected Void call() throws Exception {
-
-                    try
-                {
-                    Platform.runLater(()->checkForUpdatesButton.setDisable(true));
-
-
-                    String jsonRaw = readUrl("https://stream-pi.com/API/get_latest.php?TYPE=SERVER");
-
-                    JSONObject jsonObject = new JSONObject(jsonRaw);
-
-                    String latestVersionRaw = jsonObject.getString("Version");
-                    String releasePage = jsonObject.getString("Release Page");
-
-                    Version latestVersion = new Version(latestVersionRaw);
-                    Version currentVersion = ServerInfo.getInstance().getVersion();
-                    
-                    if(latestVersion.isBiggerThan(currentVersion))
-                    {
-                        VBox vBox = new VBox();
-
-                        Hyperlink urlLabel = new Hyperlink(releasePage);
-                        urlLabel.setOnAction(event->hostServices.showDocument(releasePage));
-
-                        Label label = new Label(
-                            "New Version "+latestVersionRaw+" Available.\n" +
-                            "Current Version "+currentVersion.getText()+".\n"+
-                            "Changelog and install instructions are included in the release page.\n" +
-                            "It is recommended to update to ensure maximum stability and least bugs.");
-                        label.setWrapText(true);
-
-                        vBox.setSpacing(5);
-                        vBox.getChildren().addAll(
-                            urlLabel,
-                            label
-                        );
-
-                        new StreamPiAlert("New Update Available!", StreamPiAlertType.INFORMATION, vBox).show();;
-                    }
-                    else
-                    {
-                        new StreamPiAlert("Up to Date", "Server is upto date. ("+currentVersion.getText()+")", StreamPiAlertType.INFORMATION).show();;
-                    }
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                    new StreamPiAlert("Uh Oh", "Update Check Failed. API Error/Network issue.", StreamPiAlertType.WARNING).show();;
-                }
-                finally
-                {
-                    Platform.runLater(()->checkForUpdatesButton.setDisable(false));
-                }
-                return null;
-            }
-        }).start();;
-    }
-
-    private String readUrl(String urlString) throws Exception {
-        BufferedReader reader = null;
-        try {
-            URL url = new URL(urlString);
-            reader = new BufferedReader(new InputStreamReader(url.openStream()));
-            StringBuffer buffer = new StringBuffer();
-            int read;
-            char[] chars = new char[1024];
-            while ((read = reader.read(chars)) != -1)
-                buffer.append(chars, 0, read); 
-    
-            return buffer.toString();
-        } finally {
-            if (reader != null)
-                reader.close();
-        }
     }
 }

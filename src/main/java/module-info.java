@@ -10,7 +10,6 @@ module com.stream_pi.server {
 
     requires java.xml;
 
-    requires org.json;
     requires javafx.base;
     requires javafx.graphics;
     requires javafx.controls;

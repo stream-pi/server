@@ -28,7 +28,8 @@ public class ServerInfo {
     private String runnerFileName = null;
     private boolean startMinimised = false; 
 
-    private ServerInfo(){
+    private ServerInfo()
+    {
         version = new Version(1,0,0);
         minThemeSupportVersion = new Version(1,0,0);
         minPluginSupportVersion = new Version(1,0,0);
@@ -76,7 +77,8 @@ public class ServerInfo {
         return runnerFileName;
     }
 
-    public static synchronized ServerInfo getInstance(){
+    public static synchronized ServerInfo getInstance()
+    {
         if(instance == null)
         {
             instance = new ServerInfo();

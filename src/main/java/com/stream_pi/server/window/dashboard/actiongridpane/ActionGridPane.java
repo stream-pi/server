@@ -12,6 +12,7 @@ import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
@@ -39,6 +40,9 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         actionsGridPane.setPrefSize(USE_COMPUTED_SIZE, USE_COMPUTED_SIZE);
 
         setContent(actionsGridPane);
+
+        setCache(true);
+        setCacheHint(CacheHint.SPEED);
     }
 
     public void setActionDetailsPaneListener(ActionDetailsPaneListener actionDetailsPaneListener) {
