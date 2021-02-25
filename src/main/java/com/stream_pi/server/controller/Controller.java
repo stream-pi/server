@@ -39,8 +39,11 @@ import java.awt.PopupMenu;
 import java.awt.MenuItem;
 
 import java.io.File;
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -52,10 +55,30 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     {
         try
         {
-            getStage().setTitle("Stream-Pi Server - "+InetAddress.getLocalHost().getCanonicalHostName()+":"+ Config.getInstance().getPort());                   //Sets title
+            StringBuilder ips = new StringBuilder();
+
+            Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
+            while(e.hasMoreElements())
+            {
+                NetworkInterface n = e.nextElement();
+                Enumeration<InetAddress> ee = n.getInetAddresses();
+                while (ee.hasMoreElements())
+                {
+                    InetAddress i = ee.nextElement();
+                    String hostAddress = i.getHostAddress();
+                    if(i instanceof Inet4Address)
+                    {
+                        ips.append(hostAddress);
+                        if(e.hasMoreElements())
+                            ips.append(" / ");
+                    }
+                }
+            }
+
+            getStage().setTitle("Stream-Pi Server - IP(s): "+ips.toString()+" | Port: "+ Config.getInstance().getPort());                   //Sets title
             getStage().setOnCloseRequest(this::onCloseRequest);
         }
-        catch (UnknownHostException e)
+        catch (Exception e)
         {
             e.printStackTrace();
             throw new SevereException(e.getMessage());
