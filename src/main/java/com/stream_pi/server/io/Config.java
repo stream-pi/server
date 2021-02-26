@@ -207,10 +207,10 @@ public class Config
                 getDefaultStartOnBoot(), false, true, document, configFile);
     }
 
-    public boolean getCloseOnX()
+    public boolean getMinimiseToSystemTrayOnClose()
     {
-        return XMLConfigHelper.getBooleanProperty(getOthersElement(), "close-on-x",
-                getDefaultCloseOnX(), false, true, document, configFile);
+        return XMLConfigHelper.getBooleanProperty(getOthersElement(), "minimize-to-tray-on-close",
+                getDefaultMinimiseToSystemTrayOnClose(), false, true, document, configFile);
     }
 
     public boolean isFirstTimeUse()
@@ -229,9 +229,9 @@ public class Config
         return false;
     }
 
-    public boolean getDefaultCloseOnX()
+    public boolean getDefaultMinimiseToSystemTrayOnClose()
     {
-        return false;
+        return true;
     }
 
 
@@ -308,9 +308,9 @@ public class Config
         getOthersElement().getElementsByTagName("start-on-boot").item(0).setTextContent(value+"");
     }
 
-    public void setCloseOnX(boolean value)
+    public void setMinimiseToSystemTrayOnClose(boolean value)
     {
-        getOthersElement().getElementsByTagName("close-on-x").item(0).setTextContent(value+"");
+        getOthersElement().getElementsByTagName("minimize-to-tray-on-close").item(0).setTextContent(value+"");
     }
 
     public void setFirstTimeUse(boolean value)

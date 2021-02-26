@@ -354,14 +354,12 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     {
         try
         {
-            if(!Config.getInstance().getCloseOnX())
+            if(Config.getInstance().getMinimiseToSystemTrayOnClose() &&
+                    SystemTray.isSupported())
             {
-                if(SystemTray.isSupported())
-                {
-                    minimiseApp();
-                    event.consume();
-                    return;
-                }
+                minimiseApp();
+                event.consume();
+                return;
             }
 
             getConfig().setStartupWindowSize(

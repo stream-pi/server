@@ -43,7 +43,7 @@ public class GeneralSettings extends VBox {
     private final TextField actionGridPaneActionBoxSize;
     private final TextField actionGridPaneActionBoxGap;
     private final ToggleButton startOnBootToggleButton;
-    private final ToggleButton closeOnXToggleButton;
+    private final ToggleButton minimizeToSystemTrayOnCloseToggleButton;
     private final Button saveButton;
     private final Button checkForUpdatesButton;
 
@@ -78,7 +78,7 @@ public class GeneralSettings extends VBox {
         actionGridPaneActionBoxGap = new TextField();
 
         startOnBootToggleButton = new ToggleButton("Start on Boot");
-        closeOnXToggleButton = new ToggleButton("Quit On window Close");
+        minimizeToSystemTrayOnCloseToggleButton = new ToggleButton("Minimise To Tray On Close");
 
         checkForUpdatesButton = new Button("Check for updates");
         checkForUpdatesButton.setOnAction(event->checkForUpdates());
@@ -100,7 +100,7 @@ public class GeneralSettings extends VBox {
 
         serverNameTextField.setPrefWidth(200);
 
-        HBox toggleButtons = new HBox(closeOnXToggleButton, startOnBootToggleButton);
+        HBox toggleButtons = new HBox(minimizeToSystemTrayOnCloseToggleButton, startOnBootToggleButton);
         toggleButtons.setSpacing(10.0);
         VBox.setMargin(toggleButtons, new Insets(30, 0 , 0,0));
         toggleButtons.setAlignment(Pos.CENTER);
@@ -182,7 +182,7 @@ public class GeneralSettings extends VBox {
             actionGridPaneActionBoxSize.setText(config.getActionGridActionSize()+"");
             actionGridPaneActionBoxGap.setText(config.getActionGridActionGap()+"");
 
-            closeOnXToggleButton.setSelected(config.getCloseOnX());
+            minimizeToSystemTrayOnCloseToggleButton.setSelected(config.getMinimiseToSystemTrayOnClose());
             startOnBootToggleButton.setSelected(config.getStartOnBoot());
         });
     }
@@ -203,7 +203,7 @@ public class GeneralSettings extends VBox {
                         serverNameTextField.setDisable(true);
                         portTextField.setDisable(true);
 
-                        closeOnXToggleButton.setDisable(true);
+                        minimizeToSystemTrayOnCloseToggleButton.setDisable(true);
                         startOnBootToggleButton.setDisable(true);
                     });
 
@@ -215,7 +215,7 @@ public class GeneralSettings extends VBox {
                     String actionGridActionBoxSize = actionGridPaneActionBoxSize.getText();
                     String actionGridActionBoxGap = actionGridPaneActionBoxGap.getText();
 
-                    boolean closeOnX = closeOnXToggleButton.isSelected();
+                    boolean minimizeToSystemTrayOnClose = minimizeToSystemTrayOnCloseToggleButton.isSelected();
                     boolean startOnBoot = startOnBootToggleButton.isSelected();
 
                     Config config = Config.getInstance();
@@ -335,14 +335,14 @@ public class GeneralSettings extends VBox {
                         }
                     }
 
-                    if(!closeOnX)
+                    if(!minimizeToSystemTrayOnClose)
                     {
                         if(!SystemTray.isSupported()) 
                         {
                             StreamPiAlert alert = new StreamPiAlert("Not Supported", "Tray System not supported on this platform ", StreamPiAlertType.ERROR);
                             alert.show();
 
-                            closeOnX = true;
+                            minimizeToSystemTrayOnClose = true;
                         }
                     }
 
@@ -353,7 +353,7 @@ public class GeneralSettings extends VBox {
                     config.setPluginsPath(pluginsPathStr);
                     config.setThemesPath(themesPathStr);
 
-                    config.setCloseOnX(closeOnX);
+                    config.setMinimiseToSystemTrayOnClose(minimizeToSystemTrayOnClose);
                     config.setStartupOnBoot(startOnBoot);
 
                     config.save();
@@ -386,7 +386,7 @@ public class GeneralSettings extends VBox {
                         serverNameTextField.setDisable(false);
                         portTextField.setDisable(false);
 
-                        closeOnXToggleButton.setDisable(false);
+                        minimizeToSystemTrayOnCloseToggleButton.setDisable(false);
                         startOnBootToggleButton.setDisable(false);
                     });
                 }
