@@ -335,14 +335,14 @@ public class GeneralSettings extends VBox {
                         }
                     }
 
-                    if(!minimizeToSystemTrayOnClose)
+                    if(minimizeToSystemTrayOnClose)
                     {
                         if(!SystemTray.isSupported()) 
                         {
                             StreamPiAlert alert = new StreamPiAlert("Not Supported", "Tray System not supported on this platform ", StreamPiAlertType.ERROR);
                             alert.show();
 
-                            minimizeToSystemTrayOnClose = true;
+                            minimizeToSystemTrayOnClose = false;
                         }
                     }
 

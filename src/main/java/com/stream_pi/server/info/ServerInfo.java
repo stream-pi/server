@@ -36,7 +36,7 @@ public class ServerInfo {
         commStandardVersion = new Version(1,0,0);
 
         releaseStatus = ReleaseStatus.EA;
-        prePath = "data/";
+        prePath = System.getProperty("user.home")+"/Stream-Pi/Server/";
 
         String osName = System.getProperty("os.name").toLowerCase();
 
@@ -48,7 +48,6 @@ public class ServerInfo {
             platformType = Platform.MAC;
         else
             platformType = Platform.UNKNOWN;
-
 
     }
 

@@ -22,6 +22,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -160,22 +161,32 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         {
             File filex = new File(ServerInfo.getInstance().getPrePath());
 
-            if(filex.getAbsoluteFile().getParentFile().canWrite())
+            if(!filex.exists())
             {
-                if(!filex.exists())
+                boolean result = filex.mkdirs();
+                if(result)
                 {
-                    filex.mkdirs();
                     IOHelper.unzip(Main.class.getResourceAsStream("Default.obj"), ServerInfo.getInstance().getPrePath());
+
+                    Config.getInstance().setThemesPath(ServerInfo.getInstance().getPrePath()+"Themes/");
+                    Config.getInstance().setPluginsPath(ServerInfo.getInstance().getPrePath()+"Plugins/");
+
+                    if(SystemTray.isSupported())
+                    {
+                        Config.getInstance().setMinimiseToSystemTrayOnClose(true);
+                    }
+
+                    Config.getInstance().save();
                 }
-            }
-            else
-            {
-                setPrefSize(300,300);
-                clearStylesheets();
-                applyDefaultStylesheet();
-                applyDefaultIconsStylesheet();
-                getStage().show();
-                throw new SevereException("No storage permission. Give it!");
+                else
+                {
+                    setPrefSize(300,300);
+                    clearStylesheets();
+                    applyDefaultStylesheet();
+                    applyDefaultIconsStylesheet();
+                    getStage().show();
+                    throw new SevereException("No storage permission. Give it!");
+                }
             }
         }
         catch (Exception e)
