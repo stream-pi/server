@@ -62,11 +62,11 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     private StreamPiLogFallbackHandler logFallbackHandler = null;
 
     @Override
-    public void initLogger() throws SevereException
+    public void initLogger()
     {
         try
         {
-            if(logger != null || logFileHandler != null)
+            if(logFileHandler != null)
                 return;
 
             closeLogger();
@@ -74,10 +74,10 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
             if(new File(ServerInfo.getInstance().getPrePath()).getAbsoluteFile().getParentFile().canWrite())
             {
-                String path = ServerInfo.getInstance().getPrePath()+"../streampi.log";
+                String path = ServerInfo.getInstance().getPrePath()+"../stream-pi-server.log";
 
                 if(ServerInfo.getInstance().getPlatformType() == Platform.ANDROID)
-                    path = ServerInfo.getInstance().getPrePath()+"streampi.log";
+                    path = ServerInfo.getInstance().getPrePath()+"stream-pi-server.log";
 
                 logFileHandler = new StreamPiLogFileHandler(path);
                 logger.addHandler(logFileHandler);
@@ -166,7 +166,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
                 boolean result = filex.mkdirs();
                 if(result)
                 {
-                    IOHelper.unzip(Main.class.getResourceAsStream("Default.obj"), ServerInfo.getInstance().getPrePath());
+                    IOHelper.unzip(Main.class.getResourceAsStream("Default.zip"), ServerInfo.getInstance().getPrePath());
 
                     Config.getInstance().setThemesPath(ServerInfo.getInstance().getPrePath()+"Themes/");
                     Config.getInstance().setPluginsPath(ServerInfo.getInstance().getPrePath()+"Plugins/");
@@ -177,6 +177,8 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
                     }
 
                     Config.getInstance().save();
+
+                    initLogger();
                 }
                 else
                 {

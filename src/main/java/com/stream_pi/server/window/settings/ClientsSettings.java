@@ -140,9 +140,9 @@ public class ClientsSettings extends VBox {
                                 double startupWidth = Double.parseDouble(clientSettingsVBox.getStartupWindowWidth());
 
 
-                                if((rows*actionsSize) > (startupWidth - 25) && clientSettingsVBox.getPlatform()!= com.stream_pi.util.platform.Platform.ANDROID)
+                                if((rows*actionsSize) > (startupWidth - 50))
                                 {
-                                    errors2.append("        Rows out of bounds of screen size. \n"+startupWidth);
+                                    errors2.append("        Rows out of bounds of screen size. \n");
                                 }
                             }
                             catch (NumberFormatException e)
@@ -157,9 +157,9 @@ public class ClientsSettings extends VBox {
                                 int actionsSize = Integer.parseInt(clientProfileVBox.getActionSize());
                                 double startupHeight = Double.parseDouble(clientSettingsVBox.getStartupWindowHeight());
 
-                                if((cols*actionsSize) > (startupHeight - 25) && clientSettingsVBox.getPlatform()!= com.stream_pi.util.platform.Platform.ANDROID)
+                                if((cols*actionsSize) > (startupHeight - 50))
                                 {
-                                    errors2.append("        Cols out of bounds of screen size. \n"+startupHeight);
+                                    errors2.append("        Cols out of bounds of screen size. \n");
                                 }
                             }
                             catch (NumberFormatException e)
