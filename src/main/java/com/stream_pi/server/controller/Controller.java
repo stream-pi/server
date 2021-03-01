@@ -424,13 +424,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
         Platform.setImplicitExit(false);
         
         PopupMenu popup = new PopupMenu();
-        
-        MenuItem showItem = new MenuItem("Show");
-        showItem.addActionListener(l->{
-            Platform.runLater(()->{
-                getStage().show();
-            });
-        });
 
         MenuItem exitItem = new MenuItem("Exit");
         exitItem.addActionListener(l->{
@@ -439,8 +432,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             Platform.exit();
         });
 
-        popup.add(showItem);
-        popup.addSeparator();
         popup.add(exitItem);
 
         TrayIcon trayIcon = new TrayIcon(
@@ -448,6 +439,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             "Stream-Pi Server",
             popup
         );
+
+        trayIcon.addActionListener(l-> Platform.runLater(()-> getStage().show()));
 
         trayIcon.setImageAutoSize(true);
 
