@@ -25,6 +25,7 @@ public class ClientAndProfileSelectorPane extends HBox {
         getStyleClass().add("client_and_profile_selector_pane");
         setPadding(new Insets(10));
         setMinHeight(90);
+        setMaxHeight(90);
 
         initUI();
         loadData();

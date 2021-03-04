@@ -33,6 +33,7 @@ public class PluginsPane extends VBox {
     public PluginsPane(HostServices hostServices)
     {
         setMinWidth(250);
+        setMaxWidth(350);
         getStyleClass().add("plugins_pane");
         setPadding(new Insets(10));
 

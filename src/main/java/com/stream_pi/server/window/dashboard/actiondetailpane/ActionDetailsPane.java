@@ -91,7 +91,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         scrollPane.getStyleClass().add("action_details_pane_scroll_pane");
 
-        setMinHeight(310);
+        setMinHeight(210);
         scrollPane.setContent(vbox);
 
         vbox.prefWidthProperty().bind(scrollPane.widthProperty());

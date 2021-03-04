@@ -9,13 +9,15 @@ import com.stream_pi.server.window.dashboard.actiondetailpane.ActionDetailsPane;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.SevereException;
 import javafx.application.HostServices;
+import javafx.geometry.Orientation;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-public class DashboardBase extends HBox implements DashboardInterface {
+public class DashboardBase extends SplitPane implements DashboardInterface {
 
-    private final VBox leftPane;
+    private final SplitPane leftSplitPane;
 
     private Logger logger;
 
@@ -28,10 +30,14 @@ public class DashboardBase extends HBox implements DashboardInterface {
     {
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
         logger = Logger.getLogger(DashboardBase.class.getName());
-        leftPane = new VBox();
 
-        HBox.setHgrow(leftPane, Priority.ALWAYS);
-        getChildren().add(leftPane);
+        leftSplitPane = new SplitPane();
+        leftSplitPane.getStyleClass().add("dashboard_left_split_pane");
+        leftSplitPane.setOrientation(Orientation.VERTICAL);
+
+        getStyleClass().add("dashboard_right_split_pane");
+
+        getItems().add(leftSplitPane);
 
         setPluginsPane(new PluginsPane(hostServices));
 
@@ -50,7 +56,7 @@ public class DashboardBase extends HBox implements DashboardInterface {
     private void setPluginsPane(PluginsPane pluginsPane)
     {
         this.pluginsPane = pluginsPane;
-        getChildren().add(this.pluginsPane);
+        getItems().add(this.pluginsPane);
     }
     public PluginsPane getPluginsPane()
     {
@@ -61,7 +67,7 @@ public class DashboardBase extends HBox implements DashboardInterface {
     private void setClientDetailsPane(ClientAndProfileSelectorPane clientAndProfileSelectorPane)
     {
         this.clientAndProfileSelectorPane = clientAndProfileSelectorPane;
-        leftPane.getChildren().add(this.clientAndProfileSelectorPane);
+        leftSplitPane.getItems().add(this.clientAndProfileSelectorPane);
     }
     public ClientAndProfileSelectorPane getClientDetailsPane()
     {
@@ -72,7 +78,7 @@ public class DashboardBase extends HBox implements DashboardInterface {
     private void setActionGridPane(ActionGridPane actionGridPane)
     {
         this.actionGridPane = actionGridPane;
-        leftPane.getChildren().add(this.actionGridPane);
+        leftSplitPane.getItems().add(this.actionGridPane);
     }
     public ActionGridPane getActionGridPane()
     {
@@ -83,7 +89,7 @@ public class DashboardBase extends HBox implements DashboardInterface {
     private void setActionDetailsPane(ActionDetailsPane actionDetailsPane)
     {
         this.actionDetailsPane = actionDetailsPane;
-        leftPane.getChildren().add(this.actionDetailsPane);
+        leftSplitPane.getItems().add(this.actionDetailsPane);
     }
     public ActionDetailsPane getActionDetailsPane()
     {

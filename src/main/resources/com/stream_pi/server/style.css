@@ -8,6 +8,11 @@
     -fx-font-weight : bold;
 }
 
+.plugins_settings_each_plugin_button_bar
+{
+	-fx-alignment:center-right;
+}
+
 .about_license_label
 {
     -fx-font-size : 16;
@@ -259,4 +264,8 @@
 .alert_button_bar
 {
     -fx-background-color:white;
+}
+
+.split-pane-divider {
+    -fx-padding: 2;
 }

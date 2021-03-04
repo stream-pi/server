@@ -31,8 +31,6 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
         getStyleClass().add("action_grid_pane_parent");
 
-        VBox.setVgrow(this, Priority.ALWAYS);
-
         actionsGridPane = new GridPane();
         actionsGridPane.setPadding(new Insets(5.0));
         actionsGridPane.getStyleClass().add("action_grid_pane");

@@ -342,8 +342,9 @@ public class PluginsSettings extends VBox {
 
                 if(action.getButtonBar()!=null)
                 {
+                    action.getButtonBar().getStyleClass().add("plugins_settings_each_plugin_button_bar");
                     HBox buttonBarHBox = new HBox(SpaceFiller.horizontal(), action.getButtonBar());
-                    buttonBarHBox.getStyleClass().add("plugins_settings_each_plugin_button_bar");
+                    buttonBarHBox.getStyleClass().add("plugins_settings_each_plugin_button_bar_hbox");
                     vBox.getChildren().add(buttonBarHBox);
                 }
 
