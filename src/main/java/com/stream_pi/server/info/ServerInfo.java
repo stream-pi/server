@@ -15,7 +15,7 @@ import com.stream_pi.util.version.Version;
 public class ServerInfo {
     private Version version;
     private final ReleaseStatus releaseStatus;
-    private final Platform platformType;
+    private final Platform platform;
 
     private String prePath;
 
@@ -41,13 +41,13 @@ public class ServerInfo {
         String osName = System.getProperty("os.name").toLowerCase();
 
         if(osName.contains("windows"))
-            platformType = Platform.WINDOWS;
+            platform = Platform.WINDOWS;
         else if (osName.contains("linux"))
-            platformType = Platform.LINUX;
+            platform = Platform.LINUX;
         else if (osName.contains("mac"))
-            platformType = Platform.MAC;
+            platform = Platform.MAC;
         else
-            platformType = Platform.UNKNOWN;
+            platform = Platform.UNKNOWN;
 
     }
 
@@ -87,9 +87,9 @@ public class ServerInfo {
     }
 
 
-    public Platform getPlatformType()
+    public Platform getPlatform()
     {
-        return platformType;
+        return platform;
     }
 
     public Version getVersion() {

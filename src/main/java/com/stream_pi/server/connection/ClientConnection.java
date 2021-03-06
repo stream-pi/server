@@ -722,8 +722,8 @@ public class ClientConnection extends Thread
         sendMessage(message);
     }
 
-    public void actionClicked(Message message) {
-
+    public void actionClicked(Message message)
+    {
         try
         {
             String[] r = message.getStringArrValue();

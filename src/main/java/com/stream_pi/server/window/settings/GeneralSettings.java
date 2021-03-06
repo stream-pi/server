@@ -8,6 +8,7 @@ import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.checkforupdates.CheckForUpdates;
+import com.stream_pi.util.checkforupdates.UpdateHyperlinkOnClick;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.platform.PlatformType;
@@ -16,6 +17,7 @@ import com.stream_pi.util.version.Version;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -117,8 +119,13 @@ public class GeneralSettings extends VBox {
 
     private void checkForUpdates()
     {
-        new CheckForUpdates(checkForUpdatesButton, hostServices,
-                PlatformType.SERVER, ServerInfo.getInstance().getVersion());
+        new CheckForUpdates(checkForUpdatesButton,
+                PlatformType.SERVER, ServerInfo.getInstance().getVersion(), new UpdateHyperlinkOnClick() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                hostServices.showDocument(getURL());
+            }
+        });
     }
 
     private HBox getUIInputBoxWithDirectoryChooser(String labelText, TextField textField)
@@ -321,7 +328,7 @@ public class GeneralSettings extends VBox {
                         }
                         else
                         {
-                            StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatformType());
+                            StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform());
                             if(startOnBoot)
                             {
                                 startAtBoot.create(new File(ServerInfo.getInstance().getRunnerFileName()));

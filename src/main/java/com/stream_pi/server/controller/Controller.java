@@ -455,14 +455,13 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     }
 
     @Override
-    public void handleMinorException(MinorException e) {
+    public void handleMinorException(MinorException e)
+    {
         getLogger().log(Level.SEVERE, e.getMessage(), e);
         e.printStackTrace();
 
 
-        Platform.runLater(()->{
-            new StreamPiAlert(e.getTitle(), e.getShortMessage(), StreamPiAlertType.WARNING).show();
-        });
+        Platform.runLater(()-> new StreamPiAlert(e.getTitle(), e.getShortMessage(), StreamPiAlertType.WARNING).show());
     }
 
     @Override
@@ -530,8 +529,10 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     }
 
     @Override
-    public void saveServerProperties() {
-        try {
+    public void saveServerProperties()
+    {
+        try
+        {
             NormalActionPlugins.getInstance().saveServerSettings();
             getSettingsPane().getPluginsSettings().loadPlugins();
         } catch (MinorException e) {
@@ -542,6 +543,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
 
     @Override
     public com.stream_pi.util.platform.Platform getPlatform() {
-        return ServerInfo.getInstance().getPlatformType();
+        return ServerInfo.getInstance().getPlatform();
     }
 }
