@@ -573,8 +573,18 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     private ArrayList<UIPropertyBox> actionClientProperties;
 
+    private TextField delayBeforeRunningTextField;
+
     public void renderClientProperties() throws MinorException
     {
+
+        delayBeforeRunningTextField = new TextField();
+        delayBeforeRunningTextField.setText(getAction().getDelayBeforeExecuting()+"");
+
+        clientPropertiesVBox.getChildren().add(
+                new HBoxInputBox("Delay before running (milli-seconds)", delayBeforeRunningTextField, 50)
+        );
+
         for(int i =0;i< action.getClientProperties().getSize(); i++)
         {
             Property eachProperty = action.getClientProperties().get().get(i);
@@ -710,6 +720,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 getClient().getRemoteSocketAddress()
             ),
             action,
+            delayBeforeRunningTextField.getText(),
             displayNameTextField.getText(),
             isCombineChild(),
             !hideDisplayTextCheckBox.isSelected(),
@@ -760,7 +771,23 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 if(hideDisplayTextCheckBox.isSelected())
                     finalErrors.append(" * Display Text cannot be hidden, since there is also no icon.\n");
             }
+        }
 
+        if(action.getActionType() == ActionType.NORMAL)
+        {
+            try
+            {
+                int n = Integer.parseInt(delayBeforeRunningTextField.getText());
+
+                if (n<0)
+                {
+                    finalErrors.append(" * Sleep should be greater than 0.\n");
+                }
+            }
+            catch (Exception e)
+            {
+                finalErrors.append(" * Sleep should be a number.\n");
+            }
         }
 
 

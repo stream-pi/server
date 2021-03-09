@@ -252,7 +252,6 @@ public class PluginsPane extends VBox {
             mouseEvent.consume();
         });
 
-
         HBox.setHgrow(folderActionButton, Priority.ALWAYS);
         HBox h1 = new HBox(folderActionButton);
         h1.getStyleClass().add("plugins_pane_each_plugin_box");
@@ -263,7 +262,7 @@ public class PluginsPane extends VBox {
 
         vBox.getChildren().addAll(h1, h2);
 
-        TitledPane pane = new TitledPane("StreamPi", vBox);
+        TitledPane pane = new TitledPane("Stream-Pi", vBox);
         pane.getStyleClass().add("plugins_pane_each_plugin_category_titled_pane");
 
         pluginsAccordion.getPanes().add(pane);

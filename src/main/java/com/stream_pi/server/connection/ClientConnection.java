@@ -479,16 +479,18 @@ public class ClientConnection extends Thread
         String root = r[14];
         action.setParent(root);
 
+        action.setDelayBeforeExecuting(Integer.parseInt(r[15]));
+
         //client properties
 
-        int clientPropertiesSize = Integer.parseInt(r[15]);
+        int clientPropertiesSize = Integer.parseInt(r[16]);
 
         ClientProperties clientProperties = new ClientProperties();
 
         if(actionType == ActionType.FOLDER)
             clientProperties.setDuplicatePropertyAllowed(true);
 
-        for(int i = 16;i<((clientPropertiesSize*2) + 16); i+=2)
+        for(int i = 17;i<((clientPropertiesSize*2) + 17); i+=2)
         {
             Property property = new Property(r[i], Type.STRING);
             property.setRawValue(r[i+1]);
@@ -639,6 +641,8 @@ public class ClientConnection extends Thread
 
         a.add(action.getParent());
 
+        a.add(action.getDelayBeforeExecuting()+"");
+
         //client properties
 
         ClientProperties clientProperties = action.getClientProperties();
@@ -753,6 +757,7 @@ public class ClientConnection extends Thread
                 normalAction.setLocation(action.getLocation());
                 normalAction.setDisplayText(action.getDisplayText());
                 normalAction.setID(actionID);
+                normalAction.setDelayBeforeExecuting(action.getDelayBeforeExecuting());
 
                 normalAction.setClientProperties(action.getClientProperties());
 
@@ -762,6 +767,8 @@ public class ClientConnection extends Thread
                     {
                         try
                         {
+                            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2 "+normalAction.getDelayBeforeExecuting());
+                            Thread.sleep(normalAction.getDelayBeforeExecuting());
                             boolean result = serverListener.onNormalActionClicked(normalAction);
                             if(!result)
                             {
@@ -771,6 +778,10 @@ public class ClientConnection extends Thread
                         catch (SevereException e)
                         {
                             exceptionAndAlertHandler.handleSevereException(e);
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
                         }
                         return null;
                     }

@@ -27,7 +27,7 @@ public class OnSaveActionTask extends Task<Void>
     private Logger logger;
 
 
-    public OnSaveActionTask(ClientConnection connection, Action action, String displayNameText, boolean isCombineChild,
+    public OnSaveActionTask(ClientConnection connection, Action action, String delayBeforeRunningString, String displayNameText, boolean isCombineChild,
                             boolean isShowDisplayText, boolean isDefaultDisplayTextColour, String displayTextFontColour, boolean isClearIcon,
                             boolean isHideIcon, DisplayTextAlignment displayTextAlignment, boolean isTransparentBackground, String backgroundColour,
                             CombineActionPropertiesPane combineActionPropertiesPane, ClientProfile clientProfile, boolean sendIcon, ActionBox actionBox,
@@ -36,6 +36,7 @@ public class OnSaveActionTask extends Task<Void>
     {
         this.saveButton = saveButton;
         this.deleteButton = deleteButton;
+        this.delayBeforeRunningString = delayBeforeRunningString;
 
         this.connection = connection;
         this.action = action;
@@ -68,6 +69,7 @@ public class OnSaveActionTask extends Task<Void>
 
     private Button saveButton;
     private Button deleteButton;
+    private String delayBeforeRunningString;
     private boolean isShowDisplayText;
     private boolean isCombineChild;
     private String displayNameText;
@@ -162,6 +164,8 @@ public class OnSaveActionTask extends Task<Void>
         }
         else
         {
+            action.setDelayBeforeExecuting(Integer.parseInt(delayBeforeRunningString));
+            
             //properties
             for (UIPropertyBox clientProperty : actionClientProperties) {
                 action.getClientProperties().get().get(clientProperty.getIndex()).setRawValue(clientProperty.getRawValue());
