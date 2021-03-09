@@ -582,7 +582,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         delayBeforeRunningTextField.setText(getAction().getDelayBeforeExecuting()+"");
 
         clientPropertiesVBox.getChildren().add(
-                new HBoxInputBox("Delay before running (milli-seconds)", delayBeforeRunningTextField, 50)
+                new HBoxInputBox("Delay before running (milli-seconds)", delayBeforeRunningTextField, 100)
         );
 
         for(int i =0;i< action.getClientProperties().getSize(); i++)
