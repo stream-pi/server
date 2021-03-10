@@ -35,7 +35,7 @@ public class Client
     private final Version themeAPIVersion;
     private final ReleaseStatus releaseStatus;
 
-    private double startupDisplayHeight, startupDisplayWidth;
+    private double displayHeight, displayWidth;
 
     private final HashMap<String,ClientProfile> profiles;
 
@@ -157,34 +157,34 @@ public class Client
         return themeAPIVersion;
     }
 
-    public double getStartupDisplayHeight()
+    public double getDisplayHeight()
     {
-        return startupDisplayHeight;
+        return displayHeight;
     }
 
-    public double getStartupDisplayWidth()
+    public double getDisplayWidth()
     {
-        return startupDisplayWidth;
+        return displayWidth;
     }
 
-    public void setStartupDisplayHeight(double height)
+    public void setDisplayHeight(double height)
     {
-        startupDisplayHeight = height;
+        displayHeight = height;
     }
 
-    public void setStartupDisplayWidth(double width)
+    public void setDisplayWidth(double width)
     {
-        startupDisplayWidth = width;
+        displayWidth = width;
     }
     
     private int getMaxRows(int eachActionSize)
     {
-        return (int) (startupDisplayHeight / eachActionSize);
+        return (int) (displayHeight / eachActionSize);
     }
 
     public int getMaxCols(int eachActionSize) 
     {
-        return (int) (startupDisplayWidth / eachActionSize);
+        return (int) (displayWidth / eachActionSize);
     }
 
 }

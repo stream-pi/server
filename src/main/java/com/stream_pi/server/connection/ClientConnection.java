@@ -159,8 +159,8 @@ public class ClientConnection extends Thread
 
         client = new Client(clientVersion, releaseStatus, commsStandard, themesStandard, ar[4], Platform.valueOf(ar[7]), socket.getRemoteSocketAddress());
 
-        client.setStartupDisplayWidth(Double.parseDouble(ar[5]));
-        client.setStartupDisplayHeight(Double.parseDouble(ar[6]));
+        client.setDisplayWidth(Double.parseDouble(ar[5]));
+        client.setDisplayHeight(Double.parseDouble(ar[6]));
         client.setDefaultProfileID(ar[8]);
         client.setDefaultThemeFullName(ar[9]);
         
@@ -672,14 +672,12 @@ public class ClientConnection extends Thread
         sendMessage(message);
     }
 
-    public void saveClientDetails(String clientNickname, String screenWidth, String screenHeight, String defaultProfileID,
+    public void saveClientDetails(String clientNickname, String defaultProfileID,
                                   String defaultThemeFullName) throws SevereException
     {
         Message message = new Message("save_client_details");
         message.setStringArrValue(
                 clientNickname,
-                screenWidth,
-                screenHeight,
                 defaultProfileID,
                 defaultThemeFullName
         );
@@ -687,8 +685,6 @@ public class ClientConnection extends Thread
         sendMessage(message);
 
         client.setNickName(clientNickname);
-        client.setStartupDisplayWidth(Double.parseDouble(screenWidth));
-        client.setStartupDisplayHeight(Double.parseDouble(screenHeight));
         client.setDefaultProfileID(defaultProfileID);
         client.setDefaultThemeFullName(defaultThemeFullName);
     }

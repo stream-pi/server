@@ -92,21 +92,6 @@ public class ClientsSettings extends VBox {
                         if(clientSettingsVBox.getNickname().isBlank())
                             errors.append("    Cannot have blank nickname. \n");
 
-                        try {
-                            Double.parseDouble(clientSettingsVBox.getStartupWindowHeight());
-                        }
-                        catch (NumberFormatException e)
-                        {
-                            errors.append("    Must have integer display height. \n");
-                        }
-
-                        try {
-                            Double.parseDouble(clientSettingsVBox.getStartupWindowWidth());
-                        }
-                        catch (NumberFormatException e)
-                        {
-                            errors.append("    Must have integer display width. \n");
-                        }
 
                         for(ClientProfileVBox clientProfileVBox : clientSettingsVBox.getClientProfileVBoxes())
                         {
@@ -137,10 +122,8 @@ public class ClientsSettings extends VBox {
                                 int rows = Integer.parseInt(clientProfileVBox.getRows());
 
                                 int actionsSize = Integer.parseInt(clientProfileVBox.getActionSize());
-                                double startupWidth = Double.parseDouble(clientSettingsVBox.getStartupWindowWidth());
 
-
-                                if((rows*actionsSize) > (startupWidth - 50))
+                                if((rows*actionsSize) > (clientSettingsVBox.getDisplayWidth() - 50))
                                 {
                                     errors2.append("        Rows out of bounds of screen size. \n");
                                 }
@@ -155,9 +138,8 @@ public class ClientsSettings extends VBox {
                                 int cols = Integer.parseInt(clientProfileVBox.getCols());
 
                                 int actionsSize = Integer.parseInt(clientProfileVBox.getActionSize());
-                                double startupHeight = Double.parseDouble(clientSettingsVBox.getStartupWindowHeight());
 
-                                if((cols*actionsSize) > (startupHeight - 50))
+                                if((cols*actionsSize) > (clientSettingsVBox.getDisplayHeight() - 50))
                                 {
                                     errors2.append("        Cols out of bounds of screen size. \n");
                                 }
@@ -271,16 +253,23 @@ public class ClientsSettings extends VBox {
 
         private ComboBox<ClientTheme> themesComboBox;
 
-        private TextField startupWindowHeightTextField;
+        private double displayHeight;
+        private double displayWidth;
 
-        public String getStartupWindowHeight() {
-            return startupWindowHeightTextField.getText();
+        public double getDisplayHeight() {
+            return displayHeight;
         }
 
-        private TextField startupWindowWidthTextField;
+        public void setDisplayHeight(double displayHeight) {
+            this.displayHeight = displayHeight;
+        }
 
-        public String getStartupWindowWidth() {
-            return startupWindowWidthTextField.getText();
+        public double getDisplayWidth() {
+            return displayWidth;
+        }
+
+        public void setDisplayWidth(double displayWidth) {
+            this.displayWidth = displayWidth;
         }
 
         private TextField nicknameTextField;
@@ -314,8 +303,6 @@ public class ClientsSettings extends VBox {
 
         private Label platformLabel;
 
-        private HBoxInputBox startupWindowHeightInputBox, startupWindowWidthInputBox;
-
         public ArrayList<ClientProfileVBox> getClientProfileVBoxes() {
             return clientProfileVBoxes;
         }
@@ -342,8 +329,6 @@ public class ClientsSettings extends VBox {
 
             getConnection().saveClientDetails(
                     nicknameTextField.getText(),
-                    startupWindowWidthTextField.getText(),
-                    startupWindowHeightTextField.getText(),
                     profilesComboBox.getSelectionModel().getSelectedItem().getID(),
                     themesComboBox.getSelectionModel().getSelectedItem().getThemeFullName()
             );
@@ -433,9 +418,6 @@ public class ClientsSettings extends VBox {
             themesComboBox.setCellFactory(themesComboBoxFactory);
             themesComboBox.setButtonCell(themesComboBoxFactory.call(null));
 
-            startupWindowHeightTextField = new TextField();
-            startupWindowWidthTextField = new TextField();
-
             platformLabel = new Label();
             platformLabel.getStyleClass().add("client_settings_each_client_platform_label");
 
@@ -463,12 +445,6 @@ public class ClientsSettings extends VBox {
             getStyleClass().add("settings_clients_each_client");
 
 
-            startupWindowHeightInputBox = new HBoxInputBox("Startup window Height", startupWindowHeightTextField);
-            startupWindowHeightInputBox.managedProperty().bind(startupWindowHeightInputBox.visibleProperty());
-
-            startupWindowWidthInputBox = new HBoxInputBox("Startup window Width", startupWindowWidthTextField);
-            startupWindowWidthInputBox.managedProperty().bind(startupWindowWidthInputBox.visibleProperty());
-
 
             this.getChildren().addAll(
                     nickNameLabel,
@@ -481,10 +457,6 @@ public class ClientsSettings extends VBox {
                         SpaceFiller.horizontal(),
                         themesComboBox
                     ),
-
-                    startupWindowHeightInputBox,
-
-                    startupWindowWidthInputBox,
 
                     new HBox(new Label("Startup Profile"),
                             SpaceFiller.horizontal(),
@@ -514,16 +486,10 @@ public class ClientsSettings extends VBox {
 
             nicknameTextField.setText(client.getNickName());
 
-            if(client.getPlatform() == com.stream_pi.util.platform.Platform.ANDROID)
-            {
-                startupWindowHeightInputBox.setVisible(false);
-                startupWindowWidthInputBox.setVisible(false);
-            }
-
             platformLabel.setText("Platform : "+client.getPlatform().getUIName());
 
-            startupWindowWidthTextField.setText(client.getStartupDisplayWidth()+"");
-            startupWindowHeightTextField.setText(client.getStartupDisplayHeight()+"");
+            setDisplayHeight(client.getDisplayHeight());
+            setDisplayWidth(client.getDisplayWidth());
 
             socketConnectionLabel.setText(client.getRemoteSocketAddress().toString().substring(1)); //substring removes the `/`
 
