@@ -67,11 +67,8 @@ public class About extends VBox{
         links.getChildren().addAll(github, matrix, discord, website, twitter);
 
         Hyperlink donateButton = new Hyperlink("DONATE");
-        donateButton.setOnAction(event -> {
-            openWebpage("https://www.patreon.com/streampi");
-        });
+        donateButton.setOnAction(event -> openWebpage("https://www.patreon.com/streampi"));
         donateButton.getStyleClass().add("about_donate_hyperlink");
-
 
         ServerInfo serverInfo = ServerInfo.getInstance();
 

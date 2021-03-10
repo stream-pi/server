@@ -60,7 +60,7 @@ public class UIPropertyBox
     {
         String rawValue = null;
 
-        if (controlType == ControlType.TEXT_FIELD)
+        if (controlType == ControlType.TEXT_FIELD || controlType == ControlType.FILE_PATH)
             rawValue = ((TextField) controlNode).getText();
         else if (controlType == ControlType.COMBO_BOX)
             rawValue = ((ComboBox<String>) controlNode).getSelectionModel().getSelectedIndex() + "";

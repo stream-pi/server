@@ -539,7 +539,6 @@ public class ClientConnection extends Thread
                             {
                                 property.setRawValue(property1.getRawValue());
 
-
                                 finalClientProperties.addProperty(property);
                             }
                         }

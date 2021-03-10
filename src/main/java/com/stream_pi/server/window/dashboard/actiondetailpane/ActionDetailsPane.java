@@ -5,6 +5,7 @@ import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.action.Location;
 import com.stream_pi.action_api.actionproperty.property.ControlType;
+import com.stream_pi.action_api.actionproperty.property.FileExtensionFilter;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.action_api.otheractions.CombineAction;
@@ -38,6 +39,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -611,9 +613,13 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 });
 
                 hBox.getChildren().add(helpButton);
+
+                hBox.getChildren().add(controlNode);
             }
 
             hBox.getChildren().add(SpaceFiller.horizontal());
+
+            System.out.println("2222222222dddddddddddddd : "+eachProperty.getControlType());
 
             if(eachProperty.getControlType() == ControlType.COMBO_BOX)
             {
@@ -623,12 +629,36 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
 
                 controlNode = comboBox;
+
+                hBox.getChildren().add(controlNode);
+            }
+            else if(eachProperty.getControlType() == ControlType.FILE_PATH)
+            {
+                TextField textField = new TextField(eachProperty.getRawValue());
+
+                FileExtensionFilter[] fileExtensionFilters = eachProperty.getExtensionFilters();
+                FileChooser.ExtensionFilter[] extensionFilters = new FileChooser.ExtensionFilter[fileExtensionFilters.length];
+
+                for(int x = 0;x<fileExtensionFilters.length;x++)
+                {
+                    extensionFilters[x] = new FileChooser.ExtensionFilter(
+                            fileExtensionFilters[x].getDescription(),
+                            fileExtensionFilters[x].getExtensions()
+                    );
+                }
+
+                hBox = new HBoxInputBoxWithFileChooser(eachProperty.getDisplayName(), textField, null,
+                        extensionFilters);
+
+                controlNode = textField;
             }
             else if(eachProperty.getControlType() == ControlType.TEXT_FIELD)
             {
                 TextField textField = new TextField(eachProperty.getRawValue());
 
                 controlNode= textField;
+
+                hBox.getChildren().add(controlNode);
             }
             else if(eachProperty.getControlType() == ControlType.TOGGLE)
             {
@@ -648,6 +678,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 });
 
                 controlNode = toggleButton;
+
+                hBox.getChildren().add(controlNode);
             }
             else if(eachProperty.getControlType() == ControlType.SLIDER_DOUBLE)
             {
@@ -657,6 +689,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 slider.setMin(eachProperty.getMinDoubleValue());
 
                 controlNode = slider;
+
+                hBox.getChildren().add(controlNode);
             }
             else if(eachProperty.getControlType() == ControlType.SLIDER_INTEGER)
             {
@@ -669,10 +703,11 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 slider.setSnapToTicks(true);
 
                 controlNode = slider;
+
+                hBox.getChildren().add(controlNode);
             }
 
 
-            hBox.getChildren().add(controlNode);
 
             UIPropertyBox clientProperty = new UIPropertyBox(i, eachProperty.getDisplayName(), controlNode,
                     eachProperty.getControlType(), eachProperty.getType(), eachProperty.isCanBeBlank());
@@ -796,7 +831,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
             Node controlNode = clientProperty.getControlNode();
 
-            if (clientProperty.getControlType() == ControlType.TEXT_FIELD)
+            if (clientProperty.getControlType() == ControlType.TEXT_FIELD ||
+            clientProperty.getControlType() == ControlType.FILE_PATH)
             {
                 String value = ((TextField) controlNode).getText();
                 if(clientProperty.getType() == Type.INTEGER)
