@@ -105,7 +105,7 @@ public class ClientConnection extends Thread
     }
 
 
-    public void sendIcon(String profileID, String actionID, byte[] icon) throws SevereException
+    public void sendIcon(String profileID, String actionID, String state, byte[] icon) throws SevereException
     {
         try
         {
@@ -117,7 +117,7 @@ public class ClientConnection extends Thread
         }
 
         Message message = new Message("action_icon");
-        message.setStringArrValue(profileID, actionID);
+        message.setStringArrValue(profileID, actionID, state);
         message.setByteArrValue(icon);
         sendMessage(message);
     }
@@ -265,14 +265,18 @@ public class ClientConnection extends Thread
 
     // commands
 
-    private void onActionIconReceived(Message message)
+    private void onActionIconReceived(Message message) throws MinorException
     {
         String[] s = message.getStringArrValue();
 
         String profileID = s[0];
         String actionID = s[1];
+        String iconState = s[2];
 
-        getClient().getProfileByID(profileID).getActionByID(actionID).setIcon(message.getByteArrValue());
+        getClient()
+                .getProfileByID(profileID)
+                .getActionByID(actionID)
+                .addIcon(iconState,message.getByteArrValue());
     }
 
     public void initAfterConnectionQuerySend() throws SevereException
@@ -423,12 +427,6 @@ public class ClientConnection extends Thread
         serverListener.clearTemp();
     }
 
-    /*public void getActionIcon(String profileID, String actionID) throws StreamPiException
-    {
-        System.out.println("getting action icon from "+profileID+", "+actionID);
-        writeToStream("get_action_icon::"+profileID+"::"+actionID);
-    }*/
-
     public synchronized void registerActionToProfile(Message message) throws StreamPiException
     {
         String[] r = message.getStringArrValue();
@@ -445,8 +443,8 @@ public class ClientConnection extends Thread
         String bgColorHex = r[5];
 
         //icon
-        boolean isHasIcon = r[6].equals("true");
-        boolean isShowIcon = r[7].equals("true");
+        String[] allIconStateNames = r[6].split("::");
+        String defaultIconState = r[7];
 
         //text
         boolean isShowDisplayText = r[8].equals("true");
@@ -465,8 +463,7 @@ public class ClientConnection extends Thread
         Action action = new Action(ID, actionType);
 
         action.setBgColourHex(bgColorHex);
-        action.setShowIcon(isShowIcon);
-        action.setHasIcon(isHasIcon);
+        action.setCurrentIconState(defaultIconState);
 
         action.setShowDisplayText(isShowDisplayText);
         action.setDisplayTextFontColourHex(displayFontColor);
@@ -553,26 +550,7 @@ public class ClientConnection extends Thread
 
         try
         {
-            for(Property prop : action.getClientProperties().get())
-            {
-                logger.info("G@@@@@ : "+prop.getRawValue());
-            }
-
-
             getClient().getProfileByID(profileID).addAction(action);
-
-
-
-            for(String action1x : getClient().getProfileByID(profileID).getActionsKeySet())
-            {
-                Action action1 = getClient().getProfileByID(profileID).getActionByID(action1x);
-                logger.info("231cc : "+action1.getID());
-                for(Property prop : action1.getClientProperties().get())
-                {
-                    logger.info("G@VVVV@@@ : "+prop.getRawValue());
-                }
-            }
-
         }
         catch (CloneNotSupportedException e)
         {
@@ -616,8 +594,16 @@ public class ClientConnection extends Thread
         a.add(action.getBgColourHex());
 
         //icon
-        a.add(action.isHasIcon()+"");
-        a.add(action.isShowIcon()+"");
+
+        StringBuilder allIconStatesNames = new StringBuilder();
+        for(String eachState : action.getIcons().keySet())
+        {
+            allIconStatesNames.append(eachState).append("::");
+        }
+        a.add(allIconStatesNames.toString());
+
+
+        a.add(action.getCurrentIconState());
 
         //text
         a.add(action.isShowDisplayText()+"");

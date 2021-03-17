@@ -46,7 +46,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener {
+public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
+{
 
     private ScrollPane scrollPane;
 
@@ -69,7 +70,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     private HostServices hostServices;
 
-    public ActionDetailsPane(ExceptionAndAlertHandler exceptionAndAlertHandler, HostServices hostServices) {
+    public ActionDetailsPane(ExceptionAndAlertHandler exceptionAndAlertHandler, HostServices hostServices)
+    {
         this.hostServices = hostServices;
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
 
@@ -177,23 +179,18 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         displayNameTextField = new TextField();
         displayNameTextField.managedProperty().bind(displayNameTextField.visibleProperty());
 
-        iconFileTextField = new TextField();
-        iconFileTextField.managedProperty().bind(iconFileTextField.visibleProperty());
-        iconFileTextField.textProperty().addListener((observableValue, s, t1) -> {
+        defaultIconFileTextField = new TextField();
+        defaultIconFileTextField.textProperty().addListener((observableValue, s, t1) -> {
             try {
                 if (!s.equals(t1) && t1.length() > 0) {
                     byte[] iconFileByteArray = Files.readAllBytes(new File(t1).toPath());
 
-                    hideIconCheckBox.setDisable(false);
-                    hideIconCheckBox.setSelected(false);
+                    hideDefaultIconCheckBox.setDisable(false);
+                    hideDefaultIconCheckBox.setSelected(false);
                     clearIconButton.setDisable(false);
 
-                    System.out.println("ABABABABABBABABBABABABCCCCCCCCCCCCCCCCCC");
-
-                    action.setIcon(iconFileByteArray);
+                    action.setDefaultIcon(iconFileByteArray);
                     setSendIcon(true);
-
-                    System.out.println(action.getIconAsByteArray().length);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -201,23 +198,76 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             }
         });
 
+        toggleOffIconFileTextField = new TextField();
+        toggleOffIconFileTextField.textProperty().addListener((observableValue, s, t1) -> {
+            try {
+                if (!s.equals(t1) && t1.length() > 0) {
+                    byte[] iconFileByteArray = Files.readAllBytes(new File(t1).toPath());
+
+                    hideToggleOffIconCheckBox.setDisable(false);
+                    hideToggleOffIconCheckBox.setSelected(false);
+                    clearIconButton.setDisable(false);
+
+                    action.setToggleOffIcon(iconFileByteArray);
+                    setSendIcon(true);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                exceptionAndAlertHandler.handleMinorException(new MinorException(e.getMessage()));
+            }
+        });
+
+
+        toggleOnIconFileTextField = new TextField();
+        toggleOnIconFileTextField.textProperty().addListener((observableValue, s, t1) -> {
+            try {
+                if (!s.equals(t1) && t1.length() > 0) {
+                    byte[] iconFileByteArray = Files.readAllBytes(new File(t1).toPath());
+
+                    hideToggleOnIconCheckBox.setDisable(false);
+                    hideToggleOnIconCheckBox.setSelected(false);
+                    clearIconButton.setDisable(false);
+
+                    action.setToggleOnIcon(iconFileByteArray);
+                    setSendIcon(true);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                exceptionAndAlertHandler.handleMinorException(new MinorException(e.getMessage()));
+            }
+        });
+
+
         clearIconButton = new Button("Clear Icon");
         clearIconButton.managedProperty().bind(clearIconButton.visibleProperty());
         clearIconButton.setOnAction(event -> {
 
-            hideIconCheckBox.setDisable(true);
-            hideIconCheckBox.setSelected(false);
+            hideDefaultIconCheckBox.setDisable(true);
+            hideDefaultIconCheckBox.setSelected(false);
+
+            hideToggleOffIconCheckBox.setDisable(true);
+            hideToggleOffIconCheckBox.setSelected(false);
+
+            hideToggleOnIconCheckBox.setDisable(true);
+            hideToggleOnIconCheckBox.setSelected(false);
 
             clearIconButton.setDisable(true);
+
             setSendIcon(false);
-            iconFileTextField.clear();
+
+            defaultIconFileTextField.clear();
+            toggleOffIconFileTextField.clear();
+            toggleOnIconFileTextField.clear();
         });
 
         hideDisplayTextCheckBox = new CheckBox("Hide");
         hideDisplayTextCheckBox.managedProperty().bind(hideDisplayTextCheckBox.visibleProperty());
 
-        hideIconCheckBox = new CheckBox("Hide");
-        hideIconCheckBox.managedProperty().bind(hideIconCheckBox.visibleProperty());
+        hideDefaultIconCheckBox = new CheckBox("Hide");
+
+        hideToggleOnIconCheckBox = new CheckBox("Hide");
+
+        hideToggleOffIconCheckBox = new CheckBox("Hide");
 
         actionBackgroundColourPicker = new ColorPicker();
         actionBackgroundColourPicker.managedProperty().bind(actionBackgroundColourPicker.visibleProperty());
@@ -264,14 +314,29 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 new HBox(new Label("Alignment"), SpaceFiller.horizontal(),
                         displayTextAlignmentComboBox),
 
-                new HBoxInputBoxWithFileChooser("Icon", iconFileTextField, hideIconCheckBox,
+                new HBoxInputBoxWithFileChooser("Icon", defaultIconFileTextField, hideDefaultIconCheckBox,
                         new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif")),
 
                 clearIconHBox, bgColourHBox);
         normalActionsPropsVBox.managedProperty().bind(normalActionsPropsVBox.visibleProperty());
         normalActionsPropsVBox.setSpacing(10.0);
 
-        vbox.getChildren().addAll(displayTextFieldHBox, normalActionsPropsVBox, clientPropertiesVBox);
+        toggleActionsPropsVBox = new VBox(displayTextColourHBox,
+
+                new HBox(new Label("Alignment"), SpaceFiller.horizontal(),
+                        displayTextAlignmentComboBox),
+
+                new HBoxInputBoxWithFileChooser("Toggle Off Icon", toggleOffIconFileTextField, hideToggleOffIconCheckBox,
+                        new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif")),
+
+                new HBoxInputBoxWithFileChooser("Toggle On Icon", toggleOnIconFileTextField, hideToggleOnIconCheckBox,
+                        new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif")),
+
+                clearIconHBox, bgColourHBox);
+        toggleActionsPropsVBox.managedProperty().bind(toggleActionsPropsVBox.visibleProperty());
+        toggleActionsPropsVBox.setSpacing(10.0);
+
+        vbox.getChildren().addAll(displayTextFieldHBox, normalActionsPropsVBox, toggleActionsPropsVBox, clientPropertiesVBox);
 
         vbox.setVisible(false);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -321,6 +386,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     }
 
     private VBox normalActionsPropsVBox;
+    private VBox toggleActionsPropsVBox;
 
     private HBox displayTextFieldHBox;
 
@@ -372,8 +438,16 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     private TextField displayNameTextField;
     private CheckBox hideDisplayTextCheckBox;
-    private CheckBox hideIconCheckBox;
-    private TextField iconFileTextField;
+
+    private CheckBox hideDefaultIconCheckBox;
+    private TextField defaultIconFileTextField;
+
+    private CheckBox hideToggleOnIconCheckBox;
+    private TextField toggleOnIconFileTextField;
+
+    private CheckBox hideToggleOffIconCheckBox;
+    private TextField toggleOffIconFileTextField;
+
     private Button clearIconButton;
     private ColorPicker actionBackgroundColourPicker;
     private ColorPicker displayTextColourPicker;
@@ -386,7 +460,13 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         sendIcon = false;
         actionClientProperties.clear();
         displayNameTextField.clear();
-        iconFileTextField.clear();
+
+
+        defaultIconFileTextField.clear();
+        toggleOffIconFileTextField.clear();
+        toggleOnIconFileTextField.clear();
+
+
         clientPropertiesVBox.getChildren().clear();
         vbox.setVisible(false);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -420,7 +500,41 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         }
         else
         {
-            normalActionsPropsVBox.setVisible(true);
+            if(getAction().getActionType() == ActionType.NORMAL)
+            {
+                normalActionsPropsVBox.setVisible(true);
+                toggleActionsPropsVBox.setVisible(false);
+
+
+                boolean doesDefaultExist = action.getIcons().containsKey("default");
+                boolean isDefaultHidden = !action.getCurrentIconState().equals("default");
+
+                hideDefaultIconCheckBox.setDisable(!doesDefaultExist);
+                hideDefaultIconCheckBox.setSelected(isDefaultHidden);
+            }
+            else
+            {
+                normalActionsPropsVBox.setVisible(false);
+                toggleActionsPropsVBox.setVisible(true);
+
+
+                boolean doesToggleOnExist = action.getIcons().containsKey("toggle_on");
+                boolean isToggleOnHidden = action.getCurrentIconState().contains("toggle_on");
+
+                hideToggleOnIconCheckBox.setDisable(!doesToggleOnExist);
+                hideToggleOnIconCheckBox.setSelected(isToggleOnHidden);
+
+
+
+
+                boolean doesToggleOffExist = action.getIcons().containsKey("toggle_off");
+                boolean isToggleOffHidden = action.getCurrentIconState().contains("toggle_off");
+
+                hideToggleOffIconCheckBox.setDisable(!doesToggleOffExist);
+                hideToggleOffIconCheckBox.setSelected(isToggleOffHidden);
+            }
+
+
             setReturnButtonForCombineActionChildVisible(false);
             hideDisplayTextCheckBox.setVisible(true);
             setFolderButtonVisible(action.getActionType().equals(ActionType.FOLDER));
@@ -442,16 +556,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
             hideDisplayTextCheckBox.setSelected(!action.isShowDisplayText());
 
-
-            hideIconCheckBox.setDisable(!action.isHasIcon());
-
-            hideIconCheckBox.setSelected(!action.isShowIcon());
-
-            if(!action.isHasIcon())
-            {
-                hideIconCheckBox.setSelected(false);
-            }
-
             clearIconButton.setDisable(!action.isHasIcon());
         }
 
@@ -461,7 +565,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         vbox.setVisible(true);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-        if(action.getActionType() == ActionType.NORMAL)
+        if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
         {
             if(action.isInvalid())
                 setActionHeadingLabelText("Invalid action ("+action.getModuleName()+")");
@@ -476,7 +580,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         if(!action.isInvalid())
         {
-            if(action.getActionType() == ActionType.NORMAL)
+            if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
                 renderClientProperties();
             else if(action.getActionType() == ActionType.COMBINE)
                 renderCombineActionProperties();
@@ -527,10 +631,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         folderAction.setParent(action.getParent());
         folderAction.getClientProperties().set(action.getClientProperties());
         folderAction.setDisplayTextAlignment(action.getDisplayTextAlignment());
-        folderAction.setShowIcon(action.isShowIcon());
-        folderAction.setHasIcon(action.isHasIcon());
-        if(folderAction.isHasIcon())
-            folderAction.setIcon(action.getIconAsByteArray());
+        folderAction.setIcons(action.getIcons());
+        folderAction.setCurrentIconState(action.getCurrentIconState());
         folderAction.setDisplayTextFontColourHex(action.getDisplayTextFontColourHex());
 
         return folderAction;
@@ -547,16 +649,10 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         combineAction.setParent(action.getParent());
         combineAction.getClientProperties().set(action.getClientProperties());
         combineAction.setDisplayTextAlignment(action.getDisplayTextAlignment());
-        combineAction.setShowIcon(action.isShowIcon());
-        combineAction.setHasIcon(action.isHasIcon());
-        if(combineAction.isHasIcon())
-            combineAction.setIcon(action.getIconAsByteArray());
+        combineAction.setIcons(action.getIcons());
+        combineAction.setCurrentIconState(action.getCurrentIconState());
         combineAction.setDisplayTextFontColourHex(action.getDisplayTextFontColourHex());
 
-        for(Property prop : combineAction.getClientProperties().get())
-        {
-            System.out.println("PROP : "+prop.getName()+","+prop.getRawValue());
-        }
         return combineAction;
     }
 
@@ -619,7 +715,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
             hBox.getChildren().add(SpaceFiller.horizontal());
 
-            System.out.println("2222222222dddddddddddddd : "+eachProperty.getControlType());
 
             if(eachProperty.getControlType() == ControlType.COMBO_BOX)
             {
@@ -762,7 +857,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             displayTextColourDefaultCheckBox.isSelected(), 
             "#" + displayTextColourPicker.getValue().toString().substring(2),
             clearIconButton.isDisable(),
-            !hideIconCheckBox.isSelected(),
+            !hideDefaultIconCheckBox.isSelected(),
+            !hideToggleOffIconCheckBox.isSelected(),
+            !hideToggleOnIconCheckBox.isSelected(),
             displayTextAlignmentComboBox.getSelectionModel().getSelectedItem(),
             actionBackgroundColourTransparentCheckBox.isSelected(),
             "#" + actionBackgroundColourPicker.getValue().toString().substring(2),
@@ -796,15 +893,20 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         if(!isCombineChild())
         {
-            if(action.isHasIcon())
+            if(action.getActionType() == ActionType.NORMAL)
             {
-                if(hideDisplayTextCheckBox.isSelected() && hideIconCheckBox.isSelected())
-                    finalErrors.append(" * Both Icon and display text check box cannot be hidden.\n");
-            }
-            else
-            {
-                if(hideDisplayTextCheckBox.isSelected())
-                    finalErrors.append(" * Display Text cannot be hidden, since there is also no icon.\n");
+                if(action.isHasIcon())
+                {
+                    if(hideDisplayTextCheckBox.isSelected() && hideDefaultIconCheckBox.isSelected())
+                    {
+                        finalErrors.append(" * Both Icon and display text check box cannot be hidden.\n");
+                    }
+                }
+                else
+                {
+                    if(hideDisplayTextCheckBox.isSelected())
+                        finalErrors.append(" * Display Text cannot be hidden, since there is also no icon.\n");
+                }
             }
         }
 

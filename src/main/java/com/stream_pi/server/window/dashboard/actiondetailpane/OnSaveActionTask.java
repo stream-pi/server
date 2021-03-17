@@ -29,7 +29,7 @@ public class OnSaveActionTask extends Task<Void>
 
     public OnSaveActionTask(ClientConnection connection, Action action, String delayBeforeRunningString, String displayNameText, boolean isCombineChild,
                             boolean isShowDisplayText, boolean isDefaultDisplayTextColour, String displayTextFontColour, boolean isClearIcon,
-                            boolean isHideIcon, DisplayTextAlignment displayTextAlignment, boolean isTransparentBackground, String backgroundColour,
+                            boolean isHideDefaultIcon, boolean isHideToggleOffIcon, boolean isHideToggleOnIcon, DisplayTextAlignment displayTextAlignment, boolean isTransparentBackground, String backgroundColour,
                             CombineActionPropertiesPane combineActionPropertiesPane, ClientProfile clientProfile, boolean sendIcon, ActionBox actionBox,
                             ArrayList<UIPropertyBox> actionClientProperties, ExceptionAndAlertHandler exceptionAndAlertHandler, Button saveButton, Button deleteButton,
                             boolean runAsync)
@@ -46,7 +46,9 @@ public class OnSaveActionTask extends Task<Void>
         this.isDefaultDisplayTextColour = isDefaultDisplayTextColour;
         this.displayTextFontColour = displayTextFontColour;
         this.isClearIcon = isClearIcon;
-        this.isHideIcon = isHideIcon;
+        this.isHideDefaultIcon = isHideDefaultIcon;
+        this.isHideToggleOffIcon = isHideToggleOffIcon;
+        this.isHideToggleOnIcon = isHideToggleOnIcon;
         this.displayTextAlignment = displayTextAlignment;
         this.isTransparentBackground = isTransparentBackground;
         this.combineActionPropertiesPane = combineActionPropertiesPane;
@@ -77,7 +79,9 @@ public class OnSaveActionTask extends Task<Void>
     private ArrayList<UIPropertyBox> actionClientProperties;
     private String displayTextFontColour;
     private boolean isClearIcon;
-    private boolean isHideIcon;
+    private boolean isHideDefaultIcon;
+    private boolean isHideToggleOffIcon;
+    private boolean isHideToggleOnIcon;
     private DisplayTextAlignment displayTextAlignment;
     private boolean isTransparentBackground;
     private String backgroundColour;
@@ -120,24 +124,34 @@ public class OnSaveActionTask extends Task<Void>
 
             if(isClearIcon)
             {
-                action.setIcon(null);
-                action.setHasIcon(false);
-                action.setShowIcon(false);
+                action.setIcons(null);
+                action.setCurrentIconState("");
             }
 
-            if(action.isHasIcon())
-                action.setShowIcon(isHideIcon);
 
+            if(action.getActionType() == ActionType.NORMAL)
+            {
+                if(isHideDefaultIcon)
+                {
+                    action.setCurrentIconState("default");
+                }
+                else
+                {
+                    action.setCurrentIconState("");
+                }
+            }
+            else if (action.getActionType() == ActionType.TOGGLE)
+            {
+                action.setCurrentIconState(isHideToggleOffIcon+"__"+isHideToggleOnIcon);
+            }
 
             action.setDisplayTextAlignment(displayTextAlignment);
 
 
-            logger.info("BBBGGG : "+backgroundColour);
             if(isTransparentBackground)
                 action.setBgColourHex("");
             else
             {
-                //String bgColour = "#" + actionBackgroundColourPicker.getValue().toString().substring(2);
                 action.setBgColourHex(backgroundColour);
             }
         }
@@ -177,27 +191,11 @@ public class OnSaveActionTask extends Task<Void>
         {
             logger.info("Saving action ... "+action.isHasIcon()+"+"+sendIcon);
 
-            /*if(action.isHasIcon())
-            {
-                if(clientProfile.getActionByID(action.getID()).getIconAsByteArray() == null)
-                {
-                    sendIcon = true;
-                }
-                else
-                {
-                    if(!Arrays.equals(action.getIconAsByteArray(), clientProfile.getActionByID(action.getID()).getIconAsByteArray()))
-                    {
-                       logger.info("Sending ...");
-                       sendIcon = true;
-                   }
-               }
-            }*/
-
             connection.saveActionDetails(clientProfile.getID(), action);
 
             if(sendIcon)
-            {   
-                connection.sendIcon(clientProfile.getID(), action.getID(), action.getIconAsByteArray());
+            {
+                sendAllIcons(clientProfile, action);
             }
 
             if(!isCombineChild)
@@ -226,6 +224,14 @@ public class OnSaveActionTask extends Task<Void>
             e.printStackTrace();
         }
         
+    }
+
+    private void sendAllIcons(ClientProfile clientProfile, Action action) throws SevereException
+    {
+        for(String state : action.getIcons().keySet())
+        {
+            connection.sendIcon(clientProfile.getID(), action.getID(), state, action.getIcon(state));
+        }
     }
 
     @Override
