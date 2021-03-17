@@ -114,6 +114,13 @@ public class PluginsSettings extends VBox {
                                 errors.append("        -> ").append(serverProperty.getDisplayName()).append(" cannot be blank.\n");
                         }
                     }
+                    else if(serverProperty.getControlType() == ControlType.TEXT_FIELD_MASKED)
+                    {
+                        String value = ((TextField) controlNode).getText();
+
+                        if(value.isBlank() && !serverProperty.isCanBeBlank())
+                            errors.append("        -> ").append(serverProperty.getDisplayName()).append(" cannot be blank.\n");
+                    }
                 }
 
                 if(!errors.toString().isBlank())
@@ -271,6 +278,15 @@ public class PluginsSettings extends VBox {
                     hBox.getChildren().add(textField);
 
                     controlNode = textField;
+                }
+                else if(eachProperty.getControlType() == ControlType.TEXT_FIELD_MASKED)
+                {
+                    PasswordField textField = new PasswordField();
+                    textField.setText(eachProperty.getRawValue());
+
+                    controlNode= textField;
+
+                    hBox.getChildren().add(controlNode);
                 }
                 else if(eachProperty.getControlType() == ControlType.TOGGLE)
                 {

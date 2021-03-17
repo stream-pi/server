@@ -749,7 +749,14 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             }
             else if(eachProperty.getControlType() == ControlType.TEXT_FIELD)
             {
-                TextField textField = new TextField(eachProperty.getRawValue());
+                controlNode= new TextField(eachProperty.getRawValue());
+
+                hBox.getChildren().add(controlNode);
+            }
+            else if(eachProperty.getControlType() == ControlType.TEXT_FIELD_MASKED)
+            {
+                PasswordField textField = new PasswordField();
+                textField.setText(eachProperty.getRawValue());
 
                 controlNode= textField;
 
