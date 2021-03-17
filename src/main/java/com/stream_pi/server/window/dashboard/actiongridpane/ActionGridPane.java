@@ -102,7 +102,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
         FontIcon fontIcon = new FontIcon("fas-chevron-left");
         fontIcon.getStyleClass().add("folder_action_back_button_icon");
-        fontIcon.setIconSize(Config.getInstance().getActionGridActionSize() - 30);
+        fontIcon.setIconSize((int) (Config.getInstance().getActionGridActionSize() * 0.8));
 
         stackPane.setAlignment(Pos.CENTER);
         stackPane.getChildren().add(fontIcon);

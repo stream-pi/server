@@ -4,13 +4,16 @@ import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.action.Location;
+import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiondetailpane.ActionDetailsPaneListener;
 import com.stream_pi.util.exception.MinorException;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
@@ -23,6 +26,7 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.TextAlignment;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
@@ -161,30 +165,55 @@ public class ActionBox extends StackPane{
         });
 
         setOnMouseClicked(mouseEvent -> {
-            if(action != null && mouseEvent.getButton().equals(MouseButton.PRIMARY))
+            if(action != null)
             {
-                if(mouseEvent.getClickCount() == 2 && action.getActionType() == ActionType.FOLDER)
+                if(mouseEvent.getButton().equals(MouseButton.PRIMARY))
                 {
-                    getActionDetailsPaneListener().onOpenFolderButtonClicked();
-                }
-                else
-                {
-                    try
+                    if(mouseEvent.getClickCount() == 2 && action.getActionType() == ActionType.FOLDER)
                     {
-                        actionDetailsPaneListener.onActionClicked(action, this);
+                        getActionDetailsPaneListener().onOpenFolderButtonClicked();
                     }
-                    catch (MinorException e)
+                    else
                     {
-                        exceptionAndAlertHandler.handleMinorException(e);
-                        e.printStackTrace();
+                        try
+                        {
+                            actionDetailsPaneListener.onActionClicked(action, this);
+                        }
+                        catch (MinorException e)
+                        {
+                            exceptionAndAlertHandler.handleMinorException(e);
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                else if(mouseEvent.getButton().equals(MouseButton.SECONDARY))
+                {
+                    if(action.getActionType() == ActionType.TOGGLE)
+                    {
+                        toggleStateContextMenu.show(this, mouseEvent.getScreenX(),
+                                mouseEvent.getScreenY());
                     }
                 }
             }
+
         });
+
+        toggleStateContextMenu = new ContextMenu();
+
+        MenuItem showToggleOffMenuItem = new MenuItem("Show Toggle OFF");
+        showToggleOffMenuItem.setOnAction(event-> fakeToggle(false));
+
+        MenuItem showToggleOnMenuItem = new MenuItem("Show Toggle ON");
+        showToggleOnMenuItem.setOnAction(event-> fakeToggle(true));
+
+        toggleStateContextMenu.getItems().addAll(showToggleOffMenuItem, showToggleOnMenuItem);
+
 
         setCache(true);
         setCacheHint(CacheHint.QUALITY);
     }
+
+    ContextMenu toggleStateContextMenu;
 
     public void setInvalid(boolean invalid)
     {
@@ -261,6 +290,26 @@ public class ActionBox extends StackPane{
         }
     }
 
+    public void setDefaultToggleIcon(boolean isToggleOn)
+    {
+        setBackground(null);
+
+        String styleClass;
+
+        if(isToggleOn)
+        {
+            styleClass = "action_box_toggle_on";
+        }
+        else
+        {
+            styleClass = "action_box_toggle_off";
+        }
+
+        FontIcon fontIcon = new FontIcon();
+        fontIcon.getStyleClass().add(styleClass);
+        fontIcon.setIconSize((int) (size * 0.8));
+    }
+
     private Action action = null;
     private ExceptionAndAlertHandler exceptionAndAlertHandler;
 
@@ -307,15 +356,88 @@ public class ActionBox extends StackPane{
         setInvalid(action.isInvalid());
 
         Platform.runLater(()->{
-            if(action.isHasIcon() && action.isShowIcon())
+            try {
+                if(action.getActionType() == ActionType.TOGGLE)
+                {
+                    fakeToggle(false);
+                }
+                else
+                {
+                    if(action.isHasIcon() && action.isShowIcon())
+                    {
+                        setIcon(action.getDefaultIcon());
+                    }
+                    else
+                    {
+                        setIcon(null);
+                    }
+                }
+            }
+            catch (Exception e)
             {
-                setIcon(action.getIconAsByteArray());
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void fakeToggle(boolean isON)
+    {
+        if(isON) // ON
+        {
+            if(action.isHasIcon())
+            {
+                boolean isToggleOnPresent = action.getIcons().containsKey("toggle_on");
+                boolean isToggleOnHidden = action.getCurrentIconState().contains("toggle_on");
+
+                if(isToggleOnPresent)
+                {
+                    if(isToggleOnHidden)
+                    {
+                        setDefaultToggleIcon(true);
+                    }
+                    else
+                    {
+                        setIcon(action.getIcons().get("toggle_on"));
+                    }
+                }
+                else
+                {
+                    setDefaultToggleIcon(true);
+                }
             }
             else
             {
-                setIcon(null);
+                setDefaultToggleIcon(true);
             }
-        });
+        }
+        else // OFF
+        {
+            if(action.isHasIcon())
+            {
+                boolean isToggleOffPresent = action.getIcons().containsKey("toggle_off");
+                boolean isToggleOffHidden = action.getCurrentIconState().contains("toggle_off");
+
+                if(isToggleOffPresent)
+                {
+                    if(isToggleOffHidden)
+                    {
+                        setDefaultToggleIcon(false);
+                    }
+                    else
+                    {
+                        setIcon(action.getIcons().get("toggle_off"));
+                    }
+                }
+                else
+                {
+                    setDefaultToggleIcon(false);
+                }
+            }
+            else
+            {
+                setDefaultToggleIcon(false);
+            }
+        }
     }
 
     public void setDisplayTextLabel(String text)
@@ -343,7 +465,7 @@ public class ActionBox extends StackPane{
     public void setBackgroundColour(String colour)
     {
         System.out.println("COLOr : "+colour);
-        if(!colour.isEmpty() && action.getIconAsByteArray() == null)
+        if(!colour.isEmpty())
             setStyle("-fx-background-color : "+colour);
     }
 }
