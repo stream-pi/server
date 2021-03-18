@@ -133,7 +133,8 @@ public class OnSaveActionTask extends Task<Void>
             {
                 if(isHideDefaultIcon)
                 {
-                    action.setCurrentIconState("default");
+                    if(action.getIcon("default") != null)
+                        action.setCurrentIconState("default");
                 }
                 else
                 {

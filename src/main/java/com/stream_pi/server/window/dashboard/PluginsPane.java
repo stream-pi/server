@@ -173,7 +173,7 @@ public class PluginsPane extends VBox {
     {
         Action newAction = new Action(action.getActionType());
 
-        if(action.getActionType() == ActionType.NORMAL)
+        if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
         {
             newAction.setModuleName(action.getModuleName());
             newAction.setVersion(action.getVersion());

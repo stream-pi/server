@@ -1,6 +1,7 @@
 module com.stream_pi.server {
     uses com.stream_pi.action_api.action.Action;
     uses com.stream_pi.action_api.normalaction.NormalAction;
+    uses com.stream_pi.action_api.normalaction.ExternalPlugin;
 
     requires com.stream_pi.action_api;
     requires com.stream_pi.util;

@@ -503,7 +503,7 @@ public class ClientConnection extends Thread
 
         //action toBeAdded = null;
 
-        if(actionType == ActionType.NORMAL)
+        if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE)
         {
             ExternalPlugin actionCopy = ExternalPlugins.getInstance().getPluginByModuleName(r[4]);
 

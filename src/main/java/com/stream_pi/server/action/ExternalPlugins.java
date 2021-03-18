@@ -269,7 +269,7 @@ public class ExternalPlugins
             logger.info("Loading plugins from jar ...");
             // Now you can use the new module layer to find service implementations in it
             externalPlugins = ServiceLoader
-                    .load(layer, NormalAction.class).stream()
+                    .load(layer, ExternalPlugin.class).stream()
                     .map(ServiceLoader.Provider::get)
                     .collect(Collectors.toList());
 
@@ -294,6 +294,8 @@ public class ExternalPlugins
                 eachPlugin.setServerConnection(serverConnection);
                 eachPlugin.initProperties();
 
+
+                logger.info("MODULE : "+eachPlugin.getModuleName());
                 Action foundAction = null;
                 for (Action action : pluginsConfigs) {
                     if (action.getModuleName().equals(eachPlugin.getModuleName())
