@@ -514,6 +514,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 boolean doesDefaultExist = action.getIcons().containsKey("default");
                 boolean isDefaultHidden = !action.getCurrentIconState().equals("default");
 
+                if(!doesDefaultExist)
+                    isDefaultHidden = false;
+
                 hideDefaultIconCheckBox.setDisable(!doesDefaultExist);
                 hideDefaultIconCheckBox.setSelected(isDefaultHidden);
             }
@@ -526,6 +529,10 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 boolean doesToggleOnExist = action.getIcons().containsKey("toggle_on");
                 boolean isToggleOnHidden = action.getCurrentIconState().contains("toggle_on");
 
+
+                if(!doesToggleOnExist)
+                    isToggleOnHidden = false;
+
                 hideToggleOnIconCheckBox.setDisable(!doesToggleOnExist);
                 hideToggleOnIconCheckBox.setSelected(isToggleOnHidden);
 
@@ -534,6 +541,11 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
                 boolean doesToggleOffExist = action.getIcons().containsKey("toggle_off");
                 boolean isToggleOffHidden = action.getCurrentIconState().contains("toggle_off");
+
+
+
+                if(!doesToggleOffExist)
+                    isToggleOffHidden = false;
 
                 hideToggleOffIconCheckBox.setDisable(!doesToggleOffExist);
                 hideToggleOffIconCheckBox.setSelected(isToggleOffHidden);
