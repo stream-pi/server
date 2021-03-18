@@ -288,18 +288,12 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         HBox.setMargin(displayTextColourDefaultCheckBox, new Insets(0, 0, 0, 10));
 
-        Region r = new Region();
-        HBox.setHgrow(r, Priority.ALWAYS);
-
-        Region r1 = new Region();
-        HBox.setHgrow(r1, Priority.ALWAYS);
-
-        HBox displayTextColourHBox = new HBox(new Label("Display Text Colour"), r1, displayTextColourPicker,
+        HBox displayTextColourHBox = new HBox(new Label("Display Text Colour"), SpaceFiller.horizontal(), displayTextColourPicker,
                 displayTextColourDefaultCheckBox);
         displayTextColourHBox.setAlignment(Pos.CENTER);
         displayTextColourHBox.setSpacing(5.0);
 
-        HBox bgColourHBox = new HBox(new Label("Background Colour"), r, actionBackgroundColourPicker,
+        HBox bgColourHBox = new HBox(new Label("Background Colour"), SpaceFiller.horizontal(), actionBackgroundColourPicker,
                 actionBackgroundColourTransparentCheckBox);
         bgColourHBox.setAlignment(Pos.CENTER);
         bgColourHBox.setSpacing(5.0);
@@ -309,34 +303,41 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         displayTextFieldHBox = new HBoxInputBox("Display Name", displayNameTextField, hideDisplayTextCheckBox);
 
-        normalActionsPropsVBox = new VBox(displayTextColourHBox,
 
-                new HBox(new Label("Alignment"), SpaceFiller.horizontal(),
-                        displayTextAlignmentComboBox),
+        HBox alignmentHBox = new HBox(new Label("Alignment"), SpaceFiller.horizontal(),
+                displayTextAlignmentComboBox);
 
+
+
+        normalToggleActionCommonPropsVBox = new VBox(
+                displayTextColourHBox,
+                alignmentHBox,
+                bgColourHBox,
+                clearIconHBox
+        );
+
+        normalToggleActionCommonPropsVBox.managedProperty().bind(normalToggleActionCommonPropsVBox.visibleProperty());
+        normalToggleActionCommonPropsVBox.setSpacing(10.0);
+
+        normalActionsPropsVBox = new VBox(
                 new HBoxInputBoxWithFileChooser("Icon", defaultIconFileTextField, hideDefaultIconCheckBox,
-                        new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif")),
-
-                clearIconHBox, bgColourHBox);
+                        new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif"))
+        );
         normalActionsPropsVBox.managedProperty().bind(normalActionsPropsVBox.visibleProperty());
         normalActionsPropsVBox.setSpacing(10.0);
 
-        toggleActionsPropsVBox = new VBox(displayTextColourHBox,
-
-                new HBox(new Label("Alignment"), SpaceFiller.horizontal(),
-                        displayTextAlignmentComboBox),
-
+        toggleActionsPropsVBox = new VBox(
                 new HBoxInputBoxWithFileChooser("Toggle Off Icon", toggleOffIconFileTextField, hideToggleOffIconCheckBox,
                         new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif")),
 
                 new HBoxInputBoxWithFileChooser("Toggle On Icon", toggleOnIconFileTextField, hideToggleOnIconCheckBox,
-                        new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif")),
+                        new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif"))
+        );
 
-                clearIconHBox, bgColourHBox);
         toggleActionsPropsVBox.managedProperty().bind(toggleActionsPropsVBox.visibleProperty());
         toggleActionsPropsVBox.setSpacing(10.0);
 
-        vbox.getChildren().addAll(displayTextFieldHBox, normalActionsPropsVBox, toggleActionsPropsVBox, clientPropertiesVBox);
+        vbox.getChildren().addAll(displayTextFieldHBox,normalToggleActionCommonPropsVBox, normalActionsPropsVBox, toggleActionsPropsVBox, clientPropertiesVBox);
 
         vbox.setVisible(false);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -386,6 +387,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     }
 
     private VBox normalActionsPropsVBox;
+    private VBox normalToggleActionCommonPropsVBox;
     private VBox toggleActionsPropsVBox;
 
     private HBox displayTextFieldHBox;
@@ -495,11 +497,14 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         {
             setReturnButtonForCombineActionChildVisible(true);
             normalActionsPropsVBox.setVisible(false);
+            normalToggleActionCommonPropsVBox.setVisible(false);
             hideDisplayTextCheckBox.setSelected(false);
             hideDisplayTextCheckBox.setVisible(false);
         }
         else
         {
+            normalToggleActionCommonPropsVBox.setVisible(true);
+
             if(getAction().getActionType() == ActionType.NORMAL)
             {
                 normalActionsPropsVBox.setVisible(true);
