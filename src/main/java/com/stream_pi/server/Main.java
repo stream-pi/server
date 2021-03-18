@@ -34,11 +34,17 @@ public class Main extends Application {
     public void start(Stage stage) {
         for(String eachArg : getParameters().getRaw())
         {
+            if(!eachArg.startsWith("-DStreamPi"))
+                continue;
+
             String[] r = eachArg.split("=");
-            if(r[0].equals("-DStreamPi.startupRunnerFileName"))
-                ServerInfo.getInstance().setRunnerFileName(r[1]);
-            else if(r[0].equals("-DStreamPi.startupMode"))
-                ServerInfo.getInstance().setStartMinimised(r[1].equals("min"));
+            String arg = r[0];
+            String val = r[1];
+
+            if(arg.equals("-DStreamPi.startupRunnerFileName"))
+                ServerInfo.getInstance().setRunnerFileName(val);
+            else if(arg.equals("-DStreamPi.startupMode"))
+                ServerInfo.getInstance().setStartMinimised(val.equals("min"));
         }
 
 
