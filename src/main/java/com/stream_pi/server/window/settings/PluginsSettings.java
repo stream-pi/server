@@ -1,11 +1,12 @@
 package com.stream_pi.server.window.settings;
 
+import com.stream_pi.action_api.normalaction.ExternalPlugin;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.action_api.actionproperty.property.ControlType;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.action_api.normalaction.NormalAction;
-import com.stream_pi.server.action.NormalActionPlugins;
+import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.connection.ServerListener;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.MinorException;
@@ -15,7 +16,6 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import javafx.application.HostServices;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -144,16 +144,16 @@ public class PluginsSettings extends VBox {
 
                     String rawValue = serverProperty.getRawValue();
 
-                    NormalActionPlugins.getInstance().getActionFromIndex(pp.getIndex())
+                    ExternalPlugins.getInstance().getActionFromIndex(pp.getIndex())
                             .getServerProperties().get()
                             .get(serverProperty.getIndex()).setRawValue(rawValue);
                 }
             }
 
 
-            NormalActionPlugins.getInstance().saveServerSettings();
+            ExternalPlugins.getInstance().saveServerSettings();
 
-            NormalActionPlugins.getInstance().initPlugins();
+            ExternalPlugins.getInstance().initPlugins();
         }
         catch (MinorException e)
         {
@@ -177,7 +177,7 @@ public class PluginsSettings extends VBox {
 
         pluginProperties.clear();
 
-        List<NormalAction> actions = NormalActionPlugins.getInstance().getPlugins();
+        List<ExternalPlugin> actions = ExternalPlugins.getInstance().getPlugins();
 
         Platform.runLater(()-> pluginsSettingsVBox.getChildren().clear());
 
@@ -199,7 +199,7 @@ public class PluginsSettings extends VBox {
 
         for(int i = 0; i<actions.size(); i++)
         {
-            NormalAction action = actions.get(i);
+            ExternalPlugin action = actions.get(i);
 
             if(!action.isVisibleInServerSettingsPane())
                 continue;

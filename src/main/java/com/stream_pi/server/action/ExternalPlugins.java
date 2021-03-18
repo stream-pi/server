@@ -32,6 +32,7 @@ import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.actionproperty.ServerProperties;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
+import com.stream_pi.action_api.normalaction.ExternalPlugin;
 import com.stream_pi.action_api.normalaction.NormalAction;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
@@ -56,9 +57,9 @@ import java.util.stream.Collectors;
 
 import org.w3c.dom.Element;
 
-public class NormalActionPlugins
+public class ExternalPlugins
 {
-    private static NormalActionPlugins instance = null;
+    private static ExternalPlugins instance = null;
     private final Logger logger;
 
     private File configFile;
@@ -72,11 +73,11 @@ public class NormalActionPlugins
      *
      * @return returns instance of NormalActionPlugins (one and only, always)
      */
-    public static synchronized NormalActionPlugins getInstance()
+    public static synchronized ExternalPlugins getInstance()
     {
         if(instance == null)
         {
-            instance = new NormalActionPlugins();
+            instance = new ExternalPlugins();
         }
 
         return instance;
@@ -95,10 +96,10 @@ public class NormalActionPlugins
     /**
      * Private constructor
      */
-    private NormalActionPlugins()
+    private ExternalPlugins()
     {
-        logger = Logger.getLogger(NormalActionPlugins.class.getName());
-        normalPluginsHashmap = new HashMap<>();
+        logger = Logger.getLogger(ExternalPlugins.class.getName());
+        externalPluginsHashmap = new HashMap<>();
     }
 
     /**
@@ -115,9 +116,9 @@ public class NormalActionPlugins
      *
      * @return List of plugins
      */
-    public List<NormalAction> getPlugins()
+    public List<ExternalPlugin> getPlugins()
     {
-        return normalPlugins;
+        return externalPlugins;
     }
 
     /**
@@ -126,20 +127,20 @@ public class NormalActionPlugins
      * @param name Module Name
      * @return The plugin. If not found, then null is returned
      */
-    public NormalAction getPluginByModuleName(String name)
+    public ExternalPlugin getPluginByModuleName(String name)
     {
         logger.info("Plugin being requested : "+name);
-        Integer index = normalPluginsHashmap.getOrDefault(name, -1);
+        Integer index = externalPluginsHashmap.getOrDefault(name, -1);
         if(index != -1)
         {
-            return normalPlugins.get(index);
+            return externalPlugins.get(index);
         }
 
         return null;
     }
 
-    private List<NormalAction> normalPlugins = null;
-    HashMap<String, Integer> normalPluginsHashmap;
+    private List<ExternalPlugin> externalPlugins = null;
+    HashMap<String, Integer> externalPluginsHashmap;
 
     /**
      * Used to register plugins from plugin location
@@ -161,7 +162,7 @@ public class NormalActionPlugins
             throw new SevereException("Plugins","Error reading plugins config.xml. Cannot continue.");
         }
 
-        ArrayList<NormalAction> errorModules = new ArrayList<>();
+        ArrayList<ExternalPlugin> errorModules = new ArrayList<>();
         ArrayList<String> errorModuleError = new ArrayList<>();
 
         ArrayList<Action> pluginsConfigs = new ArrayList<>();
@@ -267,7 +268,7 @@ public class NormalActionPlugins
 
             logger.info("Loading plugins from jar ...");
             // Now you can use the new module layer to find service implementations in it
-            normalPlugins = ServiceLoader
+            externalPlugins = ServiceLoader
                     .load(layer, NormalAction.class).stream()
                     .map(ServiceLoader.Provider::get)
                     .collect(Collectors.toList());
@@ -285,7 +286,7 @@ public class NormalActionPlugins
 
         sortedPlugins = new HashMap<>();
 
-        for (NormalAction eachPlugin : normalPlugins)
+        for (ExternalPlugin eachPlugin : externalPlugins)
         {
             try
             {
@@ -345,7 +346,7 @@ public class NormalActionPlugins
 
 
                 if (!sortedPlugins.containsKey(eachPlugin.getCategory())) {
-                    ArrayList<NormalAction> actions = new ArrayList<>();
+                    ArrayList<ExternalPlugin> actions = new ArrayList<>();
 
                     sortedPlugins.put(eachPlugin.getCategory(), actions);
                 }
@@ -374,7 +375,7 @@ public class NormalActionPlugins
             StringBuilder errors = new StringBuilder("The following action modules could not be loaded:");
             for(int i = 0; i<errorModules.size(); i++)
             {
-                normalPlugins.remove(errorModules.get(i));
+                externalPlugins.remove(errorModules.get(i));
                 errors.append("\n * ").append(errorModules.get(i).getModuleName()).append("\n(")
                     .append(errorModuleError.get(i)).append(")");
             }
@@ -383,9 +384,9 @@ public class NormalActionPlugins
         }
 
 
-        for(int i = 0;i<normalPlugins.size();i++)
+        for(int i = 0;i<externalPlugins.size();i++)
         {
-            normalPluginsHashmap.put(normalPlugins.get(i).getModuleName(), i);
+            externalPluginsHashmap.put(externalPlugins.get(i).getModuleName(), i);
         }
     }
 
@@ -397,7 +398,7 @@ public class NormalActionPlugins
         StringBuilder errors = new StringBuilder("There were errors registering the following plugins. As a result, they have been omitted : ");
         boolean isError = false;
 
-        for(NormalAction eachPlugin : normalPlugins)
+        for(ExternalPlugin eachPlugin : externalPlugins)
         {
             try
             {
@@ -426,14 +427,14 @@ public class NormalActionPlugins
         }
     }
 
-    HashMap<String, ArrayList<NormalAction>> sortedPlugins;
+    HashMap<String, ArrayList<ExternalPlugin>> sortedPlugins;
 
     /**
      * Gets list of sorted plugins
      *
      * @return Hashmap with category key, and list of plugins of each category
      */
-    public HashMap<String, ArrayList<NormalAction>> getSortedPlugins()
+    public HashMap<String, ArrayList<ExternalPlugin>> getSortedPlugins()
     {
         return sortedPlugins;
     }
@@ -455,7 +456,7 @@ public class NormalActionPlugins
     {
         XMLConfigHelper.removeChilds(getActionsElement());
 
-        for(NormalAction normalAction : normalPlugins)
+        for(ExternalPlugin normalAction : externalPlugins)
         {
             Element actionElement = document.createElement("action");
             getActionsElement().appendChild(actionElement);
@@ -521,9 +522,9 @@ public class NormalActionPlugins
      * @param index of plugin
      * @return found plugin
      */
-    public NormalAction getActionFromIndex(int index)
+    public ExternalPlugin getActionFromIndex(int index)
     {
-        return normalPlugins.get(index);
+        return externalPlugins.get(index);
     }
 
     /**
@@ -531,9 +532,9 @@ public class NormalActionPlugins
      */
     public void shutDownActions()
     {
-        if(normalPlugins != null)
+        if(externalPlugins != null)
         {
-            for(NormalAction eachPlugin : normalPlugins)
+            for(ExternalPlugin eachPlugin : externalPlugins)
             {
                 try
                 {
@@ -545,7 +546,7 @@ public class NormalActionPlugins
                 }
             }
     
-            normalPlugins.clear();
+            externalPlugins.clear();
         }
     }
 

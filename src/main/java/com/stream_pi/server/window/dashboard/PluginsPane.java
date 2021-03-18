@@ -4,10 +4,11 @@ import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
+import com.stream_pi.action_api.normalaction.ExternalPlugin;
 import com.stream_pi.action_api.normalaction.NormalAction;
 import com.stream_pi.action_api.otheractions.CombineAction;
 import com.stream_pi.action_api.otheractions.FolderAction;
-import com.stream_pi.server.action.NormalActionPlugins;
+import com.stream_pi.server.action.ExternalPlugins;
 
 import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.HostServices;
@@ -78,7 +79,7 @@ public class PluginsPane extends VBox {
 
     public void loadData()
     {
-        HashMap<String, ArrayList<NormalAction>> sortedPlugins = NormalActionPlugins.getInstance().getSortedPlugins();
+        HashMap<String, ArrayList<ExternalPlugin>> sortedPlugins = ExternalPlugins.getInstance().getSortedPlugins();
 
         for(String eachCategory : sortedPlugins.keySet())
         {
@@ -87,7 +88,7 @@ public class PluginsPane extends VBox {
 
             TitledPane pane = new TitledPane(eachCategory, vBox);
             pane.getStyleClass().add("plugins_pane_each_plugin_category_titled_pane");
-            for(NormalAction eachAction : sortedPlugins.get(eachCategory))
+            for(ExternalPlugin eachAction : sortedPlugins.get(eachCategory))
             {
                 if(!eachAction.isVisibleInPluginsPane())
                     continue;
@@ -195,8 +196,6 @@ public class PluginsPane extends VBox {
         newAction.setShowDisplayText(true);
         newAction.setDisplayText(displayText);
         newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
-        newAction.setShowIcon(false);
-        newAction.setHasIcon(false);
 
         //action.setParent(root);
 

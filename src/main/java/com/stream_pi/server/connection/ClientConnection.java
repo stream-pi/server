@@ -7,9 +7,10 @@ import com.stream_pi.action_api.action.Location;
 import com.stream_pi.action_api.actionproperty.ClientProperties;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
+import com.stream_pi.action_api.normalaction.ExternalPlugin;
 import com.stream_pi.action_api.normalaction.NormalAction;
 import com.stream_pi.action_api.normalaction.ToggleAction;
-import com.stream_pi.server.action.NormalActionPlugins;
+import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.client.ClientTheme;
@@ -27,7 +28,6 @@ import com.stream_pi.util.version.Version;
 import javafx.concurrent.Task;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -505,7 +505,7 @@ public class ClientConnection extends Thread
 
         if(actionType == ActionType.NORMAL)
         {
-            NormalAction actionCopy = NormalActionPlugins.getInstance().getPluginByModuleName(r[4]);
+            ExternalPlugin actionCopy = ExternalPlugins.getInstance().getPluginByModuleName(r[4]);
 
             if(actionCopy == null)
             {
@@ -722,7 +722,7 @@ public class ClientConnection extends Thread
 
             if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
             {
-                NormalAction original = NormalActionPlugins.getInstance().getPluginByModuleName(
+                ExternalPlugin original = ExternalPlugins.getInstance().getPluginByModuleName(
                         action.getModuleName()
                 );
 
@@ -733,16 +733,18 @@ public class ClientConnection extends Thread
                     );
                 }
 
-                NormalAction normalAction = original.clone();
+
+                ExternalPlugin externalPlugin = original.clone();
 
 
+                externalPlugin.setLocation(action.getLocation());
+                externalPlugin.setDisplayText(action.getDisplayText());
+                externalPlugin.setID(actionID);
+                externalPlugin.setDelayBeforeExecuting(action.getDelayBeforeExecuting());
 
-                normalAction.setLocation(action.getLocation());
-                normalAction.setDisplayText(action.getDisplayText());
-                normalAction.setID(actionID);
-                normalAction.setDelayBeforeExecuting(action.getDelayBeforeExecuting());
+                externalPlugin.setClientProperties(action.getClientProperties());
 
-                normalAction.setClientProperties(action.getClientProperties());
+
 
                 new Thread(new Task<Void>() {
                     @Override
@@ -750,12 +752,12 @@ public class ClientConnection extends Thread
                     {
                         try
                         {
-                            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2 "+normalAction.getDelayBeforeExecuting());
-                            Thread.sleep(normalAction.getDelayBeforeExecuting());
+                            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2 "+externalPlugin.getDelayBeforeExecuting());
+                            Thread.sleep(externalPlugin.getDelayBeforeExecuting());
 
-                            if(normalAction instanceof ToggleAction)
+                            if(externalPlugin instanceof ToggleAction)
                             {
-                                boolean result = serverListener.onToggleActionClicked((ToggleAction) normalAction, toggle);
+                                boolean result = serverListener.onToggleActionClicked((ToggleAction) externalPlugin, toggle);
                                 if(!result)
                                 {
                                     sendActionFailed(profileID, actionID);
@@ -763,7 +765,7 @@ public class ClientConnection extends Thread
                             }
                             else
                             {
-                                boolean result = serverListener.onNormalActionClicked(normalAction);
+                                boolean result = serverListener.onNormalActionClicked((NormalAction) externalPlugin);
                                 if(!result)
                                 {
                                     sendActionFailed(profileID, actionID);

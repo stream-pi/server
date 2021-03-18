@@ -5,7 +5,7 @@ import com.stream_pi.action_api.action.PropertySaver;
 import com.stream_pi.action_api.normalaction.NormalAction;
 import com.stream_pi.action_api.normalaction.ToggleAction;
 import com.stream_pi.server.Main;
-import com.stream_pi.server.action.NormalActionPlugins;
+import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.connection.ClientConnections;
 import com.stream_pi.server.connection.MainServer;
 import com.stream_pi.server.io.Config;
@@ -18,7 +18,6 @@ import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
-import com.stream_pi.util.iohelper.IOHelper;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -26,7 +25,6 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -39,11 +37,9 @@ import java.awt.TrayIcon;
 import java.awt.PopupMenu;
 import java.awt.MenuItem;
 
-import java.io.File;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.logging.Level;
@@ -98,8 +94,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection
 
             setupSettingsWindowsAnimations();
 
-            NormalActionPlugins.getInstance().setPropertySaver(this);
-            NormalActionPlugins.getInstance().setServerConnection(this);
+            ExternalPlugins.getInstance().setPropertySaver(this);
+            ExternalPlugins.getInstance().setServerConnection(this);
 
 
             getDashboardPane().getPluginsPane().getSettingsButton().setOnAction(event -> {
@@ -186,8 +182,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection
                             getDashboardPane().getPluginsPane().loadOtherActions();
                         });
 
-                        NormalActionPlugins.setPluginsLocation(getConfig().getPluginsPath());
-                        NormalActionPlugins.getInstance().init();
+                        ExternalPlugins.setPluginsLocation(getConfig().getPluginsPath());
+                        ExternalPlugins.getInstance().init();
 
                         Platform.runLater(()->getDashboardPane().getPluginsPane().loadData());
 
@@ -370,7 +366,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             );
             getConfig().save();
             onQuitApp();
-            NormalActionPlugins.getInstance().shutDownActions();
+            ExternalPlugins.getInstance().shutDownActions();
             Platform.exit();
         }
         catch (SevereException e)
@@ -572,7 +568,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     {
         try
         {
-            NormalActionPlugins.getInstance().saveServerSettings();
+            ExternalPlugins.getInstance().saveServerSettings();
             getSettingsPane().getPluginsSettings().loadPlugins();
         } catch (MinorException e) {
             e.printStackTrace();
