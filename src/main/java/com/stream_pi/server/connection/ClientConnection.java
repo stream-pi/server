@@ -8,6 +8,7 @@ import com.stream_pi.action_api.actionproperty.ClientProperties;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.action_api.normalaction.NormalAction;
+import com.stream_pi.action_api.normalaction.ToggleAction;
 import com.stream_pi.server.action.NormalActionPlugins;
 import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
@@ -715,10 +716,11 @@ public class ClientConnection extends Thread
 
             String profileID = r[0];
             String actionID = r[1];
+            boolean toggle = r[2].equals("true");
 
             Action action = client.getProfileByID(profileID).getActionByID(actionID);
 
-            if(action.getActionType() == ActionType.NORMAL)
+            if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
             {
                 NormalAction original = NormalActionPlugins.getInstance().getPluginByModuleName(
                         action.getModuleName()
@@ -750,10 +752,22 @@ public class ClientConnection extends Thread
                         {
                             System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2 "+normalAction.getDelayBeforeExecuting());
                             Thread.sleep(normalAction.getDelayBeforeExecuting());
-                            boolean result = serverListener.onNormalActionClicked(normalAction);
-                            if(!result)
+
+                            if(normalAction instanceof ToggleAction)
                             {
-                                sendActionFailed(profileID, actionID);
+                                boolean result = serverListener.onToggleActionClicked((ToggleAction) normalAction, toggle);
+                                if(!result)
+                                {
+                                    sendActionFailed(profileID, actionID);
+                                }
+                            }
+                            else
+                            {
+                                boolean result = serverListener.onNormalActionClicked(normalAction);
+                                if(!result)
+                                {
+                                    sendActionFailed(profileID, actionID);
+                                }
                             }
                         }
                         catch (SevereException e)

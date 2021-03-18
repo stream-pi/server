@@ -3,6 +3,7 @@ package com.stream_pi.server.controller;
 import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.action.PropertySaver;
 import com.stream_pi.action_api.normalaction.NormalAction;
+import com.stream_pi.action_api.normalaction.ToggleAction;
 import com.stream_pi.server.Main;
 import com.stream_pi.server.action.NormalActionPlugins;
 import com.stream_pi.server.connection.ClientConnections;
@@ -518,6 +519,44 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     }
 
     @Override
+    public boolean onToggleActionClicked(ToggleAction action, boolean toggle) {
+        try{
+            getLogger().info("action "+action.getID()+" clicked!");
+
+            if(toggle)
+            {
+                action.onToggleOn();
+            }
+            else
+            {
+                action.onToggleOff();
+            }
+            return true;
+        }
+        catch (Exception e)
+        {
+            //check if its windows UAC related
+            if(e.getMessage().contains("operation requires elevation"))
+            {
+                handleMinorException(new MinorException(
+                        "Action Execution Failed!",
+                        "Error running action at ["+action.getLocation().getRow()+","+action.getLocation().getCol()+"] ("+action.getDisplayText()+")\n"+
+                                "This action requires higher UAC privileges. Re-launch Stream-Pi Server with 'Administrator Privileges' in order to run this command.")
+                );
+            }
+            else
+            {
+                handleMinorException(new MinorException(
+                        "Action Execution Failed!",
+                        "Error running action at ["+action.getLocation().getRow()+","+action.getLocation().getCol()+"] ("+action.getDisplayText()+")\n"+
+                                "Check stacktrace/log to know what exactly happened\n\nMessage : \n"+e.getMessage() )
+                );
+            }
+            return false;
+        }
+    }
+
+    @Override
     public void clearTemp() {
         Platform.runLater(() -> {
             getDashboardPane().getClientDetailsPane().refresh();
@@ -539,6 +578,11 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             e.printStackTrace();
             handleMinorException(e);
         }
+    }
+
+    @Override
+    public void saveClientIcons() {
+
     }
 
     @Override
