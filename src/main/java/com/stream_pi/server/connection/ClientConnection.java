@@ -503,6 +503,8 @@ public class ClientConnection extends Thread
 
         //action toBeAdded = null;
 
+        logger.info("Module nAMe : "+r[4]+" __ "+actionType);
+
         if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE)
         {
             ExternalPlugin actionCopy = ExternalPlugins.getInstance().getPluginByModuleName(r[4]);
@@ -569,7 +571,7 @@ public class ClientConnection extends Thread
         a.add(action.getID());
         a.add(action.getActionType()+"");
 
-        if(action.getActionType() == ActionType.NORMAL)
+        if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
         {
             a.add(action.getVersion().getText());
             System.out.println("VERSION :sdd "+action.getVersion().getText());
@@ -580,7 +582,7 @@ public class ClientConnection extends Thread
         }
 
 
-        if(action.getActionType() == ActionType.NORMAL)
+        if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
         {
             a.add(action.getModuleName());
         }

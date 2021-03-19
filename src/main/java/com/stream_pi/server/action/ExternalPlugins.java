@@ -185,9 +185,11 @@ public class ExternalPlugins
 
             String name;
             Version version;
+            ActionType actionType;
             try
             {
                 name = XMLConfigHelper.getStringProperty(eachActionElement, "module-name");
+                actionType = ActionType.valueOf(XMLConfigHelper.getStringProperty(eachActionElement, "type"));
                 version = new Version(XMLConfigHelper.getStringProperty(eachActionElement, "version"));
             }
             catch (Exception e)
@@ -229,7 +231,7 @@ public class ExternalPlugins
                 }
             }
 
-            Action action = new Action(ActionType.NORMAL);
+            Action action = new Action(actionType);
 
             action.setModuleName(name);
             action.setVersion(version);
@@ -458,26 +460,30 @@ public class ExternalPlugins
     {
         XMLConfigHelper.removeChilds(getActionsElement());
 
-        for(ExternalPlugin normalAction : externalPlugins)
+        for(ExternalPlugin externalPlugin : externalPlugins)
         {
             Element actionElement = document.createElement("action");
             getActionsElement().appendChild(actionElement);
 
             Element moduleNameElement = document.createElement("module-name");
-            moduleNameElement.setTextContent(normalAction.getModuleName());
+            moduleNameElement.setTextContent(externalPlugin.getModuleName());
             actionElement.appendChild(moduleNameElement);
 
             
             Element versionElement = document.createElement("version");
-            versionElement.setTextContent(normalAction.getVersion().getText());
+            versionElement.setTextContent(externalPlugin.getVersion().getText());
             actionElement.appendChild(versionElement);
+
+            Element actionTypeElement = document.createElement("type");
+            actionTypeElement.setTextContent(externalPlugin.getActionType().toString());
+            actionElement.appendChild(actionTypeElement);
 
             Element propertiesElement = document.createElement("properties");
             actionElement.appendChild(propertiesElement);
 
-            for(String key : normalAction.getServerProperties().getNames())
+            for(String key : externalPlugin.getServerProperties().getNames())
             {
-                for(Property eachProperty : normalAction.getServerProperties().getMultipleProperties(key))
+                for(Property eachProperty : externalPlugin.getServerProperties().getMultipleProperties(key))
                 {
                     Element propertyElement = document.createElement("property");
                     propertiesElement.appendChild(propertyElement);
