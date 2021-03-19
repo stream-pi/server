@@ -17,3 +17,13 @@
 {
     -fx-icon-color:red;
 }
+
+.action_box_toggle_on
+{
+    -fx-icon-code: fas-toggle-on;
+}
+
+.action_box_toggle_off
+{
+    -fx-icon-code: fas-toggle-off;
+}
