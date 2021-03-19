@@ -253,23 +253,19 @@ public class ClientsSettings extends VBox {
 
         private ComboBox<ClientTheme> themesComboBox;
 
-        private double displayHeight;
-        private double displayWidth;
+        private Client client;
 
-        public double getDisplayHeight() {
-            return displayHeight;
+        public void setClient(Client client)
+        {
+            this.client = client;
         }
 
-        public void setDisplayHeight(double displayHeight) {
-            this.displayHeight = displayHeight;
+        public double getDisplayHeight() {
+            return client.getDisplayHeight();
         }
 
         public double getDisplayWidth() {
-            return displayWidth;
-        }
-
-        public void setDisplayWidth(double displayWidth) {
-            this.displayWidth = displayWidth;
+            return client.getDisplayWidth();
         }
 
         private TextField nicknameTextField;
@@ -488,8 +484,7 @@ public class ClientsSettings extends VBox {
 
             platformLabel.setText("Platform : "+client.getPlatform().getUIName());
 
-            setDisplayHeight(client.getDisplayHeight());
-            setDisplayWidth(client.getDisplayWidth());
+            setClient(client);
 
             socketConnectionLabel.setText(client.getRemoteSocketAddress().toString().substring(1)); //substring removes the `/`
 

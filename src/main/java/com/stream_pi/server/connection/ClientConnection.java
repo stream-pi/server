@@ -212,6 +212,9 @@ public class ClientConnection extends Thread
                             getThemesFromClient();
                             break;
 
+                        case "client_screen_details" : onClientScreenDetailsReceived(message);
+                            break;
+
                         case "profiles" :           registerProfilesFromClient(message);
                             break;
 
@@ -651,6 +654,21 @@ public class ClientConnection extends Thread
 
         message.setStringArrValue(x);
         sendMessage(message);
+    }
+
+    public void getClientScreenDetails() throws SevereException
+    {
+        Message message = new Message("get_client_screen_details");
+        sendMessage(message);
+    }
+
+    public void onClientScreenDetailsReceived(Message message)
+    {
+        double width = Double.parseDouble(message.getStringArrValue()[0]);
+        double height = Double.parseDouble(message.getStringArrValue()[1]);
+
+        getClient().setDisplayWidth(width);
+        getClient().setDisplayHeight(height);
     }
 
     public void deleteAction(String profileID, String actionID) throws SevereException

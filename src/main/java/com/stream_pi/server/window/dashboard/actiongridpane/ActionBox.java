@@ -403,12 +403,16 @@ public class ActionBox extends StackPane{
 
     private void fakeToggle(boolean isON)
     {
+        String[] toggleStatesHiddenStatus = action.getCurrentIconState().split("__");
+
+        boolean isToggleOffHidden = toggleStatesHiddenStatus[0].equals("true");
+        boolean isToggleOnHidden = toggleStatesHiddenStatus[1].equals("true");
+
         if(isON) // ON
         {
             if(action.isHasIcon())
             {
                 boolean isToggleOnPresent = action.getIcons().containsKey("toggle_on");
-                boolean isToggleOnHidden = action.getCurrentIconState().contains("toggle_on");
 
                 if(isToggleOnPresent)
                 {
@@ -436,7 +440,6 @@ public class ActionBox extends StackPane{
             if(action.isHasIcon())
             {
                 boolean isToggleOffPresent = action.getIcons().containsKey("toggle_off");
-                boolean isToggleOffHidden = action.getCurrentIconState().contains("toggle_off");
 
                 if(isToggleOffPresent)
                 {
