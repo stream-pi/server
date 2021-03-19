@@ -579,11 +579,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     }
 
     @Override
-    public void saveClientIcons() {
-
-    }
-
-    @Override
     public com.stream_pi.util.platform.Platform getPlatform() {
         return ServerInfo.getInstance().getPlatform();
     }

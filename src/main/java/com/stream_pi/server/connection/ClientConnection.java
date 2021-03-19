@@ -105,7 +105,6 @@ public class ClientConnection extends Thread
         ClientConnections.getInstance().removeConnection(this);
     }
 
-
     public void sendIcon(String profileID, String actionID, String state, byte[] icon) throws SevereException
     {
         try
