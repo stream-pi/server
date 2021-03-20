@@ -226,7 +226,7 @@ public class ClientConnection extends Thread
                         case "themes":              registerThemes(message);
                             break;
 
-                        case "action_clicked":      actionClicked(message);
+                        case "action_clicked":      onActionClicked(message);
                             break;
 
                         default:                    logger.warning("Command '"+header+"' does not match records. Make sure client and server versions are equal.");
@@ -779,7 +779,7 @@ public class ClientConnection extends Thread
         sendMessage(message);
     }
 
-    public void actionClicked(Message message)
+    public void onActionClicked(Message message)
     {
         try
         {
@@ -793,67 +793,68 @@ public class ClientConnection extends Thread
 
             if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
             {
-                ExternalPlugin original = ExternalPlugins.getInstance().getPluginByModuleName(
-                        action.getModuleName()
-                );
-
-                if(original == null)
+                if(!action.isInvalid())
                 {
                     throw new MinorException(
                             "The action isn't installed on the server."
                     );
                 }
+                else
+                {
 
-
-                ExternalPlugin externalPlugin = original.clone();
-
-
-                externalPlugin.setLocation(action.getLocation());
-                externalPlugin.setDisplayText(action.getDisplayText());
-                externalPlugin.setID(actionID);
-                externalPlugin.setDelayBeforeExecuting(action.getDelayBeforeExecuting());
-
-                externalPlugin.setClientProperties(action.getClientProperties());
-
-
-
-                new Thread(new Task<Void>() {
-                    @Override
-                    protected Void call()
+                    if(action instanceof ToggleAction)
                     {
-                        try
-                        {
-                            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2 "+externalPlugin.getDelayBeforeExecuting());
-                            Thread.sleep(externalPlugin.getDelayBeforeExecuting());
-
-                            if(externalPlugin instanceof ToggleAction)
+                        new Thread(new Task<Void>() {
+                            @Override
+                            protected Void call()
                             {
-                                boolean result = serverListener.onToggleActionClicked((ToggleAction) externalPlugin, toggle);
-                                if(!result)
+                                try
                                 {
-                                    sendActionFailed(profileID, actionID);
+                                    boolean result = serverListener.onToggleActionClicked((ToggleAction) action, toggle);
+                                    if(!result)
+                                    {
+                                        sendActionFailed(profileID, actionID);
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                boolean result = serverListener.onNormalActionClicked((NormalAction) externalPlugin);
-                                if(!result)
+                                catch (SevereException e)
                                 {
-                                    sendActionFailed(profileID, actionID);
+                                    exceptionAndAlertHandler.handleSevereException(e);
                                 }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+                                return null;
                             }
-                        }
-                        catch (SevereException e)
-                        {
-                            exceptionAndAlertHandler.handleSevereException(e);
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                        return null;
+                        }).start();
                     }
-                }).start();
+                    else if(action instanceof NormalAction)
+                    {
+                        new Thread(new Task<Void>() {
+                            @Override
+                            protected Void call()
+                            {
+                                try
+                                {
+                                    boolean result = serverListener.onNormalActionClicked((NormalAction) action);
+                                    if(!result)
+                                    {
+                                        sendActionFailed(profileID, actionID);
+                                    }
+                                }
+                                catch (SevereException e)
+                                {
+                                    exceptionAndAlertHandler.handleSevereException(e);
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+                                return null;
+                            }
+                        }).start();
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
