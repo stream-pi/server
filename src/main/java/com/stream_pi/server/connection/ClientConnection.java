@@ -461,25 +461,10 @@ public class ClientConnection extends Thread
 
         Location location = new Location(Integer.parseInt(row), Integer.parseInt(col));
 
-
-
-        Action action = new Action(ID, actionType);
-
-        action.setBgColourHex(bgColorHex);
-        action.setCurrentIconState(defaultIconState);
-
-        action.setShowDisplayText(isShowDisplayText);
-        action.setDisplayTextFontColourHex(displayFontColor);
-        action.setDisplayText(displayText);
-        action.setDisplayTextAlignment(displayTextAlignment);
-
-
-        action.setLocation(location);
-
         String root = r[14];
-        action.setParent(root);
 
-        action.setDelayBeforeExecuting(Integer.parseInt(r[15]));
+        int delayBeforeRunning = Integer.parseInt(r[15]);
+
 
         //client properties
 
@@ -498,70 +483,137 @@ public class ClientConnection extends Thread
             clientProperties.addProperty(property);
         }
 
-        action.setClientProperties(clientProperties);
-        action.setModuleName(r[4]);
-
         //set up action
 
         //action toBeAdded = null;
 
-        logger.info("Module nAMe : "+r[4]+" __ "+actionType);
+        boolean createBasicAction = false;
 
         if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE)
         {
-            ExternalPlugin actionCopy = ExternalPlugins.getInstance().getPluginByModuleName(r[4]);
+            String moduleName = r[4];
+            Version version = new Version(r[3]);
 
-            if(actionCopy == null)
+            ExternalPlugin originalAction = ExternalPlugins.getInstance().getPluginByModuleName(moduleName);
+
+            if(originalAction == null)
             {
-                action.setInvalid(true);
+                createBasicAction = true;
             }
             else
             {
-                action.setVersion(new Version(r[3]));
-
-                //action.setHelpLink(actionCopy.getHelpLink());
-
-                if(actionCopy.getVersion().getMajor() != action.getVersion().getMajor())
+                if(originalAction.getVersion().getMajor() != version.getMajor())
                 {
-                    action.setInvalid(true);
+                    createBasicAction = true;
                 }
                 else
                 {
-                    action.setName(actionCopy.getName());
-
-                    ClientProperties finalClientProperties = new ClientProperties();
-
-
-                    for(Property property : actionCopy.getClientProperties().get())
+                    try
                     {
-                        for(int i = 0;i<action.getClientProperties().getSize();i++)
-                        {
-                            Property property1 = action.getClientProperties().get().get(i);
-                            if (property.getName().equals(property1.getName()))
-                            {
-                                property.setRawValue(property1.getRawValue());
+                        ExternalPlugin newPlugin = originalAction.clone();
 
-                                finalClientProperties.addProperty(property);
+                        newPlugin.setID(ID);
+                        newPlugin.setProfileID(profileID);
+                        newPlugin.setSocketAddressForClient(socket.getRemoteSocketAddress());
+
+                        newPlugin.setBgColourHex(bgColorHex);
+                        newPlugin.setCurrentIconState(defaultIconState);
+
+                        newPlugin.setShowDisplayText(isShowDisplayText);
+                        newPlugin.setDisplayTextFontColourHex(displayFontColor);
+                        newPlugin.setDisplayText(displayText);
+                        newPlugin.setDisplayTextAlignment(displayTextAlignment);
+
+                        newPlugin.setLocation(location);
+
+                        newPlugin.setParent(root);
+
+                        newPlugin.setDelayBeforeExecuting(delayBeforeRunning);
+
+
+                        ClientProperties finalClientProperties = new ClientProperties();
+
+
+                        for(Property property : originalAction.getClientProperties().get())
+                        {
+                            for(int i = 0;i<clientProperties.getSize();i++)
+                            {
+                                Property property1 = clientProperties.get().get(i);
+                                if (property.getName().equals(property1.getName()))
+                                {
+                                    property.setRawValue(property1.getRawValue());
+
+                                    finalClientProperties.addProperty(property);
+                                }
                             }
                         }
+
+                        newPlugin.setClientProperties(finalClientProperties);
+
+                        getClient().getProfileByID(profileID).addAction(newPlugin);
                     }
-
-                    action.setClientProperties(finalClientProperties);
-
+                    catch (CloneNotSupportedException e)
+                    {
+                        exceptionAndAlertHandler.handleMinorException(new MinorException("action", "Unable to clone"));
+                    }
                 }
             }
         }
+        else
+        {
+            createBasicAction = true;
+        }
 
 
-        try
+        if(createBasicAction)
         {
-            getClient().getProfileByID(profileID).addAction(action);
+
+            Action action = new Action(ID, actionType);
+
+            action.setID(ID);
+            action.setProfileID(profileID);
+            action.setSocketAddressForClient(socket.getRemoteSocketAddress());
+
+            action.setBgColourHex(bgColorHex);
+            action.setCurrentIconState(defaultIconState);
+
+            action.setShowDisplayText(isShowDisplayText);
+            action.setDisplayTextFontColourHex(displayFontColor);
+            action.setDisplayText(displayText);
+            action.setDisplayTextAlignment(displayTextAlignment);
+
+            action.setLocation(location);
+
+            action.setParent(root);
+
+            action.setDelayBeforeExecuting(delayBeforeRunning);
+
+            if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE)
+            {
+                String moduleName = r[4];
+                Version version = new Version(r[3]);
+
+                action.setInvalid(true);
+                action.setVersion(version);
+                action.setModuleName(moduleName);
+            }
+
+
+            action.setClientProperties(clientProperties);
+
+            try
+            {
+                getClient().getProfileByID(profileID).addAction(action);
+            }
+            catch (CloneNotSupportedException e)
+            {
+                e.printStackTrace();
+                exceptionAndAlertHandler.handleMinorException(new MinorException("action", "Unable to clone"));
+            }
+
         }
-        catch (CloneNotSupportedException e)
-        {
-            e.printStackTrace();
-            exceptionAndAlertHandler.handleMinorException(new MinorException("action", "Unable to clone"));
-        }
+
+
 
     }
 
