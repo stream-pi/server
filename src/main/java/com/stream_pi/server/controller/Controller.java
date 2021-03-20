@@ -1,11 +1,14 @@
 package com.stream_pi.server.controller;
 
+import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.action.PropertySaver;
 import com.stream_pi.action_api.normalaction.NormalAction;
 import com.stream_pi.action_api.normalaction.ToggleAction;
 import com.stream_pi.server.Main;
 import com.stream_pi.server.action.ExternalPlugins;
+import com.stream_pi.server.client.ClientProfile;
+import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.connection.ClientConnections;
 import com.stream_pi.server.connection.MainServer;
 import com.stream_pi.server.io.Config;
@@ -42,6 +45,7 @@ import java.awt.MenuItem;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.net.SocketAddress;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.logging.Level;
@@ -576,6 +580,80 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             e.printStackTrace();
             handleMinorException(e);
         }
+    }
+
+    @Override
+    public void saveClientAction(String profileID, String actionID, SocketAddress socketAddress)
+    {
+        new Thread(new Task<Void>() {
+            @Override
+            protected Void call()
+            {
+                try {
+                    ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress);
+
+                    ClientProfile clientProfile = clientConnection.getClient().getProfileByID(profileID);
+
+                    clientConnection.saveActionDetails(profileID, clientProfile.getActionByID(actionID));
+                }
+                catch (SevereException e)
+                {
+                    handleSevereException(e);
+                }
+                return null;
+            }
+        }).start();
+    }
+
+    @Override
+    public void saveAllIcons(String profileID, String actionID, SocketAddress socketAddress)
+    {
+        new Thread(new Task<Void>() {
+            @Override
+            protected Void call()
+            {
+                try {
+                    ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress);
+
+                    ClientProfile clientProfile = clientConnection.getClient().getProfileByID(profileID);
+                    Action action = clientProfile.getActionByID(actionID);
+
+                    for(String eachState : action.getIcons().keySet())
+                    {
+                        clientConnection.sendIcon(profileID, actionID, eachState,
+                                action.getIcon(eachState));
+                    }
+                }
+                catch (SevereException e)
+                {
+                    handleSevereException(e);
+                }
+                return null;
+            }
+        }).start();
+    }
+
+    @Override
+    public void saveIcon(String state, String profileID, String actionID, SocketAddress socketAddress) {
+        new Thread(new Task<Void>() {
+            @Override
+            protected Void call()
+            {
+                try {
+                    ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress);
+
+                    ClientProfile clientProfile = clientConnection.getClient().getProfileByID(profileID);
+                    Action action = clientProfile.getActionByID(actionID);
+
+                    clientConnection.sendIcon(profileID, actionID, state, action.getIcon(state));
+                }
+                catch (SevereException e)
+                {
+                    handleSevereException(e);
+                }
+                return null;
+            }
+        }).start();
     }
 
     @Override
