@@ -69,7 +69,8 @@ public class DashboardBase extends SplitPane implements DashboardInterface {
         this.clientAndProfileSelectorPane = clientAndProfileSelectorPane;
         leftSplitPane.getItems().add(this.clientAndProfileSelectorPane);
     }
-    public ClientAndProfileSelectorPane getClientDetailsPane()
+
+    public ClientAndProfileSelectorPane getClientAndProfileSelectorPane()
     {
         return clientAndProfileSelectorPane;
     }

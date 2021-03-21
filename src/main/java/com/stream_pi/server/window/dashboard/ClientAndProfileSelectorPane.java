@@ -39,6 +39,20 @@ public class ClientAndProfileSelectorPane extends HBox {
     private ComboBox<ClientProfile> clientProfilesComboBox;
 
 
+    private ClientProfile currentSelectedClientProfile = null;
+
+    public ClientProfile getCurrentSelectedClientProfile()
+    {
+        return currentSelectedClientProfile;
+    }
+
+    private ClientConnection currentSelectedClientConnection = null;
+
+    public ClientConnection getCurrentSelectedClientConnection()
+    {
+        return currentSelectedClientConnection;
+    }
+
     public void initUI()
     {
         noClientsConnectedLabel = new Label("No Clients Connected");
@@ -52,6 +66,7 @@ public class ClientAndProfileSelectorPane extends HBox {
         clientsComboBox.valueProperty().addListener((observableValue, oldVal, newVal) -> {
             if(oldVal!=newVal && newVal!=null)
             {
+                currentSelectedClientConnection = newVal;
                 dashboard.newSelectedClientConnection(newVal);
                 clientProfilesComboBox.setItems(FXCollections.observableArrayList(newVal.getClient().getAllClientProfiles()));
                 clientProfilesComboBox.setVisible(true);
@@ -94,6 +109,7 @@ public class ClientAndProfileSelectorPane extends HBox {
         clientProfilesComboBox.valueProperty().addListener((observableValue, oldVal, newVal) -> {
             if(oldVal!=newVal && newVal!=null)
             {
+                currentSelectedClientProfile = newVal;
                 dashboard.newSelectedClientProfile(newVal);
             }
         });

@@ -29,6 +29,7 @@ import javafx.concurrent.Task;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -82,7 +83,7 @@ public class ClientConnection extends Thread
         {
             if(socket !=null)
             {
-                logger.info("Stopping connection "+socket.getRemoteSocketAddress());
+                logger.info("Stopping connection "+getRemoteSocketAddress());
                 disconnect();
             }
         }
@@ -91,6 +92,11 @@ public class ClientConnection extends Thread
             e.printStackTrace();
             exceptionAndAlertHandler.handleSevereException(e);
         }
+    }
+
+    public SocketAddress getRemoteSocketAddress()
+    {
+        return socket.getRemoteSocketAddress();
     }
 
     public synchronized void exitAndRemove()
@@ -793,7 +799,7 @@ public class ClientConnection extends Thread
 
             if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
             {
-                if(!action.isInvalid())
+                if(action.isInvalid())
                 {
                     throw new MinorException(
                             "The action isn't installed on the server."
@@ -801,7 +807,6 @@ public class ClientConnection extends Thread
                 }
                 else
                 {
-
                     if(action instanceof ToggleAction)
                     {
                         new Thread(new Task<Void>() {

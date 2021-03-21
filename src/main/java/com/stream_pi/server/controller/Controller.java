@@ -561,7 +561,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     @Override
     public void clearTemp() {
         Platform.runLater(() -> {
-            getDashboardPane().getClientDetailsPane().refresh();
+            getDashboardPane().getClientAndProfileSelectorPane().refresh();
             getDashboardPane().getActionGridPane().clear();
             getDashboardPane().getActionGridPane().setFreshRender(true);
             getDashboardPane().getActionDetailsPane().clear();
@@ -594,7 +594,30 @@ public class Controller extends Base implements PropertySaver, ServerConnection
 
                     ClientProfile clientProfile = clientConnection.getClient().getProfileByID(profileID);
 
-                    clientConnection.saveActionDetails(profileID, clientProfile.getActionByID(actionID));
+                    Action action = clientProfile.getActionByID(actionID);
+                    clientConnection.saveActionDetails(profileID, action);
+
+                    Platform.runLater(()->{
+                        try {
+                            if(getDashboardPane().getActionGridPane().getCurrentParent().equals(action.getParent()) &&
+                                getDashboardPane().getClientAndProfileSelectorPane().getCurrentSelectedClientProfile().getID().equals(profileID) &&
+                                getDashboardPane().getClientAndProfileSelectorPane().getCurrentSelectedClientConnection().getRemoteSocketAddress().equals(socketAddress))
+                            {
+                                getDashboardPane().getActionGridPane().renderAction(action);
+                            }
+
+                            if(getDashboardPane().getActionDetailsPane().getAction().getID().equals(actionID))
+                            {
+                                getDashboardPane().getActionDetailsPane().setAction(action);
+                                getDashboardPane().getActionDetailsPane().refresh();
+                            }
+
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    });
                 }
                 catch (SevereException e)
                 {

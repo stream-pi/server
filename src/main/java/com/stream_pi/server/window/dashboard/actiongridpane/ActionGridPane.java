@@ -47,7 +47,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         this.actionDetailsPaneListener = actionDetailsPaneListener;
     }
 
-    private String currentParent;
+    private String currentParent = null;
 
     @Override
     public void setCurrentParent(String currentParent) {

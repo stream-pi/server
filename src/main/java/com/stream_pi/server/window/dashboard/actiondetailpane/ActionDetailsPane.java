@@ -189,7 +189,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     hideDefaultIconCheckBox.setSelected(false);
                     clearIconButton.setDisable(false);
 
-                    action.setDefaultIcon(iconFileByteArray);
+                    action.addIcon("default", iconFileByteArray);
                     setSendIcon(true);
                 }
             } catch (Exception e) {
@@ -208,7 +208,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     hideToggleOffIconCheckBox.setSelected(false);
                     clearIconButton.setDisable(false);
 
-                    action.setToggleOffIcon(iconFileByteArray);
+                    action.addIcon("toggle_off", iconFileByteArray);
                     setSendIcon(true);
                 }
             } catch (Exception e) {
@@ -228,7 +228,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     hideToggleOnIconCheckBox.setSelected(false);
                     clearIconButton.setDisable(false);
 
-                    action.setToggleOnIcon(iconFileByteArray);
+                    action.addIcon("toggle_on", iconFileByteArray);
                     setSendIcon(true);
                 }
             } catch (Exception e) {
@@ -428,13 +428,19 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     }
 
     @Override
-    public void onActionClicked(Action action, ActionBox actionBox) throws MinorException {
+    public void onActionClicked(Action action, ActionBox actionBox) throws MinorException
+    {
         this.action = action;
         this.actionBox = actionBox;
 
-        logger.info("action Display text : "+action.getDisplayText());
         clear();
 
+        renderActionProperties();
+    }
+
+    public void refresh() throws MinorException
+    {
+        clear();
         renderActionProperties();
     }
 
@@ -477,6 +483,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         actionBackgroundColourPicker.setValue(Color.WHITE);
         displayTextColourPicker.setValue(Color.WHITE);
+
+        action = null;
+        actionBox = null;
     }
 
     boolean isCombineChild = false;
@@ -490,6 +499,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         //Combine Child action
         isCombineChild = action.getLocation().getCol() == -1;
+
+        System.out.println("DISPLAY : "+action.getDisplayText());
 
         displayNameTextField.setText(action.getDisplayText());
 
