@@ -4,11 +4,14 @@ import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.action.Location;
-import com.stream_pi.server.io.Config;
+import com.stream_pi.action_api.actionproperty.ClientProperties;
+import com.stream_pi.action_api.externalplugin.ExternalPlugin;
+import com.stream_pi.server.controller.ActionDataFormats;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiondetailpane.ActionDetailsPaneListener;
 import com.stream_pi.util.exception.MinorException;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.control.ContextMenu;
@@ -31,6 +34,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 
 public class ActionBox extends StackPane{
 
@@ -90,7 +94,7 @@ public class ActionBox extends StackPane{
 
         setOnDragOver(dragEvent ->
         {
-            if(dragEvent.getDragboard().hasContent(Action.getDataFormat()))
+            if(dragEvent.getDragboard().hasContent(ActionDataFormats.ACTION_TYPE))
             {
                 dragEvent.acceptTransferModes(TransferMode.ANY);
 
@@ -104,28 +108,99 @@ public class ActionBox extends StackPane{
             {
                 if(action == null)
                 {
-                    Action action = (Action) dragEvent.getDragboard().getContent(Action.getDataFormat());
+                    Dragboard db = dragEvent.getDragboard();
 
-                    action.setLocation(new Location(getRow(),
-                            getCol()));
+                    ActionType actionType = (ActionType) db.getContent(ActionDataFormats.ACTION_TYPE);
 
-                    action.setParent(actionGridPaneListener.getCurrentParent());
-
-                    action.setIDRandom();
-
-
-                    actionGridPaneListener.addActionToCurrentClientProfile(action);
-
-                    setAction(action);
-                    init();
+                    if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE)
+                    {
+                        String moduleName = (String) dragEvent.getDragboard().getContent(ActionDataFormats.MODULE_NAME);
 
 
-                    actionDetailsPaneListener.onActionClicked(action, this);
-                
-                    if(action.isHasIcon())
-                        actionDetailsPaneListener.setSendIcon(true);
+                        ExternalPlugin newAction = actionGridPaneListener.createNewActionFromExternalPlugin(moduleName);
 
-                    actionDetailsPaneListener.saveAction();
+                        boolean isNew = (boolean) db.getContent(ActionDataFormats.IS_NEW);
+
+                        if(isNew)
+                        {
+                            newAction.setDisplayText("Untitled Action");
+                            newAction.setShowDisplayText(true);
+                            newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
+
+                            if(actionType == ActionType.TOGGLE)
+                                newAction.setCurrentIconState("false__false");
+                        }
+                        else
+                        {
+                            newAction.setClientProperties((ClientProperties) db.getContent(ActionDataFormats.CLIENT_PROPERTIES));
+                            newAction.setIcons((HashMap<String, byte[]>) db.getContent(ActionDataFormats.ICONS));
+                            newAction.setCurrentIconState((String) db.getContent(ActionDataFormats.CURRENT_ICON_STATE));
+                            newAction.setBgColourHex((String) db.getContent(ActionDataFormats.BACKGROUND_COLOUR));
+                            newAction.setDisplayTextFontColourHex((String) db.getContent(ActionDataFormats.DISPLAY_TEXT_FONT_COLOUR));
+                            newAction.setDisplayText((String) db.getContent(ActionDataFormats.DISPLAY_TEXT));
+                            newAction.setDisplayTextAlignment((DisplayTextAlignment) db.getContent(ActionDataFormats.DISPLAY_TEXT_ALIGNMENT));
+                            newAction.setShowDisplayText((boolean) db.getContent(ActionDataFormats.DISPLAY_TEXT_SHOW));
+                        }
+
+
+
+                        newAction.setLocation(new Location(getRow(),
+                                getCol()));
+
+                        newAction.setProfileID(actionGridPaneListener.getCurrentProfile().getID());
+                        newAction.setParent(actionGridPaneListener.getCurrentParent());
+
+                        try
+                        {
+                            if(action instanceof ExternalPlugin)
+                                ((ExternalPlugin) action).onActionCreate();
+                        }
+                        catch (Exception e)
+                        {
+                            exceptionAndAlertHandler.handleMinorException(new MinorException("Error","onCreate() failed for "+action.getModuleName()+"\n\n"+e.getMessage()));
+                        }
+
+                        actionGridPaneListener.addActionToCurrentClientProfile(newAction);
+
+
+
+                        setAction(newAction);
+
+
+                        actionDetailsPaneListener.onActionClicked(newAction, this);
+
+                        if(newAction.isHasIcon())
+                            actionDetailsPaneListener.setSendIcon(true);
+
+
+                        actionDetailsPaneListener.saveAction(true, false);
+
+                    }
+                    else
+                    {
+                        Action newAction = actionGridPaneListener.createNewOtherAction(actionType);
+
+                        newAction.setLocation(new Location(getRow(),
+                                getCol()));
+
+                        newAction.setParent(actionGridPaneListener.getCurrentParent());
+
+                        newAction.setProfileID(actionGridPaneListener.getCurrentProfile().getID());
+
+                        actionGridPaneListener.addActionToCurrentClientProfile(newAction);
+
+                        setAction(newAction);
+                        init();
+
+
+                        actionDetailsPaneListener.onActionClicked(newAction, this);
+
+                        if(newAction.isHasIcon())
+                            actionDetailsPaneListener.setSendIcon(true);
+
+
+                        actionDetailsPaneListener.saveAction(true, false);
+                    }
                 }
             }
             catch (MinorException e)
@@ -133,34 +208,38 @@ public class ActionBox extends StackPane{
                 exceptionAndAlertHandler.handleMinorException(e);
                 e.printStackTrace();
             }
+            catch (Exception     e)
+            {
+                e.printStackTrace();
+            }
         });
 
         setOnDragDetected(mouseEvent -> {
-            try {
-                if(action!=null)
-                {
-                    if(action.getActionType() == ActionType.NORMAL)
-                    {
-                        Dragboard db = startDragAndDrop(TransferMode.ANY);
-
-                        ClipboardContent content = new ClipboardContent();
-
-                        Action newAction = (Action) action.clone();
-
-                        newAction.setIDRandom();
-                        newAction.setParent(actionGridPaneListener.getCurrentParent());
-
-                        content.put(Action.getDataFormat(), newAction);
-
-                        db.setContent(content);
-
-                        mouseEvent.consume();
-                    }
-                }
-            }
-            catch (CloneNotSupportedException e)
+            if(action!=null)
             {
-                e.printStackTrace();
+                if(action.getActionType() == ActionType.NORMAL)
+                {
+                    Dragboard db = startDragAndDrop(TransferMode.ANY);
+
+                    ClipboardContent content = new ClipboardContent();
+
+                    content.put(ActionDataFormats.CLIENT_PROPERTIES, getAction().getClientProperties());
+                    content.put(ActionDataFormats.ICONS, getAction().getIcons());
+                    content.put(ActionDataFormats.CURRENT_ICON_STATE, getAction().getCurrentIconState());
+                    content.put(ActionDataFormats.BACKGROUND_COLOUR, getAction().getBgColourHex());
+                    content.put(ActionDataFormats.DISPLAY_TEXT_FONT_COLOUR, getAction().getDisplayTextFontColourHex());
+                    content.put(ActionDataFormats.DISPLAY_TEXT, getAction().getDisplayText());
+                    content.put(ActionDataFormats.DISPLAY_TEXT_ALIGNMENT, getAction().getDisplayTextAlignment());
+                    content.put(ActionDataFormats.DISPLAY_TEXT_SHOW, getAction().isShowDisplayText());
+
+                    content.put(ActionDataFormats.IS_NEW, false);
+                    content.put(ActionDataFormats.ACTION_TYPE, getAction().getActionType());
+                    content.put(ActionDataFormats.MODULE_NAME, getAction().getModuleName());
+
+                    db.setContent(content);
+
+                    mouseEvent.consume();
+                }
             }
         });
 
@@ -403,6 +482,7 @@ public class ActionBox extends StackPane{
 
     private void fakeToggle(boolean isON)
     {
+        System.out.println("CURRENT ICONS : "+action.getCurrentIconState());
         String[] toggleStatesHiddenStatus = action.getCurrentIconState().split("__");
 
         boolean isToggleOffHidden = toggleStatesHiddenStatus[0].equals("true");

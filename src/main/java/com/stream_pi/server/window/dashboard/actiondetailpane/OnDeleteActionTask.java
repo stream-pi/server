@@ -68,7 +68,7 @@ public class OnDeleteActionTask extends Task<Void>
                 try {
 
                     
-                    actionDetailsPane.saveAction(combineActionPropertiesPane.getCombineAction(), false);
+                    actionDetailsPane.saveAction(combineActionPropertiesPane.getCombineAction(), true,true);
                     
                     System.out.println(combineActionPropertiesPane.getCombineAction().getDisplayText()+"@#@#@#@#@#@#");
                     actionDetailsPane.onActionClicked(

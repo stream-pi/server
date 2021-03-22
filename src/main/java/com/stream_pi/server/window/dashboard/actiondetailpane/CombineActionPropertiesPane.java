@@ -52,7 +52,6 @@ public class CombineActionPropertiesPane extends VBox {
             Action action = clientProfile.getActionByID(actionID);
 
             System.out.println("232323xxxxxxxxxxxx : "+action.getID());
-
             Button settingsButton = new Button();
 
             FontIcon settingsFontIcon = new FontIcon("fas-cog");
@@ -117,7 +116,7 @@ public class CombineActionPropertiesPane extends VBox {
                 combineAction.addChild(current.getRawValue(), currentIndex-1);
                 combineAction.addChild(aboveOne.getRawValue(), currentIndex);
 
-                actionDetailsPane.saveAction();
+                actionDetailsPane.saveAction(true, true);
                 renderProps();
             }
         }
@@ -143,7 +142,7 @@ public class CombineActionPropertiesPane extends VBox {
                 combineAction.addChild(current.getRawValue(), currentIndex+1);
                 combineAction.addChild(belowOne.getRawValue(), currentIndex);
 
-                actionDetailsPane.saveAction();
+                actionDetailsPane.saveAction(true, true);
                 renderProps();
             }
         }

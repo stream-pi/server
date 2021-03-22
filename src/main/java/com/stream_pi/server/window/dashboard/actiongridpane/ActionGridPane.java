@@ -1,8 +1,15 @@
 package com.stream_pi.server.window.dashboard.actiongridpane;
 
 import com.stream_pi.action_api.action.Action;
+import com.stream_pi.action_api.action.ActionType;
+import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.action.Location;
+import com.stream_pi.action_api.actionproperty.property.Property;
+import com.stream_pi.action_api.actionproperty.property.Type;
+import com.stream_pi.action_api.externalplugin.ExternalPlugin;
+import com.stream_pi.action_api.otheractions.CombineAction;
 import com.stream_pi.action_api.otheractions.FolderAction;
+import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.io.Config;
@@ -50,6 +57,61 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     private String currentParent = null;
 
     @Override
+    public ExternalPlugin createNewActionFromExternalPlugin(String moduleName) throws Exception
+    {
+        ExternalPlugin newAction = ExternalPlugins.getInstance().getPluginByModuleName(moduleName).clone();
+
+        if(newAction.getActionType() == ActionType.TOGGLE)
+        {
+            newAction.setCurrentIconState("false__false");
+        }
+
+        newAction.setIDRandom();
+
+        newAction.setShowDisplayText(true);
+        newAction.setDisplayText("Untitled Action");
+        newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
+
+        newAction.setBgColourHex("");
+        newAction.setDisplayTextFontColourHex("");
+
+        return newAction;
+    }
+
+    @Override
+    public Action createNewOtherAction(ActionType actionType) throws Exception
+    {
+        Action newAction;
+
+        String displayText;
+        if(actionType == ActionType.FOLDER)
+        {
+            displayText = "Untitled Folder";
+            newAction = new FolderAction();
+        }
+        else if(actionType == ActionType.COMBINE)
+        {
+            displayText = "Untitled Combine";
+            newAction = new CombineAction();
+        }
+        else
+            throw new IllegalArgumentException("External Plugins are not supported here!");
+
+        newAction.setIDRandom();
+
+
+        newAction.setShowDisplayText(true);
+        newAction.setDisplayText(displayText);
+        newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
+
+        newAction.setBgColourHex("");
+        newAction.setDisplayTextFontColourHex("");
+
+
+        return newAction;
+    }
+
+    @Override
     public void setCurrentParent(String currentParent) {
         this.currentParent = currentParent;
     }
@@ -87,6 +149,11 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     @Override
     public String getCurrentParent() {
         return currentParent;
+    }
+
+    @Override
+    public ClientProfile getCurrentProfile() {
+        return clientProfile;
     }
 
     public StackPane getFolderBackButton() throws SevereException

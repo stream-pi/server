@@ -7,9 +7,9 @@ import com.stream_pi.action_api.action.Location;
 import com.stream_pi.action_api.actionproperty.ClientProperties;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
-import com.stream_pi.action_api.normalaction.ExternalPlugin;
-import com.stream_pi.action_api.normalaction.NormalAction;
-import com.stream_pi.action_api.normalaction.ToggleAction;
+import com.stream_pi.action_api.externalplugin.ExternalPlugin;
+import com.stream_pi.action_api.externalplugin.NormalAction;
+import com.stream_pi.action_api.externalplugin.ToggleAction;
 import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
@@ -623,7 +623,7 @@ public class ClientConnection extends Thread
 
     }
 
-    public void saveActionDetails(String profileID, Action action) throws SevereException
+    public synchronized void saveActionDetails(String profileID, Action action) throws SevereException
     {
         ArrayList<String> a = new ArrayList<>();
 

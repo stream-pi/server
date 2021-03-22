@@ -1,11 +1,11 @@
 package com.stream_pi.server.window.settings;
 
-import com.stream_pi.action_api.normalaction.ExternalPlugin;
+import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.action_api.actionproperty.property.ControlType;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
-import com.stream_pi.action_api.normalaction.NormalAction;
+import com.stream_pi.action_api.externalplugin.NormalAction;
 import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.connection.ServerListener;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;

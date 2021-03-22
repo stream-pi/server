@@ -4,10 +4,12 @@ import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.action.Location;
+import com.stream_pi.action_api.actionproperty.ClientProperties;
 import com.stream_pi.action_api.actionproperty.property.ControlType;
 import com.stream_pi.action_api.actionproperty.property.FileExtensionFilter;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
+import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.action_api.otheractions.CombineAction;
 import com.stream_pi.action_api.otheractions.FolderAction;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
@@ -17,6 +19,8 @@ import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.connection.ClientConnections;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
+import com.stream_pi.server.controller.ActionDataFormats;
+import com.stream_pi.server.window.dashboard.actiongridpane.ActionGridPaneListener;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.uihelper.HBoxInputBox;
@@ -24,26 +28,26 @@ import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
 import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.HostServices;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
@@ -70,10 +74,14 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     private HostServices hostServices;
 
-    public ActionDetailsPane(ExceptionAndAlertHandler exceptionAndAlertHandler, HostServices hostServices)
+    private ActionGridPaneListener actionGridPaneListener;
+
+    public ActionDetailsPane(ExceptionAndAlertHandler exceptionAndAlertHandler, HostServices hostServices,
+                             ActionGridPaneListener actionGridPaneListener)
     {
         this.hostServices = hostServices;
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
+        this.actionGridPaneListener = actionGridPaneListener;
 
         logger = Logger.getLogger(ActionDetailsPane.class.getName());
 
@@ -343,7 +351,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         setOnDragOver(dragEvent -> {
-            if (dragEvent.getDragboard().hasContent(Action.getDataFormat()) && action != null) {
+            if (dragEvent.getDragboard().hasContent(ActionDataFormats.ACTION_TYPE) && action != null) {
                 if (action.getActionType() == ActionType.COMBINE) {
                     dragEvent.acceptTransferModes(TransferMode.ANY);
 
@@ -354,12 +362,54 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         setOnDragDropped(dragEvent -> {
             try {
-                Action newAction = (Action) dragEvent.getDragboard().getContent(Action.getDataFormat());
 
-                if (newAction.getActionType() == ActionType.NORMAL) {
+                Dragboard db = dragEvent.getDragboard();
+
+                ActionType actionType = (ActionType) db.getContent(ActionDataFormats.ACTION_TYPE);
+
+                if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE)
+                {
+                    ExternalPlugin newAction = actionGridPaneListener.createNewActionFromExternalPlugin(
+                            (String) db.getContent(ActionDataFormats.MODULE_NAME)
+                    );
+
+                    boolean isNew = (boolean) db.getContent(ActionDataFormats.IS_NEW);
+
+                    if(isNew)
+                    {
+                        newAction.setDisplayText("Untitled Action");
+                        newAction.setShowDisplayText(true);
+                        newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
+
+                        if(actionType == ActionType.TOGGLE)
+                            newAction.setCurrentIconState("false__false");
+                    }
+                    else
+                    {
+                        newAction.setClientProperties((ClientProperties) db.getContent(ActionDataFormats.CLIENT_PROPERTIES));
+                        newAction.setIcons((HashMap<String, byte[]>) db.getContent(ActionDataFormats.ICONS));
+                        newAction.setCurrentIconState((String) db.getContent(ActionDataFormats.CURRENT_ICON_STATE));
+                        newAction.setBgColourHex((String) db.getContent(ActionDataFormats.BACKGROUND_COLOUR));
+                        newAction.setDisplayTextFontColourHex((String) db.getContent(ActionDataFormats.DISPLAY_TEXT_FONT_COLOUR));
+                        newAction.setDisplayText((String) db.getContent(ActionDataFormats.DISPLAY_TEXT));
+                        newAction.setDisplayTextAlignment((DisplayTextAlignment) db.getContent(ActionDataFormats.DISPLAY_TEXT_ALIGNMENT));
+                        newAction.setShowDisplayText((boolean) db.getContent(ActionDataFormats.DISPLAY_TEXT_SHOW));
+                    }
+
                     newAction.setLocation(new Location(-1, -1));
 
                     newAction.setParent(this.action.getID());
+
+                    try
+                    {
+                        if(action instanceof ExternalPlugin)
+                            ((ExternalPlugin) action).onActionCreate();
+                    }
+                    catch (Exception e)
+                    {
+                        exceptionAndAlertHandler.handleMinorException(new MinorException("Error","onCreate() failed for "+action.getModuleName()+"\n\n"+e.getMessage()));
+                    }
+
 
                     combineActionPropertiesPane.getCombineAction().addChild(newAction.getID());
 
@@ -372,8 +422,12 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
                     combineActionPropertiesPane.renderProps();
 
-                    saveAction();
+                    saveAction(true, false);
+
+
+
                 }
+
             } catch (MinorException e) {
                 exceptionAndAlertHandler.handleMinorException(e);
                 e.printStackTrace();
@@ -381,6 +435,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 exceptionAndAlertHandler.handleSevereException(e);
                 e.printStackTrace();
             } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            } catch (Exception e)
+            {
                 e.printStackTrace();
             }
         });
@@ -430,17 +487,17 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     @Override
     public void onActionClicked(Action action, ActionBox actionBox) throws MinorException
     {
+        clear();
+
         this.action = action;
         this.actionBox = actionBox;
-
-        clear();
 
         renderActionProperties();
     }
 
     public void refresh() throws MinorException
     {
-        clear();
+        clear(false);
         renderActionProperties();
     }
 
@@ -463,7 +520,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     private CheckBox displayTextColourDefaultCheckBox;
     private ComboBox<DisplayTextAlignment> displayTextAlignmentComboBox;
 
-    public void clear()
+    public void clear(boolean actionNull)
     {
         sendIcon = false;
         actionClientProperties.clear();
@@ -484,8 +541,17 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         actionBackgroundColourPicker.setValue(Color.WHITE);
         displayTextColourPicker.setValue(Color.WHITE);
 
-        action = null;
-        actionBox = null;
+        if(actionNull)
+        {
+            action = null;
+            actionBox = null;
+        }
+    }
+
+    @Override
+    public void clear()
+    {
+        clear(true);
     }
 
     boolean isCombineChild = false;
@@ -499,6 +565,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         //Combine Child action
         isCombineChild = action.getLocation().getCol() == -1;
+
+        System.out.println(isCombineChild);
 
         System.out.println("DISPLAY : "+action.getDisplayText());
 
@@ -856,7 +924,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
             validateForm();
 
-            saveAction();
+            saveAction(true, true);
         }
         catch (MinorException e)
         {
@@ -878,7 +946,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     }
 
     @Override
-    public void saveAction(Action action, boolean runAsync)
+    public void saveAction(Action action, boolean runAsync, boolean runOnActionSavedFromServer)
     {
         new OnSaveActionTask(
             ClientConnections.getInstance().getClientConnectionBySocketAddress(
@@ -900,14 +968,14 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             "#" + actionBackgroundColourPicker.getValue().toString().substring(2),
             getCombineActionPropertiesPane(), 
             clientProfile, sendIcon, actionBox, actionClientProperties, exceptionAndAlertHandler,
-            saveButton, deleteButton, runAsync
+            saveButton, deleteButton, runOnActionSavedFromServer, runAsync
         );
     }
 
     @Override
-    public void saveAction()
+    public void saveAction(boolean runAsync, boolean runOnActionSavedFromServer)
     {
-        saveAction(action, true);
+        saveAction(action, runAsync, runOnActionSavedFromServer);
     }
 
     public void setFolderButtonVisible(boolean visible)

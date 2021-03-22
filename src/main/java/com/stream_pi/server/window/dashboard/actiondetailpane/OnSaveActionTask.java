@@ -10,12 +10,14 @@ import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.actionproperty.ClientProperties;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
+import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 
+import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -32,7 +34,7 @@ public class OnSaveActionTask extends Task<Void>
                             boolean isHideDefaultIcon, boolean isHideToggleOffIcon, boolean isHideToggleOnIcon, DisplayTextAlignment displayTextAlignment, boolean isTransparentBackground, String backgroundColour,
                             CombineActionPropertiesPane combineActionPropertiesPane, ClientProfile clientProfile, boolean sendIcon, ActionBox actionBox,
                             ArrayList<UIPropertyBox> actionClientProperties, ExceptionAndAlertHandler exceptionAndAlertHandler, Button saveButton, Button deleteButton,
-                            boolean runAsync)
+                            boolean runOnActionSavedFromServer, boolean runAsync)
     {
         this.saveButton = saveButton;
         this.deleteButton = deleteButton;
@@ -58,7 +60,7 @@ public class OnSaveActionTask extends Task<Void>
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
         this.backgroundColour = backgroundColour;
         this.actionClientProperties = actionClientProperties;
-
+        this.runOnActionSavedFromServer = runOnActionSavedFromServer;
 
         logger = Logger.getLogger(getClass().getName());
 
@@ -68,6 +70,8 @@ public class OnSaveActionTask extends Task<Void>
         else
             runTask();
     }
+
+    private boolean runOnActionSavedFromServer;
 
     private Button saveButton;
     private Button deleteButton;
@@ -180,7 +184,7 @@ public class OnSaveActionTask extends Task<Void>
         else
         {
             action.setDelayBeforeExecuting(Integer.parseInt(delayBeforeRunningString));
-            
+
             //properties
             for (UIPropertyBox clientProperty : actionClientProperties) {
                 action.getClientProperties().get().get(clientProperty.getIndex()).setRawValue(clientProperty.getRawValue());
@@ -211,16 +215,36 @@ public class OnSaveActionTask extends Task<Void>
                 setSaveDeleteButtonState(false);
             }
 
-            clientProfile.removeActionByID(action.getID());
-            clientProfile.addAction(action);
+            //clientProfile.removeActionByID(action.getID());
+            //clientProfile.addAction(action);
 
+
+            if(runOnActionSavedFromServer)
+            {
+
+                for(Property property : action.getClientProperties().get())
+                {
+                    System.out.println("SSSSSDDD : "+property.getName());
+                    System.out.println("@@@@DDD : "+property.getRawValue());
+                }
+                try
+                {
+                    if(action instanceof ExternalPlugin)
+                        ((ExternalPlugin) action).onActionSavedFromServer();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    exceptionAndAlertHandler.handleMinorException(new MinorException("Error","onActionSavedFromServer() failed for "+action.getModuleName()+"\n\n"+e.getMessage()));
+                }
+            }
         }
         catch (SevereException e)
         {
             e.printStackTrace();
             exceptionAndAlertHandler.handleSevereException(e);
         }
-        catch (CloneNotSupportedException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }

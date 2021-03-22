@@ -45,7 +45,7 @@ public class DashboardBase extends SplitPane implements DashboardInterface {
 
         setActionGridPane(new ActionGridPane(exceptionAndAlertHandler));
 
-        setActionDetailsPane(new ActionDetailsPane(exceptionAndAlertHandler, hostServices));
+        setActionDetailsPane(new ActionDetailsPane(exceptionAndAlertHandler, hostServices, getActionGridPane()));
 
         getActionGridPane().setActionDetailsPaneListener(getActionDetailsPane());
     }

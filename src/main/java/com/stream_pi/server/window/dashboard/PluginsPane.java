@@ -1,15 +1,9 @@
 package com.stream_pi.server.window.dashboard;
-import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
-import com.stream_pi.action_api.action.DisplayTextAlignment;
-import com.stream_pi.action_api.actionproperty.property.Property;
-import com.stream_pi.action_api.actionproperty.property.Type;
-import com.stream_pi.action_api.normalaction.ExternalPlugin;
-import com.stream_pi.action_api.normalaction.NormalAction;
-import com.stream_pi.action_api.otheractions.CombineAction;
-import com.stream_pi.action_api.otheractions.FolderAction;
+import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.action.ExternalPlugins;
 
+import com.stream_pi.server.controller.ActionDataFormats;
 import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.HostServices;
 import javafx.geometry.Insets;
@@ -131,7 +125,9 @@ public class PluginsPane extends VBox {
 
                     ClipboardContent content = new ClipboardContent();
 
-                    content.put(Action.getDataFormat(), createFakeAction(eachAction, "Untitled action"));
+                    content.put(ActionDataFormats.ACTION_TYPE, eachAction.getActionType());
+                    content.put(ActionDataFormats.MODULE_NAME, eachAction.getModuleName());
+                    content.put(ActionDataFormats.IS_NEW, true);
 
                     db.setContent(content);
 
@@ -169,42 +165,6 @@ public class PluginsPane extends VBox {
     
     private HostServices hostServices;
 
-    public Action createFakeAction(Action action, String displayText)
-    {
-        Action newAction = new Action(action.getActionType());
-
-        if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
-        {
-            newAction.setModuleName(action.getModuleName());
-            newAction.setVersion(action.getVersion());
-            newAction.setName(action.getName());
-        }
-
-        newAction.setClientProperties(action.getClientProperties());
-
-        for(Property property : newAction.getClientProperties().get())
-        {
-            if(property.getType() == Type.STRING || property.getType() == Type.INTEGER || property.getType() == Type.DOUBLE)
-                property.setRawValue(property.getDefaultRawValue());
-        }
-
-       // newAction.setLocation(location);
-
-        newAction.setIDRandom();
-
-
-        newAction.setShowDisplayText(true);
-        newAction.setDisplayText(displayText);
-        newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
-
-        //action.setParent(root);
-
-        newAction.setBgColourHex("");
-        newAction.setDisplayTextFontColourHex("");
-
-        return newAction;
-    }
-
     public void loadOtherActions()
     {
         VBox vBox = new VBox();
@@ -222,7 +182,7 @@ public class PluginsPane extends VBox {
 
             ClipboardContent content = new ClipboardContent();
 
-            content.put(Action.getDataFormat(), createFakeAction(new FolderAction(), "Untitled Folder"));
+            content.put(ActionDataFormats.ACTION_TYPE, ActionType.FOLDER);
 
             db.setContent(content);
 
@@ -244,7 +204,7 @@ public class PluginsPane extends VBox {
 
             ClipboardContent content = new ClipboardContent();
 
-            content.put(Action.getDataFormat(), createFakeAction(new CombineAction(), "Untitled Combine"));
+            content.put(ActionDataFormats.ACTION_TYPE, ActionType.COMBINE);
 
             db.setContent(content);
 

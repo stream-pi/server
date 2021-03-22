@@ -3,8 +3,8 @@ package com.stream_pi.server.controller;
 import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.action.PropertySaver;
-import com.stream_pi.action_api.normalaction.NormalAction;
-import com.stream_pi.action_api.normalaction.ToggleAction;
+import com.stream_pi.action_api.externalplugin.NormalAction;
+import com.stream_pi.action_api.externalplugin.ToggleAction;
 import com.stream_pi.server.Main;
 import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.client.ClientProfile;
@@ -582,78 +582,115 @@ public class Controller extends Base implements PropertySaver, ServerConnection
         }
     }
 
-    @Override
-    public void saveClientAction(String profileID, String actionID, SocketAddress socketAddress)
+    private void saveClientActionMain(String profileID, String actionID, SocketAddress socketAddress, boolean sendIcons)
     {
-        new Thread(new Task<Void>() {
-            @Override
-            protected Void call()
+        try {
+            ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress);
+
+            ClientProfile clientProfile = clientConnection.getClient().getProfileByID(profileID);
+
+            Action action = clientProfile.getActionByID(actionID);
+            clientConnection.saveActionDetails(profileID, action);
+
+
+            if(sendIcons && action.isHasIcon())
             {
-                try {
-                    ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress);
-
-                    ClientProfile clientProfile = clientConnection.getClient().getProfileByID(profileID);
-
-                    Action action = clientProfile.getActionByID(actionID);
-                    clientConnection.saveActionDetails(profileID, action);
-
-                    Platform.runLater(()->{
-                        try {
-                            if(getDashboardPane().getActionGridPane().getCurrentParent().equals(action.getParent()) &&
-                                getDashboardPane().getClientAndProfileSelectorPane().getCurrentSelectedClientProfile().getID().equals(profileID) &&
-                                getDashboardPane().getClientAndProfileSelectorPane().getCurrentSelectedClientConnection().getRemoteSocketAddress().equals(socketAddress))
-                            {
-                                getDashboardPane().getActionGridPane().renderAction(action);
-                            }
-
-                            if(getDashboardPane().getActionDetailsPane().getAction().getID().equals(actionID))
-                            {
-                                getDashboardPane().getActionDetailsPane().setAction(action);
-                                getDashboardPane().getActionDetailsPane().refresh();
-                            }
-
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                    });
-                }
-                catch (SevereException e)
-                {
-                    handleSevereException(e);
-                }
-                return null;
+                saveAllIcons(profileID, actionID, socketAddress, false);
             }
-        }).start();
+
+
+            Platform.runLater(()->{
+                try {
+                    if(getDashboardPane().getActionGridPane().getCurrentParent().equals(action.getParent()) &&
+                            getDashboardPane().getClientAndProfileSelectorPane().getCurrentSelectedClientProfile().getID().equals(profileID) &&
+                            getDashboardPane().getClientAndProfileSelectorPane().getCurrentSelectedClientConnection().getRemoteSocketAddress().equals(socketAddress))
+                    {
+                        getDashboardPane().getActionGridPane().renderAction(action);
+                    }
+
+                    if(getDashboardPane().getActionDetailsPane().getAction().getID().equals(actionID))
+                    {
+                        getDashboardPane().getActionDetailsPane().setAction(action);
+                        getDashboardPane().getActionDetailsPane().refresh();
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            });
+        }
+        catch (SevereException e)
+        {
+            handleSevereException(e);
+        }
+    }
+
+    @Override
+    public void saveClientAction(String profileID, String actionID, SocketAddress socketAddress, boolean sendIcons, boolean runAsync)
+    {
+        if(runAsync)
+        {
+            new Thread(new Task<Void>() {
+                @Override
+                protected Void call()
+                {
+                    saveClientActionMain(profileID, actionID, socketAddress, sendIcons);
+                    return null;
+                }
+            }).start();
+        }
+        else
+        {
+            saveClientActionMain(profileID, actionID, socketAddress, sendIcons);
+        }
     }
 
     @Override
     public void saveAllIcons(String profileID, String actionID, SocketAddress socketAddress)
     {
-        new Thread(new Task<Void>() {
-            @Override
-            protected Void call()
-            {
-                try {
-                    ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress);
+        saveAllIcons(profileID, actionID, socketAddress, true);
+    }
 
-                    ClientProfile clientProfile = clientConnection.getClient().getProfileByID(profileID);
-                    Action action = clientProfile.getActionByID(actionID);
 
-                    for(String eachState : action.getIcons().keySet())
-                    {
-                        clientConnection.sendIcon(profileID, actionID, eachState,
-                                action.getIcon(eachState));
-                    }
-                }
-                catch (SevereException e)
+    public void saveAllIcons(String profileID, String actionID, SocketAddress socketAddress, boolean async)
+    {
+        if(async)
+        {
+            new Thread(new Task<Void>() {
+                @Override
+                protected Void call()
                 {
-                    handleSevereException(e);
+                    saveAllIconsMain(profileID, actionID, socketAddress);
+                    return null;
                 }
-                return null;
+            }).start();
+        }
+        else
+        {
+            saveAllIconsMain(profileID, actionID, socketAddress);
+        }
+    }
+
+    private void saveAllIconsMain(String profileID, String actionID, SocketAddress socketAddress)
+    {
+        try {
+            ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress);
+
+            ClientProfile clientProfile = clientConnection.getClient().getProfileByID(profileID);
+            Action action = clientProfile.getActionByID(actionID);
+
+            for(String eachState : action.getIcons().keySet())
+            {
+                clientConnection.sendIcon(profileID, actionID, eachState,
+                        action.getIcon(eachState));
             }
-        }).start();
+        }
+        catch (SevereException e)
+        {
+            handleSevereException(e);
+        }
     }
 
     @Override
