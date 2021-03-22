@@ -152,8 +152,7 @@ public class ActionBox extends StackPane{
 
                         try
                         {
-                            if(action instanceof ExternalPlugin)
-                                ((ExternalPlugin) action).onActionCreate();
+                            newAction.onActionCreate();
                         }
                         catch (Exception e)
                         {

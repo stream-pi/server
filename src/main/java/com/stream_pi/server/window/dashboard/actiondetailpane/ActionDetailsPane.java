@@ -402,14 +402,12 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
                     try
                     {
-                        if(action instanceof ExternalPlugin)
-                            ((ExternalPlugin) action).onActionCreate();
+                        newAction.onActionCreate();
                     }
                     catch (Exception e)
                     {
                         exceptionAndAlertHandler.handleMinorException(new MinorException("Error","onCreate() failed for "+action.getModuleName()+"\n\n"+e.getMessage()));
                     }
-
 
                     combineActionPropertiesPane.getCombineAction().addChild(newAction.getID());
 
