@@ -149,6 +149,7 @@ public class ActionBox extends StackPane{
 
                         newAction.setProfileID(actionGridPaneListener.getCurrentProfile().getID());
                         newAction.setParent(actionGridPaneListener.getCurrentParent());
+                        newAction.setSocketAddressForClient(actionGridPaneListener.getClientConnection().getRemoteSocketAddress());
 
                         try
                         {
@@ -185,6 +186,7 @@ public class ActionBox extends StackPane{
                         newAction.setParent(actionGridPaneListener.getCurrentParent());
 
                         newAction.setProfileID(actionGridPaneListener.getCurrentProfile().getID());
+                        newAction.setSocketAddressForClient(actionGridPaneListener.getClientConnection().getRemoteSocketAddress());
 
                         actionGridPaneListener.addActionToCurrentClientProfile(newAction);
 

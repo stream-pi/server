@@ -196,6 +196,28 @@ public class OnSaveActionTask extends Task<Void>
         {
             logger.info("Saving action ... "+action.isHasIcon()+"+"+sendIcon);
 
+
+
+            if(runOnActionSavedFromServer)
+            {
+
+                for(Property property : action.getClientProperties().get())
+                {
+                    System.out.println("SSSSSDDD : "+property.getName());
+                    System.out.println("@@@@DDD : "+property.getRawValue());
+                }
+                try
+                {
+                    if(action instanceof ExternalPlugin)
+                        ((ExternalPlugin) action).onActionSavedFromServer();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    exceptionAndAlertHandler.handleMinorException(new MinorException("Error","onActionSavedFromServer() failed for "+action.getModuleName()+"\n\n"+e.getMessage()));
+                }
+            }
+
             connection.saveActionDetails(clientProfile.getID(), action);
 
             if(sendIcon)
@@ -218,26 +240,6 @@ public class OnSaveActionTask extends Task<Void>
             //clientProfile.removeActionByID(action.getID());
             //clientProfile.addAction(action);
 
-
-            if(runOnActionSavedFromServer)
-            {
-
-                for(Property property : action.getClientProperties().get())
-                {
-                    System.out.println("SSSSSDDD : "+property.getName());
-                    System.out.println("@@@@DDD : "+property.getRawValue());
-                }
-                try
-                {
-                    if(action instanceof ExternalPlugin)
-                        ((ExternalPlugin) action).onActionSavedFromServer();
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                    exceptionAndAlertHandler.handleMinorException(new MinorException("Error","onActionSavedFromServer() failed for "+action.getModuleName()+"\n\n"+e.getMessage()));
-                }
-            }
         }
         catch (SevereException e)
         {

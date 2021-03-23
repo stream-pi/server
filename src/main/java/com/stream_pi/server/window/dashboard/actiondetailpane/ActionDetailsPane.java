@@ -447,15 +447,20 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     private HBox displayTextFieldHBox;
 
-    private Client client;
+    private ClientConnection clientConnection;
     private ClientProfile clientProfile;
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClientConnection(ClientConnection clientConnection) {
+        this.clientConnection = clientConnection;
     }
 
-    public Client getClient() {
-        return client;
+    public ClientConnection getClientConnection() {
+        return clientConnection;
+    }
+
+    public Client getClient()
+    {
+        return getClientConnection().getClient();
     }
 
     public void setClientProfile(ClientProfile clientProfile) {

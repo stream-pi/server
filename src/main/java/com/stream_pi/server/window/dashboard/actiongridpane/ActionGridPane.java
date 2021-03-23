@@ -12,6 +12,7 @@ import com.stream_pi.action_api.otheractions.FolderAction;
 import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
+import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiondetailpane.ActionDetailsPaneListener;
@@ -116,18 +117,25 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         this.currentParent = currentParent;
     }
 
+    @Override
+    public ClientConnection getClientConnection() {
+        return clientConnection;
+    }
+
     public ClientProfile getClientProfile() {
         return clientProfile;
     }
 
-    private Client client;
+    private ClientConnection clientConnection;
 
-    public void setClient(Client client) {
-        this.client = client;
+
+    public void setClientConnection(ClientConnection clientConnection)
+    {
+        this.clientConnection = clientConnection;
     }
 
     public Client getClient() {
-        return client;
+        return getClientConnection().getClient();
     }
 
     private int rows, cols;
