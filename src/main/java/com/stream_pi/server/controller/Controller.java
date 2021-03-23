@@ -14,6 +14,8 @@ import com.stream_pi.server.connection.MainServer;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.window.Base;
+import com.stream_pi.server.window.dashboard.ClientAndProfileSelectorPane;
+import com.stream_pi.server.window.dashboard.DashboardBase;
 import com.stream_pi.server.window.dashboard.DonatePopupContent;
 import com.stream_pi.server.window.firsttimeuse.FirstTimeUse;
 import com.stream_pi.util.alert.StreamPiAlert;
@@ -58,27 +60,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     {
         try
         {
-            StringBuilder ips = new StringBuilder();
-
-            Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
-            while(e.hasMoreElements())
-            {
-                NetworkInterface n = e.nextElement();
-                Enumeration<InetAddress> ee = n.getInetAddresses();
-                while (ee.hasMoreElements())
-                {
-                    InetAddress i = ee.nextElement();
-                    String hostAddress = i.getHostAddress();
-                    if(i instanceof Inet4Address)
-                    {
-                        ips.append(hostAddress);
-                        if(e.hasMoreElements())
-                            ips.append(" / ");
-                    }
-                }
-            }
-
-            getStage().setTitle("Stream-Pi Server - IP(s): "+ips.toString()+" | Port: "+ Config.getInstance().getPort());                   //Sets title
             getStage().setOnCloseRequest(this::onCloseRequest);
         }
         catch (Exception e)
@@ -213,6 +194,11 @@ public class Controller extends Base implements PropertySaver, ServerConnection
                 return null;
             }
         }).start();
+    }
+
+    @Override
+    public DashboardBase getDashboardBase() {
+        return getDashboardPane();
     }
 
     private void setupSettingsWindowsAnimations()

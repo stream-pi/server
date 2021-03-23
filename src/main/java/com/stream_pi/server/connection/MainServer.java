@@ -1,14 +1,16 @@
 package com.stream_pi.server.connection;
 
+import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
+import com.stream_pi.server.window.dashboard.ClientAndProfileSelectorPane;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.BindException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
+import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
@@ -20,14 +22,12 @@ public class MainServer extends Thread{
     private ServerSocket serverSocket = null;
     //private Server server;
 
-
     private AtomicBoolean stop = new AtomicBoolean(false);
 
     private ExceptionAndAlertHandler exceptionAndAlertHandler;
     public MainServer(ServerListener serverListener, ExceptionAndAlertHandler exceptionAndAlertHandler)
     {
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
-        this.port = port;
         this.serverListener = serverListener;
     }
 
@@ -78,6 +78,8 @@ public class MainServer extends Thread{
 
             serverSocket = new ServerSocket(port);
 
+            setupStageTitle(true);
+
             while(!stop.get())
             {
                 Socket s = serverSocket.accept();
@@ -92,7 +94,13 @@ public class MainServer extends Thread{
             if(!e.getMessage().contains("Socket closed"))
             {
                 logger.info("Main Server stopped accepting calls ...");
-                exceptionAndAlertHandler.handleMinorException(new MinorException("Sorry","The port "+port+" is already reserved by another process. If another Server Instance probably running, close it. If not, change the port in settings and restart Stream-Pi Server \n\nFull Message : "+e.getMessage()));
+
+                setupStageTitle(false);
+
+                exceptionAndAlertHandler.handleMinorException(new MinorException("Sorry!","Server could not be started at "+port+".\n" +
+                        "This could be due to another process or another instance of Stream-Pi Server using the same port. \n\n" +
+                        "If another Server Instance probably running, close it. If not, try changing the port in settings and restart Stream-Pi Server." +
+                        "If the problem still persists, consider contacting us. \n\nFull Message : "+e.getMessage()));
                 e.printStackTrace();
             }
         }
@@ -100,6 +108,46 @@ public class MainServer extends Thread{
         {
             exceptionAndAlertHandler.handleSevereException(new SevereException("MainServer io Exception occurred!"));
             e.printStackTrace();
+        }
+    }
+
+    private void setupStageTitle(boolean isSuccess)
+    {
+        try
+        {
+            if(isSuccess)
+            {
+                StringBuilder ips = new StringBuilder();
+
+                Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
+                while(e.hasMoreElements())
+                {
+                    NetworkInterface n = e.nextElement();
+                    Enumeration<InetAddress> ee = n.getInetAddresses();
+                    while (ee.hasMoreElements())
+                    {
+                        InetAddress i = ee.nextElement();
+                        String hostAddress = i.getHostAddress();
+                        if(i instanceof Inet4Address)
+                        {
+                            ips.append(hostAddress);
+                            if(e.hasMoreElements())
+                                ips.append(" / ");
+                        }
+                    }
+                }
+
+                Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - IP(s): "+ips.toString()+" | Port: "+ port));
+            }
+            else
+            {
+                Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - Offline"));
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            exceptionAndAlertHandler.handleMinorException(new MinorException("Error",e.getMessage()));
         }
     }
 

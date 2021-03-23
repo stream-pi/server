@@ -208,6 +208,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         applyDefaultIconsStylesheet();
     }
 
+    @Override
     public Stage getStage()
     {
         return stage;
