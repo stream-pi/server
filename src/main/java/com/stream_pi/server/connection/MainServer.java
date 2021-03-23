@@ -1,6 +1,7 @@
 package com.stream_pi.server.connection;
 
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
+import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 
 import java.io.IOException;
@@ -91,7 +92,7 @@ public class MainServer extends Thread{
             if(!e.getMessage().contains("Socket closed"))
             {
                 logger.info("Main Server stopped accepting calls ...");
-                exceptionAndAlertHandler.handleSevereException(new SevereException("Sorry","Another Server Instance probably running. Unable to Start Server \n\n"+e.getMessage()));
+                exceptionAndAlertHandler.handleMinorException(new MinorException("Sorry","The port "+port+" is already reserved by another process. If another Server Instance probably running, close it. If not, change the port in settings and restart Stream-Pi Server \n\nFull Message : "+e.getMessage()));
                 e.printStackTrace();
             }
         }
