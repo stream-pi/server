@@ -17,6 +17,8 @@ public interface ActionDetailsPaneListener {
 
     void setSendIcon(boolean sendIcon);
 
+    void setAction(Action action);
+
     void onOpenFolderButtonClicked();
 
     Window getCurrentWindow();

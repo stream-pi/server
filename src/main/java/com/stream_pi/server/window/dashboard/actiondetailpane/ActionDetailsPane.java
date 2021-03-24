@@ -64,6 +64,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     private HBox buttonBar;
 
+    private VBox pluginExtraButtonBar;
+
     private Label actionHeadingLabel;
 
     private Logger logger;
@@ -95,6 +97,10 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         vbox.getStyleClass().add("action_details_pane_vbox");
 
         vbox.setSpacing(10.0);
+
+        pluginExtraButtonBar = new VBox();
+        pluginExtraButtonBar.setSpacing(10.0);
+
 
         getStyleClass().add("action_details_pane");
 
@@ -136,8 +142,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         returnButtonForCombineActionChild.managedProperty().bind(returnButtonForCombineActionChild.visibleProperty());
         returnButtonForCombineActionChild.setOnAction(event -> {
             try {
-                logger.info("@@## : " + action.getParent());
-                onActionClicked(getClientProfile().getActionByID(action.getParent()), getActionBox());
+                logger.info("@@## : " + getAction().getParent());
+                onActionClicked(getClientProfile().getActionByID(getAction().getParent()), getActionBox());
             } catch (MinorException e) {
                 e.printStackTrace();
             }
@@ -197,7 +203,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     hideDefaultIconCheckBox.setSelected(false);
                     clearIconButton.setDisable(false);
 
-                    action.addIcon("default", iconFileByteArray);
+                    getAction().addIcon("default", iconFileByteArray);
                     setSendIcon(true);
                 }
             } catch (Exception e) {
@@ -216,7 +222,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     hideToggleOffIconCheckBox.setSelected(false);
                     clearIconButton.setDisable(false);
 
-                    action.addIcon("toggle_off", iconFileByteArray);
+                    getAction().addIcon("toggle_off", iconFileByteArray);
                     setSendIcon(true);
                 }
             } catch (Exception e) {
@@ -236,7 +242,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     hideToggleOnIconCheckBox.setSelected(false);
                     clearIconButton.setDisable(false);
 
-                    action.addIcon("toggle_on", iconFileByteArray);
+                    getAction().addIcon("toggle_on", iconFileByteArray);
                     setSendIcon(true);
                 }
             } catch (Exception e) {
@@ -287,8 +293,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         actionBackgroundColourPicker.disableProperty()
                 .bind(actionBackgroundColourTransparentCheckBox.selectedProperty());
 
-        HBox.setMargin(actionBackgroundColourTransparentCheckBox, new Insets(0, 0, 0, 10));    
-        
+        HBox.setMargin(actionBackgroundColourTransparentCheckBox, new Insets(0, 0, 0, 10));
+
 
         displayTextColourDefaultCheckBox = new CheckBox("Default");
         displayTextColourPicker.disableProperty()
@@ -345,14 +351,16 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         toggleActionsPropsVBox.managedProperty().bind(toggleActionsPropsVBox.visibleProperty());
         toggleActionsPropsVBox.setSpacing(10.0);
 
-        vbox.getChildren().addAll(displayTextFieldHBox,normalToggleActionCommonPropsVBox, normalActionsPropsVBox, toggleActionsPropsVBox, clientPropertiesVBox);
+        vbox.getChildren().addAll(displayTextFieldHBox,normalToggleActionCommonPropsVBox,
+                normalActionsPropsVBox, toggleActionsPropsVBox, clientPropertiesVBox,
+                pluginExtraButtonBar);
 
         vbox.setVisible(false);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         setOnDragOver(dragEvent -> {
             if (dragEvent.getDragboard().hasContent(ActionDataFormats.ACTION_TYPE) && action != null) {
-                if (action.getActionType() == ActionType.COMBINE) {
+                if (getAction().getActionType() == ActionType.COMBINE) {
                     dragEvent.acceptTransferModes(TransferMode.ANY);
 
                     dragEvent.consume();
@@ -398,7 +406,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
                     newAction.setLocation(new Location(-1, -1));
 
-                    newAction.setParent(this.action.getID());
+                    newAction.setParent(getAction().getID());
+                    newAction.setProfileID(actionGridPaneListener.getCurrentProfile().getID());
+                    newAction.setSocketAddressForClient(actionGridPaneListener.getClientConnection().getRemoteSocketAddress());
 
                     try
                     {
@@ -406,7 +416,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     }
                     catch (Exception e)
                     {
-                        exceptionAndAlertHandler.handleMinorException(new MinorException("Error","onCreate() failed for "+action.getModuleName()+"\n\n"+e.getMessage()));
+                        exceptionAndAlertHandler.handleMinorException(new MinorException("Error","onCreate() failed for "+getAction().getModuleName()+"\n\n"+e.getMessage()));
                     }
 
                     combineActionPropertiesPane.getCombineAction().addChild(newAction.getID());
@@ -477,7 +487,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     private Action action;
 
-    public Action getAction() {
+    public synchronized Action getAction() {
         return action;
     }
 
@@ -492,11 +502,15 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     {
         clear();
 
-        this.action = action;
+        setAction(action);
         this.actionBox = actionBox;
+
+        System.out.println(getAction().getProfileID()+"KOBAAA");
 
         renderActionProperties();
     }
+
+
 
     public void refresh() throws MinorException
     {
@@ -536,6 +550,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
 
         clientPropertiesVBox.getChildren().clear();
+        pluginExtraButtonBar.getChildren().clear();
         vbox.setVisible(false);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         buttonBar.setVisible(false);
@@ -567,13 +582,13 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     {
 
         //Combine Child action
-        isCombineChild = action.getLocation().getCol() == -1;
+        isCombineChild = getAction().getLocation().getCol() == -1;
 
         System.out.println(isCombineChild);
 
-        System.out.println("DISPLAY : "+action.getDisplayText());
+        System.out.println("DISPLAY : "+getAction().getDisplayText());
 
-        displayNameTextField.setText(action.getDisplayText());
+        displayNameTextField.setText(getAction().getDisplayText());
 
         if(isCombineChild)
         {
@@ -593,8 +608,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 toggleActionsPropsVBox.setVisible(false);
 
 
-                boolean doesDefaultExist = action.getIcons().containsKey("default");
-                boolean isDefaultHidden = !action.getCurrentIconState().equals("default");
+                boolean doesDefaultExist = getAction().getIcons().containsKey("default");
+                boolean isDefaultHidden = !getAction().getCurrentIconState().equals("default");
 
                 if(!doesDefaultExist)
                     isDefaultHidden = false;
@@ -608,8 +623,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 toggleActionsPropsVBox.setVisible(true);
 
 
-                boolean doesToggleOnExist = action.getIcons().containsKey("toggle_on");
-                boolean isToggleOnHidden = action.getCurrentIconState().contains("toggle_on");
+                boolean doesToggleOnExist = getAction().getIcons().containsKey("toggle_on");
+                boolean isToggleOnHidden = getAction().getCurrentIconState().contains("toggle_on");
 
 
                 if(!doesToggleOnExist)
@@ -621,8 +636,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
 
 
-                boolean doesToggleOffExist = action.getIcons().containsKey("toggle_off");
-                boolean isToggleOffHidden = action.getCurrentIconState().contains("toggle_off");
+                boolean doesToggleOffExist = getAction().getIcons().containsKey("toggle_off");
+                boolean isToggleOffHidden = getAction().getCurrentIconState().contains("toggle_off");
 
 
 
@@ -636,26 +651,26 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
             setReturnButtonForCombineActionChildVisible(false);
             hideDisplayTextCheckBox.setVisible(true);
-            setFolderButtonVisible(action.getActionType().equals(ActionType.FOLDER));
+            setFolderButtonVisible(getAction().getActionType().equals(ActionType.FOLDER));
 
-            displayTextAlignmentComboBox.getSelectionModel().select(action.getDisplayTextAlignment());
+            displayTextAlignmentComboBox.getSelectionModel().select(getAction().getDisplayTextAlignment());
 
-            if(!action.getBgColourHex().isEmpty())
-                actionBackgroundColourPicker.setValue(Color.valueOf(action.getBgColourHex()));
+            if(!getAction().getBgColourHex().isEmpty())
+                actionBackgroundColourPicker.setValue(Color.valueOf(getAction().getBgColourHex()));
             else
                 actionBackgroundColourTransparentCheckBox.setSelected(true);
-             
 
 
-            if(!action.getDisplayTextFontColourHex().isEmpty())
-                displayTextColourPicker.setValue(Color.valueOf(action.getDisplayTextFontColourHex()));
+
+            if(!getAction().getDisplayTextFontColourHex().isEmpty())
+                displayTextColourPicker.setValue(Color.valueOf(getAction().getDisplayTextFontColourHex()));
             else
                 displayTextColourDefaultCheckBox.setSelected(true);
 
 
-            hideDisplayTextCheckBox.setSelected(!action.isShowDisplayText());
+            hideDisplayTextCheckBox.setSelected(!getAction().isShowDisplayText());
 
-            clearIconButton.setDisable(!action.isHasIcon());
+            clearIconButton.setDisable(!getAction().isHasIcon());
         }
 
 
@@ -664,25 +679,38 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         vbox.setVisible(true);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-        if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
+        if(getAction().getActionType() == ActionType.NORMAL || getAction().getActionType() == ActionType.TOGGLE)
         {
-            if(action.isInvalid())
-                setActionHeadingLabelText("Invalid action ("+action.getModuleName()+")");
+            if(getAction().isInvalid())
+                setActionHeadingLabelText("Invalid action ("+getAction().getModuleName()+")");
             else
-                setActionHeadingLabelText(action.getName());
+                setActionHeadingLabelText(getAction().getName());
         }
-        else if(action.getActionType() == ActionType.COMBINE)
+        else if(getAction().getActionType() == ActionType.COMBINE)
             setActionHeadingLabelText("Combine action");
-        else if(action.getActionType() == ActionType.FOLDER)
+        else if(getAction().getActionType() == ActionType.FOLDER)
             setActionHeadingLabelText("Folder action");
 
 
-        if(!action.isInvalid())
+        if(!getAction().isInvalid())
         {
-            if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
+            if(getAction().getActionType() == ActionType.NORMAL || getAction().getActionType() == ActionType.TOGGLE)
                 renderClientProperties();
-            else if(action.getActionType() == ActionType.COMBINE)
+            else if(getAction().getActionType() == ActionType.COMBINE)
                 renderCombineActionProperties();
+
+            renderPluginExtraButtonBar();
+        }
+    }
+
+    private void renderPluginExtraButtonBar()
+    {
+        ExternalPlugin externalPlugin = (ExternalPlugin) getAction();
+
+        if(externalPlugin.getClientActionSettingsButtonBar() != null)
+        {
+            HBox tba = new HBox(SpaceFiller.horizontal(), externalPlugin.getClientActionSettingsButtonBar());
+            pluginExtraButtonBar.getChildren().add(tba);
         }
     }
 
@@ -715,24 +743,25 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         }
     }
 
-    public void setAction(Action action) {
+    @Override
+    public synchronized void setAction(Action action) {
         this.action = action;
     }
 
     public FolderAction getActionAsFolderAction(Action action)
     {
         FolderAction folderAction = new FolderAction();
-        folderAction.setDisplayText(action.getDisplayText());
-        folderAction.setName(action.getName());
-        folderAction.setID(action.getID());
-        folderAction.setLocation(action.getLocation());
-        folderAction.setBgColourHex(action.getBgColourHex());
-        folderAction.setParent(action.getParent());
-        folderAction.getClientProperties().set(action.getClientProperties());
-        folderAction.setDisplayTextAlignment(action.getDisplayTextAlignment());
-        folderAction.setIcons(action.getIcons());
-        folderAction.setCurrentIconState(action.getCurrentIconState());
-        folderAction.setDisplayTextFontColourHex(action.getDisplayTextFontColourHex());
+        folderAction.setDisplayText(getAction().getDisplayText());
+        folderAction.setName(getAction().getName());
+        folderAction.setID(getAction().getID());
+        folderAction.setLocation(getAction().getLocation());
+        folderAction.setBgColourHex(getAction().getBgColourHex());
+        folderAction.setParent(getAction().getParent());
+        folderAction.getClientProperties().set(getAction().getClientProperties());
+        folderAction.setDisplayTextAlignment(getAction().getDisplayTextAlignment());
+        folderAction.setIcons(getAction().getIcons());
+        folderAction.setCurrentIconState(getAction().getCurrentIconState());
+        folderAction.setDisplayTextFontColourHex(getAction().getDisplayTextFontColourHex());
 
         return folderAction;
     }
@@ -740,17 +769,17 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     public CombineAction getActionAsCombineAction(Action action)
     {
         CombineAction combineAction = new CombineAction();
-        combineAction.setDisplayText(action.getDisplayText());
-        combineAction.setName(action.getName());
-        combineAction.setID(action.getID());
-        combineAction.setLocation(action.getLocation());
-        combineAction.setBgColourHex(action.getBgColourHex());
-        combineAction.setParent(action.getParent());
-        combineAction.getClientProperties().set(action.getClientProperties());
-        combineAction.setDisplayTextAlignment(action.getDisplayTextAlignment());
-        combineAction.setIcons(action.getIcons());
-        combineAction.setCurrentIconState(action.getCurrentIconState());
-        combineAction.setDisplayTextFontColourHex(action.getDisplayTextFontColourHex());
+        combineAction.setDisplayText(getAction().getDisplayText());
+        combineAction.setName(getAction().getName());
+        combineAction.setID(getAction().getID());
+        combineAction.setLocation(getAction().getLocation());
+        combineAction.setBgColourHex(getAction().getBgColourHex());
+        combineAction.setParent(getAction().getParent());
+        combineAction.getClientProperties().set(getAction().getClientProperties());
+        combineAction.setDisplayTextAlignment(getAction().getDisplayTextAlignment());
+        combineAction.setIcons(getAction().getIcons());
+        combineAction.setCurrentIconState(getAction().getCurrentIconState());
+        combineAction.setDisplayTextFontColourHex(getAction().getDisplayTextFontColourHex());
 
         return combineAction;
     }
@@ -782,9 +811,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 new HBoxInputBox("Delay before running (milli-seconds)", delayBeforeRunningTextField, 100)
         );
 
-        for(int i =0;i< action.getClientProperties().getSize(); i++)
+        for(int i =0;i< getAction().getClientProperties().getSize(); i++)
         {
-            Property eachProperty = action.getClientProperties().get().get(i);
+            Property eachProperty = getAction().getClientProperties().get().get(i);
 
             if(!eachProperty.isVisible())
                 continue;
@@ -951,6 +980,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     @Override
     public void saveAction(Action action, boolean runAsync, boolean runOnActionSavedFromServer)
     {
+        logger.info("gOAT@ :"+action.getProfileID());
+
         new OnSaveActionTask(
             ClientConnections.getInstance().getClientConnectionBySocketAddress(
                 getClient().getRemoteSocketAddress()
@@ -960,7 +991,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             displayNameTextField.getText(),
             isCombineChild(),
             !hideDisplayTextCheckBox.isSelected(),
-            displayTextColourDefaultCheckBox.isSelected(), 
+            displayTextColourDefaultCheckBox.isSelected(),
             "#" + displayTextColourPicker.getValue().toString().substring(2),
             clearIconButton.isDisable(),
             hideDefaultIconCheckBox.isSelected(),
@@ -969,7 +1000,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             displayTextAlignmentComboBox.getSelectionModel().getSelectedItem(),
             actionBackgroundColourTransparentCheckBox.isSelected(),
             "#" + actionBackgroundColourPicker.getValue().toString().substring(2),
-            getCombineActionPropertiesPane(), 
+            getCombineActionPropertiesPane(),
             clientProfile, sendIcon, actionBox, actionClientProperties, exceptionAndAlertHandler,
             saveButton, deleteButton, runOnActionSavedFromServer, runAsync
         );
@@ -978,7 +1009,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     @Override
     public void saveAction(boolean runAsync, boolean runOnActionSavedFromServer)
     {
-        saveAction(action, runAsync, runOnActionSavedFromServer);
+        logger.info("ENGREJDERMAARBOOR:"+getAction().getProfileID());
+        logger.info("ENGREJDERMAARBOOR:"+getAction().getDisplayText());
+        saveAction(getAction(), runAsync, runOnActionSavedFromServer);
     }
 
     public void setFolderButtonVisible(boolean visible)
@@ -999,9 +1032,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         if(!isCombineChild())
         {
-            if(action.getActionType() == ActionType.NORMAL)
+            if(getAction().getActionType() == ActionType.NORMAL)
             {
-                if(action.isHasIcon())
+                if(getAction().isHasIcon())
                 {
                     if(hideDisplayTextCheckBox.isSelected() && hideDefaultIconCheckBox.isSelected())
                     {
@@ -1016,7 +1049,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             }
         }
 
-        if(action.getActionType() == ActionType.NORMAL)
+        if(getAction().getActionType() == ActionType.NORMAL)
         {
             try
             {
@@ -1078,7 +1111,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             ),
             action,
             isCombineChild(),
-            getCombineActionPropertiesPane(), 
+            getCombineActionPropertiesPane(),
             clientProfile, actionBox, this, exceptionAndAlertHandler,
             !isCombineChild
         );

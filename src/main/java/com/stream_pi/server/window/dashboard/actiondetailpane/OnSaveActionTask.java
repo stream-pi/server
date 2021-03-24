@@ -196,7 +196,7 @@ public class OnSaveActionTask extends Task<Void>
         {
             logger.info("Saving action ... "+action.isHasIcon()+"+"+sendIcon);
 
-
+            logger.info("BOKA!! : "+action.getProfileID());
 
             if(runOnActionSavedFromServer)
             {
@@ -209,7 +209,10 @@ public class OnSaveActionTask extends Task<Void>
                 try
                 {
                     if(action instanceof ExternalPlugin)
+                    {
+                        System.out.println(action.getSocketAddressForClient());
                         ((ExternalPlugin) action).onActionSavedFromServer();
+                    }
                 }
                 catch (Exception e)
                 {
@@ -237,8 +240,8 @@ public class OnSaveActionTask extends Task<Void>
                 setSaveDeleteButtonState(false);
             }
 
-            //clientProfile.removeActionByID(action.getID());
-            //clientProfile.addAction(action);
+            clientProfile.removeActionByID(action.getID());
+            clientProfile.addAction(action);
 
         }
         catch (SevereException e)

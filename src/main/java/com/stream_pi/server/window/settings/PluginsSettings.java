@@ -356,10 +356,10 @@ public class PluginsSettings extends VBox {
                 vBox.setSpacing(5.0);
                 vBox.getChildren().addAll(headerHBox, authorLabel, moduleLabel, versionLabel, serverPropertiesVBox);
 
-                if(action.getButtonBar()!=null)
+                if(action.getServerSettingsButtonBar()!=null)
                 {
-                    action.getButtonBar().getStyleClass().add("plugins_settings_each_plugin_button_bar");
-                    HBox buttonBarHBox = new HBox(SpaceFiller.horizontal(), action.getButtonBar());
+                    action.getServerSettingsButtonBar().getStyleClass().add("plugins_settings_each_plugin_button_bar");
+                    HBox buttonBarHBox = new HBox(SpaceFiller.horizontal(), action.getServerSettingsButtonBar());
                     buttonBarHBox.getStyleClass().add("plugins_settings_each_plugin_button_bar_hbox");
                     vBox.getChildren().add(buttonBarHBox);
                 }

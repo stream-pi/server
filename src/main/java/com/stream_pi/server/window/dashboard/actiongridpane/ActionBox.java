@@ -147,7 +147,8 @@ public class ActionBox extends StackPane{
                         newAction.setLocation(new Location(getRow(),
                                 getCol()));
 
-                        newAction.setProfileID(actionGridPaneListener.getCurrentProfile().getID());
+
+                        System.out.println("@@#$#$#$ :"+newAction.getProfileID());
                         newAction.setParent(actionGridPaneListener.getCurrentParent());
                         newAction.setSocketAddressForClient(actionGridPaneListener.getClientConnection().getRemoteSocketAddress());
 
@@ -160,12 +161,15 @@ public class ActionBox extends StackPane{
                             exceptionAndAlertHandler.handleMinorException(new MinorException("Error","onCreate() failed for "+action.getModuleName()+"\n\n"+e.getMessage()));
                         }
 
+
+
+                        newAction.setProfileID(actionGridPaneListener.getCurrentProfile().getID());
+                        newAction.setSocketAddressForClient(actionGridPaneListener.getClientConnection().getRemoteSocketAddress());
+
                         actionGridPaneListener.addActionToCurrentClientProfile(newAction);
 
-
-
                         setAction(newAction);
-
+                        init();
 
                         actionDetailsPaneListener.onActionClicked(newAction, this);
 
@@ -199,7 +203,6 @@ public class ActionBox extends StackPane{
                         if(newAction.isHasIcon())
                             actionDetailsPaneListener.setSendIcon(true);
 
-
                         actionDetailsPaneListener.saveAction(true, false);
                     }
                 }
@@ -216,9 +219,9 @@ public class ActionBox extends StackPane{
         });
 
         setOnDragDetected(mouseEvent -> {
-            if(action!=null)
+            if(getAction()!=null)
             {
-                if(action.getActionType() == ActionType.NORMAL)
+                if(getAction().getActionType() == ActionType.NORMAL)
                 {
                     Dragboard db = startDragAndDrop(TransferMode.ANY);
 
@@ -249,7 +252,7 @@ public class ActionBox extends StackPane{
             {
                 if(mouseEvent.getButton().equals(MouseButton.PRIMARY))
                 {
-                    if(mouseEvent.getClickCount() == 2 && action.getActionType() == ActionType.FOLDER)
+                    if(mouseEvent.getClickCount() == 2 && getAction().getActionType() == ActionType.FOLDER)
                     {
                         getActionDetailsPaneListener().onOpenFolderButtonClicked();
                     }
@@ -268,7 +271,7 @@ public class ActionBox extends StackPane{
                 }
                 else if(mouseEvent.getButton().equals(MouseButton.SECONDARY))
                 {
-                    if(action.getActionType() == ActionType.TOGGLE)
+                    if(getAction().getActionType() == ActionType.TOGGLE)
                     {
                         toggleStateContextMenu.show(this, mouseEvent.getScreenX(),
                                 mouseEvent.getScreenY());
@@ -442,8 +445,8 @@ public class ActionBox extends StackPane{
 
     public void init()
     {
-        if(action.isShowDisplayText())
-            setDisplayTextLabel(action.getDisplayText());
+        if(getAction().isShowDisplayText())
+            setDisplayTextLabel(getAction().getDisplayText());
         else
             setDisplayTextLabel("");
 
