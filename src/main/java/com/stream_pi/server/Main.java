@@ -13,8 +13,6 @@ GNU General Public License for more details.
 
 Written by : Debayan Sutradhar (rnayabed)
 */
-
-
 package com.stream_pi.server;
 
 import com.stream_pi.server.controller.Controller;
@@ -47,7 +45,6 @@ public class Main extends Application {
                 ServerInfo.getInstance().setStartMinimised(val.equals("min"));
         }
 
-
         Controller d = new Controller();
         Scene s = new Scene(d);
         stage.setScene(s);
@@ -61,7 +58,6 @@ public class Main extends Application {
      */
     public static void main(String[] args) 
     {
-
         launch(args);
     }
 }

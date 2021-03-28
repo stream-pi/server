@@ -1,12 +1,9 @@
 package com.stream_pi.server.connection;
 
-import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
-import com.stream_pi.server.window.dashboard.ClientAndProfileSelectorPane;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import javafx.application.Platform;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.*;
@@ -14,7 +11,7 @@ import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
-public class MainServer extends Thread{
+public class MainServer extends Thread {
     private ServerListener serverListener;
 
     private Logger logger = Logger.getLogger(MainServer.class.getName());
@@ -73,13 +70,9 @@ public class MainServer extends Thread{
         logger.warning("Starting main server on port "+port+" ...");
 
         try {
-
             logger.info("Starting server on port "+port+" ...");
-
             serverSocket = new ServerSocket(port);
-
             setupStageTitle(true);
-
             while(!stop.get())
             {
                 Socket s = serverSocket.accept();
@@ -150,6 +143,4 @@ public class MainServer extends Thread{
             exceptionAndAlertHandler.handleMinorException(new MinorException("Error",e.getMessage()));
         }
     }
-
-
 }

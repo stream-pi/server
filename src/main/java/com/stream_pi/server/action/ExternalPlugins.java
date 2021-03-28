@@ -16,15 +16,6 @@ Written by : Debayan Sutradhar (rnayabed)
 
 package com.stream_pi.server.action;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.PropertySaver;
@@ -33,18 +24,29 @@ import com.stream_pi.action_api.actionproperty.ServerProperties;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
-import com.stream_pi.action_api.externalplugin.NormalAction;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.exception.StreamPiException;
 import com.stream_pi.util.version.Version;
 import com.stream_pi.util.xmlconfighelper.XMLConfigHelper;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.lang.module.*;
+import java.lang.module.Configuration;
+import java.lang.module.ModuleDescriptor;
+import java.lang.module.ModuleFinder;
+import java.lang.module.ModuleReference;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -54,8 +56,6 @@ import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import org.w3c.dom.Element;
 
 public class ExternalPlugins
 {
@@ -169,19 +169,15 @@ public class ExternalPlugins
 
         NodeList actionsNode = document.getElementsByTagName("actions").item(0).getChildNodes();
 
-        for(int i =0;i<actionsNode.getLength();i++)
+        for(int i=0; i<actionsNode.getLength(); i++)
         {
             Node eachActionNode = actionsNode.item(i);
 
-            if(eachActionNode.getNodeType() != Node.ELEMENT_NODE)
-                continue;
-            
-            if(!eachActionNode.getNodeName().equals("action"))
+            if(eachActionNode.getNodeType() != Node.ELEMENT_NODE ||
+                    !eachActionNode.getNodeName().equals("action"))
                 continue;
 
             Element eachActionElement = (Element) eachActionNode;
- 
-
 
             String name;
             Version version;
@@ -206,7 +202,6 @@ public class ExternalPlugins
             for(int j = 0;j<serverPropertiesNodeList.getLength();j++)
             {
                 Node eachPropertyNode = serverPropertiesNodeList.item(j);
-
 
                 if(eachPropertyNode.getNodeType() != Node.ELEMENT_NODE)
                     continue;
@@ -281,7 +276,6 @@ public class ExternalPlugins
         catch (Exception e)
         {
             e.printStackTrace();
-
             throw new MinorException("Error", "Error loading modules\n"+e.getMessage()+"\nPlease fix the errors. Other plugins wont be loaded.");
         }
 
@@ -296,7 +290,6 @@ public class ExternalPlugins
                 eachPlugin.setServerConnection(serverConnection);
                 eachPlugin.initProperties();
 
-
                 logger.info("MODULE : "+eachPlugin.getModuleName());
                 Action foundAction = null;
                 for (Action action : pluginsConfigs) {
@@ -307,7 +300,6 @@ public class ExternalPlugins
 
                         List<Property> eachPluginStoredProperties = action.getServerProperties().get();
                         List<Property> eachPluginCodeProperties = eachPlugin.getServerProperties().get();
-
 
                         for (int i =0;i< eachPluginCodeProperties.size(); i++) {
 
@@ -328,9 +320,7 @@ public class ExternalPlugins
                             }
                         }
 
-
                         eachPlugin.getServerProperties().set(eachPluginCodeProperties);
-
                         break;
                     }
                 }
@@ -347,16 +337,10 @@ public class ExternalPlugins
                     }
                 }
 
-
-
                 if (!sortedPlugins.containsKey(eachPlugin.getCategory())) {
-                    ArrayList<ExternalPlugin> actions = new ArrayList<>();
-
-                    sortedPlugins.put(eachPlugin.getCategory(), actions);
+                    sortedPlugins.put(eachPlugin.getCategory(), new ArrayList<>());
                 }
-
                 sortedPlugins.get(eachPlugin.getCategory()).add(eachPlugin);
-
             }
             catch (Exception e)
             {
@@ -383,12 +367,10 @@ public class ExternalPlugins
                 errors.append("\n * ").append(errorModules.get(i).getModuleName()).append("\n(")
                     .append(errorModuleError.get(i)).append(")");
             }
-
             throw new MinorException("Plugins", errors.toString());
         }
 
-
-        for(int i = 0;i<externalPlugins.size();i++)
+        for(int i=0; i<externalPlugins.size(); i++)
         {
             externalPluginsHashmap.put(externalPlugins.get(i).getModuleName(), i);
         }
@@ -553,7 +535,6 @@ public class ExternalPlugins
                     e.printStackTrace();
                 }
             }
-    
             externalPlugins.clear();
         }
     }

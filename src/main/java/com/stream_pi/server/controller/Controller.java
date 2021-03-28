@@ -1,8 +1,8 @@
 package com.stream_pi.server.controller;
 
 import com.stream_pi.action_api.action.Action;
-import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.action.PropertySaver;
+import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.externalplugin.NormalAction;
 import com.stream_pi.action_api.externalplugin.ToggleAction;
 import com.stream_pi.server.Main;
@@ -11,10 +11,9 @@ import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.connection.ClientConnections;
 import com.stream_pi.server.connection.MainServer;
-import com.stream_pi.server.io.Config;
 import com.stream_pi.server.info.ServerInfo;
+import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.Base;
-import com.stream_pi.server.window.dashboard.ClientAndProfileSelectorPane;
 import com.stream_pi.server.window.dashboard.DashboardBase;
 import com.stream_pi.server.window.dashboard.DonatePopupContent;
 import com.stream_pi.server.window.firsttimeuse.FirstTimeUse;
@@ -23,38 +22,41 @@ import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
-
+import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import java.awt.SystemTray;
 import javafx.util.Duration;
+
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
-import java.awt.PopupMenu;
-import java.awt.MenuItem;
-
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.SocketAddress;
-import java.util.Enumeration;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 public class Controller extends Base implements PropertySaver, ServerConnection
 {
-    MainServer mainServer;
+    private ExecutorService executor = Executors.newCachedThreadPool();
+    private MainServer mainServer;
+    private Animation openSettingsAnimation;
+    private Animation closeSettingsAnimation;
+
+    public Controller(){
+        mainServer = null;
+    }
 
     public void setupDashWindow() throws SevereException
     {
@@ -69,7 +71,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
         }
     }
 
-
     @Override
     public void init()
     {
@@ -78,7 +79,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             initBase();
             setupDashWindow();
 
-
             setupSettingsWindowsAnimations();
 
             ExternalPlugins.getInstance().setPropertySaver(this);
@@ -86,18 +86,16 @@ public class Controller extends Base implements PropertySaver, ServerConnection
 
 
             getDashboardPane().getPluginsPane().getSettingsButton().setOnAction(event -> {
-                openSettingsTimeLine.play();
+                openSettingsAnimation.play();
             });
 
             getSettingsPane().getCloseButton().setOnAction(event -> {
-                closeSettingsTimeLine.play();
+                closeSettingsAnimation.play();
             });
 
             getSettingsPane().getThemesSettings().setController(this);
 
-
             mainServer = new MainServer(this, this);
-
 
             if(getConfig().isFirstTimeUse())
             {
@@ -143,8 +141,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection
         {
             handleMinorException(e);
         }
-        
-        new Thread(new Task<Void>() {
+
+        executor.execute(new Task<Void>() {
             @Override
             protected Void call()
             {
@@ -162,7 +160,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
 
                     try
                     {
-
                         //Plugins 
                         Platform.runLater(()->{
                             getDashboardPane().getPluginsPane().clearData();
@@ -185,7 +182,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
                     //Server
                     mainServer.setPort(getConfig().getPort());
                     mainServer.start();
-
                 }
                 catch (SevereException e)
                 {
@@ -193,7 +189,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
                 }
                 return null;
             }
-        }).start();
+        });
     }
 
     @Override
@@ -206,138 +202,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection
         Node settingsNode = getSettingsPane();
         Node dashboardNode = getDashboardPane();
 
-        openSettingsTimeLine = new Timeline();
-        openSettingsTimeLine.setCycleCount(1);
-
-
-        openSettingsTimeLine.getKeyFrames().addAll(
-                new KeyFrame(Duration.millis(0.0D),
-                        new KeyValue(settingsNode.opacityProperty(),
-                                0.0D, Interpolator.EASE_IN),
-                        new KeyValue(settingsNode.scaleXProperty(),
-                                1.1D, Interpolator.EASE_IN),
-                        new KeyValue(settingsNode.scaleYProperty(),
-                                1.1D, Interpolator.EASE_IN),
-                        new KeyValue(settingsNode.scaleZProperty(),
-                                1.1D, Interpolator.EASE_IN)),
-                new KeyFrame(Duration.millis(90.0D),
-                        new KeyValue(settingsNode.opacityProperty(),
-                                1.0D, Interpolator.LINEAR),
-                        new KeyValue(settingsNode.scaleXProperty(),
-                                1.0D, Interpolator.LINEAR),
-                        new KeyValue(settingsNode.scaleYProperty(),
-                                1.0D, Interpolator.LINEAR),
-                        new KeyValue(settingsNode.scaleZProperty(),
-                                1.0D, Interpolator.LINEAR)),
-
-
-                new KeyFrame(Duration.millis(0.0D),
-                        new KeyValue(dashboardNode.opacityProperty(),
-                                1.0D, Interpolator.LINEAR),
-                        new KeyValue(dashboardNode.scaleXProperty(),
-                                1.0D, Interpolator.LINEAR),
-                        new KeyValue(dashboardNode.scaleYProperty(),
-                                1.0D, Interpolator.LINEAR),
-                        new KeyValue(dashboardNode.scaleZProperty(),
-                                1.0D, Interpolator.LINEAR)),
-                new KeyFrame(Duration.millis(90.0D),
-                        new KeyValue(dashboardNode.opacityProperty(),
-                                0.0D, Interpolator.LINEAR),
-                        new KeyValue(dashboardNode.scaleXProperty(),
-                                0.9D, Interpolator.LINEAR),
-                        new KeyValue(dashboardNode.scaleYProperty(),
-                                0.9D, Interpolator.LINEAR),
-                        new KeyValue(dashboardNode.scaleZProperty(),
-                                0.9D, Interpolator.LINEAR))
-        );
-
-        openSettingsTimeLine.setOnFinished(event1 -> {
-            settingsNode.toFront();
-        });
-
-
-        closeSettingsTimeLine = new Timeline();
-        closeSettingsTimeLine.setCycleCount(1);
-
-        closeSettingsTimeLine.getKeyFrames().addAll(
-
-                new KeyFrame(Duration.millis(0.0D),
-                        new KeyValue(settingsNode.opacityProperty(),
-                                1.0D, Interpolator.LINEAR),
-                        new KeyValue(settingsNode.scaleXProperty(),
-                                1.0D, Interpolator.LINEAR),
-                        new KeyValue(settingsNode.scaleYProperty(),
-                                1.0D, Interpolator.LINEAR),
-                        new KeyValue(settingsNode.scaleZProperty(),
-                                1.0D, Interpolator.LINEAR)),
-                new KeyFrame(Duration.millis(90.0D),
-                        new KeyValue(settingsNode.opacityProperty(),
-                                0.0D, Interpolator.LINEAR),
-                        new KeyValue(settingsNode.scaleXProperty(),
-                                1.1D, Interpolator.LINEAR),
-                        new KeyValue(settingsNode.scaleYProperty(),
-                                1.1D, Interpolator.LINEAR),
-                        new KeyValue(settingsNode.scaleZProperty(),
-                                1.1D, Interpolator.LINEAR)),
-
-                new KeyFrame(Duration.millis(0.0D),
-                        new KeyValue(dashboardNode.opacityProperty(),
-                                0.0D, Interpolator.LINEAR),
-                        new KeyValue(dashboardNode.scaleXProperty(),
-                                0.9D, Interpolator.LINEAR),
-                        new KeyValue(dashboardNode.scaleYProperty(),
-                                0.9D, Interpolator.LINEAR),
-                        new KeyValue(dashboardNode.scaleZProperty(),
-                                0.9D, Interpolator.LINEAR)),
-                new KeyFrame(Duration.millis(90.0D),
-                        new KeyValue(dashboardNode.opacityProperty(),
-                                1.0D, Interpolator.LINEAR),
-                        new KeyValue(dashboardNode.scaleXProperty(),
-                                1.0D, Interpolator.LINEAR),
-                        new KeyValue(dashboardNode.scaleYProperty(),
-                                1.0D, Interpolator.LINEAR),
-                        new KeyValue(dashboardNode.scaleZProperty(),
-                                1.0D, Interpolator.LINEAR))
-
-        );
-
-        closeSettingsTimeLine.setOnFinished(event1 -> {
-            dashboardNode.toFront();
-            new Thread(new Task<Void>() {
-                @Override
-                protected Void call()  {
-                    try {
-                        getSettingsPane().getClientsSettings().loadData();
-
-                        getSettingsPane().getGeneralSettings().loadDataFromConfig();
-                        getSettingsPane().getPluginsSettings().loadPlugins();
-
-                        getSettingsPane().getThemesSettings().setThemes(getThemes());
-                        getSettingsPane().getThemesSettings().setCurrentThemeFullName(getCurrentTheme().getFullName());
-                        getSettingsPane().getThemesSettings().loadThemes();
-
-                        getSettingsPane().setDefaultTabToGeneral();
-                    }
-                    catch (SevereException e)
-                    {
-                        handleSevereException(e);
-                    }
-                    catch (MinorException e)
-                    {
-                        handleMinorException(e);
-                    }
-                    return null;
-                }
-            }).start();
-        });
-    }
-
-    private Timeline openSettingsTimeLine;
-    private Timeline closeSettingsTimeLine;
-
-
-    public Controller(){
-        mainServer = null;
+        openSettingsAnimation = createOpenSettingsAnimation(settingsNode, dashboardNode);
+        closeSettingsAnimation = createCloseSettingsAnimation(settingsNode, dashboardNode);
     }
 
     public void onCloseRequest(WindowEvent event)
@@ -352,10 +218,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
                 return;
             }
 
-            getConfig().setStartupWindowSize(
-                    getWidth(),
-                    getHeight()
-            );
+            getConfig().setStartupWindowSize(getWidth(), getHeight());
             getConfig().save();
             onQuitApp();
             ExternalPlugins.getInstance().shutDownActions();
@@ -381,7 +244,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             mainServer.stopListeningForConnections();
 
         ClientConnections.getInstance().disconnectAll();
-
+        executor.shutdown();
         getLogger().info("Shutting down ...");
     }
 
@@ -479,7 +342,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     public synchronized boolean onNormalActionClicked(NormalAction action) {
         try{
             getLogger().info("action "+action.getID()+" clicked!");
-            
             action.onActionClicked();
             return true;
         }
@@ -578,7 +440,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             Action action = clientProfile.getActionByID(actionID);
             clientConnection.saveActionDetails(profileID, action);
 
-
             if(sendIcons && action.isHasIcon())
             {
                 saveAllIcons(profileID, actionID, socketAddress, false);
@@ -618,14 +479,14 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     {
         if(runAsync)
         {
-            new Thread(new Task<Void>() {
+            executor.execute(new Task<Void>() {
                 @Override
                 protected Void call()
                 {
                     saveClientActionMain(profileID, actionID, socketAddress, sendIcons);
                     return null;
                 }
-            }).start();
+            });
         }
         else
         {
@@ -644,14 +505,14 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     {
         if(async)
         {
-            new Thread(new Task<Void>() {
+            executor.execute(new Task<Void>() {
                 @Override
                 protected Void call()
                 {
                     saveAllIconsMain(profileID, actionID, socketAddress);
                     return null;
                 }
-            }).start();
+            });
         }
         else
         {
@@ -681,7 +542,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
 
     @Override
     public void saveIcon(String state, String profileID, String actionID, SocketAddress socketAddress) {
-        new Thread(new Task<Void>() {
+        executor.execute(new Task<Void>() {
             @Override
             protected Void call()
             {
@@ -699,11 +560,137 @@ public class Controller extends Base implements PropertySaver, ServerConnection
                 }
                 return null;
             }
-        }).start();
+        });
     }
 
     @Override
     public com.stream_pi.util.platform.Platform getPlatform() {
         return ServerInfo.getInstance().getPlatform();
+    }
+
+    private Animation createOpenSettingsAnimation(Node settingsNode, Node dashboardNode) {
+        Timeline openSettingsTimeline = new Timeline();
+        openSettingsTimeline.setCycleCount(1);
+
+        openSettingsTimeline.getKeyFrames().addAll(
+                new KeyFrame(Duration.millis(0.0D),
+                        new KeyValue(settingsNode.opacityProperty(),
+                                0.0D, Interpolator.EASE_IN),
+                        new KeyValue(settingsNode.scaleXProperty(),
+                                1.1D, Interpolator.EASE_IN),
+                        new KeyValue(settingsNode.scaleYProperty(),
+                                1.1D, Interpolator.EASE_IN),
+                        new KeyValue(settingsNode.scaleZProperty(),
+                                1.1D, Interpolator.EASE_IN)),
+                new KeyFrame(Duration.millis(90.0D),
+                        new KeyValue(settingsNode.opacityProperty(),
+                                1.0D, Interpolator.LINEAR),
+                        new KeyValue(settingsNode.scaleXProperty(),
+                                1.0D, Interpolator.LINEAR),
+                        new KeyValue(settingsNode.scaleYProperty(),
+                                1.0D, Interpolator.LINEAR),
+                        new KeyValue(settingsNode.scaleZProperty(),
+                                1.0D, Interpolator.LINEAR)),
+
+                new KeyFrame(Duration.millis(0.0D),
+                        new KeyValue(dashboardNode.opacityProperty(),
+                                1.0D, Interpolator.LINEAR),
+                        new KeyValue(dashboardNode.scaleXProperty(),
+                                1.0D, Interpolator.LINEAR),
+                        new KeyValue(dashboardNode.scaleYProperty(),
+                                1.0D, Interpolator.LINEAR),
+                        new KeyValue(dashboardNode.scaleZProperty(),
+                                1.0D, Interpolator.LINEAR)),
+                new KeyFrame(Duration.millis(90.0D),
+                        new KeyValue(dashboardNode.opacityProperty(),
+                                0.0D, Interpolator.LINEAR),
+                        new KeyValue(dashboardNode.scaleXProperty(),
+                                0.9D, Interpolator.LINEAR),
+                        new KeyValue(dashboardNode.scaleYProperty(),
+                                0.9D, Interpolator.LINEAR),
+                        new KeyValue(dashboardNode.scaleZProperty(),
+                                0.9D, Interpolator.LINEAR))
+        );
+
+        openSettingsTimeline.setOnFinished(e -> settingsNode.toFront());
+        return openSettingsTimeline;
+    }
+
+    private Animation createCloseSettingsAnimation(Node settingsNode, Node dashboardNode) {
+        Timeline closeSettingsTimeline = new Timeline();
+        closeSettingsTimeline.setCycleCount(1);
+
+        closeSettingsTimeline.getKeyFrames().addAll(
+
+                new KeyFrame(Duration.millis(0.0D),
+                        new KeyValue(settingsNode.opacityProperty(),
+                                1.0D, Interpolator.LINEAR),
+                        new KeyValue(settingsNode.scaleXProperty(),
+                                1.0D, Interpolator.LINEAR),
+                        new KeyValue(settingsNode.scaleYProperty(),
+                                1.0D, Interpolator.LINEAR),
+                        new KeyValue(settingsNode.scaleZProperty(),
+                                1.0D, Interpolator.LINEAR)),
+                new KeyFrame(Duration.millis(90.0D),
+                        new KeyValue(settingsNode.opacityProperty(),
+                                0.0D, Interpolator.LINEAR),
+                        new KeyValue(settingsNode.scaleXProperty(),
+                                1.1D, Interpolator.LINEAR),
+                        new KeyValue(settingsNode.scaleYProperty(),
+                                1.1D, Interpolator.LINEAR),
+                        new KeyValue(settingsNode.scaleZProperty(),
+                                1.1D, Interpolator.LINEAR)),
+
+                new KeyFrame(Duration.millis(0.0D),
+                        new KeyValue(dashboardNode.opacityProperty(),
+                                0.0D, Interpolator.LINEAR),
+                        new KeyValue(dashboardNode.scaleXProperty(),
+                                0.9D, Interpolator.LINEAR),
+                        new KeyValue(dashboardNode.scaleYProperty(),
+                                0.9D, Interpolator.LINEAR),
+                        new KeyValue(dashboardNode.scaleZProperty(),
+                                0.9D, Interpolator.LINEAR)),
+                new KeyFrame(Duration.millis(90.0D),
+                        new KeyValue(dashboardNode.opacityProperty(),
+                                1.0D, Interpolator.LINEAR),
+                        new KeyValue(dashboardNode.scaleXProperty(),
+                                1.0D, Interpolator.LINEAR),
+                        new KeyValue(dashboardNode.scaleYProperty(),
+                                1.0D, Interpolator.LINEAR),
+                        new KeyValue(dashboardNode.scaleZProperty(),
+                                1.0D, Interpolator.LINEAR))
+
+        );
+
+        closeSettingsTimeline.setOnFinished(event1 -> {
+            dashboardNode.toFront();
+            executor.execute(new Task<Void>() {
+                @Override
+                protected Void call()  {
+                    try {
+                        getSettingsPane().getClientsSettings().loadData();
+
+                        getSettingsPane().getGeneralSettings().loadDataFromConfig();
+                        getSettingsPane().getPluginsSettings().loadPlugins();
+
+                        getSettingsPane().getThemesSettings().setThemes(getThemes());
+                        getSettingsPane().getThemesSettings().setCurrentThemeFullName(getCurrentTheme().getFullName());
+                        getSettingsPane().getThemesSettings().loadThemes();
+
+                        getSettingsPane().setDefaultTabToGeneral();
+                    }
+                    catch (SevereException e)
+                    {
+                        handleSevereException(e);
+                    }
+                    catch (MinorException e)
+                    {
+                        handleMinorException(e);
+                    }
+                    return null;
+                }
+            });
+        });
+        return closeSettingsTimeline;
     }
 }

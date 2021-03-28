@@ -29,21 +29,19 @@ import java.util.logging.Logger;
 public abstract class Base extends StackPane implements ExceptionAndAlertHandler, ServerListener {
 
     private Config config;
-
     private ServerInfo serverInfo;
-
     private Stage stage;
-
     private HostServices hostServices;
+    private SettingsBase settingsBase;
+    private DashboardBase dashboardBase;
+    private StackPane alertStackPane;
+    private StreamPiLogFileHandler logFileHandler = null;
+    private StreamPiLogFallbackHandler logFallbackHandler = null;
 
+    private Logger logger = null;
     public Logger getLogger(){
         return logger;
     }
-
-    private SettingsBase settingsBase;
-    private DashboardBase dashboardBase;
-
-    private StackPane alertStackPane;
 
     public void setHostServices(HostServices hostServices)
     {
@@ -54,12 +52,6 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     {
         return hostServices;
     }
-
-    private Logger logger = null;
-    private StreamPiLogFileHandler logFileHandler = null;
-
-
-    private StreamPiLogFallbackHandler logFallbackHandler = null;
 
     @Override
     public void initLogger()
@@ -134,7 +126,6 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         getChildren().clear();
         getChildren().addAll(alertStackPane);
 
-
         initLogger();
 
         checkPrePathDirectory();
@@ -149,10 +140,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         stage.setHeight(config.getStartupWindowHeight());
         stage.centerOnScreen();
 
-
         dashboardBase.toFront();
-
-
     }
 
     private void checkPrePathDirectory() throws SevereException
@@ -196,8 +184,6 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
             e.printStackTrace();
             throw new SevereException(e.getMessage());
         }
-
-
     }
 
     public void initThemes() throws SevereException {
@@ -272,7 +258,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         currentTheme = t;
         getStylesheets().addAll(t.getStylesheets());
 
-        logger.info("... Done!");
+        logger.info("... Theme applied successfully!");
     }
 
     public void clearStylesheets()
@@ -286,7 +272,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         logger.info("Loading themes ...");
         themes = new Themes(getConfig().getThemesPath(), getConfig().getCurrentThemeFullName(), serverInfo.getMinThemeSupportVersion());
 
-        if(themes.getErrors().size()>0)
+        if(!themes.getErrors().isEmpty())
         {
             StringBuilder themeErrors = new StringBuilder();
 
@@ -305,9 +291,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
             handleMinorException(new MinorException("Theme Loading issues", themeErrors.toString()));
         }
-
-
-        logger.info("... Done!");
+        logger.info("...Themes loaded successfully !");
     }
 
     public Themes getThemes()
@@ -318,8 +302,6 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     public void applyDefaultTheme()
     {
         logger.info("Applying default theme ...");
-
-
 
         boolean foundTheme = false;
         for(Theme t: themes.getThemeList())
@@ -332,9 +314,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
             }
         }
 
-        if(foundTheme)
-            logger.info("... Done!");
-        else
+        if(!foundTheme)
         {
             logger.info("Theme not found. reverting to light theme ...");
             try {
@@ -348,9 +328,5 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
                 handleSevereException(e);
             }
         }
-
-
     }
-
-
 }
