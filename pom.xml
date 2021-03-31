@@ -13,25 +13,23 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-
         <client.plugin.version>0.1.36</client.plugin.version>
+        <javafx.version>16</javafx.version>
 
-        <JavaFXVersion>16</JavaFXVersion>
+        <action.api.version>1.0.0-SNAPSHOT</action.api.version>
+        <theme.api.version>1.0.0-SNAPSHOT</theme.api.version>
+        <util.version>1.0.0-SNAPSHOT</util.version>
 
+        <commons.bean.util.version>1.9.4</commons.bean.util.version>
+        <commons.configuration.version>2.7</commons.configuration.version>
 
-        <CommonsBeanUtilsVersion>1.9.4</CommonsBeanUtilsVersion>
-        <CommonsConfigurationVersion>2.7</CommonsConfigurationVersion>
+        <log4j.version>2.14.0</log4j.version>
+        <ikonli.version>11.5.0</ikonli.version>
+        <main.class.name>com.stream_pi.server.Main</main.class.name>
 
-        <ActionAPIVersion>1.0.0-SNAPSHOT</ActionAPIVersion>
-        <ThemeAPIVersion>1.0.0-SNAPSHOT</ThemeAPIVersion>
-        <UtilVersion>1.0.0-SNAPSHOT</UtilVersion>
-
-        <Log4JVersion>2.14.0</Log4JVersion>
-
-        <IkonliVersion>11.5.0</IkonliVersion>
-        <IkonliFA5PackVersion>11.5.0</IkonliFA5PackVersion>
-
-        <MainClassName>com.stream_pi.server.Main</MainClassName>
+        <source.plugin.version>2.2.1</source.plugin.version>
+        <javadoc.plugin.version>3.1.0</javadoc.plugin.version>
+        <gpg.plugin.version>1.6</gpg.plugin.version>
     </properties>
 
 
@@ -39,55 +37,53 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>${JavaFXVersion}</version>
+            <version>${javafx.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-media</artifactId>
-            <version>${JavaFXVersion}</version>
+            <version>${javafx.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-fontawesome5-pack</artifactId>
-            <version>${IkonliFA5PackVersion}</version>
+            <version>${ikonli.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-javafx</artifactId>
-            <version>${IkonliVersion}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-base</artifactId>
-            <version>${JavaFXVersion}</version>
+            <version>${ikonli.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.stream-pi</groupId>
             <artifactId>action-api</artifactId>
-            <version>${ActionAPIVersion}</version>
+            <version>${action.api.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.stream-pi</groupId>
             <artifactId>util</artifactId>
-            <version>${UtilVersion}</version>
+            <version>${util.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.stream-pi</groupId>
             <artifactId>theme-api</artifactId>
-            <version>${ThemeAPIVersion}</version>
+            <version>${theme.api.version}</version>
         </dependency>
 
     </dependencies>
 
 
     <repositories>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
         <repository>
             <id>gluon-releases</id>
             <url>http://nexus.gluonhq.com/nexus/content/repositories/releases/</url>
@@ -116,11 +112,10 @@
                     <options>
                         <option>-Dglass.gtk.uiScale=1.0</option>
                     </options>
-                    <mainClass>${MainClassName}</mainClass>
+                    <mainClass>${main.class.name}</mainClass>
                 </configuration>
             </plugin>
 
-           
             <plugin>
                 <groupId>com.gluonhq</groupId>
                 <artifactId>client-maven-plugin</artifactId>
@@ -136,7 +131,7 @@
                     <reflectionList>
                         <list>java.util.logging.FileHandler</list>
                     </reflectionList>
-                    <mainClass>${MainClassName}</mainClass>
+                    <mainClass>${main.class.name}</mainClass>
                 </configuration>
             </plugin>
 
@@ -151,7 +146,6 @@
         </plugins>
     </build>
 
-
     <pluginRepositories>
         <pluginRepository>
             <id>gluon-releases</id>
@@ -162,5 +156,108 @@
             <url>https://nexus.gluonhq.com/nexus/content/repositories/public-snapshots</url>
         </pluginRepository>
     </pluginRepositories>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>${javadoc.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <source>8</source>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${gpg.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <organization>
+        <name>Stream Pi</name>
+        <url>https://www.stream-pi.com</url>
+    </organization>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/Stream-Pi/client/issues</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>GPL-3.0 License</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Debayan Sutradhar</name>
+            <email>debayansutradhar3@gmail.com</email>
+            <organization>Stream-Pi</organization>
+            <organizationUrl>https://www.stream-pi.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/stream-pi/client</url>
+        <connection>scm:git:git://github.com/stream-pi/client.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:stream-pi/client.git</developerConnection>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
 </project>
