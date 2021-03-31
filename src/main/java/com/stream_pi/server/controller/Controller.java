@@ -17,6 +17,7 @@ import com.stream_pi.server.window.Base;
 import com.stream_pi.server.window.dashboard.ClientAndProfileSelectorPane;
 import com.stream_pi.server.window.dashboard.DashboardBase;
 import com.stream_pi.server.window.dashboard.DonatePopupContent;
+import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.server.window.firsttimeuse.FirstTimeUse;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertListener;
@@ -476,11 +477,22 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     }
 
     @Override
-    public synchronized boolean onNormalActionClicked(NormalAction action) {
+    public synchronized boolean onNormalActionClicked(NormalAction action, String profileID) {
         try{
             getLogger().info("action "+action.getID()+" clicked!");
             
             action.onActionClicked();
+
+            ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByIDAndProfileID(
+                    action.getID(),
+                    profileID
+            );
+
+            if(actionBox != null)
+            {
+                Platform.runLater(actionBox::init);
+            }
+
             return true;
         }
         catch (Exception e)
@@ -507,9 +519,12 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     }
 
     @Override
-    public boolean onToggleActionClicked(ToggleAction action, boolean toggle) {
+    public boolean onToggleActionClicked(ToggleAction action, boolean toggle, String profileID)
+    {
         try{
             getLogger().info("action "+action.getID()+" clicked!");
+
+
 
             if(toggle)
             {
@@ -519,10 +534,22 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             {
                 action.onToggleOff();
             }
+
+//            ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByIDAndProfileID(
+//                    action.getID(),
+//                    profileID
+//            );
+//
+//            if(actionBox != null)
+//            {
+//                Platform.runLater(()->actionBox.init(toggle));
+//            }
+
             return true;
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             //check if its windows UAC related
             if(e.getMessage().contains("operation requires elevation"))
             {
@@ -587,18 +614,23 @@ public class Controller extends Base implements PropertySaver, ServerConnection
 
             Platform.runLater(()->{
                 try {
-                    if(getDashboardPane().getActionGridPane().getCurrentParent().equals(action.getParent()) &&
-                            getDashboardPane().getClientAndProfileSelectorPane().getCurrentSelectedClientProfile().getID().equals(profileID) &&
-                            getDashboardPane().getClientAndProfileSelectorPane().getCurrentSelectedClientConnection().getRemoteSocketAddress().equals(socketAddress))
+//                    if(getDashboardPane().getActionGridPane().getCurrentParent().equals(action.getParent()) &&
+//                            getDashboardPane().getClientAndProfileSelectorPane().getCurrentSelectedClientProfile().getID().equals(profileID) &&
+//                            getDashboardPane().getClientAndProfileSelectorPane().getCurrentSelectedClientConnection().getRemoteSocketAddress().equals(socketAddress))
+//                    {
+//                        getDashboardPane().getActionGridPane().renderAction(action);
+//                    }
+
+                    if(getDashboardBase().getActionDetailsPane().getAction() != null)
                     {
-                        getDashboardPane().getActionGridPane().renderAction(action);
+                        // This block is executed when no Action is selected.
+                        if(getDashboardPane().getActionDetailsPane().getAction().getID().equals(actionID))
+                        {
+                            getDashboardPane().getActionDetailsPane().setAction(action);
+                            getDashboardPane().getActionDetailsPane().refresh();
+                        }
                     }
 
-                    if(getDashboardPane().getActionDetailsPane().getAction().getID().equals(actionID))
-                    {
-                        getDashboardPane().getActionDetailsPane().setAction(action);
-                        getDashboardPane().getActionDetailsPane().refresh();
-                    }
 
                 }
                 catch (Exception e)

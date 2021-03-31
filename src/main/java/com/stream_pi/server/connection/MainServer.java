@@ -91,7 +91,7 @@ public class MainServer extends Thread{
         }
         catch (SocketException e)
         {
-            if(!e.getMessage().contains("Socket closed"))
+            if(!e.getMessage().contains("Socket closed") && !e.getMessage().contains("Interrupted function call: accept failed"))
             {
                 logger.info("Main Server stopped accepting calls ...");
 

@@ -11,6 +11,8 @@ public interface ActionGridPaneListener
 {
     void addActionToCurrentClientProfile(Action newAction);
 
+    ActionBox getActionBoxByIDAndProfileID(String actionID, String profileID);
+
     void renderFolder(FolderAction action);
 
     String getCurrentParent();

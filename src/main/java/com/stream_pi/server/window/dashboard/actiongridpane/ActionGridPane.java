@@ -26,6 +26,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import org.kordamp.ikonli.javafx.FontIcon;
 
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class ActionGridPane extends ScrollPane implements ActionGridPaneListener {
@@ -36,6 +37,9 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     public ActionGridPane(ExceptionAndAlertHandler exceptionAndAlertHandler)
     {
         logger = Logger.getLogger(ActionGridPane.class.getName());
+
+        actionBoxHashMap = new HashMap<>();
+
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
         getStyleClass().add("action_grid_pane_parent");
 
@@ -49,6 +53,25 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
         setCache(true);
         setCacheHint(CacheHint.SPEED);
+    }
+
+    private HashMap<String, ActionBox> actionBoxHashMap;
+
+    public ActionBox getActionBoxByIDAndProfileID(String actionID, String profileID)
+    {
+        // Returns null when there is no such action available
+
+        if(getClientProfile() == null)
+        {
+            return null;
+        }
+
+        if(!getClientProfile().getID().equals(profileID))
+        {
+            return null;
+        }
+
+        return actionBoxHashMap.getOrDefault(actionID, null);
     }
 
     public void setActionDetailsPaneListener(ActionDetailsPaneListener actionDetailsPaneListener) {
@@ -299,6 +322,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
     public void clear()
     {
+        actionBoxHashMap.clear();
         actionsGridPane.getChildren().clear();
     }
 
@@ -332,6 +356,8 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         actionBox.setAction(action);
 
         actionBox.init();
+
+        actionBoxHashMap.put(action.getID(), actionBox);
 
         /*ActionBox actionBox = new ActionBox(Config.getInstance().getActionGridActionSize(), action, actionDetailsPaneListener, exceptionAndAlertHandler, this);
 

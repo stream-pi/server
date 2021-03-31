@@ -9,8 +9,8 @@ import javafx.stage.Stage;
 
 public interface ServerListener
 {
-    boolean onNormalActionClicked(NormalAction action);
-    boolean onToggleActionClicked(ToggleAction action, boolean toggle);
+    boolean onNormalActionClicked(NormalAction action, String profileID);
+    boolean onToggleActionClicked(ToggleAction action, boolean toggle, String profileID);
 
     void clearTemp();
 

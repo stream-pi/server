@@ -445,6 +445,11 @@ public class ActionBox extends StackPane{
 
     public void init()
     {
+        init(false);
+    }
+
+    public void init(boolean start)
+    {
         if(getAction().isShowDisplayText())
             setDisplayTextLabel(getAction().getDisplayText());
         else
@@ -460,7 +465,7 @@ public class ActionBox extends StackPane{
             try {
                 if(action.getActionType() == ActionType.TOGGLE)
                 {
-                    fakeToggle(false);
+                    fakeToggle(start);
                 }
                 else
                 {
@@ -484,7 +489,7 @@ public class ActionBox extends StackPane{
         });
     }
 
-    private void fakeToggle(boolean isON)
+    public void fakeToggle(boolean isON)
     {
         System.out.println("CURRENT ICONS : "+action.getCurrentIconState());
         String[] toggleStatesHiddenStatus = action.getCurrentIconState().split("__");

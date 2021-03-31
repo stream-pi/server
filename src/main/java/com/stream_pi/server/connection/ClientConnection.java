@@ -16,6 +16,7 @@ import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.client.ClientTheme;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
+import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.comms.Message;
@@ -519,6 +520,7 @@ public class ClientConnection extends Thread
                         ExternalPlugin newPlugin = originalAction.clone();
 
                         newPlugin.setID(ID);
+                        System.out.println("SAVVEEEEEEEEEEEEEEE@@@@@ : "+profileID);
                         newPlugin.setProfileID(profileID);
                         newPlugin.setSocketAddressForClient(socket.getRemoteSocketAddress());
 
@@ -557,6 +559,8 @@ public class ClientConnection extends Thread
                         newPlugin.setClientProperties(finalClientProperties);
 
                         getClient().getProfileByID(profileID).addAction(newPlugin);
+
+
                     }
                     catch (CloneNotSupportedException e)
                     {
@@ -815,7 +819,7 @@ public class ClientConnection extends Thread
                             {
                                 try
                                 {
-                                    boolean result = serverListener.onToggleActionClicked((ToggleAction) action, toggle);
+                                    boolean result = serverListener.onToggleActionClicked((ToggleAction) action, toggle, profileID);
                                     if(!result)
                                     {
                                         sendActionFailed(profileID, actionID);
@@ -841,7 +845,7 @@ public class ClientConnection extends Thread
                             {
                                 try
                                 {
-                                    boolean result = serverListener.onNormalActionClicked((NormalAction) action);
+                                    boolean result = serverListener.onNormalActionClicked((NormalAction) action, profileID);
                                     if(!result)
                                     {
                                         sendActionFailed(profileID, actionID);

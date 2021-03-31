@@ -707,6 +707,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     {
         ExternalPlugin externalPlugin = (ExternalPlugin) getAction();
 
+        externalPlugin.initClientActionSettingsButtonBar();
+
         if(externalPlugin.getClientActionSettingsButtonBar() != null)
         {
             HBox tba = new HBox(SpaceFiller.horizontal(), externalPlugin.getClientActionSettingsButtonBar());
