@@ -340,25 +340,16 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     }
 
     @Override
-    public synchronized boolean onNormalActionClicked(NormalAction action, String profileID) {
+    public synchronized boolean onNormalActionClicked(NormalAction action, String profileID)
+    {
         try{
             getLogger().info("action "+action.getID()+" clicked!");
             action.onActionClicked();
-
-            ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByIDAndProfileID(
-                    action.getID(),
-                    profileID
-            );
-
-            if(actionBox != null)
-            {
-                Platform.runLater(actionBox::init);
-            }
-
             return true;
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             //check if its windows UAC related
             if(e.getMessage().contains("operation requires elevation"))
             {
@@ -475,12 +466,16 @@ public class Controller extends Base implements PropertySaver, ServerConnection
 
             Platform.runLater(()->{
                 try {
-//                    if(getDashboardPane().getActionGridPane().getCurrentParent().equals(action.getParent()) &&
-//                            getDashboardPane().getClientAndProfileSelectorPane().getCurrentSelectedClientProfile().getID().equals(profileID) &&
-//                            getDashboardPane().getClientAndProfileSelectorPane().getCurrentSelectedClientConnection().getRemoteSocketAddress().equals(socketAddress))
-//                    {
-//                        getDashboardPane().getActionGridPane().renderAction(action);
-//                    }
+
+                    ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByIDAndProfileID(
+                            action.getID(),
+                            profileID
+                    );
+
+                    if(actionBox != null)
+                    {
+                        Platform.runLater(actionBox::init);
+                    }
 
                     if(getDashboardBase().getActionDetailsPane().getAction() != null)
                     {
