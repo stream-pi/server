@@ -249,6 +249,8 @@ public class GeneralSettings extends VBox {
 
                         if (serverPort < 1024)
                             errors.append("* Server Port must be more than 1024");
+                        else if(serverPort > 65535)
+                            errors.append("* Server Port must be lesser than 65535");
 
                         if(config.getPort()!=serverPort)
                         {
