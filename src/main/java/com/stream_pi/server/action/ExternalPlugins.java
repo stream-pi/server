@@ -288,20 +288,28 @@ public class ExternalPlugins
             {
                 eachPlugin.setPropertySaver(propertySaver);
                 eachPlugin.setServerConnection(serverConnection);
+
+
+
                 eachPlugin.initProperties();
 
                 logger.info("MODULE : "+eachPlugin.getModuleName());
+
+
                 Action foundAction = null;
-                for (Action action : pluginsConfigs) {
+                for (Action action : pluginsConfigs)
+                {
                     if (action.getModuleName().equals(eachPlugin.getModuleName())
-                            && action.getVersion().isEqual(eachPlugin.getVersion())) {
+                            && action.getVersion().isEqual(eachPlugin.getVersion()))
+                    {
 
                         foundAction = action;
 
                         List<Property> eachPluginStoredProperties = action.getServerProperties().get();
                         List<Property> eachPluginCodeProperties = eachPlugin.getServerProperties().get();
 
-                        for (int i =0;i< eachPluginCodeProperties.size(); i++) {
+                        for (int i =0;i< eachPluginCodeProperties.size(); i++)
+                        {
 
                             Property eachPluginCodeProperty = eachPluginCodeProperties.get(i);
 
