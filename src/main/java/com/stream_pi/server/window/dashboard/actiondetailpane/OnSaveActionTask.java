@@ -196,16 +196,8 @@ public class OnSaveActionTask extends Task<Void>
         {
             logger.info("Saving action ... "+action.isHasIcon()+"+"+sendIcon);
 
-            logger.info("BOKA!! : "+action.getProfileID());
-
             if(runOnActionSavedFromServer)
             {
-
-                for(Property property : action.getClientProperties().get())
-                {
-                    System.out.println("SSSSSDDD : "+property.getName());
-                    System.out.println("@@@@DDD : "+property.getRawValue());
-                }
                 try
                 {
                     if(action instanceof ExternalPlugin)

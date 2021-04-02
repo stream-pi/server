@@ -125,6 +125,7 @@ public class ActionBox extends StackPane{
                         {
                             newAction.setDisplayText("Untitled Action");
                             newAction.setShowDisplayText(true);
+                            newAction.getClientProperties().resetToDefaults();
                             newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
 
                             if(actionType == ActionType.TOGGLE)
