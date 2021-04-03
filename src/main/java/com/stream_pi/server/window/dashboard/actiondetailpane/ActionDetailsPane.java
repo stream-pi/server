@@ -61,6 +61,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     private Button saveButton;
     private Button deleteButton;
     private Button openFolderButton;
+    private Button resetToDefaultsFolderButton;
 
     private HBox buttonBar;
 
@@ -125,7 +126,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         openFolderButton.setOnAction(event -> onOpenFolderButtonClicked());
 
         saveButton = new Button("Apply Changes");
-        FontIcon syncIcon = new FontIcon("fas-sync-alt");
+        saveButton.getStyleClass().add("action_details_pane_save_button");
+        FontIcon syncIcon = new FontIcon("far-save");
+        syncIcon.getStyleClass().add("action_details_save_delete_button_icon");
         saveButton.setGraphic(syncIcon);
         saveButton.setOnAction(event -> onSaveButtonClicked());
 
@@ -134,8 +137,15 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         FontIcon deleteIcon = new FontIcon("fas-trash");
         deleteIcon.getStyleClass().add("action_details_pane_delete_button_icon");
         deleteButton.setGraphic(deleteIcon);
-
         deleteButton.setOnAction(event -> onDeleteButtonClicked());
+
+
+        resetToDefaultsFolderButton = new Button("Reset");
+        resetToDefaultsFolderButton.getStyleClass().add("action_details_pane_reset_button");
+        FontIcon resetToDefaultsIcon = new FontIcon("fas-sync-alt");
+        resetToDefaultsIcon.getStyleClass().add("action_details_pane_reset_button_icon");
+        resetToDefaultsFolderButton.setGraphic(resetToDefaultsIcon);
+        resetToDefaultsFolderButton.setOnAction(event -> onResetToDefaultsButtonClicked());
 
         returnButtonForCombineActionChild = new Button("Return");
         returnButtonForCombineActionChild.setGraphic(new FontIcon("fas-caret-left"));
@@ -149,7 +159,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             }
         });
 
-        buttonBar = new HBox(openFolderButton, returnButtonForCombineActionChild, saveButton, deleteButton);
+        buttonBar = new HBox(openFolderButton, resetToDefaultsFolderButton, returnButtonForCombineActionChild, saveButton, deleteButton);
         buttonBar.getStyleClass().add("action_details_pane_button_bar");
         buttonBar.setPadding(new Insets(10, 10, 10, 0));
         buttonBar.setAlignment(Pos.CENTER_RIGHT);
@@ -204,6 +214,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     clearIconButton.setDisable(false);
 
                     getAction().addIcon("default", iconFileByteArray);
+                    getAction().setCurrentIconState("default");
                     setSendIcon(true);
                 }
             } catch (Exception e) {
@@ -451,6 +462,21 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         });
     }
 
+    private void onResetToDefaultsButtonClicked()
+    {
+        getAction().getClientProperties().resetToDefaults();
+
+        try
+        {
+            onActionClicked(getAction(), getActionBox());
+            saveAction(true, true);
+        }
+        catch (MinorException e)
+        {
+            exceptionAndAlertHandler.handleMinorException(e);
+        }
+    }
+
     private VBox normalActionsPropsVBox;
     private VBox normalToggleActionCommonPropsVBox;
     private VBox toggleActionsPropsVBox;
@@ -512,10 +538,17 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
 
 
-    public void refresh() throws MinorException
+    public void refresh()
     {
         clear(false);
-        renderActionProperties();
+        try
+        {
+            renderActionProperties();
+        }
+        catch (MinorException e)
+        {
+            exceptionAndAlertHandler.handleMinorException(e);
+        }
     }
 
     private TextField displayNameTextField;
@@ -602,22 +635,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         {
             normalToggleActionCommonPropsVBox.setVisible(true);
 
-            if(getAction().getActionType() == ActionType.NORMAL)
-            {
-                normalActionsPropsVBox.setVisible(true);
-                toggleActionsPropsVBox.setVisible(false);
-
-
-                boolean doesDefaultExist = getAction().getIcons().containsKey("default");
-                boolean isDefaultHidden = !getAction().getCurrentIconState().equals("default");
-
-                if(!doesDefaultExist)
-                    isDefaultHidden = false;
-
-                hideDefaultIconCheckBox.setDisable(!doesDefaultExist);
-                hideDefaultIconCheckBox.setSelected(isDefaultHidden);
-            }
-            else
+            if(getAction().getActionType() == ActionType.TOGGLE)
             {
                 normalActionsPropsVBox.setVisible(false);
                 toggleActionsPropsVBox.setVisible(true);
@@ -647,11 +665,27 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 hideToggleOffIconCheckBox.setDisable(!doesToggleOffExist);
                 hideToggleOffIconCheckBox.setSelected(isToggleOffHidden);
             }
+            else
+            {
+                normalActionsPropsVBox.setVisible(true);
+                toggleActionsPropsVBox.setVisible(false);
 
+
+                boolean doesDefaultExist = getAction().getIcons().containsKey("default");
+                boolean isDefaultHidden = !getAction().getCurrentIconState().equals("default");
+
+                if(!doesDefaultExist)
+                    isDefaultHidden = false;
+
+                hideDefaultIconCheckBox.setDisable(!doesDefaultExist);
+                hideDefaultIconCheckBox.setSelected(isDefaultHidden);
+            }
 
             setReturnButtonForCombineActionChildVisible(false);
             hideDisplayTextCheckBox.setVisible(true);
+
             setFolderButtonVisible(getAction().getActionType().equals(ActionType.FOLDER));
+            setResetToDefaultsFolderButtonVisible(!getAction().getActionType().equals(ActionType.FOLDER));
 
             displayTextAlignmentComboBox.getSelectionModel().select(getAction().getDisplayTextAlignment());
 
@@ -695,11 +729,14 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         if(!getAction().isInvalid())
         {
             if(getAction().getActionType() == ActionType.NORMAL || getAction().getActionType() == ActionType.TOGGLE)
+            {
                 renderClientProperties();
+                renderPluginExtraButtonBar();
+            }
             else if(getAction().getActionType() == ActionType.COMBINE)
                 renderCombineActionProperties();
 
-            renderPluginExtraButtonBar();
+
         }
     }
 
@@ -982,14 +1019,15 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     @Override
     public void saveAction(Action action, boolean runAsync, boolean runOnActionSavedFromServer)
     {
-        logger.info("gOAT@ :"+action.getProfileID());
+        String delayBeforeRunning = "0";
+        if(action.getActionType() != ActionType.FOLDER && action.getActionType() !=ActionType.COMBINE)
+            delayBeforeRunning =delayBeforeRunningTextField.getText();
 
         new OnSaveActionTask(
             ClientConnections.getInstance().getClientConnectionBySocketAddress(
                 getClient().getRemoteSocketAddress()
             ),
-            action,
-            delayBeforeRunningTextField.getText(),
+            action, delayBeforeRunning,
             displayNameTextField.getText(),
             isCombineChild(),
             !hideDisplayTextCheckBox.isSelected(),
@@ -1004,21 +1042,24 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             "#" + actionBackgroundColourPicker.getValue().toString().substring(2),
             getCombineActionPropertiesPane(),
             clientProfile, sendIcon, actionBox, actionClientProperties, exceptionAndAlertHandler,
-            saveButton, deleteButton, runOnActionSavedFromServer, runAsync
+            saveButton, deleteButton, runOnActionSavedFromServer, runAsync, this
         );
     }
 
     @Override
     public void saveAction(boolean runAsync, boolean runOnActionSavedFromServer)
     {
-        logger.info("ENGREJDERMAARBOOR:"+getAction().getProfileID());
-        logger.info("ENGREJDERMAARBOOR:"+getAction().getDisplayText());
         saveAction(getAction(), runAsync, runOnActionSavedFromServer);
     }
 
     public void setFolderButtonVisible(boolean visible)
     {
         openFolderButton.setVisible(visible);
+    }
+
+    public void setResetToDefaultsFolderButtonVisible(boolean visible)
+    {
+        resetToDefaultsFolderButton.setVisible(visible);
     }
 
     public void validateForm() throws MinorException

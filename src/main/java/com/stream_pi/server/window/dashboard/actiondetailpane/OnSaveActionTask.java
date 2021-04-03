@@ -34,7 +34,7 @@ public class OnSaveActionTask extends Task<Void>
                             boolean isHideDefaultIcon, boolean isHideToggleOffIcon, boolean isHideToggleOnIcon, DisplayTextAlignment displayTextAlignment, boolean isTransparentBackground, String backgroundColour,
                             CombineActionPropertiesPane combineActionPropertiesPane, ClientProfile clientProfile, boolean sendIcon, ActionBox actionBox,
                             ArrayList<UIPropertyBox> actionClientProperties, ExceptionAndAlertHandler exceptionAndAlertHandler, Button saveButton, Button deleteButton,
-                            boolean runOnActionSavedFromServer, boolean runAsync)
+                            boolean runOnActionSavedFromServer, boolean runAsync, ActionDetailsPaneListener actionDetailsPaneListener)
     {
         this.saveButton = saveButton;
         this.deleteButton = deleteButton;
@@ -61,6 +61,7 @@ public class OnSaveActionTask extends Task<Void>
         this.backgroundColour = backgroundColour;
         this.actionClientProperties = actionClientProperties;
         this.runOnActionSavedFromServer = runOnActionSavedFromServer;
+        this.actionDetailsPaneListener = actionDetailsPaneListener;
 
         logger = Logger.getLogger(getClass().getName());
 
@@ -72,6 +73,8 @@ public class OnSaveActionTask extends Task<Void>
     }
 
     private boolean runOnActionSavedFromServer;
+
+    private ActionDetailsPaneListener actionDetailsPaneListener;
 
     private Button saveButton;
     private Button deleteButton;
@@ -183,7 +186,8 @@ public class OnSaveActionTask extends Task<Void>
         }
         else
         {
-            action.setDelayBeforeExecuting(Integer.parseInt(delayBeforeRunningString));
+            if(action.getActionType() != ActionType.FOLDER)
+                action.setDelayBeforeExecuting(Integer.parseInt(delayBeforeRunningString));
 
             //properties
             for (UIPropertyBox clientProperty : actionClientProperties) {
@@ -235,6 +239,9 @@ public class OnSaveActionTask extends Task<Void>
             clientProfile.removeActionByID(action.getID());
             clientProfile.addAction(action);
 
+            Platform.runLater(actionDetailsPaneListener::refresh);
+
+
         }
         catch (SevereException e)
         {
@@ -252,6 +259,7 @@ public class OnSaveActionTask extends Task<Void>
     {
         for(String state : action.getIcons().keySet())
         {
+            System.out.println("Sending icon " +state+" -> "+action.getID()+ "-> "+clientProfile.getID());
             connection.sendIcon(clientProfile.getID(), action.getID(), state, action.getIcon(state));
         }
     }

@@ -23,5 +23,5 @@ public interface ActionDetailsPaneListener {
 
     Window getCurrentWindow();
 
-
+    void refresh();
 }

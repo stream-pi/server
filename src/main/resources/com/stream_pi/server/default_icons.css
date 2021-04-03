@@ -27,3 +27,8 @@
 {
     -fx-icon-code: fas-toggle-off;
 }
+
+.action_details_pane_reset_button_icon
+{
+    -fx-icon-color:orange;
+}
