@@ -121,6 +121,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         openFolderButton = new Button("Open Folder");
+        openFolderButton.managedProperty().bind(openFolderButton.visibleProperty());
         FontIcon folderOpenIcon = new FontIcon("far-folder-open");
         openFolderButton.setGraphic(folderOpenIcon);
         openFolderButton.setOnAction(event -> onOpenFolderButtonClicked());
@@ -141,6 +142,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
 
         resetToDefaultsFolderButton = new Button("Reset");
+        resetToDefaultsFolderButton.managedProperty().bind(resetToDefaultsFolderButton.visibleProperty());
         resetToDefaultsFolderButton.getStyleClass().add("action_details_pane_reset_button");
         FontIcon resetToDefaultsIcon = new FontIcon("fas-sync-alt");
         resetToDefaultsIcon.getStyleClass().add("action_details_pane_reset_button_icon");
@@ -685,7 +687,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             hideDisplayTextCheckBox.setVisible(true);
 
             setFolderButtonVisible(getAction().getActionType().equals(ActionType.FOLDER));
-            setResetToDefaultsFolderButtonVisible(!getAction().getActionType().equals(ActionType.FOLDER));
+            setResetToDefaultsFolderButtonVisible(!(getAction().getActionType().equals(ActionType.FOLDER) || getAction().getActionType().equals(ActionType.COMBINE)));
 
             displayTextAlignmentComboBox.getSelectionModel().select(getAction().getDisplayTextAlignment());
 
