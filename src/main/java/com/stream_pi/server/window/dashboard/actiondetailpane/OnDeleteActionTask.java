@@ -73,6 +73,24 @@ public class OnDeleteActionTask extends Task<Void>
                 }
             }
 
+            Action a = clientProfile.getActionByID(action.getID());
+            if(a instanceof ExternalPlugin)
+            {
+                try
+                {
+                    ((ExternalPlugin) a).onActionDeleted();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                    exceptionAndAlertHandler.handleMinorException(
+                            new MinorException("failed at onActionDeleted for "+a.getModuleName(),
+                                    "Detailed Message : "+e.getMessage())
+                    );
+                }
+            }
+
+
             connection.deleteAction(clientProfile.getID(), action.getID());
             clientProfile.removeActionByID(action.getID());
 
@@ -87,10 +105,11 @@ public class OnDeleteActionTask extends Task<Void>
 
                 try {
 
-                    
-                    actionDetailsPane.saveAction(combineActionPropertiesPane.getCombineAction(), true,true);
-                    
-                    System.out.println(combineActionPropertiesPane.getCombineAction().getDisplayText()+"@#@#@#@#@#@#");
+
+                    System.out.println(combineActionPropertiesPane.getCombineAction().getDisplayText());
+
+                    connection.saveActionDetails(clientProfile.getID(), combineActionPropertiesPane.getCombineAction());
+
                     actionDetailsPane.onActionClicked(
                             combineActionPropertiesPane.getCombineAction(),
                             actionBox

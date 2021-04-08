@@ -92,7 +92,7 @@ public class CombineActionPropertiesPane extends VBox {
 
     public void onSettingsButtonClicked(Action action)
     {
-        actionDetailsPane.clear();
+        actionDetailsPane.clear(false);
         actionDetailsPane.setAction(action);
         try {
             actionDetailsPane.renderActionProperties();

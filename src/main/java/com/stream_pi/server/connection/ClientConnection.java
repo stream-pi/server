@@ -10,6 +10,8 @@ import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.action_api.externalplugin.NormalAction;
 import com.stream_pi.action_api.externalplugin.ToggleAction;
+import com.stream_pi.action_api.otheractions.CombineAction;
+import com.stream_pi.action_api.otheractions.FolderAction;
 import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
@@ -524,7 +526,7 @@ public class ClientConnection extends Thread
 
         //action toBeAdded = null;
 
-        boolean createBasicAction = false;
+        boolean isInvalidAction = false;
 
         if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE)
         {
@@ -535,13 +537,13 @@ public class ClientConnection extends Thread
 
             if(originalAction == null)
             {
-                createBasicAction = true;
+                isInvalidAction = true;
             }
             else
             {
                 if(originalAction.getVersion().getMajor() != version.getMajor())
                 {
-                    createBasicAction = true;
+                    isInvalidAction = true;
                 }
                 else
                 {
@@ -596,65 +598,65 @@ public class ClientConnection extends Thread
                     {
                         exceptionAndAlertHandler.handleMinorException(new MinorException("action", "Unable to clone"));
                     }
+
+                    return;
                 }
             }
         }
+
+
+        Action action = null;
+
+        if(isInvalidAction)
+        {
+            String moduleName = r[4];
+            Version version = new Version(r[3]);
+
+            action = new Action();
+            action.setInvalid(true);
+            action.setVersion(version);
+            action.setModuleName(moduleName);
+        }
         else
         {
-            createBasicAction = true;
+            if(actionType == ActionType.COMBINE)
+            {
+                action = new CombineAction();
+            }
+            else if(actionType == ActionType.FOLDER)
+            {
+                action = new FolderAction();
+            }
         }
 
+        action.setID(ID);
+        action.setProfileID(profileID);
+        action.setSocketAddressForClient(socket.getRemoteSocketAddress());
 
-        if(createBasicAction)
+        action.setBgColourHex(bgColorHex);
+        action.setCurrentIconState(defaultIconState);
+
+        action.setShowDisplayText(isShowDisplayText);
+        action.setDisplayTextFontColourHex(displayFontColor);
+        action.setDisplayText(displayText);
+        action.setDisplayTextAlignment(displayTextAlignment);
+
+        action.setLocation(location);
+
+        action.setParent(root);
+
+
+        action.setClientProperties(clientProperties);
+
+        try
         {
-
-            Action action = new Action(ID, actionType);
-
-            action.setID(ID);
-            action.setProfileID(profileID);
-            action.setSocketAddressForClient(socket.getRemoteSocketAddress());
-
-            action.setBgColourHex(bgColorHex);
-            action.setCurrentIconState(defaultIconState);
-
-            action.setShowDisplayText(isShowDisplayText);
-            action.setDisplayTextFontColourHex(displayFontColor);
-            action.setDisplayText(displayText);
-            action.setDisplayTextAlignment(displayTextAlignment);
-
-            action.setLocation(location);
-
-            action.setParent(root);
-
-            action.setDelayBeforeExecuting(delayBeforeRunning);
-
-            if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE)
-            {
-                String moduleName = r[4];
-                Version version = new Version(r[3]);
-
-                action.setInvalid(true);
-                action.setVersion(version);
-                action.setModuleName(moduleName);
-            }
-
-
-            action.setClientProperties(clientProperties);
-
-            try
-            {
-                getClient().getProfileByID(profileID).addAction(action);
-            }
-            catch (CloneNotSupportedException e)
-            {
-                e.printStackTrace();
-                exceptionAndAlertHandler.handleMinorException(new MinorException("action", "Unable to clone"));
-            }
-
+            getClient().getProfileByID(profileID).addAction(action);
         }
-
-
-
+        catch (CloneNotSupportedException e)
+        {
+            e.printStackTrace();
+            exceptionAndAlertHandler.handleMinorException(new MinorException("action", "Unable to clone"));
+        }
     }
 
     public synchronized void saveActionDetails(String profileID, Action action) throws SevereException

@@ -533,8 +533,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         setAction(action);
         this.actionBox = actionBox;
 
-        System.out.println(getAction().getProfileID()+"KOBAAA");
-
         renderActionProperties();
     }
 
@@ -770,7 +768,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     {
         try
         {
-            combineActionPropertiesPane = new CombineActionPropertiesPane(getActionAsCombineAction(action),
+            combineActionPropertiesPane = new CombineActionPropertiesPane((CombineAction) getAction(),
                     getClientProfile(),
                     this
             );
@@ -789,47 +787,10 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         this.action = action;
     }
 
-    public FolderAction getActionAsFolderAction(Action action)
-    {
-        FolderAction folderAction = new FolderAction();
-        folderAction.setDisplayText(getAction().getDisplayText());
-        folderAction.setName(getAction().getName());
-        folderAction.setID(getAction().getID());
-        folderAction.setLocation(getAction().getLocation());
-        folderAction.setBgColourHex(getAction().getBgColourHex());
-        folderAction.setParent(getAction().getParent());
-        folderAction.getClientProperties().set(getAction().getClientProperties());
-        folderAction.setDisplayTextAlignment(getAction().getDisplayTextAlignment());
-        folderAction.setIcons(getAction().getIcons());
-        folderAction.setCurrentIconState(getAction().getCurrentIconState());
-        folderAction.setDisplayTextFontColourHex(getAction().getDisplayTextFontColourHex());
-
-        return folderAction;
-    }
-
-    public CombineAction getActionAsCombineAction(Action action)
-    {
-        CombineAction combineAction = new CombineAction();
-        combineAction.setDisplayText(getAction().getDisplayText());
-        combineAction.setName(getAction().getName());
-        combineAction.setID(getAction().getID());
-        combineAction.setLocation(getAction().getLocation());
-        combineAction.setBgColourHex(getAction().getBgColourHex());
-        combineAction.setParent(getAction().getParent());
-        combineAction.getClientProperties().set(getAction().getClientProperties());
-        combineAction.setDisplayTextAlignment(getAction().getDisplayTextAlignment());
-        combineAction.setIcons(getAction().getIcons());
-        combineAction.setCurrentIconState(getAction().getCurrentIconState());
-        combineAction.setDisplayTextFontColourHex(getAction().getDisplayTextFontColourHex());
-
-        return combineAction;
-    }
-
     @Override
     public void onOpenFolderButtonClicked()
     {
-        FolderAction folderAction = getActionAsFolderAction(action);
-        actionBox.getActionGridPaneListener().renderFolder(folderAction);
+        actionBox.getActionGridPaneListener().renderFolder((FolderAction) getAction());
         clear();
     }
 
@@ -1019,7 +980,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     }
 
     @Override
-    public void saveAction(Action action, boolean runAsync, boolean runOnActionSavedFromServer)
+    public synchronized void saveAction(Action action, boolean runAsync, boolean runOnActionSavedFromServer)
     {
         String delayBeforeRunning = "0";
         if(action.getActionType() != ActionType.FOLDER && action.getActionType() !=ActionType.COMBINE)
