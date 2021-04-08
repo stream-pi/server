@@ -3,6 +3,7 @@ package com.stream_pi.server.window.dashboard.actiondetailpane;
 import java.util.logging.Logger;
 
 import com.stream_pi.action_api.action.Action;
+import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
@@ -52,6 +53,25 @@ public class OnDeleteActionTask extends Task<Void>
     private void runTask()
     {
         try {
+
+            if(action instanceof ExternalPlugin)
+            {
+                try
+                {
+                    ((ExternalPlugin) action).onActionDeleted();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+
+                    exceptionAndAlertHandler.handleMinorException(
+                            new MinorException(
+                                    "Unable to run onActionDeleted for "+action.getModuleName(),
+                                    "Detailed message : "+e.getMessage()
+                            )
+                    );
+                }
+            }
 
             connection.deleteAction(clientProfile.getID(), action.getID());
             clientProfile.removeActionByID(action.getID());

@@ -103,8 +103,38 @@ public class ClientConnection extends Thread
     public synchronized void exitAndRemove()
     {
         exit();
+        callOnClientDisconnectOnAllActions();
         removeConnection();
         serverListener.clearTemp();
+    }
+
+    public void callOnClientDisconnectOnAllActions()
+    {
+        for(ClientProfile profile : getClient().getAllClientProfiles())
+        {
+            for (String actionID : profile.getActionsKeySet())
+            {
+                Action action = profile.getActionByID(actionID);
+                if(action instanceof ExternalPlugin)
+                {
+                    try
+                    {
+                        ((ExternalPlugin) action).onClientDisconnected();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+
+                        exceptionAndAlertHandler.handleMinorException(
+                                new MinorException(
+                                        "Unable to run onClientDisconnected for "+action.getModuleName(),
+                                        "Detailed message : "+e.getMessage()
+                                )
+                        );
+                    }
+                }
+            }
+        }
     }
 
     public void removeConnection()
