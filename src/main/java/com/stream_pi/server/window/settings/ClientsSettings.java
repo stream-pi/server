@@ -329,12 +329,8 @@ public class ClientsSettings extends VBox {
                     themesComboBox.getSelectionModel().getSelectedItem().getThemeFullName()
             );
 
-            System.out.println("OUT");
-            
-            logger.info("Profiles : ");
             for(ClientProfileVBox clientProfileVBox : clientProfileVBoxes)
             {
-                logger.info("Name : "+clientProfileVBox.getClientProfile().getName());
                 getConnection().saveProfileDetails(clientProfileVBox.getClientProfile());
             }
 
