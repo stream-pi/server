@@ -216,12 +216,12 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         getStylesheets().add(Main.class.getResource("default_icons.css").toExternalForm());
     }
 
-    public DashboardBase getDashboardPane()
+    public DashboardBase getDashboardBase()
     {
         return dashboardBase;
     }
 
-    public SettingsBase getSettingsPane()
+    public SettingsBase getSettingsBase()
     {
         return settingsBase;
     }

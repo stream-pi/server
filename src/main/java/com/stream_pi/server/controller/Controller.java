@@ -18,6 +18,7 @@ import com.stream_pi.server.window.dashboard.DashboardBase;
 import com.stream_pi.server.window.dashboard.DonatePopupContent;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.server.window.firsttimeuse.FirstTimeUse;
+import com.stream_pi.server.window.settings.SettingsBase;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
@@ -86,15 +87,15 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             ExternalPlugins.getInstance().setServerConnection(this);
 
 
-            getDashboardPane().getPluginsPane().getSettingsButton().setOnAction(event -> {
+            getDashboardBase().getPluginsPane().getSettingsButton().setOnAction(event -> {
                 openSettingsAnimation.play();
             });
 
-            getSettingsPane().getCloseButton().setOnAction(event -> {
+            getSettingsBase().getCloseButton().setOnAction(event -> {
                 closeSettingsAnimation.play();
             });
 
-            getSettingsPane().getThemesSettings().setController(this);
+            getSettingsBase().getThemesSettings().setController(this);
 
             mainServer = new MainServer(this, this);
 
@@ -149,34 +150,34 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             {
                 try
                 {
-                    getSettingsPane().getGeneralSettings().loadDataFromConfig();
+                    getSettingsBase().getGeneralSettings().loadDataFromConfig();
 
                     //themes
-                    getSettingsPane().getThemesSettings().setThemes(getThemes());
-                    getSettingsPane().getThemesSettings().setCurrentThemeFullName(getCurrentTheme().getFullName());
-                    getSettingsPane().getThemesSettings().loadThemes();
+                    getSettingsBase().getThemesSettings().setThemes(getThemes());
+                    getSettingsBase().getThemesSettings().setCurrentThemeFullName(getCurrentTheme().getFullName());
+                    getSettingsBase().getThemesSettings().loadThemes();
 
                     //clients
-                    getSettingsPane().getClientsSettings().loadData();
+                    getSettingsBase().getClientsSettings().loadData();
 
                     try
                     {
                         //Plugins 
                         Platform.runLater(()->{
-                            getDashboardPane().getPluginsPane().clearData();
-                            getDashboardPane().getPluginsPane().loadOtherActions();
+                            getDashboardBase().getPluginsPane().clearData();
+                            getDashboardBase().getPluginsPane().loadOtherActions();
                         });
 
                         ExternalPlugins.setPluginsLocation(getConfig().getPluginsPath());
                         ExternalPlugins.getInstance().init();
 
-                        Platform.runLater(()->getDashboardPane().getPluginsPane().loadData());
+                        Platform.runLater(()->getDashboardBase().getPluginsPane().loadData());
 
-                        getSettingsPane().getPluginsSettings().loadPlugins();
+                        getSettingsBase().getPluginsSettings().loadPlugins();
                     }
                     catch (MinorException e)
                     {
-                        getSettingsPane().getPluginsSettings().showPluginInitError();
+                        getSettingsBase().getPluginsSettings().showPluginInitError();
                         handleMinorException(e);
                     }
 
@@ -193,15 +194,10 @@ public class Controller extends Base implements PropertySaver, ServerConnection
         });
     }
 
-    @Override
-    public DashboardBase getDashboardBase() {
-        return getDashboardPane();
-    }
-
     private void setupSettingsWindowsAnimations()
     {
-        Node settingsNode = getSettingsPane();
-        Node dashboardNode = getDashboardPane();
+        Node settingsNode = getSettingsBase();
+        Node dashboardNode = getDashboardBase();
 
         openSettingsAnimation = createOpenSettingsAnimation(settingsNode, dashboardNode);
         closeSettingsAnimation = createCloseSettingsAnimation(settingsNode, dashboardNode);
@@ -427,11 +423,11 @@ public class Controller extends Base implements PropertySaver, ServerConnection
     @Override
     public void clearTemp() {
         Platform.runLater(() -> {
-            getDashboardPane().getClientAndProfileSelectorPane().refresh();
-            getDashboardPane().getActionGridPane().clear();
-            getDashboardPane().getActionGridPane().setFreshRender(true);
-            getDashboardPane().getActionDetailsPane().clear();
-            getSettingsPane().getClientsSettings().loadData();
+            getDashboardBase().getClientAndProfileSelectorPane().refresh();
+            getDashboardBase().getActionGridPane().clear();
+            getDashboardBase().getActionGridPane().setFreshRender(true);
+            getDashboardBase().getActionDetailsPane().clear();
+            getSettingsBase().getClientsSettings().loadData();
         });
     }
 
@@ -441,7 +437,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection
         try
         {
             ExternalPlugins.getInstance().saveServerSettings();
-            getSettingsPane().getPluginsSettings().loadPlugins();
+            getSettingsBase().getPluginsSettings().loadPlugins();
         } catch (MinorException e) {
             e.printStackTrace();
             handleMinorException(e);
@@ -480,10 +476,10 @@ public class Controller extends Base implements PropertySaver, ServerConnection
                     if(getDashboardBase().getActionDetailsPane().getAction() != null)
                     {
                         // This block is executed when no Action is selected.
-                        if(getDashboardPane().getActionDetailsPane().getAction().getID().equals(actionID))
+                        if(getDashboardBase().getActionDetailsPane().getAction().getID().equals(actionID))
                         {
-                            getDashboardPane().getActionDetailsPane().setAction(action);
-                            getDashboardPane().getActionDetailsPane().refresh();
+                            getDashboardBase().getActionDetailsPane().setAction(action);
+                            getDashboardBase().getActionDetailsPane().refresh();
                         }
                     }
 
@@ -695,16 +691,16 @@ public class Controller extends Base implements PropertySaver, ServerConnection
                 @Override
                 protected Void call()  {
                     try {
-                        getSettingsPane().getClientsSettings().loadData();
+                        getSettingsBase().getClientsSettings().loadData();
 
-                        getSettingsPane().getGeneralSettings().loadDataFromConfig();
-                        getSettingsPane().getPluginsSettings().loadPlugins();
+                        getSettingsBase().getGeneralSettings().loadDataFromConfig();
+                        getSettingsBase().getPluginsSettings().loadPlugins();
 
-                        getSettingsPane().getThemesSettings().setThemes(getThemes());
-                        getSettingsPane().getThemesSettings().setCurrentThemeFullName(getCurrentTheme().getFullName());
-                        getSettingsPane().getThemesSettings().loadThemes();
+                        getSettingsBase().getThemesSettings().setThemes(getThemes());
+                        getSettingsBase().getThemesSettings().setCurrentThemeFullName(getCurrentTheme().getFullName());
+                        getSettingsBase().getThemesSettings().loadThemes();
 
-                        getSettingsPane().setDefaultTabToGeneral();
+                        getSettingsBase().setDefaultTabToGeneral();
                     }
                     catch (SevereException e)
                     {

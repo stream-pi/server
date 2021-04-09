@@ -207,6 +207,21 @@ public class ClientConnection extends Thread
         serverListener.clearTemp();
     }
 
+    public void updateClientDetails(Message message)
+    {
+        String[] ar = message.getStringArrValue();
+
+        logger.info("Setting up client object ...");
+
+        client.setNickName(ar[4]);
+        client.setDisplayWidth(Double.parseDouble(ar[5]));
+        client.setDisplayHeight(Double.parseDouble(ar[6]));
+        client.setDefaultProfileID(ar[8]);
+        client.setDefaultThemeFullName(ar[9]);
+
+        serverListener.getSettingsBase().getClientsSettings().loadData();
+    }
+
     public synchronized Client getClient()
     {
         return client;
@@ -245,9 +260,12 @@ public class ClientConnection extends Thread
                         case "disconnect" :         clientDisconnected(message);
                             break;
 
-                        case "client_details" :     initAfterConnectionQueryReceive(message);
+                        case "register_client_details" :     initAfterConnectionQueryReceive(message);
                             getProfilesFromClient();
                             getThemesFromClient();
+                            break;
+
+                        case "update_client_details" : updateClientDetails(message);
                             break;
 
                         case "client_screen_details" : onClientScreenDetailsReceived(message);
