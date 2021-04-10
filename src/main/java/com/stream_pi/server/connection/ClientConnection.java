@@ -610,6 +610,25 @@ public class ClientConnection extends Thread
 
                         getClient().getProfileByID(profileID).addAction(newPlugin);
 
+                        new Thread(new Task<Void>() {
+                            @Override
+                            protected Void call()
+                            {
+                                try
+                                {
+                                    newPlugin.onClientConnected();
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                    exceptionAndAlertHandler.handleMinorException(
+                                            new MinorException("Failed","Error "+moduleName+" at onClientConnected \nMessage"+e.getMessage())
+                                    );
+                                }
+                                return null;
+                            }
+                        }).start();
+
 
                     }
                     catch (CloneNotSupportedException e)
