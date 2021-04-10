@@ -2,6 +2,7 @@ package com.stream_pi.server.uipropertybox;
 
 import com.stream_pi.action_api.actionproperty.property.ControlType;
 import com.stream_pi.action_api.actionproperty.property.Type;
+import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
@@ -60,7 +61,8 @@ public class UIPropertyBox
     {
         String rawValue = null;
 
-        if (controlType == ControlType.TEXT_FIELD || controlType == ControlType.FILE_PATH)
+        if (List.of(ControlType.TEXT_FIELD, ControlType.TEXT_FIELD_MASKED, ControlType.FILE_PATH)
+            .contains(controlType))
             rawValue = ((TextField) controlNode).getText();
         else if (controlType == ControlType.COMBO_BOX)
             rawValue = ((ComboBox<String>) controlNode).getSelectionModel().getSelectedIndex() + "";
