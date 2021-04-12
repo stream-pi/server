@@ -940,6 +940,15 @@ public class ClientConnection extends Thread
         }
     }
 
+    public void setToggleStatus(boolean status, String profileID, String actionID) throws SevereException
+    {
+        Message message = new Message("set_toggle_status");
+
+        message.setStringArrValue(profileID, actionID, status+"");
+
+        sendMessage(message);
+    }
+
     public void sendActionFailed(String profileID, String actionID) throws SevereException {
         logger.info("Sending failed status ...");
         Message message = new Message("action_failed");

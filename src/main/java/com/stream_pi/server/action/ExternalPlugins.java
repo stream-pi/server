@@ -24,6 +24,8 @@ import com.stream_pi.action_api.actionproperty.ServerProperties;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
+import com.stream_pi.action_api.externalplugin.ToggleAction;
+import com.stream_pi.action_api.externalplugin.ToggleExtras;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.exception.StreamPiException;
@@ -286,8 +288,11 @@ public class ExternalPlugins
         {
             try
             {
-                eachPlugin.setPropertySaver(propertySaver);
+                eachPlugin.setPropertySaver(getPropertySaver());
                 eachPlugin.setServerConnection(serverConnection);
+
+                if(eachPlugin instanceof ToggleAction)
+                    ((ToggleAction) eachPlugin).setToggleExtras(getToggleExtras());
 
 
 
@@ -501,6 +506,26 @@ public class ExternalPlugins
     public void setPropertySaver(PropertySaver propertySaver)
     {
         this.propertySaver = propertySaver;
+    }
+
+    public PropertySaver getPropertySaver()
+    {
+        return propertySaver;
+    }
+
+    private ToggleExtras toggleExtras = null;
+
+    /**
+     * Set PropertySaver class
+     * @param toggleExtras instance of PropertySaver
+     */
+    public void setToggleExtras(ToggleExtras toggleExtras)
+    {
+        this.toggleExtras = toggleExtras;
+    }
+
+    public ToggleExtras getToggleExtras() {
+        return toggleExtras;
     }
 
     private ServerConnection serverConnection = null;

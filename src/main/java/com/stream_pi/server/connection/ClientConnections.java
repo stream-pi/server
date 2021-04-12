@@ -42,7 +42,7 @@ public class ClientConnections {
 
     public void removeConnection(ClientConnection clientConnection)
     {
-        System.out.println(connections.remove(clientConnection)+" 22222222222222222222222222222222222222222");
+        connections.remove(clientConnection);
     }
 
     public void disconnectAll()

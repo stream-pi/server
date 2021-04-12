@@ -5,8 +5,10 @@ import com.stream_pi.action_api.action.PropertySaver;
 import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.externalplugin.NormalAction;
 import com.stream_pi.action_api.externalplugin.ToggleAction;
+import com.stream_pi.action_api.externalplugin.ToggleExtras;
 import com.stream_pi.server.Main;
 import com.stream_pi.server.action.ExternalPlugins;
+import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.connection.ClientConnections;
@@ -22,8 +24,7 @@ import com.stream_pi.server.window.settings.SettingsBase;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
-import com.stream_pi.util.exception.MinorException;
-import com.stream_pi.util.exception.SevereException;
+import com.stream_pi.util.exception.*;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -49,7 +50,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
-public class Controller extends Base implements PropertySaver, ServerConnection
+public class Controller extends Base implements PropertySaver, ServerConnection, ToggleExtras
 {
     private ExecutorService executor = Executors.newCachedThreadPool();
     private MainServer mainServer;
@@ -84,6 +85,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             setupSettingsWindowsAnimations();
 
             ExternalPlugins.getInstance().setPropertySaver(this);
+            ExternalPlugins.getInstance().setToggleExtras(this);
+
             ExternalPlugins.getInstance().setServerConnection(this);
 
 
@@ -715,5 +718,36 @@ public class Controller extends Base implements PropertySaver, ServerConnection
             });
         });
         return closeSettingsTimeline;
+    }
+
+    @Override
+    public void setToggleStatus(boolean currentStatus, String profileID, String actionID, SocketAddress clientSocketAddress)
+            throws MinorException
+    {
+
+        ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(
+                clientSocketAddress
+        );
+
+        if(clientConnection == null)
+            throw new ClientNotFoundException("setToggleStatus failed because no client found with given socket address");
+
+
+        new Thread(new Task<Void>() {
+            @Override
+            protected Void call()
+            {
+                try
+                {
+                    clientConnection.setToggleStatus(currentStatus, profileID, actionID);
+                }
+                catch (SevereException e)
+                {
+                    handleSevereException(e);
+                }
+                return null;
+            }
+        }).start();
+
     }
 }
