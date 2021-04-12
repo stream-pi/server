@@ -585,6 +585,16 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         clientPropertiesVBox.getChildren().clear();
         pluginExtraButtonBar.getChildren().clear();
         vbox.setVisible(false);
+
+        normalActionsPropsVBox.setVisible(false);
+        toggleActionsPropsVBox.setVisible(false);
+        saveButton.setVisible(false);
+        openFolderButton.setVisible(false);
+        resetToDefaultsFolderButton.setVisible(false);
+        returnButtonForCombineActionChild.setVisible(false);
+        clearIconButton.setVisible(false);
+
+
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         buttonBar.setVisible(false);
         setActionHeadingLabelText("");
@@ -617,11 +627,40 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         //Combine Child action
         isCombineChild = getAction().getLocation().getCol() == -1;
 
-        System.out.println(isCombineChild);
-
-        System.out.println("DISPLAY : "+getAction().getDisplayText());
-
         displayNameTextField.setText(getAction().getDisplayText());
+
+        vbox.setVisible(true);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        buttonBar.setVisible(true);
+
+
+        displayTextAlignmentComboBox.getSelectionModel().select(getAction().getDisplayTextAlignment());
+
+        if(!getAction().getBgColourHex().isEmpty())
+            actionBackgroundColourPicker.setValue(Color.valueOf(getAction().getBgColourHex()));
+        else
+            actionBackgroundColourTransparentCheckBox.setSelected(true);
+
+
+
+        if(!getAction().getDisplayTextFontColourHex().isEmpty())
+            displayTextColourPicker.setValue(Color.valueOf(getAction().getDisplayTextFontColourHex()));
+        else
+            displayTextColourDefaultCheckBox.setSelected(true);
+
+
+        hideDisplayTextCheckBox.setSelected(!getAction().isShowDisplayText());
+
+
+        if(getAction().isInvalid())
+        {
+            setActionHeadingLabelText("Invalid action ("+getAction().getModuleName()+")");
+            return;
+        }
+
+
+        saveButton.setVisible(getAction().isInvalid());
 
         if(isCombineChild)
         {
@@ -687,57 +726,35 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             setFolderButtonVisible(getAction().getActionType().equals(ActionType.FOLDER));
             setResetToDefaultsFolderButtonVisible(!(getAction().getActionType().equals(ActionType.FOLDER) || getAction().getActionType().equals(ActionType.COMBINE)));
 
-            displayTextAlignmentComboBox.getSelectionModel().select(getAction().getDisplayTextAlignment());
-
-            if(!getAction().getBgColourHex().isEmpty())
-                actionBackgroundColourPicker.setValue(Color.valueOf(getAction().getBgColourHex()));
-            else
-                actionBackgroundColourTransparentCheckBox.setSelected(true);
-
-
-
-            if(!getAction().getDisplayTextFontColourHex().isEmpty())
-                displayTextColourPicker.setValue(Color.valueOf(getAction().getDisplayTextFontColourHex()));
-            else
-                displayTextColourDefaultCheckBox.setSelected(true);
-
-
-            hideDisplayTextCheckBox.setSelected(!getAction().isShowDisplayText());
-
             clearIconButton.setDisable(!getAction().isHasIcon());
         }
 
 
 
-        buttonBar.setVisible(true);
-        vbox.setVisible(true);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        if(getAction().getActionType() == ActionType.NORMAL || getAction().getActionType() == ActionType.TOGGLE)
+        {
+            setActionHeadingLabelText(getAction().getName());
+        }
+        else if(getAction().getActionType() == ActionType.COMBINE)
+        {
+            setActionHeadingLabelText("Combine action");
+        }
+        else if(getAction().getActionType() == ActionType.FOLDER)
+        {
+            setActionHeadingLabelText("Folder action");
+        }
+
+
+
 
         if(getAction().getActionType() == ActionType.NORMAL || getAction().getActionType() == ActionType.TOGGLE)
         {
-            if(getAction().isInvalid())
-                setActionHeadingLabelText("Invalid action ("+getAction().getModuleName()+")");
-            else
-                setActionHeadingLabelText(getAction().getName());
+            renderClientProperties();
+            renderPluginExtraButtonBar();
         }
         else if(getAction().getActionType() == ActionType.COMBINE)
-            setActionHeadingLabelText("Combine action");
-        else if(getAction().getActionType() == ActionType.FOLDER)
-            setActionHeadingLabelText("Folder action");
+            renderCombineActionProperties();
 
-
-        if(!getAction().isInvalid())
-        {
-            if(getAction().getActionType() == ActionType.NORMAL || getAction().getActionType() == ActionType.TOGGLE)
-            {
-                renderClientProperties();
-                renderPluginExtraButtonBar();
-            }
-            else if(getAction().getActionType() == ActionType.COMBINE)
-                renderCombineActionProperties();
-
-
-        }
     }
 
     private void renderPluginExtraButtonBar()

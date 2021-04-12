@@ -724,14 +724,12 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     public void setToggleStatus(boolean currentStatus, String profileID, String actionID, SocketAddress clientSocketAddress)
             throws MinorException
     {
-
         ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(
                 clientSocketAddress
         );
 
         if(clientConnection == null)
             throw new ClientNotFoundException("setToggleStatus failed because no client found with given socket address");
-
 
         new Thread(new Task<Void>() {
             @Override

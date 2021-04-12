@@ -377,8 +377,10 @@ public class ClientConnection extends Thread
     {
         try
         {
+            logger.info("Sending message with heading "+message.getHeader()+" ...");
             oos.writeObject(message);
             oos.flush();
+            logger.info("... Done!");
         }
         catch (IOException e)
         {
