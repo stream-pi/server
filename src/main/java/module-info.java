@@ -1,4 +1,5 @@
-module com.stream_pi.server {
+module com.stream_pi.server
+{
 
     uses com.stream_pi.action_api.action.Action;
     uses com.stream_pi.action_api.externalplugin.NormalAction;
@@ -21,5 +22,8 @@ module com.stream_pi.server {
 
     requires java.sql;
 
+    opens com.stream_pi.server.window.settings;
+
     exports com.stream_pi.server;
+    opens com.stream_pi.server.window.settings.About;
 }

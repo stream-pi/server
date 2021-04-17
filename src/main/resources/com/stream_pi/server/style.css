@@ -273,3 +273,13 @@
 .split-pane-divider {
     -fx-padding: 2;
 }
+
+.separator_ui_label
+{
+    -fx-text-fill: grey;
+}
+
+.about_license_contributors_disclaimer_label
+{
+    -fx-min-height : 50;
+}

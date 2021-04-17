@@ -1,22 +1,19 @@
-package com.stream_pi.server.window.settings;
+package com.stream_pi.server.window.settings.About;
 
 import com.stream_pi.action_api.ActionAPI;
-import com.stream_pi.server.info.License;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.Main;
 import javafx.application.HostServices;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-public class About extends VBox{
+public class About extends VBox
+{
 
     private HostServices hostServices;
 
@@ -32,39 +29,24 @@ public class About extends VBox{
         appIconImageView.setFitHeight(196);
         appIconImageView.setFitWidth(182);
 
-        Label licenseLabel = new Label("License");
-        licenseLabel.getStyleClass().add("about_license_label");
+        TabPane tabPane = new TabPane();
+        tabPane.getStyleClass().add("settings_about_tab_internal");
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        tabPane.setMaxWidth(600);
+        VBox.setVgrow(tabPane, Priority.ALWAYS);
 
-        VBox.setMargin(licenseLabel, new Insets(20, 0 , 10 ,0));
+        Tab licenseTab = new Tab("License");
+        licenseTab.setContent(new LicenseTab());
 
-        TextArea licenseTextArea = new TextArea(License.getLicense());
-        licenseTextArea.getStyleClass().add("about_license_text_area");
-        licenseTextArea.setWrapText(false);
-        licenseTextArea.setEditable(false);
-        licenseTextArea.setMaxWidth(600);
 
-        VBox.setVgrow(licenseTextArea, Priority.ALWAYS);
+        Tab contributorsTab = new Tab("Contributors");
+        contributorsTab.setContent(new ContributorsTab());
 
-        HBox links = new HBox();
-        links.getStyleClass().add("about_links_box");
+        Tab contactTab = new Tab("Contact");
+        contactTab.setContent(new ContactTab(hostServices));
 
-        Hyperlink github = new Hyperlink("GitHub");
-        github.setOnAction(event -> openWebpage("https://github.com/Stream-Pi"));
+        tabPane.getTabs().addAll(licenseTab, contributorsTab, contactTab);
 
-        Hyperlink discord = new Hyperlink("Discord");
-        discord.setOnAction(event -> openWebpage("https://discord.gg/BExqGmk"));
-
-        Hyperlink website = new Hyperlink("Website");
-        website.setOnAction(event -> openWebpage("https://stream-pi.com"));
-
-        Hyperlink twitter = new Hyperlink("Twitter");
-        twitter.setOnAction(event -> openWebpage("https://twitter.com/Stream_Pi"));
-
-        Hyperlink matrix = new Hyperlink("Matrix");
-        matrix.setOnAction(event -> openWebpage("https://matrix.to/#/#stream-pi_general:matrix.org"));
-
-        links.setAlignment(Pos.CENTER);
-        links.getChildren().addAll(github, matrix, discord, website, twitter);
 
         Hyperlink donateButton = new Hyperlink("DONATE");
         donateButton.setOnAction(event -> openWebpage("https://www.patreon.com/streampi"));
@@ -87,10 +69,27 @@ public class About extends VBox{
         Label currentActionAPILabel = new Label("ActionAPI "+ ActionAPI.API_VERSION.getText());
         currentActionAPILabel.getStyleClass().add("about_current_action_api_label");
 
-        getChildren().addAll(appIconImageView, licenseLabel, licenseTextArea, links, donateButton, versionText, commStandardLabel, minThemeAPILabel, minActionAPILabel, currentActionAPILabel);
+        HBox hBox = new HBox(versionText, getSep(),
+                commStandardLabel, getSep(),
+                minThemeAPILabel, getSep(),
+                minActionAPILabel, getSep(),
+                currentActionAPILabel);
+
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setSpacing(10);
+
+        getChildren().addAll(appIconImageView, tabPane, donateButton, hBox);
     }
 
-    public void openWebpage(String url) {
+    public void openWebpage(String url)
+    {
         hostServices.showDocument(url);
+    }
+
+    private Label getSep()
+    {
+        Label label = new Label("|");
+        label.getStyleClass().add("separator_ui_label");
+        return label;
     }
 }

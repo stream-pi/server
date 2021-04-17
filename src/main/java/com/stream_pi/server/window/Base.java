@@ -17,6 +17,8 @@ import com.stream_pi.util.loggerhelper.StreamPiLogFileHandler;
 
 import com.stream_pi.util.platform.Platform;
 import javafx.application.HostServices;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
@@ -104,8 +106,8 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
         getStage().getIcons().add(new Image(Main.class.getResourceAsStream("app_icon.png")));
         
-        getStage().setMinWidth(500);
-        getStage().setMinHeight(500);
+        getStage().setMinWidth(710);
+        getStage().setMinHeight(530);
 
         serverInfo = ServerInfo.getInstance();
 

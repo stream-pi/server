@@ -2,6 +2,7 @@ package com.stream_pi.server.window.settings;
 
 import com.stream_pi.server.connection.ServerListener;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
+import com.stream_pi.server.window.settings.About.About;
 import javafx.application.HostServices;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

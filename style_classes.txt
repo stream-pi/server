@@ -101,9 +101,14 @@ settings
                         Each Titled Pane - client_settings_each_client_accordion_each_titled_pane
                             Content VBox - client_settings_each_client_accordion_each_profile_box
     About - about
-        License Label - about_license_label
-        License Text Area - about_license_text_area
-        Links HBox - about_links_box
+
+        Tab Pane - settings_about_tab_internal
+            License Tab (Text Area) - about_license_text_area
+            Contributors Tab (VBox) - about_license_contributors_vbox
+                Table View - about_license_contributors_table_view
+                Disclaimer Label - about_license_contributors_disclaimer_label
+            Contact Tab (Scroll Pane) - about_contact_tab_scroll_pane
+
         DONATE Hyperlink - about_donate_hyperlink
 
         Version Label - about_version_label
