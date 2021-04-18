@@ -660,7 +660,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         }
 
 
-        saveButton.setVisible(getAction().isInvalid());
+        saveButton.setVisible(!getAction().isInvalid());
 
         if(isCombineChild)
         {
