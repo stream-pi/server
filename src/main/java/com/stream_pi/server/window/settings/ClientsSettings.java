@@ -122,8 +122,9 @@ public class ClientsSettings extends VBox {
                                 int rows = Integer.parseInt(clientProfileVBox.getRows());
 
                                 int actionsSize = Integer.parseInt(clientProfileVBox.getActionSize());
+                                int actionsGap = Integer.parseInt(clientProfileVBox.getActionGap());
 
-                                if((rows*actionsSize) > (clientSettingsVBox.getDisplayWidth() - 50))
+                                if((rows*(actionsSize+actionsGap)) > clientSettingsVBox.getDisplayHeight())
                                 {
                                     errors2.append("        Rows out of bounds of screen size. \n");
                                 }
@@ -138,8 +139,9 @@ public class ClientsSettings extends VBox {
                                 int cols = Integer.parseInt(clientProfileVBox.getCols());
 
                                 int actionsSize = Integer.parseInt(clientProfileVBox.getActionSize());
+                                int actionsGap = Integer.parseInt(clientProfileVBox.getActionGap());
 
-                                if((cols*actionsSize) > (clientSettingsVBox.getDisplayHeight() - 50))
+                                if((cols*(actionsSize+actionsGap)) > clientSettingsVBox.getDisplayWidth())
                                 {
                                     errors2.append("        Cols out of bounds of screen size. \n");
                                 }
@@ -629,10 +631,10 @@ public class ClientsSettings extends VBox {
 
             getChildren().addAll(
                     new HBoxInputBox("Name ", nameTextField),
-                    new HBoxInputBox("Columns", rowsTextField),
-                    new HBoxInputBox("Rows", colsTextField),
-                    new HBoxInputBox("action Size", actionSizeTextField),
-                    new HBoxInputBox("action Gap", actionGapTextField),
+                    new HBoxInputBox("Rows", rowsTextField),
+                    new HBoxInputBox("Columns", colsTextField),
+                    new HBoxInputBox("Action Size", actionSizeTextField),
+                    new HBoxInputBox("Action Gap", actionGapTextField),
                     hBox
             );
         }

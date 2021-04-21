@@ -288,7 +288,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         ActionBox actionBox = new ActionBox(Config.getInstance().getActionGridActionSize(), actionDetailsPaneListener, this,
                 col, row);
 
-        actionsGridPane.add(actionBox, row, col);
+        actionsGridPane.add(actionBox, col, row);
         return actionBox;
     }
 

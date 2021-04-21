@@ -130,7 +130,7 @@ public class MainServer extends Thread {
                     }
                 }
 
-                Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - IP(s): "+ips.toString()+" | Port: "+ port));
+                Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - IP(s): "+ips+" | Port: "+ port));
             }
             else
             {

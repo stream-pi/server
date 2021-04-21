@@ -11,8 +11,8 @@
 
 This project depends on the following Stream-Pi modules:
 
-- [Stream-Pi Action API](https://github.com/stream-pi/actionapi)
-- [Stream-Pi Theme API](https://github.com/stream-pi/themeapi)
+- [Stream-Pi Action API](https://github.com/stream-pi/action-api)
+- [Stream-Pi Theme API](https://github.com/stream-pi/theme-api)
 - [Stream-Pi Utilities](https://github.com/stream-pi/util)
 
 Build and run using `mvn clean javafx:run`

@@ -291,7 +291,11 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             popup
         );
 
-        trayIcon.addActionListener(l-> Platform.runLater(()-> getStage().show()));
+        trayIcon.addActionListener(l-> Platform.runLater(()-> {
+            getStage().show();
+            getStage().setAlwaysOnTop(true);
+            getStage().setAlwaysOnTop(false);
+        }));
 
         trayIcon.setImageAutoSize(true);
 
