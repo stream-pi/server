@@ -18,7 +18,7 @@ public class ContributorsTab extends VBox
 
         TableColumn<Contributor, String> descriptionColumn = new TableColumn<>("Description");
         descriptionColumn.setReorderable(false);
-        descriptionColumn.setPrefWidth(170);
+        descriptionColumn.setPrefWidth(250);
         descriptionColumn.setResizable(false);
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
 
@@ -46,15 +46,18 @@ public class ContributorsTab extends VBox
         tableView.setPrefWidth(descriptionColumn.getPrefWidth() + nameColumn.getPrefWidth() + emailColumn.getPrefWidth());
 
 
-
         tableView.getItems().addAll(
                 new Contributor("Debayan Sutradhar (rnayabed)",
                         "debayansutradhar3@gmail.com",
-                        "Original Author, Maintainer",
+                        "Founder, Original Author, Maintainer",
                         "India"),
+                new Contributor("Samuel Quiñones (SamuelQuinones)",
+                        "sdquinones1@gmail.com",
+                        "Founder",
+                        "United States"),
                 new Contributor("Abhinay Agarwal (abhinayagarwal)",
-                        "",
-                        "Refactoring, Minor Fixes",
+                        "abhinay_agarwal@live.com",
+                        "Refactoring, Fixes",
                         "India"),
                 new Contributor("Jordan Duabe (j4ckofalltrades)",
                         "jordan.duabe@gmail.com",

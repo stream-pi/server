@@ -107,7 +107,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 Stage stage = new Stage();
                 Scene s = new Scene(new FirstTimeUse(this, this),
                         getConfig().getStartupWindowWidth(), getConfig().getStartupWindowHeight());
-                stage.setResizable(false);
                 stage.setScene(s); 
                 stage.setTitle("Stream-Pi Server Setup");
                 stage.initModality(Modality.APPLICATION_MODAL);
