@@ -206,8 +206,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         displayNameTextField.managedProperty().bind(displayNameTextField.visibleProperty());
 
         defaultIconFileTextField = new TextField();
-        defaultIconFileTextField.managedProperty().bind(defaultIconFileTextField.visibleProperty());
-        defaultIconFileTextField.setVisible(false);
         defaultIconFileTextField.textProperty().addListener((observableValue, s, t1) -> {
             try {
                 if (!s.equals(t1) && t1.length() > 0) {
@@ -228,8 +226,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         });
 
         toggleOffIconFileTextField = new TextField();
-        toggleOffIconFileTextField.managedProperty().bind(toggleOffIconFileTextField.visibleProperty());
-        toggleOffIconFileTextField.setVisible(false);
         toggleOffIconFileTextField.textProperty().addListener((observableValue, s, t1) -> {
             try {
                 if (!s.equals(t1) && t1.length() > 0) {
@@ -250,8 +246,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
 
         toggleOnIconFileTextField = new TextField();
-        toggleOnIconFileTextField.managedProperty().bind(toggleOnIconFileTextField.visibleProperty());
-        toggleOnIconFileTextField.setVisible(false);
         toggleOnIconFileTextField.textProperty().addListener((observableValue, s, t1) -> {
             try {
                 if (!s.equals(t1) && t1.length() > 0) {
