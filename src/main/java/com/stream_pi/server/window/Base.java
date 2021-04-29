@@ -157,17 +157,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
                 boolean result = filex.mkdirs();
                 if(result)
                 {
-                    IOHelper.unzip(Main.class.getResourceAsStream("Default.zip"), ServerInfo.getInstance().getPrePath());
-
-                    Config.getInstance().setThemesPath(ServerInfo.getInstance().getPrePath()+"Themes/");
-                    Config.getInstance().setPluginsPath(ServerInfo.getInstance().getPrePath()+"Plugins/");
-
-                    if(SystemTray.isSupported())
-                    {
-                        Config.getInstance().setMinimiseToSystemTrayOnClose(true);
-                    }
-
-                    Config.getInstance().save();
+                    Config.unzipToDefaultPrePath();
 
                     initLogger();
                 }

@@ -440,13 +440,18 @@ public class ClientConnection extends Thread
         }
     }
 
+    int totalActions;
     public void registerProfilesFromClient(Message message) throws StreamPiException
     {
         logger.info("Registering profiles ...");
 
         String[] r = message.getStringArrValue();
 
-        for (String profileID : r) {
+        totalActions = message.getIntValue();
+        System.out.println("TTOOOX : "+totalActions);
+
+        for (String profileID : r)
+        {
             getProfileDetailsFromClient(profileID);
         }
     }
@@ -491,6 +496,8 @@ public class ClientConnection extends Thread
 
     public synchronized void registerActionToProfile(Message message) throws StreamPiException
     {
+        totalActions--;
+
         String[] r = message.getStringArrValue();
 
         String profileID = r[0];
@@ -638,6 +645,7 @@ public class ClientConnection extends Thread
                         exceptionAndAlertHandler.handleMinorException(new MinorException("action", "Unable to clone"));
                     }
 
+                    checkIfReady();
                     return;
                 }
             }
@@ -695,6 +703,16 @@ public class ClientConnection extends Thread
         {
             e.printStackTrace();
             exceptionAndAlertHandler.handleMinorException(new MinorException("action", "Unable to clone"));
+        }
+
+        checkIfReady();
+    }
+
+    public void checkIfReady() throws SevereException
+    {
+        if(totalActions == 0)
+        {
+            sendMessage(new Message("ready"));
         }
     }
 
@@ -796,11 +814,8 @@ public class ClientConnection extends Thread
 
     public void onClientScreenDetailsReceived(Message message)
     {
-        double width = Double.parseDouble(message.getStringArrValue()[0]);
-        double height = Double.parseDouble(message.getStringArrValue()[1]);
-
-        getClient().setDisplayWidth(width);
-        getClient().setDisplayHeight(height);
+        getClient().setDisplayWidth(message.getDoubleArrValue()[0]);
+        getClient().setDisplayHeight(message.getDoubleArrValue()[1]);
     }
 
     public void deleteAction(String profileID, String actionID) throws SevereException
