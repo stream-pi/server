@@ -8,7 +8,9 @@ handler for config.xml
 
 package com.stream_pi.server.io;
 
+import java.awt.*;
 import java.io.File;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -20,8 +22,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.stream_pi.server.Main;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.util.exception.SevereException;
+import com.stream_pi.util.iohelper.IOHelper;
 import com.stream_pi.util.xmlconfighelper.XMLConfigHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -321,5 +325,20 @@ public class Config
     public void setAllowDonatePopup(boolean value)
     {
         getOthersElement().getElementsByTagName("allow-donate-popup").item(0).setTextContent(value+"");
+    }
+
+    public static void unzipToDefaultPrePath() throws Exception
+    {
+        IOHelper.unzip(Objects.requireNonNull(Main.class.getResourceAsStream("Default.zip")), ServerInfo.getInstance().getPrePath());
+
+        Config.getInstance().setThemesPath(ServerInfo.getInstance().getPrePath()+"Themes/");
+        Config.getInstance().setPluginsPath(ServerInfo.getInstance().getPrePath()+"Plugins/");
+
+        if(SystemTray.isSupported())
+        {
+            Config.getInstance().setMinimiseToSystemTrayOnClose(true);
+        }
+
+        Config.getInstance().save();
     }
 }

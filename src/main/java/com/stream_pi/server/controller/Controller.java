@@ -233,6 +233,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         }
         finally
         {
+            getLogger().info("Shut down");
             closeLogger();
         }
     }
