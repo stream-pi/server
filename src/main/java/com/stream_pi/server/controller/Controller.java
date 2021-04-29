@@ -34,6 +34,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -45,6 +46,7 @@ import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.net.SocketAddress;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -77,7 +79,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     @Override
     public void init()
     {
-        try {
+        try
+        {
 
             initBase();
             setupDashWindow();
@@ -107,7 +110,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 Stage stage = new Stage();
                 Scene s = new Scene(new FirstTimeUse(this, this),
                         getConfig().getStartupWindowWidth(), getConfig().getStartupWindowHeight());
-                stage.setScene(s); 
+                stage.setScene(s);
+                stage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("app_icon.png"))));
                 stage.setTitle("Stream-Pi Server Setup");
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.setOnCloseRequest(event->Platform.exit());
@@ -123,7 +127,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
                 othInit();
             }
-
         }
         catch (SevereException e)
         {

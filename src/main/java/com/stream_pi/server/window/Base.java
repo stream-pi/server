@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 import java.io.File;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public abstract class Base extends StackPane implements ExceptionAndAlertHandler, ServerListener {
@@ -104,7 +105,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     {
         stage = (Stage) getScene().getWindow();
 
-        getStage().getIcons().add(new Image(Main.class.getResourceAsStream("app_icon.png")));
+        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("app_icon.png"))));
         
         getStage().setMinWidth(710);
         getStage().setMinHeight(530);

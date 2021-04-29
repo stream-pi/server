@@ -117,41 +117,6 @@ public class ClientsSettings extends VBox {
                                 errors2.append("        Must have integer action Gap. \n");
                             }
 
-
-                            try {
-                                int rows = Integer.parseInt(clientProfileVBox.getRows());
-
-                                int actionsSize = Integer.parseInt(clientProfileVBox.getActionSize());
-                                int actionsGap = Integer.parseInt(clientProfileVBox.getActionGap());
-
-                                if((rows*(actionsSize+actionsGap)) > clientSettingsVBox.getDisplayHeight())
-                                {
-                                    errors2.append("        Rows out of bounds of screen size. \n");
-                                }
-                            }
-                            catch (NumberFormatException e)
-                            {
-                                errors2.append("        Must have integer Rows. \n");
-                            }
-
-
-                            try {
-                                int cols = Integer.parseInt(clientProfileVBox.getCols());
-
-                                int actionsSize = Integer.parseInt(clientProfileVBox.getActionSize());
-                                int actionsGap = Integer.parseInt(clientProfileVBox.getActionGap());
-
-                                if((cols*(actionsSize+actionsGap)) > clientSettingsVBox.getDisplayWidth())
-                                {
-                                    errors2.append("        Cols out of bounds of screen size. \n");
-                                }
-                            }
-                            catch (NumberFormatException e)
-                            {
-                                errors2.append("        Must have integer Columns. \n");
-                            }
-
-
                             if(!errors2.toString().isEmpty())
                             {
                                 errors.append("    ")
