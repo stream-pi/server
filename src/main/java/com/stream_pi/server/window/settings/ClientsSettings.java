@@ -122,7 +122,7 @@ public class ClientsSettings extends VBox {
                                 errors.append("    ")
                                         .append(clientProfileVBox.getRealName())
                                         .append("\n")
-                                        .append(errors2.toString())
+                                        .append(errors2)
                                         .append("\n");
                             }
                         }
@@ -133,7 +133,7 @@ public class ClientsSettings extends VBox {
                             finalErrors.append("* ")
                                     .append(clientSettingsVBox.getRealNickName())
                                     .append("\n")
-                                    .append(errors.toString())
+                                    .append(errors)
                                     .append("\n");
                         }
 
@@ -143,7 +143,7 @@ public class ClientsSettings extends VBox {
 
                     if(!finalErrors.toString().isEmpty())
                         throw new MinorException("You made form mistakes",
-                                "Please fix the following issues : \n"+finalErrors.toString());
+                                "Please fix the following issues : \n"+finalErrors);
 
 
 
