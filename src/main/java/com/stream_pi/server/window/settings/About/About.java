@@ -12,6 +12,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.util.Objects;
+
 public class About extends VBox
 {
 
@@ -24,7 +26,7 @@ public class About extends VBox
 
         setAlignment(Pos.TOP_CENTER);
 
-        Image appIcon = new Image(Main.class.getResourceAsStream("app_icon.png"));
+        Image appIcon = new Image(Objects.requireNonNull(Main.class.getResourceAsStream("app_icon.png")));
         ImageView appIconImageView = new ImageView(appIcon);
         appIconImageView.setFitHeight(196);
         appIconImageView.setFitWidth(182);

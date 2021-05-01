@@ -27,7 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class ClientsSettings extends VBox {
+public class ClientsSettings extends VBox
+{
     private VBox clientsSettingsVBox;
     private Button saveButton;
 

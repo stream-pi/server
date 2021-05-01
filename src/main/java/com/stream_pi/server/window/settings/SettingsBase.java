@@ -11,7 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-public class SettingsBase extends VBox {
+public class SettingsBase extends VBox
+{
 
     private TabPane tabPane;
 
@@ -50,7 +51,6 @@ public class SettingsBase extends VBox {
         Tab clientsSettingsTab = new Tab("Clients");
         clientsSettings = new ClientsSettings(exceptionAndAlertHandler, serverListener);
         clientsSettingsTab.setContent(clientsSettings);
-
 
         Tab aboutTab = new Tab("About");
         aboutTab.setContent(new About(hostServices));
