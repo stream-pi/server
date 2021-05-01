@@ -4,10 +4,13 @@ import com.stream_pi.action_api.ActionAPI;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.Main;
 import javafx.application.HostServices;
+import javafx.event.Event;
 import javafx.geometry.Pos;
+import javafx.scene.CacheHint;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.SwipeEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -32,6 +35,7 @@ public class About extends VBox
         appIconImageView.setFitWidth(182);
 
         TabPane tabPane = new TabPane();
+        tabPane.addEventFilter(SwipeEvent.ANY, Event::consume);
         tabPane.getStyleClass().add("settings_about_tab_internal");
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabPane.setMaxWidth(600);
