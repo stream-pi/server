@@ -19,7 +19,7 @@ public class ContactTab extends ScrollPane
         getStyleClass().add("about_contact_tab_scroll_pane");
 
         Hyperlink github = new Hyperlink("GitHub");
-        github.setOnAction(event -> openWebpage("https://github.com/Stream-Pi"));
+        github.setOnAction(event -> openWebpage("https://github.com/stream-pi"));
 
         Hyperlink discord = new Hyperlink("Discord");
         discord.setOnAction(event -> openWebpage("https://discord.gg/BExqGmk"));
@@ -28,10 +28,10 @@ public class ContactTab extends ScrollPane
         website.setOnAction(event -> openWebpage("https://stream-pi.com"));
 
         Hyperlink twitter = new Hyperlink("Twitter");
-        twitter.setOnAction(event -> openWebpage("https://twitter.com/Stream_Pi"));
+        twitter.setOnAction(event -> openWebpage("https://twitter.com/stream_pi"));
 
         Hyperlink matrix = new Hyperlink("Matrix");
-        matrix.setOnAction(event -> openWebpage("https://matrix.to/#/#stream-pi_general:matrix.org"));
+        matrix.setOnAction(event -> openWebpage("https://matrix.to/#/+stream-pi-official:matrix.org"));
 
 
         VBox vBox = new VBox(github, discord, website, twitter, matrix);
