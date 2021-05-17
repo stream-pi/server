@@ -234,11 +234,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         {
             handleMinorException(e);
         }
-        finally
-        {
-            getLogger().info("Shut down");
-            closeLogger();
-        }
     }
 
     public void onQuitApp()
@@ -249,6 +244,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         ClientConnections.getInstance().disconnectAll();
         executor.shutdown();
         getLogger().info("Shutting down ...");
+        closeLogger();
     }
 
     public void minimiseApp() throws MinorException
