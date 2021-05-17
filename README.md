@@ -16,7 +16,7 @@ This project depends on the following Stream-Pi modules:
 
 ## Download binaries
 
-Downloadable Binaries for available platforms are available [here](https://github.com/stream-pi/server/releases)
+Downloadable Binaries for available platforms are available [here](https://github.com/stream-pi/server/releases).
 
 ## Compile and Run from source 
 
