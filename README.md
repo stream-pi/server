@@ -5,6 +5,7 @@
 ## Prerequisites
 
 - Java >= 11
+- Maven >= 3.6.3
 
 This project depends on the following Stream-Pi modules:
 
@@ -15,10 +16,10 @@ This project depends on the following Stream-Pi modules:
 
 ## Quick Start
 
-### on Linux or Mac
+### Download binaries
 
-Build and run locally by executing `./mvnw clean javafx:run` from the command line.
+Downloadable Binaries for available platforms are available [here](https://github.com/stream-pi/server/releases)
 
-### on Windows
+### Compile and Run from source 
 
-Build and run locally by executing `./mvnw.cmd clean javafx:run` from the command line.
+Run `mvn clean javafx:run`
