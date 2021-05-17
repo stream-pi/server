@@ -331,14 +331,16 @@ public class Config
     {
         IOHelper.unzip(Objects.requireNonNull(Main.class.getResourceAsStream("Default.zip")), ServerInfo.getInstance().getPrePath());
 
-        Config.getInstance().setThemesPath(ServerInfo.getInstance().getPrePath()+"Themes/");
-        Config.getInstance().setPluginsPath(ServerInfo.getInstance().getPrePath()+"Plugins/");
+        Config config = Config.getInstance();
+
+        config.setThemesPath(config.getDefaultThemesPath());
+        config.setPluginsPath(config.getDefaultPluginsPath());
 
         if(SystemTray.isSupported())
         {
-            Config.getInstance().setMinimiseToSystemTrayOnClose(true);
+            config.setMinimiseToSystemTrayOnClose(true);
         }
 
-        Config.getInstance().save();
+        config.save();
     }
 }

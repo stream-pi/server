@@ -5,6 +5,7 @@ import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.info.ServerInfo;
 
+import com.stream_pi.theme_api.Themes;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.checkforupdates.CheckForUpdates;

@@ -263,8 +263,9 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     public void registerThemes() throws SevereException
     {
         logger.info("Loading themes ...");
-        themes = new Themes(getConfig().getThemesPath(), getConfig().getCurrentThemeFullName(), serverInfo.getMinThemeSupportVersion());
 
+        themes = new Themes(getConfig().getDefaultThemesPath(), getConfig().getThemesPath(), getConfig().getCurrentThemeFullName(), serverInfo.getMinThemeSupportVersion());
+        
         if(!themes.getErrors().isEmpty())
         {
             StringBuilder themeErrors = new StringBuilder();
@@ -276,6 +277,12 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
             if(themes.getIsBadThemeTheCurrentOne())
             {
+                if(getConfig().getCurrentThemeFullName().equals(getConfig().getDefaultCurrentThemeFullName()))
+                {
+                    throw new SevereException("Unable to get default theme ("+getConfig().getDefaultCurrentThemeFullName()+")\n" +
+                            "Please restore the theme or reinstall.");
+                }
+
                 themeErrors.append("\n\nReverted to default theme! (").append(getConfig().getDefaultCurrentThemeFullName()).append(")");
 
                 getConfig().setCurrentThemeFullName(getConfig().getDefaultCurrentThemeFullName());
