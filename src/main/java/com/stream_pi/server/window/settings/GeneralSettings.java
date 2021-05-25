@@ -7,6 +7,7 @@ import com.stream_pi.server.info.ServerInfo;
 
 import com.stream_pi.theme_api.Themes;
 import com.stream_pi.util.alert.StreamPiAlert;
+import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.checkforupdates.CheckForUpdates;
 import com.stream_pi.util.checkforupdates.UpdateHyperlinkOnClick;
@@ -373,7 +374,29 @@ public class GeneralSettings extends VBox {
 
                     if(toBeReloaded)
                     {
-                        new StreamPiAlert("Restart","Restart to see changes", StreamPiAlertType.INFORMATION).show();
+                        StreamPiAlert restartPrompt = new StreamPiAlert(
+                                "Warning",
+                                "Stream-Pi Server needs to be restarted for these changes to take effect. Restart?\n" +
+                                        "All your current connections will be disconnected.",
+                                StreamPiAlertType.WARNING
+                        );
+
+                        String yesOption = "Yes";
+                        String noOption = "No";
+
+                        restartPrompt.setButtons(yesOption, noOption);
+
+                        restartPrompt.setOnClicked(new StreamPiAlertListener() {
+                            @Override
+                            public void onClick(String s) {
+                                if(s.equals(yesOption))
+                                {
+                                    serverListener.restart();
+                                }
+                            }
+                        });
+
+                        restartPrompt.show();
                     }
 
                     if(dashToBeReRendered)

@@ -238,13 +238,27 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
     public void onQuitApp()
     {
+        stopServerAndAllConnections();
+        executor.shutdown();
+        getLogger().info("Shutting down ...");
+        closeLogger();
+    }
+
+    private void stopServerAndAllConnections()
+    {
         if(mainServer!=null)
             mainServer.stopListeningForConnections();
 
         ClientConnections.getInstance().disconnectAll();
-        executor.shutdown();
-        getLogger().info("Shutting down ...");
-        closeLogger();
+    }
+
+    @Override
+    public void restart()
+    {
+        getLogger().info("Restarting ...");
+
+        stopServerAndAllConnections();
+        Platform.runLater(this::init);
     }
 
     public void minimiseApp() throws MinorException

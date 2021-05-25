@@ -143,7 +143,9 @@ public class OnSaveActionTask extends Task<Void>
             logger.info("isHideDEfaultIcon : "+isHideToggleOffIcon);
             logger.info("isHideDEfaultIcon : "+isHideToggleOnIcon);
 
-            if(action.getActionType() == ActionType.NORMAL)
+            if(action.getActionType() == ActionType.NORMAL ||
+            action.getActionType() == ActionType.FOLDER ||
+            action.getActionType() == ActionType.COMBINE)
             {
                 if(isHideDefaultIcon)
                 {

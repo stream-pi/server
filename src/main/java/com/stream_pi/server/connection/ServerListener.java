@@ -17,6 +17,8 @@ public interface ServerListener
 
     void init();
 
+    void restart();
+
     void othInit();
 
     Stage getStage();
