@@ -61,7 +61,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     private Button saveButton;
     private Button deleteButton;
     private Button openFolderButton;
-    private Button resetToDefaultsFolderButton;
+    private Button resetToDefaultsButton;
 
     private HBox buttonBar;
 
@@ -141,13 +141,13 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         deleteButton.setOnAction(event -> onDeleteButtonClicked());
 
 
-        resetToDefaultsFolderButton = new Button("Reset");
-        resetToDefaultsFolderButton.managedProperty().bind(resetToDefaultsFolderButton.visibleProperty());
-        resetToDefaultsFolderButton.getStyleClass().add("action_details_pane_reset_button");
+        resetToDefaultsButton = new Button("Reset");
+        resetToDefaultsButton.managedProperty().bind(resetToDefaultsButton.visibleProperty());
+        resetToDefaultsButton.getStyleClass().add("action_details_pane_reset_button");
         FontIcon resetToDefaultsIcon = new FontIcon("fas-sync-alt");
         resetToDefaultsIcon.getStyleClass().add("action_details_pane_reset_button_icon");
-        resetToDefaultsFolderButton.setGraphic(resetToDefaultsIcon);
-        resetToDefaultsFolderButton.setOnAction(event -> onResetToDefaultsButtonClicked());
+        resetToDefaultsButton.setGraphic(resetToDefaultsIcon);
+        resetToDefaultsButton.setOnAction(event -> onResetToDefaultsButtonClicked());
 
         returnButtonForCombineActionChild = new Button("Return");
         returnButtonForCombineActionChild.setGraphic(new FontIcon("fas-caret-left"));
@@ -161,7 +161,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             }
         });
 
-        buttonBar = new HBox(openFolderButton, resetToDefaultsFolderButton, returnButtonForCombineActionChild, saveButton, deleteButton);
+        buttonBar = new HBox(openFolderButton, resetToDefaultsButton, returnButtonForCombineActionChild, saveButton, deleteButton);
         buttonBar.getStyleClass().add("action_details_pane_button_bar");
         buttonBar.setPadding(new Insets(10, 10, 10, 0));
         buttonBar.setAlignment(Pos.CENTER_RIGHT);
@@ -590,7 +590,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         toggleActionsPropsVBox.setVisible(false);
         saveButton.setVisible(false);
         openFolderButton.setVisible(false);
-        resetToDefaultsFolderButton.setVisible(false);
+        resetToDefaultsButton.setVisible(false);
         returnButtonForCombineActionChild.setVisible(false);
         clearIconButton.setVisible(false);
 
@@ -724,7 +724,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             hideDisplayTextCheckBox.setVisible(true);
 
             setFolderButtonVisible(getAction().getActionType().equals(ActionType.FOLDER));
-            setResetToDefaultsFolderButtonVisible(!(getAction().getActionType().equals(ActionType.FOLDER) || getAction().getActionType().equals(ActionType.COMBINE)));
+            setResetToDefaultsButtonVisible(!(getAction().getActionType().equals(ActionType.FOLDER) || getAction().getActionType().equals(ActionType.COMBINE)));
 
             clearIconButton.setDisable(!getAction().isHasIcon());
         }
@@ -1022,7 +1022,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             "#" + actionBackgroundColourPicker.getValue().toString().substring(2),
             getCombineActionPropertiesPane(),
             clientProfile, sendIcon, actionBox, actionClientProperties, exceptionAndAlertHandler,
-            saveButton, deleteButton, runOnActionSavedFromServer, runAsync, this
+            saveButton, deleteButton, resetToDefaultsButton, runOnActionSavedFromServer, runAsync, this
         );
     }
 
@@ -1037,9 +1037,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         openFolderButton.setVisible(visible);
     }
 
-    public void setResetToDefaultsFolderButtonVisible(boolean visible)
+    public void setResetToDefaultsButtonVisible(boolean visible)
     {
-        resetToDefaultsFolderButton.setVisible(visible);
+        resetToDefaultsButton.setVisible(visible);
     }
 
     public void validateForm() throws MinorException

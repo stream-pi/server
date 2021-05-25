@@ -33,13 +33,14 @@ public class OnSaveActionTask extends Task<Void>
                             boolean isShowDisplayText, boolean isDefaultDisplayTextColour, String displayTextFontColour, boolean isClearIcon,
                             boolean isHideDefaultIcon, boolean isHideToggleOffIcon, boolean isHideToggleOnIcon, DisplayTextAlignment displayTextAlignment, boolean isTransparentBackground, String backgroundColour,
                             CombineActionPropertiesPane combineActionPropertiesPane, ClientProfile clientProfile, boolean sendIcon, ActionBox actionBox,
-                            ArrayList<UIPropertyBox> actionClientProperties, ExceptionAndAlertHandler exceptionAndAlertHandler, Button saveButton, Button deleteButton,
+                            ArrayList<UIPropertyBox> actionClientProperties, ExceptionAndAlertHandler exceptionAndAlertHandler, Button saveButton, Button deleteButton, Button resetButton,
                             boolean runOnActionSavedFromServer, boolean runAsync, ActionDetailsPaneListener actionDetailsPaneListener)
     {
         this.saveButton = saveButton;
         this.deleteButton = deleteButton;
-        this.delayBeforeRunningString = delayBeforeRunningString;
+        this.resetButton = resetButton;
 
+        this.delayBeforeRunningString = delayBeforeRunningString;
         this.connection = connection;
         this.action = action;
         this.displayNameText = displayNameText;
@@ -78,6 +79,7 @@ public class OnSaveActionTask extends Task<Void>
 
     private Button saveButton;
     private Button deleteButton;
+    private Button resetButton;
     private String delayBeforeRunningString;
     private boolean isShowDisplayText;
     private boolean isCombineChild;
@@ -100,9 +102,10 @@ public class OnSaveActionTask extends Task<Void>
     private Action action;
     private ClientConnection connection;
 
-    private void setSaveDeleteButtonState(boolean state)
+    private void setSaveDeleteResetButtonState(boolean state)
     {
         Platform.runLater(()->{
+            resetButton.setDisable(state);
             saveButton.setDisable(state);
             deleteButton.setDisable(state);
         });
@@ -115,7 +118,7 @@ public class OnSaveActionTask extends Task<Void>
 
         if(!isCombineChild)
         {
-            setSaveDeleteButtonState(true);
+            setSaveDeleteResetButtonState(true);
 
             action.setShowDisplayText(isShowDisplayText);
 
@@ -136,16 +139,20 @@ public class OnSaveActionTask extends Task<Void>
             }
 
 
+            logger.info("isHideDEfaultIcon : "+isHideDefaultIcon);
+            logger.info("isHideDEfaultIcon : "+isHideToggleOffIcon);
+            logger.info("isHideDEfaultIcon : "+isHideToggleOnIcon);
+
             if(action.getActionType() == ActionType.NORMAL)
             {
                 if(isHideDefaultIcon)
                 {
-                    if(action.getIcon("default") != null)
-                        action.setCurrentIconState("default");
+                    action.setCurrentIconState("");
                 }
                 else
                 {
-                    action.setCurrentIconState("");
+                    if(action.getIcon("default") != null)
+                        action.setCurrentIconState("default");
                 }
             }
             else if (action.getActionType() == ActionType.TOGGLE)
@@ -233,7 +240,7 @@ public class OnSaveActionTask extends Task<Void>
                     actionBox.init();
                 });
 
-                setSaveDeleteButtonState(false);
+                setSaveDeleteResetButtonState(false);
             }
 
             clientProfile.removeActionByID(action.getID());

@@ -144,8 +144,14 @@ public class ClientConnection extends Thread
         ClientConnections.getInstance().removeConnection(this);
     }
 
+    public Logger getLogger()
+    {
+        return logger;
+    }
+
     public void sendIcon(String profileID, String actionID, String state, byte[] icon) throws SevereException
     {
+        getLogger().info("Sending icon "+state+" len "+icon.length+"; profile:"+profileID+"; actionid:"+actionID+"\n\n\n\n");
         try
         {
             Thread.sleep(50);
