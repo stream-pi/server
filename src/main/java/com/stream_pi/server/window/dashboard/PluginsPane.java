@@ -97,9 +97,18 @@ public class PluginsPane extends VBox {
 
                 if(graphic == null)
                 {
-                    FontIcon cogs = new FontIcon("fas-cogs");
-                    cogs.getStyleClass().add("plugins_pane_each_plugin_button_icon");
-                    eachNormalActionPluginButton.setGraphic(cogs);
+                    if(eachAction.getActionType() == ActionType.TOGGLE)
+                    {
+                        FontIcon toggleIcon = new FontIcon("fas-toggle-on");
+                        toggleIcon.getStyleClass().add("plugins_pane_each_plugin_button_icon_toggle");
+                        eachNormalActionPluginButton.setGraphic(toggleIcon);
+                    }
+                    else
+                    {
+                        FontIcon cogs = new FontIcon("fas-cogs");
+                        cogs.getStyleClass().add("plugins_pane_each_plugin_button_icon_normal");
+                        eachNormalActionPluginButton.setGraphic(cogs);
+                    }
                 }
                 else
                 {
