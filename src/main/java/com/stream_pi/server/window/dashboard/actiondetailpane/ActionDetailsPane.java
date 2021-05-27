@@ -346,19 +346,21 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         normalToggleActionCommonPropsVBox.managedProperty().bind(normalToggleActionCommonPropsVBox.visibleProperty());
         normalToggleActionCommonPropsVBox.setSpacing(10.0);
 
+        FileChooser.ExtensionFilter iconExtensions = new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif");
+
         normalActionsPropsVBox = new VBox(
                 new HBoxInputBoxWithFileChooser("Icon", defaultIconFileTextField, hideDefaultIconCheckBox,
-                        new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif"))
+                        iconExtensions)
         );
         normalActionsPropsVBox.managedProperty().bind(normalActionsPropsVBox.visibleProperty());
         normalActionsPropsVBox.setSpacing(10.0);
 
         toggleActionsPropsVBox = new VBox(
                 new HBoxInputBoxWithFileChooser("Toggle Off Icon", toggleOffIconFileTextField, hideToggleOffIconCheckBox,
-                        new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif")),
+                        iconExtensions),
 
                 new HBoxInputBoxWithFileChooser("Toggle On Icon", toggleOnIconFileTextField, hideToggleOnIconCheckBox,
-                        new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif"))
+                        iconExtensions)
         );
 
         toggleActionsPropsVBox.managedProperty().bind(toggleActionsPropsVBox.visibleProperty());

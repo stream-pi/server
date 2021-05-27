@@ -236,7 +236,7 @@ public class OnSaveActionTask extends Task<Void>
             if(!isCombineChild)
             {
                 Platform.runLater(()->{
-                    actionBox.clear();
+                  //  actionBox.clear();
                     actionBox.setAction(action);
                     //actionBox.baseInit();
                     actionBox.init();
