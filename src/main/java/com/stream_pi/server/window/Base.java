@@ -136,6 +136,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
         getChildren().addAll(settingsBase, dashboardBase);
 
+        applyDefaultStylesheet();
         config = Config.getInstance();
 
         initThemes();
@@ -143,6 +144,9 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         stage.setWidth(config.getStartupWindowWidth());
         stage.setHeight(config.getStartupWindowHeight());
         stage.centerOnScreen();
+
+        dashboardBase.setDividerPositions(config.getRightDividerPositions());
+        dashboardBase.getLeftSplitPane().setDividerPositions(config.getLeftDividerPositions());
 
         dashboardBase.toFront();
     }

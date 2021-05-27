@@ -10,6 +10,8 @@ package com.stream_pi.server.io;
 
 import java.awt.*;
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -47,7 +49,7 @@ public class Config
             document = docBuilder.parse(configFile);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new SevereException("Config", "unable to read config.xml");
+            throw new SevereException("Config", "Unable to read config.xml\n"+e.getMessage());
         }
     }
 
@@ -113,12 +115,74 @@ public class Config
     }
 
 
+
     //server
+    private Element getDividerPositionsElement()
+    {
+        return (Element) getServerElement().getElementsByTagName("divider-positions").item(0);
+    }
+
+    public String getDefaultLeftDividerPositions()
+    {
+        return "3.0";
+    }
+
+
+    public double[] getLeftDividerPositions()
+    {
+        String[] strArr =  XMLConfigHelper.getStringProperty(getDividerPositionsElement(), "left",
+                getDefaultLeftDividerPositions(), false, true, document, configFile)
+                .split(",");
+
+        double[] r = new double[strArr.length];
+
+        for (int i = 0;i<strArr.length;i++)
+        {
+            r[i] = Double.parseDouble(strArr[i]);
+        }
+
+        return r;
+    }
+
+    public void setLeftDividerPositions(double[] position)
+    {
+        String r = Arrays.toString(position);
+        getDividerPositionsElement().getElementsByTagName("left").item(0).setTextContent(r.substring(1, r.length()-1));
+    }
+
+    public String getDefaultRightDividerPositions()
+    {
+        return "3.0";
+    }
+
+
+    public double[] getRightDividerPositions()
+    {
+        String[] strArr =  XMLConfigHelper.getStringProperty(getDividerPositionsElement(), "right",
+                getDefaultRightDividerPositions(), false, true, document, configFile)
+                .split(",");
+
+        double[] r = new double[strArr.length];
+
+        for (int i = 0;i<strArr.length;i++)
+        {
+            r[i] = Double.parseDouble(strArr[i]);
+        }
+
+        return r;
+    }
+
+    public void setRightDividerPositions(double[] position)
+    {
+        String r = Arrays.toString(position);
+        getDividerPositionsElement().getElementsByTagName("right").item(0).setTextContent(r.substring(1, r.length()-1));
+    }
 
     private Element getActionGridElement()
     {
         return (Element) getServerElement().getElementsByTagName("action-grid").item(0);
     }
+
     public int getActionGridActionGap()
     {
         return XMLConfigHelper.getIntProperty(getActionGridElement(), "gap",

@@ -220,8 +220,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 return;
             }
 
-            getConfig().setStartupWindowSize(getWidth(), getHeight());
-            getConfig().save();
             onQuitApp();
             ExternalPlugins.getInstance().shutDownActions();
             Platform.exit();
@@ -238,6 +236,21 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
     public void onQuitApp()
     {
+        try
+        {
+            if(getConfig() != null)
+            {
+                getConfig().setStartupWindowSize(getWidth(), getHeight());
+                getConfig().setRightDividerPositions(getDashboardBase().getDividerPositions());
+                getConfig().setLeftDividerPositions(getDashboardBase().getLeftSplitPane().getDividerPositions());
+                getConfig().save();
+            }
+        }
+        catch (SevereException e)
+        {
+            handleSevereException(e);
+        }
+
         stopServerAndAllConnections();
         executor.shutdown();
         getLogger().info("Shutting down ...");

@@ -136,4 +136,9 @@ public class DashboardBase extends SplitPane implements DashboardInterface {
 
 
     }
+
+    public SplitPane getLeftSplitPane()
+    {
+        return leftSplitPane;
+    }
 }
