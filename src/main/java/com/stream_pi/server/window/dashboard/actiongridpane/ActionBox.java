@@ -150,7 +150,6 @@ public class ActionBox extends StackPane{
                                 getCol()));
 
 
-                        System.out.println("@@#$#$#$ :"+newAction.getProfileID());
                         newAction.setParent(actionGridPaneListener.getCurrentParent());
                         newAction.setSocketAddressForClient(actionGridPaneListener.getClientConnection().getRemoteSocketAddress());
 
@@ -513,7 +512,6 @@ public class ActionBox extends StackPane{
 
     public void fakeToggle(boolean isON)
     {
-        System.out.println("CURRENT ICONS : "+action.getCurrentIconState());
         String[] toggleStatesHiddenStatus = action.getCurrentIconState().split("__");
 
         boolean isToggleOffHidden = toggleStatesHiddenStatus[0].equals("true");
@@ -592,14 +590,12 @@ public class ActionBox extends StackPane{
 
     public void setDisplayTextFontColour(String colour)
     {
-        System.out.println("COLOr : "+colour);
         if(!colour.isEmpty())
             displayTextLabel.setStyle("-fx-text-fill : "+colour+";");
     }
 
     public void setBackgroundColour(String colour)
     {
-        System.out.println("COLOr : "+colour);
         if(!colour.isEmpty())
             setStyle("-fx-background-color : "+colour);
     }
