@@ -280,12 +280,24 @@ public class ActionBox extends StackPane{
         actionContextMenu = new ContextMenu();
 
         MenuItem deleteActionMenuItem = new MenuItem("Delete Action");
+        deleteActionMenuItem.getStyleClass().add("action_box_delete_menu_item");
+        FontIcon deleteIcon = new FontIcon("fas-trash");
+        deleteIcon.getStyleClass().add("action_box_delete_menu_item_icon");
+        deleteActionMenuItem.setGraphic(deleteIcon);
         deleteActionMenuItem.setOnAction(event-> deleteAction());
 
         showToggleOffMenuItem = new MenuItem("Show Toggle OFF");
+        showToggleOffMenuItem.getStyleClass().add("action_box_toggle_on_menu_item");
+        FontIcon toggleOffIcon = new FontIcon("fas-toggle-on");
+        toggleOffIcon.getStyleClass().add("action_box_toggle_on_menu_item_icon");
+        showToggleOffMenuItem.setGraphic(toggleOffIcon);
         showToggleOffMenuItem.setOnAction(event-> fakeToggle(false));
 
-        showToggleOnMenuItem = new MenuItem("Show Toggle ON");
+        showToggleOnMenuItem = new MenuItem("Show Toggle OFF");
+        showToggleOnMenuItem.getStyleClass().add("action_box_toggle_off_menu_item");
+        FontIcon toggleOnIcon = new FontIcon("fas-toggle-off");
+        toggleOnIcon.getStyleClass().add("action_box_toggle_off_menu_item_icon");
+        showToggleOnMenuItem.setGraphic(toggleOnIcon);
         showToggleOnMenuItem.setOnAction(event-> fakeToggle(true));
 
         actionContextMenu.getItems().addAll(deleteActionMenuItem, showToggleOffMenuItem, showToggleOnMenuItem);

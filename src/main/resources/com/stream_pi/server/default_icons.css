@@ -13,7 +13,7 @@
     -fx-icon-color: #ffcc00;
 }
 
-.action_details_pane_delete_button_icon
+.action_details_pane_delete_button_icon, .action_box_delete_menu_item_icon
 {
     -fx-icon-color:red;
 }

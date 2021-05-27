@@ -225,6 +225,11 @@
     -fx-text-fill : red;
 }
 
+.action_box_delete_menu_item .label
+{
+    -fx-text-fill: red;
+}
+
 .action_details_pane_reset_button
 {
     -fx-text-fill : orange;
@@ -286,6 +291,6 @@
 
 .action_box_selected
 {
-    -fx-border-width: 4;
+    -fx-border-width: 3;
     -fx-border-color:orange;
 }

@@ -129,14 +129,14 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         openFolderButton.setGraphic(folderOpenIcon);
         openFolderButton.setOnAction(event -> onOpenFolderButtonClicked());
 
-        saveButton = new Button("Apply Changes");
+        saveButton = new Button("Save");
         saveButton.getStyleClass().add("action_details_pane_save_button");
         FontIcon syncIcon = new FontIcon("far-save");
         syncIcon.getStyleClass().add("action_details_save_delete_button_icon");
         saveButton.setGraphic(syncIcon);
         saveButton.setOnAction(event -> onSaveButtonClicked());
 
-        deleteButton = new Button("Delete action");
+        deleteButton = new Button();
         deleteButton.getStyleClass().add("action_details_pane_delete_button");
         FontIcon deleteIcon = new FontIcon("fas-trash");
         deleteIcon.getStyleClass().add("action_details_pane_delete_button_icon");
@@ -165,7 +165,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             }
         });
 
-        buttonBar = new HBox(openFolderButton, resetToDefaultsButton, deleteButton, returnButtonForCombineActionChild, saveButton);
+        buttonBar = new HBox(openFolderButton, resetToDefaultsButton, returnButtonForCombineActionChild, saveButton, deleteButton);
         buttonBar.getStyleClass().add("action_details_pane_button_bar");
         buttonBar.setPadding(new Insets(10, 10, 10, 0));
         buttonBar.setAlignment(Pos.CENTER_RIGHT);
