@@ -156,15 +156,16 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         returnButtonForCombineActionChild.setGraphic(new FontIcon("fas-caret-left"));
         returnButtonForCombineActionChild.managedProperty().bind(returnButtonForCombineActionChild.visibleProperty());
         returnButtonForCombineActionChild.setOnAction(event -> {
-            try {
-                logger.info("@@## : " + getAction().getParent());
+            try
+            {
                 onActionClicked(getClientProfile().getActionByID(getAction().getParent()), getActionBox());
-            } catch (MinorException e) {
+            } catch (MinorException e)
+            {
                 e.printStackTrace();
             }
         });
 
-        buttonBar = new HBox(openFolderButton, resetToDefaultsButton, returnButtonForCombineActionChild, saveButton, deleteButton);
+        buttonBar = new HBox(openFolderButton, resetToDefaultsButton, deleteButton, returnButtonForCombineActionChild, saveButton);
         buttonBar.getStyleClass().add("action_details_pane_button_bar");
         buttonBar.setPadding(new Insets(10, 10, 10, 0));
         buttonBar.setAlignment(Pos.CENTER_RIGHT);
@@ -471,17 +472,38 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     private void onResetToDefaultsButtonClicked()
     {
-        getAction().getClientProperties().resetToDefaults();
+        StreamPiAlert streamPiAlert = new StreamPiAlert(
+                "Warning",
+                "Are you sure you want to reset the action?",
+                StreamPiAlertType.WARNING
+        );
 
-        try
-        {
-            onActionClicked(getAction(), getActionBox());
-            saveAction(true, true);
-        }
-        catch (MinorException e)
-        {
-            exceptionAndAlertHandler.handleMinorException(e);
-        }
+        String optionYes = "Yes";
+        String optionNo = "No";
+
+        streamPiAlert.setButtons(optionYes, optionNo);
+
+        streamPiAlert.setOnClicked(new StreamPiAlertListener() {
+            @Override
+            public void onClick(String s) {
+                if(s.equals(optionYes))
+                {
+                    getAction().getClientProperties().resetToDefaults();
+
+                    try
+                    {
+                        onActionClicked(getAction(), getActionBox());
+                        saveAction(true, true);
+                    }
+                    catch (MinorException e)
+                    {
+                        exceptionAndAlertHandler.handleMinorException(e);
+                    }
+                }
+            }
+        });
+
+        streamPiAlert.show();
     }
 
     private VBox normalActionsPropsVBox;
