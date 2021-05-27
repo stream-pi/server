@@ -24,4 +24,6 @@ public interface ActionDetailsPaneListener {
     Window getCurrentWindow();
 
     void refresh();
+
+    void onDeleteButtonClicked();
 }

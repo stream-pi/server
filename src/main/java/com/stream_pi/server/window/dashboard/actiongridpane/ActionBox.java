@@ -16,6 +16,7 @@ import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.input.ClipboardContent;
@@ -251,53 +252,59 @@ public class ActionBox extends StackPane{
         setOnMouseClicked(mouseEvent -> {
             if(action != null)
             {
-                if(mouseEvent.getButton().equals(MouseButton.PRIMARY))
+                if(mouseEvent.getClickCount() == 2 && getAction().getActionType() == ActionType.FOLDER)
                 {
-                    if(mouseEvent.getClickCount() == 2 && getAction().getActionType() == ActionType.FOLDER)
+                    getActionDetailsPaneListener().onOpenFolderButtonClicked();
+                }
+                else
+                {
+                    try
                     {
-                        getActionDetailsPaneListener().onOpenFolderButtonClicked();
+                        actionDetailsPaneListener.onActionClicked(action, this);
                     }
-                    else
+                    catch (MinorException e)
                     {
-                        try
-                        {
-                            actionDetailsPaneListener.onActionClicked(action, this);
-                        }
-                        catch (MinorException e)
-                        {
-                            exceptionAndAlertHandler.handleMinorException(e);
-                            e.printStackTrace();
-                        }
+                        exceptionAndAlertHandler.handleMinorException(e);
+                        e.printStackTrace();
                     }
                 }
-                else if(mouseEvent.getButton().equals(MouseButton.SECONDARY))
+
+                if(mouseEvent.getButton().equals(MouseButton.SECONDARY))
                 {
-                    if(getAction().getActionType() == ActionType.TOGGLE)
-                    {
-                        toggleStateContextMenu.show(this, mouseEvent.getScreenX(),
-                                mouseEvent.getScreenY());
-                    }
+                    actionContextMenu.show(this, mouseEvent.getScreenX(),
+                            mouseEvent.getScreenY());
                 }
             }
 
         });
 
-        toggleStateContextMenu = new ContextMenu();
+        actionContextMenu = new ContextMenu();
 
-        MenuItem showToggleOffMenuItem = new MenuItem("Show Toggle OFF");
+        MenuItem deleteActionMenuItem = new MenuItem("Delete Action");
+        deleteActionMenuItem.setOnAction(event-> deleteAction());
+
+        showToggleOffMenuItem = new MenuItem("Show Toggle OFF");
         showToggleOffMenuItem.setOnAction(event-> fakeToggle(false));
 
-        MenuItem showToggleOnMenuItem = new MenuItem("Show Toggle ON");
+        showToggleOnMenuItem = new MenuItem("Show Toggle ON");
         showToggleOnMenuItem.setOnAction(event-> fakeToggle(true));
 
-        toggleStateContextMenu.getItems().addAll(showToggleOffMenuItem, showToggleOnMenuItem);
+        actionContextMenu.getItems().addAll(deleteActionMenuItem, showToggleOffMenuItem, showToggleOnMenuItem);
 
 
         setCache(true);
         setCacheHint(CacheHint.QUALITY);
     }
 
-    ContextMenu toggleStateContextMenu;
+    private MenuItem showToggleOffMenuItem;
+    private MenuItem showToggleOnMenuItem;
+
+    private void deleteAction()
+    {
+        actionDetailsPaneListener.onDeleteButtonClicked();
+    }
+
+    ContextMenu actionContextMenu;
 
     public void setInvalid(boolean invalid)
     {
@@ -461,6 +468,9 @@ public class ActionBox extends StackPane{
     {
         setBackground(null);
         setStyle(null);
+
+        showToggleOffMenuItem.setVisible(getAction().getActionType() == ActionType.TOGGLE);
+        showToggleOnMenuItem.setVisible(getAction().getActionType() == ActionType.TOGGLE);
 
         if(getAction().isShowDisplayText())
             setDisplayTextLabel(getAction().getDisplayText());

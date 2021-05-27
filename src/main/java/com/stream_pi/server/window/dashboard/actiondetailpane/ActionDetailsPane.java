@@ -21,6 +21,9 @@ import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.controller.ActionDataFormats;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionGridPaneListener;
+import com.stream_pi.util.alert.StreamPiAlert;
+import com.stream_pi.util.alert.StreamPiAlertListener;
+import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.uihelper.HBoxInputBox;
@@ -1126,17 +1129,41 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         }
     }
 
+    @Override
     public void onDeleteButtonClicked()
     {
-        new OnDeleteActionTask(
-            ClientConnections.getInstance().getClientConnectionBySocketAddress(
-                getClient().getRemoteSocketAddress()
-            ),
-            action,
-            isCombineChild(),
-            getCombineActionPropertiesPane(),
-            clientProfile, actionBox, this, exceptionAndAlertHandler,
-            !isCombineChild
+        StreamPiAlert streamPiAlert = new StreamPiAlert(
+                "Warning",
+                "Are you sure you want to delete the action?",
+                StreamPiAlertType.WARNING
         );
+
+        String optionYes = "Yes";
+        String optionNo = "No";
+
+        streamPiAlert.setButtons(optionYes, optionNo);
+
+        ActionDetailsPane actionDetailsPane = this;
+
+        streamPiAlert.setOnClicked(new StreamPiAlertListener() {
+            @Override
+            public void onClick(String s) {
+                if(s.equals(optionYes))
+                {
+                    new OnDeleteActionTask(
+                            ClientConnections.getInstance().getClientConnectionBySocketAddress(
+                                    getClient().getRemoteSocketAddress()
+                            ),
+                            action,
+                            isCombineChild(),
+                            getCombineActionPropertiesPane(),
+                            clientProfile, actionBox, actionDetailsPane, exceptionAndAlertHandler,
+                            !isCombineChild
+                    );
+                }
+            }
+        });
+
+        streamPiAlert.show();
     }
 }
