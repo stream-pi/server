@@ -537,6 +537,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         setAction(action);
         this.actionBox = actionBox;
+        actionBox.setSelected(true);
 
         renderActionProperties();
     }
@@ -610,7 +611,12 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         if(actionNull)
         {
             action = null;
-            actionBox = null;
+
+            if(actionBox !=null)
+            {
+                actionBox.setSelected(false);
+                actionBox = null;
+            }
         }
     }
 

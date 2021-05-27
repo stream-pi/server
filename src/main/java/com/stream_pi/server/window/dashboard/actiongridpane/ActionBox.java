@@ -261,18 +261,18 @@ public class ActionBox extends StackPane{
                     try
                     {
                         actionDetailsPaneListener.onActionClicked(action, this);
+
+                        if(mouseEvent.getButton().equals(MouseButton.SECONDARY))
+                        {
+                            actionContextMenu.show(this, mouseEvent.getScreenX(),
+                                    mouseEvent.getScreenY());
+                        }
                     }
                     catch (MinorException e)
                     {
                         exceptionAndAlertHandler.handleMinorException(e);
                         e.printStackTrace();
                     }
-                }
-
-                if(mouseEvent.getButton().equals(MouseButton.SECONDARY))
-                {
-                    actionContextMenu.show(this, mouseEvent.getScreenX(),
-                            mouseEvent.getScreenY());
                 }
             }
 
@@ -602,5 +602,17 @@ public class ActionBox extends StackPane{
         System.out.println("COLOr : "+colour);
         if(!colour.isEmpty())
             setStyle("-fx-background-color : "+colour);
+    }
+
+    public void setSelected(boolean status)
+    {
+        if(status)
+        {
+            getStyleClass().add("action_box_selected");
+        }
+        else
+        {
+            getStyleClass().remove("action_box_selected");
+        }
     }
 }
