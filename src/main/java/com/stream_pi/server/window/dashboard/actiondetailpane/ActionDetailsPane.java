@@ -969,10 +969,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     public void onSaveButtonClicked()
     {
-        try {
-            // saveButton.setDisable(true);
-            // deleteButton.setDisable(true);
-
+        try
+        {
             validateForm();
 
             saveAction(true, true);
