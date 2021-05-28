@@ -304,7 +304,7 @@ public class ActionBox extends StackPane{
         showToggleOffMenuItem.setGraphic(toggleOffIcon);
         showToggleOffMenuItem.setOnAction(event-> fakeToggle(false));
 
-        showToggleOnMenuItem = new MenuItem("Show Toggle OFF");
+        showToggleOnMenuItem = new MenuItem("Show Toggle ON");
         showToggleOnMenuItem.getStyleClass().add("action_box_toggle_off_menu_item");
         FontIcon toggleOnIcon = new FontIcon("fas-toggle-off");
         toggleOnIcon.getStyleClass().add("action_box_toggle_off_menu_item_icon");
