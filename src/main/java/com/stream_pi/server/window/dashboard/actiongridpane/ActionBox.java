@@ -412,7 +412,7 @@ public class ActionBox extends StackPane{
 
         if(fontIcon!=null)
         {
-            fontIcon.getStyleClass().clear();
+            fontIcon.getStyleClass().removeIf(s -> s.equals("action_box_toggle_off") || s.equals("action_box_toggle_on"));
         }
         else
         {
