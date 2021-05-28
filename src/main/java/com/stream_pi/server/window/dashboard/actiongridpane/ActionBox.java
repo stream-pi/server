@@ -124,10 +124,21 @@ public class ActionBox extends StackPane{
 
                         if(isNew)
                         {
-                            newAction.setDisplayText("Untitled Action");
-                            newAction.setShowDisplayText(true);
                             newAction.getClientProperties().resetToDefaults();
-                            newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
+
+                            newAction.setDisplayText(newAction.getName());
+
+                            if(newAction.getActionType() == ActionType.TOGGLE)
+                            {
+                                newAction.setShowDisplayText(false);
+                                newAction.setDisplayTextAlignment(DisplayTextAlignment.BOTTOM);
+                            }
+                            else
+                            {
+                                newAction.setShowDisplayText(true);
+                                newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
+                            }
+
 
                             if(actionType == ActionType.TOGGLE)
                                 newAction.setCurrentIconState("false__false");
