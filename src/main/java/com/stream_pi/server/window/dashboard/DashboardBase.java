@@ -125,7 +125,9 @@ public class DashboardBase extends SplitPane implements DashboardInterface {
 
         getActionGridPane().setClientProfile(clientProfile);
 
-        try {
+        try
+        {
+            getActionGridPane().setFreshRender(true);
             getActionGridPane().renderGrid();
             getActionGridPane().renderActions();
         }
