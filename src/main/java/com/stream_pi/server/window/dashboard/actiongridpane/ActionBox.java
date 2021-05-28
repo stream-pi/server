@@ -365,18 +365,6 @@ public class ActionBox extends StackPane{
         this.row = row;
         baseInit();
     }
-
-    public static Action deserialize(ByteBuffer buffer) {
-        try {
-            ByteArrayInputStream is = new ByteArrayInputStream(buffer.array());
-            ObjectInputStream ois = new ObjectInputStream(is);
-            Action obj = (Action) ois.readObject();
-            return obj;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
     
     public void setIcon(byte[] iconByteArray)
     {
