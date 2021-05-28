@@ -298,16 +298,16 @@ public class ActionBox extends StackPane{
         deleteActionMenuItem.setOnAction(event-> deleteAction());
 
         showToggleOffMenuItem = new MenuItem("Show Toggle OFF");
-        showToggleOffMenuItem.getStyleClass().add("action_box_toggle_on_menu_item");
-        FontIcon toggleOffIcon = new FontIcon("fas-toggle-on");
-        toggleOffIcon.getStyleClass().add("action_box_toggle_on_menu_item_icon");
+        showToggleOffMenuItem.getStyleClass().add("action_box_toggle_off_menu_item");
+        FontIcon toggleOffIcon = new FontIcon("fas-toggle-off");
+        toggleOffIcon.getStyleClass().add("action_box_toggle_off_menu_item_icon");
         showToggleOffMenuItem.setGraphic(toggleOffIcon);
         showToggleOffMenuItem.setOnAction(event-> fakeToggle(false));
 
         showToggleOnMenuItem = new MenuItem("Show Toggle ON");
-        showToggleOnMenuItem.getStyleClass().add("action_box_toggle_off_menu_item");
-        FontIcon toggleOnIcon = new FontIcon("fas-toggle-off");
-        toggleOnIcon.getStyleClass().add("action_box_toggle_off_menu_item_icon");
+        showToggleOnMenuItem.getStyleClass().add("action_box_toggle_on_menu_item");
+        FontIcon toggleOnIcon = new FontIcon("fas-toggle-on");
+        toggleOnIcon.getStyleClass().add("action_box_toggle_on_menu_item_icon");
         showToggleOnMenuItem.setGraphic(toggleOnIcon);
         showToggleOnMenuItem.setOnAction(event-> fakeToggle(true));
 
