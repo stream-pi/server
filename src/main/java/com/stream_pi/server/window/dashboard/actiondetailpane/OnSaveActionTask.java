@@ -134,14 +134,10 @@ public class OnSaveActionTask extends Task<Void>
 
             if(isClearIcon)
             {
-                action.setIcons(null);
+                action.getIcons().clear();
                 action.setCurrentIconState("");
             }
 
-
-            logger.info("isHideDEfaultIcon : "+isHideDefaultIcon);
-            logger.info("isHideDEfaultIcon : "+isHideToggleOffIcon);
-            logger.info("isHideDEfaultIcon : "+isHideToggleOnIcon);
 
             if(action.getActionType() == ActionType.NORMAL ||
             action.getActionType() == ActionType.FOLDER ||

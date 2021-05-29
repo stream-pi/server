@@ -271,11 +271,10 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         clearIconButton = new Button("Clear Icon");
         clearIconButton.managedProperty().bind(clearIconButton.visibleProperty());
-        clearIconButton.setOnAction(event -> {
-
+        clearIconButton.setOnAction(event ->
+        {
             hideDefaultIconCheckBox.setDisable(true);
             hideDefaultIconCheckBox.setSelected(false);
-
             hideToggleOffIconCheckBox.setDisable(true);
             hideToggleOffIconCheckBox.setSelected(false);
 
@@ -343,8 +342,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         normalToggleActionCommonPropsVBox = new VBox(
                 displayTextColourHBox,
                 alignmentHBox,
-                bgColourHBox,
-                clearIconHBox
+                bgColourHBox
         );
 
         normalToggleActionCommonPropsVBox.managedProperty().bind(normalToggleActionCommonPropsVBox.visibleProperty());
@@ -371,7 +369,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         toggleActionsPropsVBox.setSpacing(10.0);
 
         vbox.getChildren().addAll(displayTextFieldHBox,normalToggleActionCommonPropsVBox,
-                normalActionsPropsVBox, toggleActionsPropsVBox, clientPropertiesVBox,
+                normalActionsPropsVBox, toggleActionsPropsVBox,
+                clearIconHBox, clientPropertiesVBox,
                 pluginExtraButtonBar);
 
         vbox.setVisible(false);
@@ -620,8 +619,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         openFolderButton.setVisible(false);
         resetToDefaultsButton.setVisible(false);
         returnButtonForCombineActionChild.setVisible(false);
-        clearIconButton.setVisible(false);
-
 
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         buttonBar.setVisible(false);
