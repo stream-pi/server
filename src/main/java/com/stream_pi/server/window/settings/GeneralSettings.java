@@ -48,6 +48,7 @@ public class GeneralSettings extends VBox {
     private final TextField actionGridPaneActionBoxGap;
     private final ToggleButton startOnBootToggleButton;
     private final ToggleButton minimizeToSystemTrayOnCloseToggleButton;
+    private final ToggleButton showAlertsPopupToggleButton;
     private final Button saveButton;
     private final Button checkForUpdatesButton;
 
@@ -83,6 +84,7 @@ public class GeneralSettings extends VBox {
 
         startOnBootToggleButton = new ToggleButton("Start on Boot");
         minimizeToSystemTrayOnCloseToggleButton = new ToggleButton("Minimise To Tray On Close");
+        showAlertsPopupToggleButton = new ToggleButton("Show Popup On Alert");
 
         checkForUpdatesButton = new Button("Check for updates");
         checkForUpdatesButton.setOnAction(event->checkForUpdates());
@@ -104,7 +106,7 @@ public class GeneralSettings extends VBox {
 
         serverNameTextField.setPrefWidth(200);
 
-        HBox toggleButtons = new HBox(minimizeToSystemTrayOnCloseToggleButton, startOnBootToggleButton);
+        HBox toggleButtons = new HBox(minimizeToSystemTrayOnCloseToggleButton, startOnBootToggleButton, showAlertsPopupToggleButton);
         toggleButtons.setSpacing(10.0);
         VBox.setMargin(toggleButtons, new Insets(30, 0 , 0,0));
         toggleButtons.setAlignment(Pos.CENTER);
@@ -192,6 +194,7 @@ public class GeneralSettings extends VBox {
             actionGridPaneActionBoxGap.setText(config.getActionGridActionGap()+"");
 
             minimizeToSystemTrayOnCloseToggleButton.setSelected(config.getMinimiseToSystemTrayOnClose());
+            showAlertsPopupToggleButton.setSelected(config.isShowAlertsPopup());
             startOnBootToggleButton.setSelected(config.getStartOnBoot());
         });
     }
@@ -213,6 +216,7 @@ public class GeneralSettings extends VBox {
                         portTextField.setDisable(true);
 
                         minimizeToSystemTrayOnCloseToggleButton.setDisable(true);
+                        showAlertsPopupToggleButton.setDisable(true);
                         startOnBootToggleButton.setDisable(true);
                     });
 
@@ -225,6 +229,7 @@ public class GeneralSettings extends VBox {
                     String actionGridActionBoxGap = actionGridPaneActionBoxGap.getText();
 
                     boolean minimizeToSystemTrayOnClose = minimizeToSystemTrayOnCloseToggleButton.isSelected();
+                    boolean showAlertsPopup = showAlertsPopupToggleButton.isSelected();
                     boolean startOnBoot = startOnBootToggleButton.isSelected();
 
                     Config config = Config.getInstance();
@@ -365,6 +370,8 @@ public class GeneralSettings extends VBox {
                     config.setThemesPath(themesPathStr);
 
                     config.setMinimiseToSystemTrayOnClose(minimizeToSystemTrayOnClose);
+                    StreamPiAlert.setIsShowPopup(showAlertsPopup);
+                    config.setShowAlertsPopup(showAlertsPopup);
                     config.setStartupOnBoot(startOnBoot);
 
                     config.save();
@@ -420,6 +427,7 @@ public class GeneralSettings extends VBox {
                         portTextField.setDisable(false);
 
                         minimizeToSystemTrayOnCloseToggleButton.setDisable(false);
+                        showAlertsPopupToggleButton.setDisable(false);
                         startOnBootToggleButton.setDisable(false);
                     });
                 }

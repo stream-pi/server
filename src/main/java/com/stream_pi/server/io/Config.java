@@ -407,4 +407,19 @@ public class Config
 
         config.save();
     }
+
+    public void setShowAlertsPopup(boolean value)
+    {
+        getOthersElement().getElementsByTagName("alerts-popup").item(0).setTextContent(value+"");
+    }
+
+    public boolean isShowAlertsPopup()
+    {
+        return XMLConfigHelper.getBooleanProperty(getOthersElement(), "alerts-popup", getDefaultIsShowAlertsPopup(), false, true, document, configFile);
+    }
+
+    public boolean getDefaultIsShowAlertsPopup()
+    {
+        return true;
+    }
 }
