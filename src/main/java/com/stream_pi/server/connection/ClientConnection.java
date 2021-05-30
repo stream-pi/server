@@ -34,6 +34,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -251,9 +252,9 @@ public class ClientConnection extends Thread
         {
             while(!stop.get())
             {
-
                 try
                 {
+
                     Message message = (Message) ois.readObject();
 
                     String header = message.getHeader();
@@ -261,7 +262,7 @@ public class ClientConnection extends Thread
                     switch (header)
                     {
                         case "action_icon" :        onActionIconReceived(message);
-                        break;
+                            break;
 
                         case "disconnect" :         clientDisconnected(message);
                             break;
@@ -446,19 +447,23 @@ public class ClientConnection extends Thread
         }
     }
 
-    int totalActions;
+    private HashMap<String, Integer> temporaryProfilesCheck = null;
+
+
     public void registerProfilesFromClient(Message message) throws StreamPiException
     {
         logger.info("Registering profiles ...");
 
-        String[] r = message.getStringArrValue();
+        String[] profileIds = message.getStringArrValue();
 
-        totalActions = message.getIntValue();
-        System.out.println("TTOOOX : "+totalActions);
+        int[] profilesActionIds = message.getIntArrValue();
 
-        for (String profileID : r)
+        temporaryProfilesCheck = new HashMap<>();
+
+        for (int i = 0;i<profileIds.length;i++)
         {
-            getProfileDetailsFromClient(profileID);
+            temporaryProfilesCheck.put(profileIds[i], profilesActionIds[i]);
+            getProfileDetailsFromClient(profileIds[i]);
         }
     }
 
@@ -502,7 +507,7 @@ public class ClientConnection extends Thread
 
     public synchronized void registerActionToProfile(Message message) throws StreamPiException
     {
-        totalActions--;
+
 
         String[] r = message.getStringArrValue();
 
@@ -556,6 +561,17 @@ public class ClientConnection extends Thread
         }
 
         //set up action
+
+        temporaryProfilesCheck.replace(
+                profileID,
+                (temporaryProfilesCheck.get(profileID) - 1)
+        );
+
+        if(temporaryProfilesCheck.get(profileID) == 0)
+        {
+            temporaryProfilesCheck.remove(profileID);
+        }
+
 
         //action toBeAdded = null;
 
@@ -701,6 +717,7 @@ public class ClientConnection extends Thread
 
         action.setClientProperties(clientProperties);
 
+
         try
         {
             getClient().getProfileByID(profileID).addAction(action);
@@ -716,9 +733,15 @@ public class ClientConnection extends Thread
 
     public void checkIfReady() throws SevereException
     {
-        if(totalActions == 0)
+        if(temporaryProfilesCheck.size() == 0)
         {
+            getLogger().info("PASSS");
+            temporaryProfilesCheck = null;
             sendMessage(new Message("ready"));
+        }
+        else
+        {
+            getLogger().info("FAIL");
         }
     }
 
@@ -891,7 +914,7 @@ public class ClientConnection extends Thread
             String actionID = r[1];
             boolean toggle = r[2].equals("true");
 
-            Action action = client.getProfileByID(profileID).getActionByID(actionID);
+            Action action =  client.getProfileByID(profileID).getActionByID(actionID);
 
             if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
             {
