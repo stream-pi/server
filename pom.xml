@@ -14,11 +14,13 @@
         <maven.compiler.target>11</maven.compiler.target>
 
         <client.plugin.version>0.1.36</client.plugin.version>
-        <javafx.version>17-ea+8</javafx.version>
+        <javafx.version>17-ea+11</javafx.version>
 
         <action.api.version>1.0.0-SNAPSHOT</action.api.version>
         <theme.api.version>1.0.0-SNAPSHOT</theme.api.version>
         <util.version>1.0.0-SNAPSHOT</util.version>
+
+        <controlsfx.version>11.1.0</controlsfx.version>
 
         <commons.bean.util.version>1.9.4</commons.bean.util.version>
         <commons.configuration.version>2.7</commons.configuration.version>
@@ -76,6 +78,11 @@
             <version>${theme.api.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>${controlsfx.version}</version>
+        </dependency>
     </dependencies>
 
 
