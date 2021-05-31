@@ -355,11 +355,11 @@ public class ExternalPlugins
                 }
                 sortedPlugins.get(eachPlugin.getCategory()).add(eachPlugin);
             }
-            catch (Exception e)
+            catch (MinorException e)
             {
                 e.printStackTrace();
                 errorModules.add(eachPlugin);
-                errorModuleError.add(e.getMessage());
+                errorModuleError.add(e.getShortMessage());
             }
         }
 
@@ -403,7 +403,7 @@ public class ExternalPlugins
             {
                 eachPlugin.initAction();
             }
-            catch (Exception e)
+            catch (MinorException e)
             {
                 e.printStackTrace();
                 isError = true;
@@ -413,8 +413,7 @@ public class ExternalPlugins
                         .append(eachPlugin.getModuleName())
                         .append("\n");
 
-                if(e instanceof StreamPiException)
-                    errors.append(((MinorException) e).getShortMessage());
+                errors.append(e.getShortMessage());
 
                 errors.append("\n");
             }
@@ -563,7 +562,7 @@ public class ExternalPlugins
                 {
                     eachPlugin.onShutDown();
                 }
-                catch (Exception e)
+                catch (MinorException e)
                 {
                     e.printStackTrace();
                 }

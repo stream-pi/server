@@ -124,16 +124,11 @@ public class ClientConnection extends Thread
                     {
                         ((ExternalPlugin) action).onClientDisconnected();
                     }
-                    catch (Exception e)
+                    catch (MinorException e)
                     {
-                        e.printStackTrace();
-
-                        exceptionAndAlertHandler.handleMinorException(
-                                new MinorException(
-                                        "Unable to run onClientDisconnected for "+action.getModuleName(),
-                                        "Detailed message : "+e.getMessage()
-                                )
-                        );
+                        e.setTitle("Unable to run onClientDisconnected for "+action.getModuleName());
+                        e.setShortMessage("Detailed message :\n\n"+e.getShortMessage());
+                        exceptionAndAlertHandler.handleMinorException(e);
                     }
                 }
             }
@@ -649,12 +644,11 @@ public class ClientConnection extends Thread
                                 {
                                     newPlugin.onClientConnected();
                                 }
-                                catch (Exception e)
+                                catch (MinorException e)
                                 {
-                                    e.printStackTrace();
-                                    exceptionAndAlertHandler.handleMinorException(
-                                            new MinorException("Failed","Error "+moduleName+" at onClientConnected \nMessage"+e.getMessage())
-                                    );
+                                    e.setTitle("Unable to run onClientConnected for "+moduleName);
+                                    e.setShortMessage("Detailed message :\n\n"+e.getShortMessage());
+                                    exceptionAndAlertHandler.handleMinorException(e);
                                 }
                                 return null;
                             }

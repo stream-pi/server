@@ -211,14 +211,14 @@ public class OnSaveActionTask extends Task<Void>
                 {
                     if(action instanceof ExternalPlugin)
                     {
-                        System.out.println(action.getSocketAddressForClient());
                         ((ExternalPlugin) action).onActionSavedFromServer();
                     }
                 }
-                catch (Exception e)
+                catch (MinorException e)
                 {
-                    e.printStackTrace();
-                    exceptionAndAlertHandler.handleMinorException(new MinorException("Error","onActionSavedFromServer() failed for "+action.getModuleName()+"\n\n"+e.getMessage()));
+                    e.setTitle("Error");
+                    e.setShortMessage("onActionSavedFromServer() failed for "+action.getModuleName()+"\n\n"+e.getShortMessage());
+                    exceptionAndAlertHandler.handleMinorException(e);
                 }
             }
 

@@ -60,16 +60,11 @@ public class OnDeleteActionTask extends Task<Void>
                 {
                     ((ExternalPlugin) action).onActionDeleted();
                 }
-                catch (Exception e)
+                catch (MinorException e)
                 {
-                    e.printStackTrace();
-
-                    exceptionAndAlertHandler.handleMinorException(
-                            new MinorException(
-                                    "Unable to run onActionDeleted for "+action.getModuleName(),
-                                    "Detailed message : "+e.getMessage()
-                            )
-                    );
+                    e.setTitle("Unable to run onActionDeleted for "+action.getModuleName());
+                    e.setShortMessage("Display Text: "+action.getDisplayText()+"\nDetailed message : \n\n"+e.getShortMessage());
+                    exceptionAndAlertHandler.handleMinorException(e);
                 }
             }
 

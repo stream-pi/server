@@ -339,7 +339,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     @Override
     public void handleMinorException(MinorException e)
     {
-        getLogger().log(Level.SEVERE, e.getMessage(), e);
+        getLogger().log(Level.SEVERE, e.getShortMessage(), e);
         e.printStackTrace();
 
 
@@ -348,7 +348,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
     @Override
     public void handleSevereException(SevereException e) {
-        getLogger().log(Level.SEVERE, e.getMessage(), e);
+        getLogger().log(Level.SEVERE, e.getShortMessage(), e);
         e.printStackTrace();
     
         Platform.runLater(()->{
@@ -376,26 +376,10 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             action.onActionClicked();
             return true;
         }
-        catch (Exception e)
+        catch (MinorException e)
         {
-            e.printStackTrace();
-            //check if its windows UAC related
-            if(e.getMessage().contains("operation requires elevation"))
-            {
-                handleMinorException(new MinorException(
-                        "Action Execution Failed!",
-                        "Error running action at ["+action.getLocation().getRow()+","+action.getLocation().getCol()+"] ("+action.getDisplayText()+")\n"+
-                                "This action requires higher UAC privileges. Re-launch Stream-Pi Server with 'Administrator Privileges' in order to run this command.")
-                );
-            }
-            else
-            {
-                handleMinorException(new MinorException(
-                        "Action Execution Failed!",
-                        "Error running action at ["+action.getLocation().getRow()+","+action.getLocation().getCol()+"] ("+action.getDisplayText()+")\n"+
-                                "Check stacktrace/log to know what exactly happened\n\nMessage : \n"+e.getMessage() )
-                );
-            }
+            e.setTitle("Unable to execute action! ["+action.getDisplayText()+"]");
+            handleMinorException(e);
             return false;
         }
     }
@@ -403,11 +387,9 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     @Override
     public boolean onToggleActionClicked(ToggleAction action, boolean toggle, String profileID)
     {
-        try{
+        try
+        {
             getLogger().info("action "+action.getID()+" clicked!");
-
-
-
             if(toggle)
             {
                 action.onToggleOn();
@@ -417,38 +399,12 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 action.onToggleOff();
             }
 
-//            ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByIDAndProfileID(
-//                    action.getID(),
-//                    profileID
-//            );
-//
-//            if(actionBox != null)
-//            {
-//                Platform.runLater(()->actionBox.init(toggle));
-//            }
-
             return true;
         }
-        catch (Exception e)
+        catch (MinorException e)
         {
-            e.printStackTrace();
-            //check if its windows UAC related
-            if(e.getMessage().contains("operation requires elevation"))
-            {
-                handleMinorException(new MinorException(
-                        "Action Execution Failed!",
-                        "Error running action at ["+action.getLocation().getRow()+","+action.getLocation().getCol()+"] ("+action.getDisplayText()+")\n"+
-                                "This action requires higher UAC privileges. Re-launch Stream-Pi Server with 'Administrator Privileges' in order to run this command.")
-                );
-            }
-            else
-            {
-                handleMinorException(new MinorException(
-                        "Action Execution Failed!",
-                        "Error running action at ["+action.getLocation().getRow()+","+action.getLocation().getCol()+"] ("+action.getDisplayText()+")\n"+
-                                "Check stacktrace/log to know what exactly happened\n\nMessage : \n"+e.getMessage() )
-                );
-            }
+            e.setTitle("Unable to execute action! ["+action.getDisplayText()+"]");
+            handleMinorException(e);
             return false;
         }
     }
