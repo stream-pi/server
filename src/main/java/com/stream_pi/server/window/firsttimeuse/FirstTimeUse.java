@@ -14,13 +14,15 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
+import java.util.Objects;
+
 public class FirstTimeUse extends VBox{
 
     
     public FirstTimeUse(ExceptionAndAlertHandler exceptionAndAlertHandler, ServerListener serverListener)
     {
         Font.loadFont(Main.class.getResourceAsStream("Roboto.ttf"), 13);
-        getStylesheets().add(Main.class.getResource("style.css").toExternalForm());
+        getStylesheets().add(Objects.requireNonNull(Main.class.getResource("style.css")).toExternalForm());
 
         getStyleClass().add("first_time_use_pane");
 
