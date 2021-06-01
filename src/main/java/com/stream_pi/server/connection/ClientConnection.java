@@ -29,6 +29,7 @@ import com.stream_pi.util.platform.Platform;
 import com.stream_pi.util.platform.ReleaseStatus;
 import com.stream_pi.util.version.Version;
 import javafx.concurrent.Task;
+import javafx.scene.control.Toggle;
 
 import java.io.*;
 import java.net.Socket;
@@ -596,7 +597,6 @@ public class ClientConnection extends Thread
                         ExternalPlugin newPlugin = originalAction.clone();
 
                         newPlugin.setID(ID);
-                        System.out.println("SAVVEEEEEEEEEEEEEEE@@@@@ : "+profileID);
                         newPlugin.setProfileID(profileID);
                         newPlugin.setSocketAddressForClient(socket.getRemoteSocketAddress());
 
@@ -729,13 +729,8 @@ public class ClientConnection extends Thread
     {
         if(temporaryProfilesCheck.size() == 0)
         {
-            getLogger().info("PASSS");
             temporaryProfilesCheck = null;
             sendMessage(new Message("ready"));
-        }
-        else
-        {
-            getLogger().info("FAIL");
         }
     }
 
@@ -920,58 +915,39 @@ public class ClientConnection extends Thread
                 }
                 else
                 {
-                    if(action instanceof ToggleAction)
-                    {
-                        new Thread(new Task<Void>() {
-                            @Override
-                            protected Void call()
+                    new Thread(new Task<Void>() {
+                        @Override
+                        protected Void call()
+                        {
+                            try
                             {
-                                try
+                                boolean result = false;
+
+                                if(action instanceof ToggleAction)
                                 {
-                                    boolean result = serverListener.onToggleActionClicked((ToggleAction) action, toggle, profileID);
-                                    if(!result)
-                                    {
-                                        sendActionFailed(profileID, actionID);
-                                    }
+                                    result = serverListener.onToggleActionClicked((ToggleAction) action, toggle, profileID);
                                 }
-                                catch (SevereException e)
+                                else if (action instanceof NormalAction)
                                 {
-                                    exceptionAndAlertHandler.handleSevereException(e);
+                                    result = serverListener.onNormalActionClicked((NormalAction) action, profileID);
                                 }
-                                catch (Exception e)
+
+                                if(!result)
                                 {
-                                    e.printStackTrace();
+                                    sendActionFailed(profileID, actionID);
                                 }
-                                return null;
                             }
-                        }).start();
-                    }
-                    else if(action instanceof NormalAction)
-                    {
-                        new Thread(new Task<Void>() {
-                            @Override
-                            protected Void call()
+                            catch (SevereException e)
                             {
-                                try
-                                {
-                                    boolean result = serverListener.onNormalActionClicked((NormalAction) action, profileID);
-                                    if(!result)
-                                    {
-                                        sendActionFailed(profileID, actionID);
-                                    }
-                                }
-                                catch (SevereException e)
-                                {
-                                    exceptionAndAlertHandler.handleSevereException(e);
-                                }
-                                catch (Exception e)
-                                {
-                                    e.printStackTrace();
-                                }
-                                return null;
+                                exceptionAndAlertHandler.handleSevereException(e);
                             }
-                        }).start();
-                    }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }
+                    }).start();
                 }
             }
         } catch (Exception e) {
@@ -989,7 +965,8 @@ public class ClientConnection extends Thread
         sendMessage(message);
     }
 
-    public void sendActionFailed(String profileID, String actionID) throws SevereException {
+    public void sendActionFailed(String profileID, String actionID) throws SevereException
+    {
         logger.info("Sending failed status ...");
         Message message = new Message("action_failed");
         message.setStringArrValue(profileID, actionID);

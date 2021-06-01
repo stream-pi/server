@@ -580,6 +580,29 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         return ServerInfo.getInstance().getPlatform();
     }
 
+    @Override
+    public void sendActionFailed(MinorException exception, SocketAddress socketAddress, String profileID, String actionID)
+    {
+        handleMinorException(exception);
+
+        executor.execute(new Task<Void>() {
+            @Override
+            protected Void call()
+            {
+                try {
+                    ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress)
+                            .sendActionFailed(profileID, actionID);
+                }
+                catch (SevereException e)
+                {
+                    handleSevereException(e);
+                }
+                return null;
+            }
+        });
+
+    }
+
     private Animation createOpenSettingsAnimation(Node settingsNode, Node dashboardNode) {
         Timeline openSettingsTimeline = new Timeline();
         openSettingsTimeline.setCycleCount(1);
