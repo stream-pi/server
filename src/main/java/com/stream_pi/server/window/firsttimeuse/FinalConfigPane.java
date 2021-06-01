@@ -42,7 +42,7 @@ public class FinalConfigPane extends VBox
         label.getStyleClass().add("first_time_use_pane_final_config_label");
 
         serverNicknameTextField = new TextField();
-        serverPortTextField = new TextField("2004");
+        serverPortTextField = new TextField(Config.getDefaultPort()+"");
 
         HBoxInputBox serverNickNameInputBox = new HBoxInputBox("Server Nickname", serverNicknameTextField, 200);
         HBoxInputBox serverPortInputBox = new HBoxInputBox("Server Port", serverPortTextField);

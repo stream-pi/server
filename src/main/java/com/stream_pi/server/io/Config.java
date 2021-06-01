@@ -104,9 +104,9 @@ public class Config
         return "Stream-Pi Server";
     }
 
-    public int getDefaultPort()
+    public static int getDefaultPort()
     {
-        return 2004;
+        return 6504;
     }
 
     private Element getServerElement()
