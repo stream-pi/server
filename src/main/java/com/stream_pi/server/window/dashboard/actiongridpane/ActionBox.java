@@ -36,6 +36,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.List;
 
 public class ActionBox extends StackPane{
 
@@ -233,7 +234,8 @@ public class ActionBox extends StackPane{
         setOnDragDetected(mouseEvent -> {
             if(getAction()!=null)
             {
-                if(getAction().getActionType() == ActionType.NORMAL)
+                if(getAction().getActionType() == ActionType.NORMAL ||
+                    getAction().getActionType() == ActionType.TOGGLE)
                 {
                     Dragboard db = startDragAndDrop(TransferMode.ANY);
 
