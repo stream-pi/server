@@ -919,31 +919,17 @@ public class ClientConnection extends Thread
                         @Override
                         protected Void call()
                         {
-                            try
-                            {
-                                boolean result = false;
+                            getLogger().info("action "+action.getID()+" clicked!");
 
-                                if(action instanceof ToggleAction)
-                                {
-                                    result = serverListener.onToggleActionClicked((ToggleAction) action, toggle, profileID);
-                                }
-                                else if (action instanceof NormalAction)
-                                {
-                                    result = serverListener.onNormalActionClicked((NormalAction) action, profileID);
-                                }
-
-                                if(!result)
-                                {
-                                    sendActionFailed(profileID, actionID);
-                                }
-                            }
-                            catch (SevereException e)
+                            if(action instanceof ToggleAction)
                             {
-                                exceptionAndAlertHandler.handleSevereException(e);
+                                serverListener.onToggleActionClicked((ToggleAction) action, toggle, profileID,
+                                        getRemoteSocketAddress());
                             }
-                            catch (Exception e)
+                            else if (action instanceof NormalAction)
                             {
-                                e.printStackTrace();
+                                serverListener.onNormalActionClicked((NormalAction) action, profileID,
+                                        getRemoteSocketAddress());
                             }
                             return null;
                         }

@@ -371,27 +371,23 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     }
 
     @Override
-    public synchronized boolean onNormalActionClicked(NormalAction action, String profileID)
+    public synchronized void onNormalActionClicked(NormalAction action, String profileID, SocketAddress socketAddress)
     {
-        try{
-            getLogger().info("action "+action.getID()+" clicked!");
+        try
+        {
             action.onActionClicked();
-            return true;
         }
         catch (MinorException e)
         {
-            e.setTitle("Unable to execute action! ["+action.getDisplayText()+"]");
-            handleMinorException(e);
-            return false;
+            sendActionFailed(e, socketAddress, profileID, action.getID());
         }
     }
 
     @Override
-    public boolean onToggleActionClicked(ToggleAction action, boolean toggle, String profileID)
+    public synchronized void onToggleActionClicked(ToggleAction action, boolean toggle, String profileID, SocketAddress socketAddress)
     {
         try
         {
-            getLogger().info("action "+action.getID()+" clicked!");
             if(toggle)
             {
                 action.onToggleOn();
@@ -400,14 +396,10 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             {
                 action.onToggleOff();
             }
-
-            return true;
         }
         catch (MinorException e)
         {
-            e.setTitle("Unable to execute action! ["+action.getDisplayText()+"]");
-            handleMinorException(e);
-            return false;
+            sendActionFailed(e, socketAddress, profileID, action.getID());
         }
     }
 
@@ -585,6 +577,13 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     @Override
     public void sendActionFailed(MinorException exception, SocketAddress socketAddress, String profileID, String actionID)
     {
+        if(exception.getTitle() != null)
+        {
+            exception.setShortMessage(exception.getTitle()+"\n"+exception.getShortMessage());
+        }
+
+        exception.setTitle("Error while running action");
+
         handleMinorException(exception);
 
         executor.execute(new Task<Void>() {

@@ -8,10 +8,12 @@ import com.stream_pi.server.window.settings.SettingsBase;
 import com.stream_pi.util.exception.SevereException;
 import javafx.stage.Stage;
 
+import java.net.SocketAddress;
+
 public interface ServerListener
 {
-    boolean onNormalActionClicked(NormalAction action, String profileID);
-    boolean onToggleActionClicked(ToggleAction action, boolean toggle, String profileID);
+    void onNormalActionClicked(NormalAction action, String profileID, SocketAddress socketAddress);
+    void onToggleActionClicked(ToggleAction action, boolean toggle, String profileID, SocketAddress socketAddress);
 
     void clearTemp();
 
