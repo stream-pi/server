@@ -1,6 +1,7 @@
 package com.stream_pi.server.window.settings;
 
 import com.stream_pi.server.connection.ServerListener;
+import com.stream_pi.server.info.StartupFlags;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.info.ServerInfo;
@@ -332,7 +333,7 @@ public class GeneralSettings extends VBox {
 
                     if(config.getStartOnBoot() != startOnBoot)
                     {
-                        if(ServerInfo.getInstance().getRunnerFileName() == null)
+                        if(StartupFlags.RUNNER_FILE_NAME == null)
                         {
                             new StreamPiAlert("Uh Oh", "No Runner File Name Specified as startup arguments. Cant set run at boot.", StreamPiAlertType.ERROR).show();
                             startOnBoot = false;
@@ -342,7 +343,7 @@ public class GeneralSettings extends VBox {
                             StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform());
                             if(startOnBoot)
                             {
-                                startAtBoot.create(new File(ServerInfo.getInstance().getRunnerFileName()));
+                                startAtBoot.create(new File(StartupFlags.RUNNER_FILE_NAME));
                             }
                             else
                             {

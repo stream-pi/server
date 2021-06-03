@@ -18,6 +18,7 @@ package com.stream_pi.server;
 import com.stream_pi.server.controller.Controller;
 import com.stream_pi.server.info.ServerInfo;
 
+import com.stream_pi.server.info.StartupFlags;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -40,9 +41,9 @@ public class Main extends Application {
             String val = r[1];
 
             if(arg.equals("-DStream-Pi.startupRunnerFileName"))
-                ServerInfo.getInstance().setRunnerFileName(val);
+                StartupFlags.RUNNER_FILE_NAME = val;
             else if(arg.equals("-DStream-Pi.startupMode"))
-                ServerInfo.getInstance().setStartMinimised(val.equals("min"));
+                StartupFlags.START_MINIMISED = val.equals("min");
         }
 
         Controller d = new Controller();

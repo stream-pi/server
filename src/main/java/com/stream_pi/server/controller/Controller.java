@@ -14,6 +14,7 @@ import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.connection.ClientConnections;
 import com.stream_pi.server.connection.MainServer;
 import com.stream_pi.server.info.ServerInfo;
+import com.stream_pi.server.info.StartupFlags;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.Base;
 import com.stream_pi.server.window.dashboard.DashboardBase;
@@ -141,7 +142,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     {
         try
         {
-            if(ServerInfo.getInstance().isStartMinimised() && SystemTray.isSupported())
+            if(StartupFlags.START_MINIMISED && SystemTray.isSupported())
                 minimiseApp();
             else
                 getStage().show();

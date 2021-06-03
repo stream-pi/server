@@ -24,9 +24,7 @@ public class ServerInfo {
     private Version commStandardVersion;
 
     private static ServerInfo instance = null;
-    
-    private String runnerFileName = null;
-    private boolean startMinimised = false; 
+
 
     private ServerInfo()
     {
@@ -54,26 +52,6 @@ public class ServerInfo {
     
     public String getPrePath() {
         return prePath;
-    }
-
-    public void setStartMinimised(boolean startMinimised)
-    {
-        this.startMinimised = startMinimised;
-    }
-
-    public boolean isStartMinimised() 
-    {
-        return startMinimised;
-    }
-
-    public void setRunnerFileName(String runnerFileName)
-    {
-        this.runnerFileName = runnerFileName;
-    }
-
-    public String getRunnerFileName() 
-    {
-        return runnerFileName;
     }
 
     public static synchronized ServerInfo getInstance()
