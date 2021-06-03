@@ -239,13 +239,11 @@ public class ExternalPlugins
 
         logger.info("Size : "+pluginsConfigs.size());
 
-        Path pluginsDir = Paths.get(pluginsLocation); // Directory with plugins JARs
+        Path pluginsDir = Paths.get(pluginsLocation);
         try
         {
-            // Search for plugins in the plugins directory
             ModuleFinder pluginsFinder = ModuleFinder.of(pluginsDir);
 
-            // Find all names of all found plugin modules
             List<String> p = pluginsFinder
                     .findAll()
                     .stream()
@@ -253,20 +251,16 @@ public class ExternalPlugins
                     .map(ModuleDescriptor::name)
                     .collect(Collectors.toList());
 
-            // Create configuration that will resolve plugin modules
-            // (verify that the graph of modules is correct)
             Configuration pluginsConfiguration = ModuleLayer
                     .boot()
                     .configuration()
                     .resolve(pluginsFinder, ModuleFinder.of(), p);
 
-            // Create a module layer for plugins
             ModuleLayer layer = ModuleLayer
                     .boot()
                     .defineModulesWithOneLoader(pluginsConfiguration, ClassLoader.getSystemClassLoader());
 
             logger.info("Loading plugins from jar ...");
-            // Now you can use the new module layer to find service implementations in it
             externalPlugins = ServiceLoader
                     .load(layer, ExternalPlugin.class).stream()
                     .map(ServiceLoader.Provider::get)
