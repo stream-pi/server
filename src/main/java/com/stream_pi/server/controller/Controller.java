@@ -392,26 +392,34 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 }
                 else
                 {
-                    new Timer().schedule(
-                            new TimerTask() {
-                                @Override
-                                public void run()
-                                {
-                                    getLogger().info("action "+action.getID()+" clicked!");
+                    executor.execute(new Task<Void>() {
+                        @Override
+                        protected Void call()
+                        {
+                            try {
+                                Thread.sleep(action.getDelayBeforeExecuting());
 
-                                    if(action instanceof ToggleAction)
-                                    {
-                                        onToggleActionClicked((ToggleAction) action, toggle, profileID,
-                                                client.getRemoteSocketAddress());
-                                    }
-                                    else if (action instanceof NormalAction)
-                                    {
-                                        onNormalActionClicked((NormalAction) action, profileID,
-                                                client.getRemoteSocketAddress());
-                                    }
+                                getLogger().info("action "+action.getID()+" clicked!");
+
+                                if(action instanceof ToggleAction)
+                                {
+                                    onToggleActionClicked((ToggleAction) action, toggle, profileID,
+                                            client.getRemoteSocketAddress());
                                 }
-                            }, action.getDelayBeforeExecuting()
-                    );
+                                else if (action instanceof NormalAction)
+                                {
+                                    onNormalActionClicked((NormalAction) action, profileID,
+                                            client.getRemoteSocketAddress());
+                                }
+                            }
+                            catch (InterruptedException e)
+                            {
+                                e.printStackTrace();
+                                getLogger().info("onActionClicked scheduled task was interrupted ...");
+                            }
+                            return null;
+                        }
+                    });
                 }
             }
         }
