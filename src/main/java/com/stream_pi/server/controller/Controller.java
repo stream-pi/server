@@ -1,6 +1,7 @@
 package com.stream_pi.server.controller;
 
 import com.stream_pi.action_api.action.Action;
+import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.PropertySaver;
 import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.externalplugin.NormalAction;
@@ -49,8 +50,11 @@ import java.awt.TrayIcon;
 import java.net.SocketAddress;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 
 public class Controller extends Base implements PropertySaver, ServerConnection, ToggleExtras
@@ -372,6 +376,52 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     }
 
     @Override
+    public void onActionClicked(Client client, String profileID, String actionID, boolean toggle)
+    {
+        try
+        {
+            Action action =  client.getProfileByID(profileID).getActionByID(actionID);
+
+            if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
+            {
+                if(action.isInvalid())
+                {
+                    throw new MinorException(
+                            "The action isn't installed on the server."
+                    );
+                }
+                else
+                {
+                    new Timer().schedule(
+                            new TimerTask() {
+                                @Override
+                                public void run()
+                                {
+                                    getLogger().info("action "+action.getID()+" clicked!");
+
+                                    if(action instanceof ToggleAction)
+                                    {
+                                        onToggleActionClicked((ToggleAction) action, toggle, profileID,
+                                                client.getRemoteSocketAddress());
+                                    }
+                                    else if (action instanceof NormalAction)
+                                    {
+                                        onNormalActionClicked((NormalAction) action, profileID,
+                                                client.getRemoteSocketAddress());
+                                    }
+                                }
+                            }, action.getDelayBeforeExecuting()
+                    );
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            handleMinorException(new MinorException(e.getMessage()));
+        }
+    }
+
     public synchronized void onNormalActionClicked(NormalAction action, String profileID, SocketAddress socketAddress)
     {
         try
@@ -384,7 +434,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         }
     }
 
-    @Override
     public synchronized void onToggleActionClicked(ToggleAction action, boolean toggle, String profileID, SocketAddress socketAddress)
     {
         try

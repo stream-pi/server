@@ -895,51 +895,13 @@ public class ClientConnection extends Thread
 
     public void onActionClicked(Message message)
     {
-        try
-        {
-            String[] r = message.getStringArrValue();
+        String[] r = message.getStringArrValue();
 
-            String profileID = r[0];
-            String actionID = r[1];
-            boolean toggle = r[2].equals("true");
+        String profileID = r[0];
+        String actionID = r[1];
+        boolean toggle = r[2].equals("true");
 
-            Action action =  client.getProfileByID(profileID).getActionByID(actionID);
-
-            if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
-            {
-                if(action.isInvalid())
-                {
-                    throw new MinorException(
-                            "The action isn't installed on the server."
-                    );
-                }
-                else
-                {
-                    new Thread(new Task<Void>() {
-                        @Override
-                        protected Void call()
-                        {
-                            getLogger().info("action "+action.getID()+" clicked!");
-
-                            if(action instanceof ToggleAction)
-                            {
-                                serverListener.onToggleActionClicked((ToggleAction) action, toggle, profileID,
-                                        getRemoteSocketAddress());
-                            }
-                            else if (action instanceof NormalAction)
-                            {
-                                serverListener.onNormalActionClicked((NormalAction) action, profileID,
-                                        getRemoteSocketAddress());
-                            }
-                            return null;
-                        }
-                    }).start();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            exceptionAndAlertHandler.handleMinorException(new MinorException(e.getMessage()));
-        }
+        serverListener.onActionClicked(getClient(), profileID, actionID, toggle);
     }
 
     public void setToggleStatus(boolean status, String profileID, String actionID) throws SevereException
