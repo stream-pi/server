@@ -120,6 +120,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 stage.setMinWidth(700);
                 stage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("app_icon.png"))));
                 stage.setTitle("Stream-Pi Server Setup");
+                stage.getScene().getStylesheets().addAll(getStylesheets());
                 stage.initModality(Modality.APPLICATION_MODAL);
                 stage.setOnCloseRequest(event->Platform.exit());
                 stage.show();    
