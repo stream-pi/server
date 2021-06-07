@@ -61,6 +61,11 @@ public class Config
         return instance;
     }
 
+    public static void nullify()
+    {
+        instance = null;
+    }
+
     Logger logger = Logger.getLogger(Config.class.getName());
 
     public void save() throws SevereException {

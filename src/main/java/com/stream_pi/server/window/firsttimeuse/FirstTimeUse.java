@@ -1,7 +1,7 @@
 package com.stream_pi.server.window.firsttimeuse;
 
 import com.stream_pi.server.Main;
-import com.stream_pi.server.connection.ServerListener;
+import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.uihelper.SpaceFiller;
 

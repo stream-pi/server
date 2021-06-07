@@ -1,12 +1,11 @@
 package com.stream_pi.server.window.settings;
 
-import com.stream_pi.server.connection.ServerListener;
+import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.info.StartupFlags;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.info.ServerInfo;
 
-import com.stream_pi.theme_api.Themes;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
@@ -17,17 +16,14 @@ import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.platform.PlatformType;
 import com.stream_pi.util.startatboot.StartAtBoot;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
-import com.stream_pi.util.version.Version;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
@@ -35,10 +31,7 @@ import org.controlsfx.control.ToggleSwitch;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.awt.SystemTray;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.logging.Logger;
 
 public class GeneralSettings extends VBox {
@@ -57,6 +50,7 @@ public class GeneralSettings extends VBox {
     private final HBoxWithSpaceBetween showAlertsPopupHBox;
     private final Button saveButton;
     private final Button checkForUpdatesButton;
+    private final Button factoryResetButton;
 
 
     private Logger logger;
@@ -101,6 +95,9 @@ public class GeneralSettings extends VBox {
         checkForUpdatesButton = new Button("Check for updates");
         checkForUpdatesButton.setOnAction(event->checkForUpdates());
 
+        factoryResetButton = new Button("Factory Reset");
+        factoryResetButton.setOnAction(actionEvent -> onFactoryResetButtonClicked());
+
         getStyleClass().add("general_settings");
 
         prefWidthProperty().bind(widthProperty());
@@ -124,7 +121,7 @@ public class GeneralSettings extends VBox {
         saveButton = new Button("Save");
         saveButton.setOnAction(event->save());
 
-        getChildren().addAll(checkForUpdatesButton, saveButton);
+        getChildren().addAll(factoryResetButton, checkForUpdatesButton, saveButton);
 
         setPadding(new Insets(10));
 
@@ -430,5 +427,28 @@ public class GeneralSettings extends VBox {
                 return null;
             }
         }).start();
+    }
+
+    private void onFactoryResetButtonClicked()
+    {
+        StreamPiAlert confirmation = new StreamPiAlert("Warning","Are you sure?\n" +
+                "This will erase everything.",StreamPiAlertType.WARNING);
+
+        String yesButton = "Yes";
+        String noButton = "No";
+
+        confirmation.setButtons(yesButton, noButton);
+
+        confirmation.setOnClicked(new StreamPiAlertListener() {
+            @Override
+            public void onClick(String s) {
+                if(s.equals(yesButton))
+                {
+                    serverListener.factoryReset();
+                }
+            }
+        });
+
+        confirmation.show();
     }
 }

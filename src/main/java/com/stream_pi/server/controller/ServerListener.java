@@ -1,4 +1,4 @@
-package com.stream_pi.server.connection;
+package com.stream_pi.server.controller;
 
 import com.stream_pi.action_api.externalplugin.NormalAction;
 import com.stream_pi.action_api.externalplugin.ToggleAction;
@@ -29,4 +29,6 @@ public interface ServerListener
     SettingsBase getSettingsBase();
 
     void initLogger() throws SevereException;
+
+    void factoryReset();
 }

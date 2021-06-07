@@ -1,20 +1,16 @@
 package com.stream_pi.server.window.firsttimeuse;
 
-import com.stream_pi.server.connection.ServerListener;
+import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.uihelper.HBoxInputBox;
-import com.stream_pi.util.uihelper.SpaceFiller;
 
-import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 

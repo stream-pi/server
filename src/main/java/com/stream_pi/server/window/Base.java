@@ -1,6 +1,6 @@
 package com.stream_pi.server.window;
 
-import com.stream_pi.server.connection.ServerListener;
+import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.Main;
@@ -11,25 +11,22 @@ import com.stream_pi.theme_api.Themes;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
-import com.stream_pi.util.iohelper.IOHelper;
 import com.stream_pi.util.loggerhelper.StreamPiLogFallbackHandler;
 import com.stream_pi.util.loggerhelper.StreamPiLogFileHandler;
 
 import com.stream_pi.util.platform.Platform;
 import javafx.application.HostServices;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.File;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public abstract class Base extends StackPane implements ExceptionAndAlertHandler, ServerListener {
+public abstract class Base extends StackPane implements ExceptionAndAlertHandler, ServerListener
+{
 
     private Config config;
     private ServerInfo serverInfo;

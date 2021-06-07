@@ -27,6 +27,7 @@ import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.*;
+import com.stream_pi.util.iohelper.IOHelper;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -59,7 +60,7 @@ import java.util.logging.Level;
 
 public class Controller extends Base implements PropertySaver, ServerConnection, ToggleExtras
 {
-    private ExecutorService executor = Executors.newCachedThreadPool();
+    private final ExecutorService executor = Executors.newCachedThreadPool();
     private MainServer mainServer;
     private Animation openSettingsAnimation;
     private Animation closeSettingsAnimation;
@@ -86,7 +87,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     {
         try
         {
-
             initBase();
             setupDashWindow();
 
@@ -206,6 +206,26 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         });
     }
 
+    @Override
+    public void factoryReset()
+    {
+        getLogger().info("Reset to factory ...");
+
+        onQuitApp();
+
+        boolean result = IOHelper.deleteFile(getServerInfo().getPrePath());
+
+        if(result)
+        {
+            getStage().close();
+            init();
+        }
+        else
+        {
+            handleSevereException(new SevereException("Unable to delete all files successfully. Installation corrupt. Re-install."));
+        }
+    }
+
     private void setupSettingsWindowsAnimations()
     {
         Node settingsNode = getSettingsBase();
@@ -228,8 +248,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             }
 
             onQuitApp();
-            ExternalPlugins.getInstance().shutDownActions();
-            Platform.exit();
+            exit();
         }
         catch (SevereException e)
         {
@@ -243,6 +262,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
     public void onQuitApp()
     {
+        getLogger().info("Shutting down ...");
+
         try
         {
             if(getConfig() != null)
@@ -260,8 +281,14 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
         stopServerAndAllConnections();
         executor.shutdown();
-        getLogger().info("Shutting down ...");
+        ExternalPlugins.getInstance().shutDownActions();
         closeLogger();
+        Config.nullify();
+    }
+
+    public void exit()
+    {
+        Platform.exit();
     }
 
     private void stopServerAndAllConnections()
@@ -314,7 +341,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         exitItem.addActionListener(l->{
             systemTray.remove(getTrayIcon());
             onQuitApp();
-            Platform.exit();
+            exit();
         });
 
         popup.add(exitItem);
@@ -367,7 +394,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 public void onClick(String txt)
                 {    
                     onQuitApp();
-                    Platform.exit();
+                    exit();
                 }
             });
 

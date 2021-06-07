@@ -5,7 +5,7 @@ import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.client.ClientTheme;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.connection.ClientConnections;
-import com.stream_pi.server.connection.ServerListener;
+import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
