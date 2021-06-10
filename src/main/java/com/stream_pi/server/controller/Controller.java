@@ -49,7 +49,6 @@ import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.net.SocketAddress;
-import java.security.GeneralSecurityException;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Timer;
