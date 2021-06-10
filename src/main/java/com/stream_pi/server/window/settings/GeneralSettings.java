@@ -34,6 +34,8 @@ import java.awt.SystemTray;
 import java.io.File;
 import java.util.logging.Logger;
 
+import com.stream_pi.server.controller.Controller;
+
 public class GeneralSettings extends VBox {
 
     private final TextField serverNameTextField;
@@ -43,6 +45,8 @@ public class GeneralSettings extends VBox {
     private final TextField actionGridPaneActionBoxSize;
     private final TextField actionGridPaneActionBoxGap;
     private final ToggleSwitch startOnBootToggleSwitch;
+    private final ToggleSwitch soundSwitch;
+    private final HBoxWithSpaceBetween soundHBox;
     private final HBoxWithSpaceBetween startOnBootHBox;
     private final ToggleSwitch minimizeToSystemTrayOnCloseToggleSwitch;
     private final HBoxWithSpaceBetween minimizeToSystemTrayOnCloseHBox;
@@ -86,6 +90,9 @@ public class GeneralSettings extends VBox {
         startOnBootHBox = new HBoxWithSpaceBetween("Start on Boot", startOnBootToggleSwitch);
         startOnBootHBox.managedProperty().bind(startOnBootHBox.visibleProperty());
 
+        soundSwitch= new ToggleSwitch();
+        soundHBox = new HBoxWithSpaceBetween("Sound Confirmation Feedback", soundSwitch);
+
         minimizeToSystemTrayOnCloseToggleSwitch = new ToggleSwitch();
         minimizeToSystemTrayOnCloseHBox = new HBoxWithSpaceBetween("Minimise To Tray On Close", minimizeToSystemTrayOnCloseToggleSwitch);
 
@@ -111,6 +118,7 @@ public class GeneralSettings extends VBox {
                 getUIInputBox("Grid Pane - Box Gap", actionGridPaneActionBoxGap),
                 getUIInputBoxWithDirectoryChooser("Plugins Path", pluginsPathTextField),
                 getUIInputBoxWithDirectoryChooser("Themes Path", themesPathTextField),
+                soundHBox,
                 minimizeToSystemTrayOnCloseHBox,
                 startOnBootHBox,
                 showAlertsPopupHBox
@@ -231,6 +239,7 @@ public class GeneralSettings extends VBox {
                     boolean minimizeToSystemTrayOnClose = minimizeToSystemTrayOnCloseToggleSwitch.isSelected();
                     boolean showAlertsPopup = showAlertsPopupToggleSwitch.isSelected();
                     boolean startOnBoot = startOnBootToggleSwitch.isSelected();
+                    boolean soundFeedback = soundSwitch.isSelected();
 
                     Config config = Config.getInstance();
 
@@ -361,6 +370,8 @@ public class GeneralSettings extends VBox {
                             minimizeToSystemTrayOnClose = false;
                         }
                     }
+                    
+                    
 
                     config.setServerName(serverNameStr);
                     config.setServerPort(serverPort);
@@ -409,6 +420,12 @@ public class GeneralSettings extends VBox {
                     if(dashToBeReRendered)
                     {
                         serverListener.clearTemp();
+                    }
+
+                    if(soundFeedback)
+                    {
+                        Controller con = new Controller();
+                        con.soundactivated = true;
                     }
                 }
                 catch (MinorException e)

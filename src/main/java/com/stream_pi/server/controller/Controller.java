@@ -49,6 +49,7 @@ import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.net.SocketAddress;
+import java.security.GeneralSecurityException;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Timer;
@@ -58,12 +59,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.io.File;
+import java.io.IOException;
+
+import com.stream_pi.server.window.settings.GeneralSettings;
+
 public class Controller extends Base implements PropertySaver, ServerConnection, ToggleExtras
 {
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private MainServer mainServer;
     private Animation openSettingsAnimation;
     private Animation closeSettingsAnimation;
+    public static boolean soundactivated;
 
     public Controller(){
         mainServer = null;
@@ -429,6 +438,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
                                 getLogger().info("action "+action.getID()+" clicked!");
 
+                                playSound();
+
                                 if(action instanceof ToggleAction)
                                 {
                                     onToggleActionClicked((ToggleAction) action, toggle, profileID,
@@ -455,6 +466,28 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         {
             e.printStackTrace();
             handleMinorException(new MinorException(e.getMessage()));
+        }
+    }
+
+    public void playSound()
+    {
+        if(soundactivated)
+        {
+            try
+            {
+                String musicFile = System.getProperty("user.home") + "/Stream-Pi/Server/beep-boop.wav";     // For example
+                Media sound = new Media(new File(musicFile).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                mediaPlayer.play();
+            }
+            catch(Exception e)
+            {
+                handleMinorException(new MinorException(e.getMessage()));
+            }
+        }
+        else
+        {
+            return;
         }
     }
 
