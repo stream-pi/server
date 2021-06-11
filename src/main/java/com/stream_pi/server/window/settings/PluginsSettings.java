@@ -1,5 +1,6 @@
 package com.stream_pi.server.window.settings;
 
+import com.stream_pi.action_api.actionproperty.property.ListValue;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.action_api.actionproperty.property.ControlType;
@@ -8,9 +9,12 @@ import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
+import com.stream_pi.server.window.helper.Helper;
 import com.stream_pi.util.exception.MinorException;
+import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import com.stream_pi.util.uihelper.SpaceFiller;
 
+import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import javafx.application.HostServices;
@@ -253,93 +257,15 @@ public class PluginsSettings extends VBox {
 
                 Label label = new Label(eachProperty.getDisplayName());
 
-                Region region = new Region();
-                HBox.setHgrow(region, Priority.ALWAYS);
+                Node controlNode = Helper.getControlNode(eachProperty);
 
-                HBox hBox = new HBox(label, SpaceFiller.horizontal());
-                //hBox.setId(j+"");
-
-                Node controlNode = null;
-
-                if(eachProperty.getControlType() == ControlType.COMBO_BOX)
-                {
-                    ComboBox<String> comboBox = new ComboBox<>();
-                    comboBox.getItems().addAll(eachProperty.getListValue());
-                    comboBox.getSelectionModel().select(eachProperty.getSelectedIndex());
-                    hBox.getChildren().add(comboBox);
-
-                    controlNode = comboBox;
-                }
-                else if(eachProperty.getControlType() == ControlType.TEXT_FIELD)
-                {
-                    TextField textField = new TextField(eachProperty.getRawValue());
-
-                    hBox.getChildren().add(textField);
-
-                    controlNode = textField;
-                }
-                else if(eachProperty.getControlType() == ControlType.TEXT_FIELD_MASKED)
-                {
-                    PasswordField textField = new PasswordField();
-                    textField.setText(eachProperty.getRawValue());
-
-                    controlNode= textField;
-
-                    hBox.getChildren().add(controlNode);
-                }
-                else if(eachProperty.getControlType() == ControlType.TOGGLE)
-                {
-                    ToggleButton toggleButton = new ToggleButton();
-                    toggleButton.setSelected(eachProperty.getBoolValue());
-
-                    if(eachProperty.getBoolValue())
-                        toggleButton.setText("ON");
-                    else
-                        toggleButton.setText("OFF");
-
-                    toggleButton.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-                        if(t1)
-                            toggleButton.setText("ON");
-                        else
-                            toggleButton.setText("OFF");
-                    });
-
-                    hBox.getChildren().add(toggleButton);
-
-                    controlNode = toggleButton;
-                }
-                else if(eachProperty.getControlType() == ControlType.SLIDER_DOUBLE)
-                {
-                    Slider slider = new Slider();
-                    slider.setValue(eachProperty.getDoubleValue());
-                    slider.setMax(eachProperty.getMaxDoubleValue());
-                    slider.setMin(eachProperty.getMinDoubleValue());
-
-                    hBox.getChildren().add(slider);
-
-                    controlNode = slider;
-                }
-                else if(eachProperty.getControlType() == ControlType.SLIDER_INTEGER)
-                {
-                    Slider slider = new Slider();
-                    slider.setValue(eachProperty.getIntValue());
-
-                    slider.setMax(eachProperty.getMaxIntValue());
-                    slider.setMin(eachProperty.getMinIntValue());
-                    slider.setBlockIncrement(1.0);
-                    slider.setSnapToTicks(true);
-
-                    hBox.getChildren().add(slider);
-
-                    controlNode = slider;
-                }
-
+                HBoxWithSpaceBetween hBoxWithSpaceBetween = new HBoxWithSpaceBetween(label, controlNode);
 
                 UIPropertyBox serverProperty = new UIPropertyBox(j, eachProperty.getDisplayName(), controlNode, eachProperty.getControlType(), eachProperty.getType(), eachProperty.isCanBeBlank());
 
                 serverPropertyArrayList.add(serverProperty);
 
-                serverPropertiesVBox.getChildren().add(hBox);
+                serverPropertiesVBox.getChildren().add(hBoxWithSpaceBetween);
 
             }
 

@@ -5,10 +5,7 @@ import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.action.Location;
 import com.stream_pi.action_api.actionproperty.ClientProperties;
-import com.stream_pi.action_api.actionproperty.property.ControlType;
-import com.stream_pi.action_api.actionproperty.property.FileExtensionFilter;
-import com.stream_pi.action_api.actionproperty.property.Property;
-import com.stream_pi.action_api.actionproperty.property.Type;
+import com.stream_pi.action_api.actionproperty.property.*;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.action_api.otheractions.CombineAction;
 import com.stream_pi.action_api.otheractions.FolderAction;
@@ -21,6 +18,7 @@ import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.controller.ActionDataFormats;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionGridPaneListener;
+import com.stream_pi.server.window.helper.Helper;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
@@ -28,6 +26,7 @@ import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.uihelper.HBoxInputBox;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
+import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.HostServices;
 import javafx.collections.FXCollections;
@@ -332,7 +331,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         clearIconHBox.setAlignment(Pos.CENTER_RIGHT);
 
         HBox.setMargin(hideDisplayTextCheckBox, new Insets(0, 0, 0, 45));
-        displayTextFieldHBox = new HBox(new HBoxInputBox("Display Name", displayNameTextField), hideDisplayTextCheckBox);
+        HBoxInputBox s = new HBoxInputBox("Display Name", displayNameTextField);
+        HBox.setHgrow(s, Priority.ALWAYS);
+        displayTextFieldHBox = new HBox(s, hideDisplayTextCheckBox);
 
 
         HBox alignmentHBox = new HBox(new Label("Alignment"), SpaceFiller.horizontal(),
@@ -873,131 +874,16 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
             Label label = new Label(eachProperty.getDisplayName());
 
-            HBox hBox = new HBox(label);
-            hBox.setSpacing(5.0);
-            hBox.setAlignment(Pos.CENTER_LEFT);
+            Node controlNode = Helper.getControlNode(eachProperty);
 
-            Node controlNode = null;
-
-            if(eachProperty.getHelpLink() != null)
-            {
-                Button helpButton = new Button();
-                FontIcon questionIcon = new FontIcon("fas-question");
-                helpButton.setGraphic(questionIcon);
-
-                helpButton.setOnAction(event -> {
-                    hostServices.showDocument(eachProperty.getHelpLink());
-                });
-
-                hBox.getChildren().add(helpButton);
-
-                hBox.getChildren().add(controlNode);
-            }
-
-            hBox.getChildren().add(SpaceFiller.horizontal());
-
-
-            if(eachProperty.getControlType() == ControlType.COMBO_BOX)
-            {
-                ComboBox<String> comboBox = new ComboBox<>();
-                comboBox.getItems().addAll(eachProperty.getListValue());
-                comboBox.getSelectionModel().select(eachProperty.getSelectedIndex());
-
-
-                controlNode = comboBox;
-
-                hBox.getChildren().add(controlNode);
-            }
-            else if(eachProperty.getControlType() == ControlType.FILE_PATH)
-            {
-                TextField textField = new TextField(eachProperty.getRawValue());
-
-                FileExtensionFilter[] fileExtensionFilters = eachProperty.getExtensionFilters();
-                FileChooser.ExtensionFilter[] extensionFilters = new FileChooser.ExtensionFilter[fileExtensionFilters.length];
-
-                for(int x = 0;x<fileExtensionFilters.length;x++)
-                {
-                    extensionFilters[x] = new FileChooser.ExtensionFilter(
-                            fileExtensionFilters[x].getDescription(),
-                            fileExtensionFilters[x].getExtensions()
-                    );
-                }
-
-                hBox = new HBoxInputBoxWithFileChooser(eachProperty.getDisplayName(), textField, null,
-                        extensionFilters);
-
-                controlNode = textField;
-            }
-            else if(eachProperty.getControlType() == ControlType.TEXT_FIELD)
-            {
-                controlNode= new TextField(eachProperty.getRawValue());
-
-                hBox.getChildren().add(controlNode);
-            }
-            else if(eachProperty.getControlType() == ControlType.TEXT_FIELD_MASKED)
-            {
-                PasswordField textField = new PasswordField();
-                textField.setText(eachProperty.getRawValue());
-
-                controlNode= textField;
-
-                hBox.getChildren().add(controlNode);
-            }
-            else if(eachProperty.getControlType() == ControlType.TOGGLE)
-            {
-                ToggleButton toggleButton = new ToggleButton();
-                toggleButton.setSelected(eachProperty.getBoolValue());
-
-                if(eachProperty.getBoolValue())
-                    toggleButton.setText("ON");
-                else
-                    toggleButton.setText("OFF");
-
-                toggleButton.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-                    if(t1)
-                        toggleButton.setText("ON");
-                    else
-                        toggleButton.setText("OFF");
-                });
-
-                controlNode = toggleButton;
-
-                hBox.getChildren().add(controlNode);
-            }
-            else if(eachProperty.getControlType() == ControlType.SLIDER_DOUBLE)
-            {
-                Slider slider = new Slider();
-                slider.setValue(eachProperty.getDoubleValue());
-                slider.setMax(eachProperty.getMaxDoubleValue());
-                slider.setMin(eachProperty.getMinDoubleValue());
-
-                controlNode = slider;
-
-                hBox.getChildren().add(controlNode);
-            }
-            else if(eachProperty.getControlType() == ControlType.SLIDER_INTEGER)
-            {
-                Slider slider = new Slider();
-                slider.setValue(eachProperty.getIntValue());
-
-                slider.setMax(eachProperty.getMaxIntValue());
-                slider.setMin(eachProperty.getMinIntValue());
-                slider.setBlockIncrement(1.0);
-                slider.setSnapToTicks(true);
-
-                controlNode = slider;
-
-                hBox.getChildren().add(controlNode);
-            }
-
-
+            HBoxWithSpaceBetween hBoxWithSpaceBetween = new HBoxWithSpaceBetween(label, controlNode);
 
             UIPropertyBox clientProperty = new UIPropertyBox(i, eachProperty.getDisplayName(), controlNode,
                     eachProperty.getControlType(), eachProperty.getType(), eachProperty.isCanBeBlank());
 
             actionClientProperties.add(clientProperty);
 
-            clientPropertiesVBox.getChildren().add(hBox);
+            clientPropertiesVBox.getChildren().add(hBoxWithSpaceBetween);
         }
     }
 
