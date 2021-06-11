@@ -1,5 +1,6 @@
 package com.stream_pi.server.window.settings;
 
+import com.stream_pi.action_api.actionproperty.property.FileExtensionFilter;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.info.StartupFlags;
 import com.stream_pi.server.io.Config;
@@ -15,6 +16,9 @@ import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.platform.PlatformType;
 import com.stream_pi.util.startatboot.StartAtBoot;
+import com.stream_pi.util.uihelper.HBoxInputBox;
+import com.stream_pi.util.uihelper.HBoxInputBoxWithDirectoryChooser;
+import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import javafx.application.HostServices;
 import javafx.application.Platform;
@@ -27,8 +31,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import org.controlsfx.control.ToggleSwitch;
 import org.kordamp.ikonli.javafx.FontIcon;
+import org.w3c.dom.Text;
 
 import java.awt.SystemTray;
 import java.io.File;
@@ -44,6 +50,9 @@ public class GeneralSettings extends VBox {
     private final TextField actionGridPaneActionBoxGap;
     private final ToggleSwitch startOnBootToggleSwitch;
     private final HBoxWithSpaceBetween startOnBootHBox;
+    private final TextField soundOnActionClickedFilePathTextField;
+    private final ToggleSwitch soundOnActionClickedToggleSwitch;
+    private final HBoxWithSpaceBetween soundOnActionClickedToggleSwitchHBox;
     private final ToggleSwitch minimizeToSystemTrayOnCloseToggleSwitch;
     private final HBoxWithSpaceBetween minimizeToSystemTrayOnCloseHBox;
     private final ToggleSwitch showAlertsPopupToggleSwitch;
@@ -51,7 +60,6 @@ public class GeneralSettings extends VBox {
     private final Button saveButton;
     private final Button checkForUpdatesButton;
     private final Button factoryResetButton;
-
 
     private Logger logger;
 
@@ -86,6 +94,20 @@ public class GeneralSettings extends VBox {
         startOnBootHBox = new HBoxWithSpaceBetween("Start on Boot", startOnBootToggleSwitch);
         startOnBootHBox.managedProperty().bind(startOnBootHBox.visibleProperty());
 
+        soundOnActionClickedToggleSwitch = new ToggleSwitch();
+        soundOnActionClickedToggleSwitchHBox = new HBoxWithSpaceBetween("Sound on Action Clicked", soundOnActionClickedToggleSwitch);
+
+
+        soundOnActionClickedFilePathTextField = new TextField();
+
+        HBoxInputBoxWithFileChooser soundHBoxInputBoxWithFileChooser =  new HBoxInputBoxWithFileChooser("Sound File Path", soundOnActionClickedFilePathTextField,
+                new FileChooser.ExtensionFilter("Sounds","*.mp3","*.mp4", "*.m4a", "*.m4v","*.wav","*.aif", "*.aiff","*.fxm","*.flv","*.m3u8"));
+
+        soundHBoxInputBoxWithFileChooser.setUseLast(false);
+        soundHBoxInputBoxWithFileChooser.setRememberThis(false);
+
+        soundHBoxInputBoxWithFileChooser.getFileChooseButton().disableProperty().bind(soundOnActionClickedToggleSwitch.selectedProperty().not());
+
         minimizeToSystemTrayOnCloseToggleSwitch = new ToggleSwitch();
         minimizeToSystemTrayOnCloseHBox = new HBoxWithSpaceBetween("Minimise To Tray On Close", minimizeToSystemTrayOnCloseToggleSwitch);
 
@@ -105,12 +127,14 @@ public class GeneralSettings extends VBox {
         setSpacing(5);
 
         getChildren().addAll(
-                getUIInputBox("Server Name", serverNameTextField),
-                getUIInputBox("Port", portTextField),
-                getUIInputBox("Grid Pane - Box Size", actionGridPaneActionBoxSize),
-                getUIInputBox("Grid Pane - Box Gap", actionGridPaneActionBoxGap),
-                getUIInputBoxWithDirectoryChooser("Plugins Path", pluginsPathTextField),
-                getUIInputBoxWithDirectoryChooser("Themes Path", themesPathTextField),
+                new HBoxInputBox("Server Name", serverNameTextField),
+                new HBoxInputBox("Port", portTextField),
+                new HBoxInputBox("Grid Pane - Box Size", actionGridPaneActionBoxSize),
+                new HBoxInputBox("Grid Pane - Box Gap", actionGridPaneActionBoxGap),
+                new HBoxInputBoxWithDirectoryChooser("Plugins Path", pluginsPathTextField),
+                new HBoxInputBoxWithDirectoryChooser("Themes Path", themesPathTextField),
+                soundHBoxInputBoxWithFileChooser,
+                soundOnActionClickedToggleSwitchHBox,
                 minimizeToSystemTrayOnCloseHBox,
                 startOnBootHBox,
                 showAlertsPopupHBox
@@ -139,55 +163,6 @@ public class GeneralSettings extends VBox {
         });
     }
 
-    private HBox getUIInputBoxWithDirectoryChooser(String labelText, TextField textField)
-    {
-       HBox hBox = getUIInputBox(labelText, textField);
-       hBox.setSpacing(5.0);
-
-       TextField tf = (TextField) hBox.getChildren().get(2);
-       tf.setPrefWidth(300);
-       tf.setDisable(true);
-
-
-       Button button = new Button();
-       FontIcon fontIcon = new FontIcon("far-folder");
-       button.setGraphic(fontIcon);
-
-       button.setOnAction(event -> {
-           DirectoryChooser directoryChooser = new DirectoryChooser();
-
-
-           try {
-               File selectedDirectory = directoryChooser.showDialog(getScene().getWindow());
-
-               textField.setText(selectedDirectory.getAbsolutePath());
-           }
-           catch (NullPointerException e)
-           {
-               logger.info("No folder selected");
-           }
-       });
-
-       hBox.getChildren().add(button);
-
-
-       return hBox;
-    }
-
-    private HBox getUIInputBox(String labelText, TextField textField)
-    {
-        textField.setPrefWidth(100);
-
-        Label label = new Label(labelText);
-        Region region = new Region();
-        HBox.setHgrow(region, Priority.ALWAYS);
-
-
-        return new HBox(label, region, textField);
-    }
-
-
-
     public void loadDataFromConfig() throws SevereException {
         Config config = Config.getInstance();
 
@@ -203,6 +178,9 @@ public class GeneralSettings extends VBox {
             minimizeToSystemTrayOnCloseToggleSwitch.setSelected(config.getMinimiseToSystemTrayOnClose());
             showAlertsPopupToggleSwitch.setSelected(config.isShowAlertsPopup());
             startOnBootToggleSwitch.setSelected(config.getStartOnBoot());
+
+            soundOnActionClickedToggleSwitch.setSelected(config.getSoundOnActionClickedStatus());
+            soundOnActionClickedFilePathTextField.setText(config.getSoundOnActionClickedFilePath());
         });
     }
 
@@ -231,6 +209,10 @@ public class GeneralSettings extends VBox {
                     boolean minimizeToSystemTrayOnClose = minimizeToSystemTrayOnCloseToggleSwitch.isSelected();
                     boolean showAlertsPopup = showAlertsPopupToggleSwitch.isSelected();
                     boolean startOnBoot = startOnBootToggleSwitch.isSelected();
+
+                    boolean soundOnActionClicked = soundOnActionClickedToggleSwitch.isSelected();
+
+                    String soundOnActionClickedFilePath = soundOnActionClickedFilePathTextField.getText();
 
                     Config config = Config.getInstance();
 
@@ -362,6 +344,32 @@ public class GeneralSettings extends VBox {
                         }
                     }
 
+                    if(soundOnActionClicked)
+                    {
+                        if(soundOnActionClickedFilePath.isBlank())
+                        {
+                            StreamPiAlert alert = new StreamPiAlert("No sound file specified",
+                                    "Sound File cannot be empty", StreamPiAlertType.ERROR);
+                            alert.show();
+
+                            soundOnActionClicked = false;
+                        }
+                        else
+                        {
+                            File soundFile = new File(soundOnActionClickedFilePath);
+                            if(!soundFile.exists() || !soundFile.isFile())
+                            {
+
+                                StreamPiAlert alert = new StreamPiAlert("File not found",
+                                        "No sound file at \n"+soundOnActionClickedFilePath+"\n" +
+                                                "Unable to set sound on action clicked.", StreamPiAlertType.ERROR);
+                                alert.show();
+
+                                soundOnActionClicked = false;
+                            }
+                        }
+                    }
+
                     config.setServerName(serverNameStr);
                     config.setServerPort(serverPort);
                     config.setActionGridGap(actionGap);
@@ -373,6 +381,9 @@ public class GeneralSettings extends VBox {
                     StreamPiAlert.setIsShowPopup(showAlertsPopup);
                     config.setShowAlertsPopup(showAlertsPopup);
                     config.setStartupOnBoot(startOnBoot);
+
+                    config.setSoundOnActionClickedStatus(soundOnActionClicked);
+                    config.setSoundOnActionClickedFilePath(soundOnActionClickedFilePath);
 
                     config.save();
 

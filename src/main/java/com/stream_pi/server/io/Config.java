@@ -31,6 +31,7 @@ import com.stream_pi.util.iohelper.IOHelper;
 import com.stream_pi.util.xmlconfighelper.XMLConfigHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class Config
 {
@@ -197,20 +198,20 @@ public class Config
 
     public String getCurrentThemeFullName()
     {
-        return XMLConfigHelper.getStringProperty((Element) document, "current-theme-full-name",
+        return XMLConfigHelper.getStringProperty(document, "current-theme-full-name",
                 getDefaultCurrentThemeFullName(), false, true, document, configFile);
     }
 
     public String getThemesPath()
     {
-        return XMLConfigHelper.getStringProperty((Element) document, "themes-path",
+        return XMLConfigHelper.getStringProperty(document, "themes-path",
                 getDefaultThemesPath(), false, true, document, configFile);
     }
 
 
     public String getPluginsPath()
     {
-        return XMLConfigHelper.getStringProperty((Element) document, "plugins-path",
+        return XMLConfigHelper.getStringProperty(document, "plugins-path",
                 getDefaultPluginsPath(), false, true, document, configFile);
     }
 

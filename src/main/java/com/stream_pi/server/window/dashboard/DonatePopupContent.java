@@ -19,7 +19,8 @@ public class DonatePopupContent{
         Label label = new Label("We are a very small team working very hard on this project for best user experience.\n\n" +
             "Something like Stream-Pi takes time, effort and resources. But we will always keep this 100% opensource and free.\n\n" +
             "If you find this project helpful, and would want to help us, please consider donating :)\n\n"+
-            "If you are unable to do so even a small shout-out and share across social media would be very helpful.");
+            "If you are unable to do so even a small shout-out and share across social media would be very helpful.\n\n" +
+            "This is also the first and the last time this dialogue will be shown :D");
         
         label.setWrapText(true);
         label.getStyleClass().add("donate_request_popup_label");

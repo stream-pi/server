@@ -331,7 +331,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         HBox clearIconHBox = new HBox(clearIconButton);
         clearIconHBox.setAlignment(Pos.CENTER_RIGHT);
 
-        displayTextFieldHBox = new HBoxInputBox("Display Name", displayNameTextField, hideDisplayTextCheckBox);
+        HBox.setMargin(hideDisplayTextCheckBox, new Insets(0, 0, 0, 45));
+        displayTextFieldHBox = new HBox(new HBoxInputBox("Display Name", displayNameTextField), hideDisplayTextCheckBox);
 
 
         HBox alignmentHBox = new HBox(new Label("Alignment"), SpaceFiller.horizontal(),
@@ -354,6 +355,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 new HBoxInputBoxWithFileChooser("Icon", defaultIconFileTextField, hideDefaultIconCheckBox,
                         iconExtensions)
         );
+
         normalActionsPropsVBox.managedProperty().bind(normalActionsPropsVBox.visibleProperty());
         normalActionsPropsVBox.setSpacing(10.0);
 

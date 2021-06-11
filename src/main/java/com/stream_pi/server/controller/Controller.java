@@ -38,6 +38,7 @@ import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.media.AudioClip;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -48,6 +49,7 @@ import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.io.File;
 import java.net.SocketAddress;
 import java.util.Objects;
 import java.util.Random;
@@ -129,7 +131,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             {
                 if(getConfig().isAllowDonatePopup())
                 {
-                    if(new Random().nextInt(5) == 3)
+                    if(new Random().nextInt(50) == 3)
                         new DonatePopupContent(getHostServices(), this).show();
                 }
 
@@ -156,6 +158,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         {
             handleMinorException(e);
         }
+
+        StreamPiAlert.setIsShowPopup(getConfig().isShowAlertsPopup());
 
         executor.execute(new Task<Void>() {
             @Override
@@ -281,7 +285,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         }
 
         stopServerAndAllConnections();
-        executor.shutdown();
         ExternalPlugins.getInstance().shutDownActions();
         closeLogger();
         Config.nullify();
@@ -289,6 +292,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
     public void exit()
     {
+        executor.shutdown();
         Platform.exit();
     }
 
@@ -382,10 +386,11 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     }
 
     @Override
-    public void handleSevereException(SevereException e) {
+    public void handleSevereException(SevereException e)
+    {
         getLogger().log(Level.SEVERE, e.getShortMessage(), e);
         e.printStackTrace();
-    
+
         Platform.runLater(()->{
             StreamPiAlert alert = new StreamPiAlert(e.getTitle(), e.getShortMessage(), StreamPiAlertType.ERROR);
 
@@ -403,6 +408,37 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         });
     }
 
+    private AudioClip audioClip = null;
+    private String audioFilePath = null;
+    private void playSound()
+    {
+        if(audioClip == null)
+        {
+            updateSound();
+        }
+        else
+        {
+            if(audioClip.isPlaying())
+            {
+                Platform.runLater(audioClip::stop);
+                return;
+            }
+        }
+
+        if(!audioFilePath.equals(getConfig().getSoundOnActionClickedFilePath()))
+        {
+            updateSound();
+        }
+
+        Platform.runLater(audioClip::play);
+    }
+
+    private void updateSound()
+    {
+        audioFilePath = getConfig().getSoundOnActionClickedFilePath();
+        audioClip = new AudioClip(new File(audioFilePath).toURI().toString());
+    }
+
     @Override
     public void onActionClicked(Client client, String profileID, String actionID, boolean toggle)
     {
@@ -410,46 +446,47 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         {
             Action action =  client.getProfileByID(profileID).getActionByID(actionID);
 
-            if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
+            if(getConfig().getSoundOnActionClickedStatus())
             {
-                if(action.isInvalid())
-                {
-                    throw new MinorException(
-                            "The action isn't installed on the server."
-                    );
-                }
-                else
-                {
-                    executor.execute(new Task<Void>() {
-                        @Override
-                        protected Void call()
-                        {
-                            try {
-                                Thread.sleep(action.getDelayBeforeExecuting());
-
-                                getLogger().info("action "+action.getID()+" clicked!");
-
-                                if(action instanceof ToggleAction)
-                                {
-                                    onToggleActionClicked((ToggleAction) action, toggle, profileID,
-                                            client.getRemoteSocketAddress());
-                                }
-                                else if (action instanceof NormalAction)
-                                {
-                                    onNormalActionClicked((NormalAction) action, profileID,
-                                            client.getRemoteSocketAddress());
-                                }
-                            }
-                            catch (InterruptedException e)
-                            {
-                                e.printStackTrace();
-                                getLogger().info("onActionClicked scheduled task was interrupted ...");
-                            }
-                            return null;
-                        }
-                    });
-                }
+                playSound();
             }
+
+            if(action.isInvalid())
+            {
+                throw new MinorException(
+                        "The action isn't installed on the server."
+                );
+            }
+
+            executor.execute(new Task<Void>() {
+                @Override
+                protected Void call()
+                {
+                    try
+                    {
+                        Thread.sleep(action.getDelayBeforeExecuting());
+
+                        getLogger().info("action "+action.getID()+" clicked!");
+
+                        if(action instanceof ToggleAction)
+                        {
+                            onToggleActionClicked((ToggleAction) action, toggle, profileID,
+                                    client.getRemoteSocketAddress());
+                        }
+                        else if (action instanceof NormalAction)
+                        {
+                            onNormalActionClicked((NormalAction) action, profileID,
+                                    client.getRemoteSocketAddress());
+                        }
+                    }
+                    catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                        getLogger().info("onActionClicked scheduled task was interrupted ...");
+                    }
+                    return null;
+                }
+            });
         }
         catch (Exception e)
         {
