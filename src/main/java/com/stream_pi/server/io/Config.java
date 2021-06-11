@@ -114,17 +114,11 @@ public class Config
         return 6504;
     }
 
-    private Element getServerElement()
-    {
-        return (Element) document.getElementsByTagName("server").item(0);
-    }
-
-
 
     //server
     private Element getDividerPositionsElement()
     {
-        return (Element) getServerElement().getElementsByTagName("divider-positions").item(0);
+        return (Element) document.getElementsByTagName("divider-positions").item(0);
     }
 
     public String getDefaultLeftDividerPositions()
@@ -185,7 +179,7 @@ public class Config
 
     private Element getActionGridElement()
     {
-        return (Element) getServerElement().getElementsByTagName("action-grid").item(0);
+        return (Element) document.getElementsByTagName("action-grid").item(0);
     }
 
     public int getActionGridActionGap()
@@ -203,20 +197,20 @@ public class Config
 
     public String getCurrentThemeFullName()
     {
-        return XMLConfigHelper.getStringProperty(getServerElement(), "current-theme-full-name",
+        return XMLConfigHelper.getStringProperty((Element) document, "current-theme-full-name",
                 getDefaultCurrentThemeFullName(), false, true, document, configFile);
     }
 
     public String getThemesPath()
     {
-        return XMLConfigHelper.getStringProperty(getServerElement(), "themes-path",
+        return XMLConfigHelper.getStringProperty((Element) document, "themes-path",
                 getDefaultThemesPath(), false, true, document, configFile);
     }
 
 
     public String getPluginsPath()
     {
-        return XMLConfigHelper.getStringProperty(getServerElement(), "plugins-path",
+        return XMLConfigHelper.getStringProperty((Element) document, "plugins-path",
                 getDefaultPluginsPath(), false, true, document, configFile);
     }
 
@@ -241,7 +235,7 @@ public class Config
     
     private Element getStartupWindowSizeElement()
     {
-        return (Element) getServerElement().getElementsByTagName("startup-window-size").item(0);
+        return (Element) document.getElementsByTagName("startup-window-size").item(0);
     }
 
     public double getStartupWindowWidth()
@@ -267,6 +261,12 @@ public class Config
         return 768;
     }
 
+
+    //sound on action clicked
+    private Element getSoundOnActionClickedElement()
+    {
+        return (Element) document.getElementsByTagName("sound-on-action-clicked").item(0);
+    }
 
     //others
     private Element getOthersElement()
@@ -345,17 +345,17 @@ public class Config
 
     public void setPluginsPath(String path)
     {
-        getServerElement().getElementsByTagName("plugins-path").item(0).setTextContent(path);
+        document.getElementsByTagName("plugins-path").item(0).setTextContent(path);
     }
 
     public void setThemesPath(String path)
     {
-        getServerElement().getElementsByTagName("themes-path").item(0).setTextContent(path);
+        document.getElementsByTagName("themes-path").item(0).setTextContent(path);
     }
 
     public void setCurrentThemeFullName(String themeName)
     {
-        getServerElement().getElementsByTagName("current-theme-full-name").item(0).setTextContent(themeName);
+        document.getElementsByTagName("current-theme-full-name").item(0).setTextContent(themeName);
     }
 
     //server > startup-window-size
@@ -426,5 +426,36 @@ public class Config
     public boolean getDefaultIsShowAlertsPopup()
     {
         return true;
+    }
+
+    public void setSoundOnActionClickedStatus(boolean value)
+    {
+        getSoundOnActionClickedElement().getElementsByTagName("status").item(0).setTextContent(value+"");
+    }
+
+    public boolean getSoundOnActionClickedStatus()
+    {
+        return XMLConfigHelper.getBooleanProperty(getSoundOnActionClickedElement(), "status", getDefaultSoundOnActionClickedStatus(), false, true, document, configFile);
+    }
+
+    public boolean getDefaultSoundOnActionClickedStatus()
+    {
+        return false;
+    }
+
+
+    public void setSoundOnActionClickedFilePath(String value)
+    {
+        getSoundOnActionClickedElement().getElementsByTagName("file-path").item(0).setTextContent(value);
+    }
+
+    public String getSoundOnActionClickedFilePath()
+    {
+        return XMLConfigHelper.getStringProperty(getSoundOnActionClickedElement(), "file-path", getDefaultSoundOnActionClickedFilePath(), false, true, document, configFile);
+    }
+
+    public String getDefaultSoundOnActionClickedFilePath()
+    {
+        return null; //To be replaced with a real default beep sound later.
     }
 }
