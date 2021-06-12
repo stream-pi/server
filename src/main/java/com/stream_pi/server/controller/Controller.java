@@ -424,17 +424,10 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     private String audioFilePath = null;
     private void playSound()
     {
-        if(audioClip == null)
+        if(audioClip.isPlaying())
         {
-            initSoundOnActionClicked();
-        }
-        else
-        {
-            if(audioClip.isPlaying())
-            {
-                Platform.runLater(audioClip::stop);
-                return;
-            }
+            Platform.runLater(audioClip::stop);
+            return;
         }
 
         if(!audioFilePath.equals(getConfig().getSoundOnActionClickedFilePath()))
