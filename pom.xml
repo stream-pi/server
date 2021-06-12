@@ -13,7 +13,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <client.plugin.version>0.1.36</client.plugin.version>
+        <gluonfx.plugin.version>1.0.0</gluonfx.plugin.version>
         <javafx.version>17-ea+11</javafx.version>
 
         <action.api.version>1.0.0-SNAPSHOT</action.api.version>
@@ -128,8 +128,8 @@
 
             <plugin>
                 <groupId>com.gluonhq</groupId>
-                <artifactId>client-maven-plugin</artifactId>
-                <version>${client.plugin.version}</version>
+                <artifactId>gluonfx-maven-plugin</artifactId>
+                <version>${gluonfx.plugin.version}</version>
                 <configuration>
                     <nativeImageArgs>
                         <list>--initialize-at-build-time=com.sun.org.apache.xml.internal.serializer.ToXMLStream</list>
