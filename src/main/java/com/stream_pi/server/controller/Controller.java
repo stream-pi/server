@@ -119,6 +119,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 getChildren().add(firstTimeUse);
 
                 firstTimeUse.toFront();
+                getStage().setTitle("Stream-Pi Server");
                 getStage().show();
             }
             else
