@@ -973,7 +973,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         if(!isCombineChild())
         {
-            if(getAction().getActionType() == ActionType.NORMAL)
+            if(getAction().getActionType() != ActionType.TOGGLE)
             {
                 if(getAction().isHasIcon())
                 {
@@ -985,7 +985,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 else
                 {
                     if(hideDisplayTextCheckBox.isSelected())
-                        finalErrors.append(" * Display Text cannot be hidden, since there is also no icon.\n");
+                        finalErrors.append(" * Display Text cannot be hidden since there is no icon.\n");
                 }
             }
         }
