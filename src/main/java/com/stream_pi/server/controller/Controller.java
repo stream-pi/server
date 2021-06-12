@@ -150,16 +150,28 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         try
         {
             if(StartupFlags.START_MINIMISED && SystemTray.isSupported())
+            {
                 minimiseApp();
+            }
             else
+            {
                 getStage().show();
+            }
+
+
+
+            StreamPiAlert.setIsShowPopup(getConfig().isShowAlertsPopup());
         }
         catch(MinorException e)
         {
             handleMinorException(e);
         }
 
-        StreamPiAlert.setIsShowPopup(getConfig().isShowAlertsPopup());
+        if(getConfig().getSoundOnActionClickedStatus())
+        {
+            initSoundOnActionClicked();
+        }
+
 
         executor.execute(new Task<Void>() {
             @Override
@@ -414,7 +426,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     {
         if(audioClip == null)
         {
-            updateSound();
+            initSoundOnActionClicked();
         }
         else
         {
@@ -427,16 +439,27 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
         if(!audioFilePath.equals(getConfig().getSoundOnActionClickedFilePath()))
         {
-            updateSound();
+            initSoundOnActionClicked();
         }
 
         Platform.runLater(audioClip::play);
     }
 
-    private void updateSound()
+    private void initSoundOnActionClicked()
     {
         audioFilePath = getConfig().getSoundOnActionClickedFilePath();
-        audioClip = new AudioClip(new File(audioFilePath).toURI().toString());
+
+        File file = new File(audioFilePath);
+
+        if(!file.exists())
+        {
+            audioFilePath = null;
+            audioClip = null;
+            getConfig().setSoundOnActionClickedStatus(false);
+            handleMinorException(new MinorException("The sound file for on action click sound is missing."));
+        }
+
+        audioClip = new AudioClip(file.toURI().toString());
     }
 
     @Override
