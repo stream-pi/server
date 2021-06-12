@@ -114,18 +114,12 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
             if(getConfig().isFirstTimeUse())
             {
-                Stage stage = new Stage();
-                Scene s = new Scene(new FirstTimeUse(this, this),
-                        getConfig().getStartupWindowWidth(), getConfig().getStartupWindowHeight());
-                stage.setScene(s);
-                stage.setMinHeight(500);
-                stage.setMinWidth(700);
-                stage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("app_icon.png"))));
-                stage.setTitle("Stream-Pi Server Setup");
-                stage.getScene().getStylesheets().addAll(getStylesheets());
-                stage.initModality(Modality.APPLICATION_MODAL);
-                stage.setOnCloseRequest(event->Platform.exit());
-                stage.show();    
+                firstTimeUse = new FirstTimeUse(this, this);
+
+                getChildren().add(firstTimeUse);
+
+                firstTimeUse.toFront();
+                getStage().show();
             }
             else
             {
@@ -234,7 +228,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
         if(result)
         {
-            getStage().close();
             init();
         }
         else
@@ -321,7 +314,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     {
         getLogger().info("Restarting ...");
 
-        stopServerAndAllConnections();
+        onQuitApp();
         Platform.runLater(this::init);
     }
 

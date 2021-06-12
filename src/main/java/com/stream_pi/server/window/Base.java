@@ -5,6 +5,7 @@ import com.stream_pi.server.io.Config;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.Main;
 import com.stream_pi.server.window.dashboard.DashboardBase;
+import com.stream_pi.server.window.firsttimeuse.FirstTimeUse;
 import com.stream_pi.server.window.settings.SettingsBase;
 import com.stream_pi.theme_api.Theme;
 import com.stream_pi.theme_api.Themes;
@@ -37,6 +38,8 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     private StackPane alertStackPane;
     private StreamPiLogFileHandler logFileHandler = null;
     private StreamPiLogFallbackHandler logFallbackHandler = null;
+
+    public FirstTimeUse firstTimeUse;
 
     private Logger logger = null;
     public Logger getLogger(){
@@ -122,6 +125,8 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         alertStackPane = new StackPane();
         alertStackPane.setVisible(false);
 
+
+
         StreamPiAlert.setParent(alertStackPane);
 
         getChildren().clear();
@@ -140,7 +145,6 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
         stage.setWidth(config.getStartupWindowWidth());
         stage.setHeight(config.getStartupWindowHeight());
-        stage.centerOnScreen();
 
         dashboardBase.setDividerPositions(config.getRightDividerPositions());
         dashboardBase.getLeftSplitPane().setDividerPositions(config.getLeftDividerPositions());
