@@ -387,8 +387,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         getLogger().log(Level.SEVERE, e.getShortMessage(), e);
         e.printStackTrace();
 
-
-        Platform.runLater(()-> new StreamPiAlert(e.getTitle(), e.getShortMessage(), StreamPiAlertType.WARNING).show());
+        new StreamPiAlert(e.getTitle(), e.getShortMessage(), StreamPiAlertType.WARNING).show();
     }
 
     @Override
@@ -397,21 +396,19 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         getLogger().log(Level.SEVERE, e.getShortMessage(), e);
         e.printStackTrace();
 
-        Platform.runLater(()->{
-            StreamPiAlert alert = new StreamPiAlert(e.getTitle(), e.getShortMessage(), StreamPiAlertType.ERROR);
+        StreamPiAlert alert = new StreamPiAlert(e.getTitle(), e.getShortMessage(), StreamPiAlertType.ERROR);
 
-            alert.setOnClicked(new StreamPiAlertListener()
+        alert.setOnClicked(new StreamPiAlertListener()
+        {
+            @Override
+            public void onClick(String txt)
             {
-                @Override
-                public void onClick(String txt)
-                {    
-                    onQuitApp();
-                    exit();
-                }
-            });
-
-            alert.show();
+                onQuitApp();
+                exit();
+            }
         });
+
+        alert.show();
     }
 
     private AudioClip audioClip = null;
@@ -424,15 +421,11 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             return;
         }
 
-        if(!audioFilePath.equals(getConfig().getSoundOnActionClickedFilePath()))
-        {
-            initSoundOnActionClicked();
-        }
-
         Platform.runLater(audioClip::play);
     }
 
-    private void initSoundOnActionClicked()
+    @Override
+    public void initSoundOnActionClicked()
     {
         audioFilePath = getConfig().getSoundOnActionClickedFilePath();
 
@@ -443,7 +436,9 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             audioFilePath = null;
             audioClip = null;
             getConfig().setSoundOnActionClickedStatus(false);
+            getConfig().setSoundOnActionClickedFilePath("");
             handleMinorException(new MinorException("The sound file for on action click sound is missing."));
+            return;
         }
 
         audioClip = new AudioClip(file.toURI().toString());

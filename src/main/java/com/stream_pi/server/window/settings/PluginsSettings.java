@@ -253,20 +253,10 @@ public class PluginsSettings extends VBox {
 
                 if(!eachProperty.isVisible())
                     continue;
-
-
-                Label label = new Label(eachProperty.getDisplayName());
-
-                Node controlNode = Helper.getControlNode(eachProperty);
-
-                HBoxWithSpaceBetween hBoxWithSpaceBetween = new HBoxWithSpaceBetween(label, controlNode);
-
-                UIPropertyBox serverProperty = new UIPropertyBox(j, eachProperty.getDisplayName(), controlNode, eachProperty.getControlType(), eachProperty.getType(), eachProperty.isCanBeBlank());
-
+                Helper.ControlNodePair controlNodePair = new Helper().getControlNode(eachProperty);
+                UIPropertyBox serverProperty = new UIPropertyBox(j, eachProperty.getDisplayName(), controlNodePair.getControlNode(), eachProperty.getControlType(), eachProperty.getType(), eachProperty.isCanBeBlank());
                 serverPropertyArrayList.add(serverProperty);
-
-                serverPropertiesVBox.getChildren().add(hBoxWithSpaceBetween);
-
+                serverPropertiesVBox.getChildren().add(controlNodePair.getUINode());
             }
 
             PluginProperties pp = new PluginProperties(i, serverPropertyArrayList, action.getName());

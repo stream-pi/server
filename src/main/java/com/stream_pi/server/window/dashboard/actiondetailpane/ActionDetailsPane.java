@@ -871,19 +871,11 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
             if(!eachProperty.isVisible())
                 continue;
-
-            Label label = new Label(eachProperty.getDisplayName());
-
-            Node controlNode = Helper.getControlNode(eachProperty);
-
-            HBoxWithSpaceBetween hBoxWithSpaceBetween = new HBoxWithSpaceBetween(label, controlNode);
-
-            UIPropertyBox clientProperty = new UIPropertyBox(i, eachProperty.getDisplayName(), controlNode,
+            Helper.ControlNodePair controlNodePair = new Helper().getControlNode(eachProperty);
+            UIPropertyBox clientProperty = new UIPropertyBox(i, eachProperty.getDisplayName(), controlNodePair.getControlNode(),
                     eachProperty.getControlType(), eachProperty.getType(), eachProperty.isCanBeBlank());
-
             actionClientProperties.add(clientProperty);
-
-            clientPropertiesVBox.getChildren().add(hBoxWithSpaceBetween);
+            clientPropertiesVBox.getChildren().add(controlNodePair.getUINode());
         }
     }
 

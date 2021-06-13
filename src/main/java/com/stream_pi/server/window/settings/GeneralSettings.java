@@ -382,7 +382,15 @@ public class GeneralSettings extends VBox {
                     config.setShowAlertsPopup(showAlertsPopup);
                     config.setStartupOnBoot(startOnBoot);
 
+                    if(soundOnActionClicked)
+                    {
+                        serverListener.initSoundOnActionClicked();
+                    }
+
                     config.setSoundOnActionClickedStatus(soundOnActionClicked);
+
+
+
                     config.setSoundOnActionClickedFilePath(soundOnActionClickedFilePath);
 
                     config.save();

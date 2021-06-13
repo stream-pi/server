@@ -31,4 +31,6 @@ public interface ServerListener
     void initLogger() throws SevereException;
 
     void factoryReset();
+
+    void initSoundOnActionClicked();
 }
