@@ -290,13 +290,20 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         ActionBox actionBox = new ActionBox(Config.getInstance().getActionGridActionSize(), actionDetailsPaneListener, this,
                 col, row);
 
-        if(getClient().getOrientation() == Orientation.HORIZONTAL)
+        if(getClient().getOrientation() == null)
         {
             actionsGridPane.add(actionBox, col, row);
         }
         else
         {
-            actionsGridPane.add(actionBox, row, col);
+            if(getClient().getOrientation() == Orientation.HORIZONTAL)
+            {
+                actionsGridPane.add(actionBox, col, row);
+            }
+            else
+            {
+                actionsGridPane.add(actionBox, row, col);
+            }
         }
 
         return actionBox;

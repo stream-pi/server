@@ -197,8 +197,15 @@ public class ClientConnection extends Thread
             throw new MinorException(errTxt);
         }
 
+        String or = ar[10];
+        Orientation orientation = null;
+        if(or != null) // device has no orientation
+        {
+            orientation = Orientation.valueOf(or);
+        }
+
         client = new Client(clientVersion, releaseStatus, commsStandard, themesStandard, ar[4],
-                Platform.valueOf(ar[7]), socket.getRemoteSocketAddress(), Orientation.valueOf(ar[10]));
+                Platform.valueOf(ar[7]), socket.getRemoteSocketAddress(), orientation);
 
         client.setDisplayWidth(Double.parseDouble(ar[5]));
         client.setDisplayHeight(Double.parseDouble(ar[6]));
