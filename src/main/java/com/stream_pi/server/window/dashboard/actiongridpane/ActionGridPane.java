@@ -19,6 +19,7 @@ import com.stream_pi.server.window.dashboard.actiondetailpane.ActionDetailsPaneL
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.Node;
@@ -284,11 +285,20 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         isFreshRender = freshRender;
     }
 
-    public ActionBox addBlankActionBox(int col, int row) throws SevereException {
+    public ActionBox addBlankActionBox(int col, int row) throws SevereException
+    {
         ActionBox actionBox = new ActionBox(Config.getInstance().getActionGridActionSize(), actionDetailsPaneListener, this,
                 col, row);
 
-        actionsGridPane.add(actionBox, col, row);
+        if(getClient().getOrientation() == Orientation.HORIZONTAL)
+        {
+            actionsGridPane.add(actionBox, col, row);
+        }
+        else
+        {
+            actionsGridPane.add(actionBox, row, col);
+        }
+
         return actionBox;
     }
 

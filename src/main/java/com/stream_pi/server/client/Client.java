@@ -19,6 +19,7 @@ package com.stream_pi.server.client;
 import com.stream_pi.util.platform.Platform;
 import com.stream_pi.util.platform.ReleaseStatus;
 import com.stream_pi.util.version.Version;
+import javafx.geometry.Orientation;
 
 import java.net.SocketAddress;
 import java.util.ArrayList;
@@ -44,7 +45,11 @@ public class Client
     private String defaultProfileID;
     private String defaultThemeFullName;
 
-    public Client(Version version, ReleaseStatus releaseStatus, Version commStandardVersion, Version themeAPIVersion, String nickName, Platform platform, SocketAddress remoteSocketAddress)
+    private Orientation orientation;
+
+    public Client(Version version, ReleaseStatus releaseStatus, Version commStandardVersion,
+                  Version themeAPIVersion, String nickName, Platform platform, SocketAddress remoteSocketAddress,
+                  Orientation orientation)
     {
         this.version = version;
         this.releaseStatus = releaseStatus;
@@ -55,6 +60,7 @@ public class Client
         this.platform = platform;
         this.profiles = new HashMap<>();
         this.themes = new HashMap<>();
+        this.orientation = orientation;
     }
 
     public ReleaseStatus getReleaseStatus() {
@@ -187,4 +193,13 @@ public class Client
         return (int) (displayWidth / eachActionSize);
     }
 
+    public void setOrientation(Orientation orientation)
+    {
+        this.orientation = orientation;
+    }
+
+    public Orientation getOrientation()
+    {
+        return orientation;
+    }
 }

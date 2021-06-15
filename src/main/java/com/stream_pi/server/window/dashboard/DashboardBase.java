@@ -119,6 +119,11 @@ public class DashboardBase extends SplitPane implements DashboardInterface {
         drawProfile(this.currentClientProfile);
     }
 
+    public void reDrawProfile()
+    {
+        drawProfile(getActionGridPane().getCurrentProfile());
+    }
+
     public void drawProfile(ClientProfile clientProfile)
     {
         logger.info("Drawing ...");
@@ -135,8 +140,6 @@ public class DashboardBase extends SplitPane implements DashboardInterface {
         {
             exceptionAndAlertHandler.handleSevereException(e);
         }
-
-
     }
 
     public SplitPane getLeftSplitPane()

@@ -27,6 +27,7 @@ import com.stream_pi.util.platform.Platform;
 import com.stream_pi.util.platform.ReleaseStatus;
 import com.stream_pi.util.version.Version;
 import javafx.concurrent.Task;
+import javafx.geometry.Orientation;
 
 import java.io.*;
 import java.net.Socket;
@@ -196,7 +197,8 @@ public class ClientConnection extends Thread
             throw new MinorException(errTxt);
         }
 
-        client = new Client(clientVersion, releaseStatus, commsStandard, themesStandard, ar[4], Platform.valueOf(ar[7]), socket.getRemoteSocketAddress());
+        client = new Client(clientVersion, releaseStatus, commsStandard, themesStandard, ar[4],
+                Platform.valueOf(ar[7]), socket.getRemoteSocketAddress(), Orientation.valueOf(ar[10]));
 
         client.setDisplayWidth(Double.parseDouble(ar[5]));
         client.setDisplayHeight(Double.parseDouble(ar[6]));
@@ -286,6 +288,9 @@ public class ClientConnection extends Thread
                         case "action_clicked":      onActionClicked(message);
                             break;
 
+                        case "client_orientation":  updateClientOrientation(message);
+                            break;
+
                         default:                    logger.warning("Command '"+header+"' does not match records. Make sure client and server versions are equal.");
 
 
@@ -324,6 +329,12 @@ public class ClientConnection extends Thread
     }
 
     // commands
+
+    private void updateClientOrientation(Message message) throws MinorException
+    {
+        getClient().setOrientation(Orientation.valueOf(message.getStringValue()));
+        javafx.application.Platform.runLater(()-> serverListener.getDashboardBase().reDrawProfile());
+    }
 
     private void onActionIconReceived(Message message) throws MinorException
     {

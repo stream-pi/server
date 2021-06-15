@@ -42,13 +42,17 @@ public class Config
 
     private Document document;
 
-    private Config() throws SevereException {
-        try {
+    private Config() throws SevereException
+    {
+        try
+        {
             configFile = new File(ServerInfo.getInstance().getPrePath()+"config.xml");
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             document = docBuilder.parse(configFile);
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             throw new SevereException("Config", "Unable to read config.xml\n"+e.getMessage());
         }
