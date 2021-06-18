@@ -20,7 +20,7 @@ jobs:
       - name: Downloading Default.zip ...
         uses: dawidd6/action-download-artifact@v2
         with:
-          workflow: build-essential-actions.yml
+          workflow: init.yml
           name: default-zip
           path: src/main/resources/com/stream_pi/server
       - name: Setup JavaFX
