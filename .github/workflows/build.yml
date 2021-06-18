@@ -1,7 +1,7 @@
 name: Build
 on:
   workflow_run:
-    workflows: ["Initial Setup"]
+    workflows: ["Init"]
     types:
       - completed
 
@@ -87,6 +87,7 @@ jobs:
         with:
           name: linux-zip
           path: target/install/stream-pi-server-linux-x64-${{ env.VERSION }}-executable.zip
+  
   build-macos:
     runs-on: macos-10.15
     steps:
