@@ -1,4 +1,4 @@
-name: Build Essential Actions
+name: Initial Setup
 
 on: [push]
 
