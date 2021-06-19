@@ -75,3 +75,11 @@ jobs:
         with:
           name: version
           path: version.txt
+      - name: Saving build-date
+        run: |
+          echo $(TZ=Asia/Kolkata date) > build-date
+      - name: Uploading build-date
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-date
+          path: build-date

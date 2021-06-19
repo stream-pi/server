@@ -15,7 +15,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+import java.io.File;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class About extends VBox
 {
@@ -84,7 +90,27 @@ public class About extends VBox
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(10);
 
+
         getChildren().addAll(appIconImageView, tabPane, donateButton, hBox);
+
+
+        try
+        {
+            URL buildFile = Main.class.getResource("build-date");
+            if(buildFile != null)
+            {
+                Label buildTime = new Label("Build date/time: "+Files.readString(Paths.get(Objects.requireNonNull(buildFile.toURI().getPath()))));
+                getChildren().addAll(buildTime);
+            }
+            else
+            {
+                Logger.getLogger("").info("Build date not available");
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void openWebpage(String url)
