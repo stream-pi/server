@@ -99,8 +99,9 @@ public class About extends VBox
             URL buildFile = Main.class.getResource("build-date");
             if(buildFile != null)
             {
-                Label buildTime = new Label("Build date/time: "+Files.readString(Paths.get(Objects.requireNonNull(buildFile.toURI().getPath()))));
-                getChildren().addAll(buildTime);
+                Label buildDateLabel = new Label("Build date/time: "+ Files.readString(Paths.get(Objects.requireNonNull(buildFile.toURI().getPath()))));
+                buildDateLabel.getStyleClass().add("build-date-label");
+                getChildren().addAll(buildDateLabel);
             }
             else
             {

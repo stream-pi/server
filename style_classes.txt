@@ -1,4 +1,4 @@
-This list is somewhat outdated. Some classes are missing/no longer work. This will be updated soon
+This list is outdated. Some classes are missing/no longer work. This will be updated soon
 
 dashboard
     Action Details Pane - action_details_pane
