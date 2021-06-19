@@ -35,12 +35,6 @@ jobs:
           workflow: init.yml
           name: built-jars
           path: target/lib/
-      - name: Download build-date
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: init.yml
-          name: build-date
-          path: src/main/resources/com/stream_pi/server/
       - name: Download REQ_MODULES
         uses: dawidd6/action-download-artifact@v2
         with:
@@ -121,12 +115,6 @@ jobs:
           workflow: init.yml
           name: built-jars
           path: target/lib/
-      - name: Download build-date
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: init.yml
-          name: build-date
-          path: src/main/resources/com/stream_pi/server/
       - name: Download REQ_MODULES
         uses: dawidd6/action-download-artifact@v2
         with:
@@ -180,12 +168,6 @@ jobs:
           workflow: init.yml
           name: default-zip
           path: src/main/resources/com/stream_pi/server
-      - name: Download build-date
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: init.yml
-          name: build-date
-          path: src/main/resources/com/stream_pi/server/
       - name: Download REQ_MODULES
         uses: dawidd6/action-download-artifact@v2
         with:
