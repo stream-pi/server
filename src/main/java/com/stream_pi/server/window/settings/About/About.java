@@ -16,6 +16,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -99,15 +100,7 @@ public class About extends VBox
 
         try
         {
-            URL buildFile = Main.class.getResource("build-date");
-            if(buildFile != null)
-            {
-                buildDateLabel.setText("Build date/time: "+ Files.readString(Paths.get(Objects.requireNonNull(buildFile.toURI().getPath()))));
-            }
-            else
-            {
-                buildDateLabel.setText("Build date/time not available.");
-            }
+            buildDateLabel.setText("Build date/time: " +  new String(Objects.requireNonNull(Main.class.getResourceAsStream("build-date")).readAllBytes()));
         }
         catch (Exception e)
         {

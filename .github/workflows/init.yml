@@ -48,6 +48,7 @@ jobs:
       - name: Build Jars
         run: |
           echo $(date +'%d-%m-%Y %H:%M:%S %Z') > src/main/resources/com/stream_pi/server/build-date
+          echo Build Date/Time: cat src/main/resources/com/stream_pi/server/build-date
           mvn -X package
       - name: Save built jars
         uses: actions/upload-artifact@v2
