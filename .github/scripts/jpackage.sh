@@ -1,7 +1,3 @@
-
-echo $REQ_MODULES
-echo $VERSION
-
 $JPACKAGE_HOME/bin/jpackage \
 --add-launcher run_min=assets/run_min.properties \
 --module-path $JAVAFX_JMODS/:target/lib/ \
