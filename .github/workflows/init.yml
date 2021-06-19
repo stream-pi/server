@@ -47,8 +47,8 @@ jobs:
           timezoneLinux: "Asia/Kolkata"
       - name: Saving build-date
         run: |
-          echo $(date +'%d-%m-%Y %H:%M:%S') > src/main/resources/com/stream_pi/server/build-date
-          echo $(date +'%d-%m-%Y %H:%M:%S')
+          echo $(date +'%d-%m-%Y %H:%M:%S "%Z"') > src/main/resources/com/stream_pi/server/build-date
+          echo $(date +'%d-%m-%Y %H:%M:%S "%Z"')
       - name: Build Jars
         run: |
           mvn -X package
