@@ -58,6 +58,7 @@ jobs:
           --icon assets/linux-icon.png \
           --app-version ${{ env.VERSION }} \
           --linux-menu-group "Stream-Pi" \
+          --license-file LICENSE.txt \
           --type deb
 
           # Create App Image
@@ -135,6 +136,7 @@ jobs:
           # Create DMG
           .github/scripts/jpackage.sh \
           --icon assets/macos-icon.icns \
+          --license-file LICENSE.txt \
           --type dmg
           cd $INSTALL_DIR
           mv *.dmg stream-pi-server-macos-x64-${{ env.VERSION }}.dmg
