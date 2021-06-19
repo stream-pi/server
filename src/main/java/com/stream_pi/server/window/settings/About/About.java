@@ -70,7 +70,7 @@ public class About extends VBox
         Label versionText = new Label(serverInfo.getVersion().getText() + " - "+ serverInfo.getPlatform().getUIName() + " - "+ serverInfo.getReleaseStatus().getUIName());
         versionText.getStyleClass().add("about_version_label");
 
-        Label commStandardLabel = new Label("Comsssm Standard "+serverInfo.getCommStandardVersion().getText());
+        Label commStandardLabel = new Label("Comm Standard "+serverInfo.getCommStandardVersion().getText());
         commStandardLabel.getStyleClass().add("about_comm_standard_label");
 
         Label minThemeAPILabel = new Label("Min ThemeAPI "+serverInfo.getMinThemeSupportVersion().getText());
