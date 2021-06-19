@@ -91,7 +91,10 @@ public class About extends VBox
         hBox.setSpacing(10);
 
 
-        getChildren().addAll(appIconImageView, tabPane, donateButton, hBox);
+        Label buildDateLabel = new Label();
+        buildDateLabel.getStyleClass().add("build-date-label");
+
+        getChildren().addAll(appIconImageView, tabPane, donateButton, hBox, buildDateLabel);
 
 
         try
@@ -99,13 +102,11 @@ public class About extends VBox
             URL buildFile = Main.class.getResource("build-date");
             if(buildFile != null)
             {
-                Label buildDateLabel = new Label("Build date/time: "+ Files.readString(Paths.get(Objects.requireNonNull(buildFile.toURI().getPath()))));
-                buildDateLabel.getStyleClass().add("build-date-label");
-                getChildren().addAll(buildDateLabel);
+                buildDateLabel.setText("Build date/time: "+ Files.readString(Paths.get(Objects.requireNonNull(buildFile.toURI().getPath()))));
             }
             else
             {
-                Logger.getLogger("").info("Build date not available");
+                buildDateLabel.setText("Build date/time not available.");
             }
         }
         catch (Exception e)
