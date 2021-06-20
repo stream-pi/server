@@ -9,7 +9,7 @@ set /p VERSION=<version.txt
 --copyright "Copyright 2019-21 Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)" ^
 --input target/lib ^
 --main-jar server-%VERSION%.jar ^
---type exe ^
+--type msi ^
 --java-options "-Dprism.verbose=true -Djavafx.verbose=true -Dprism.dirtyopts=false" ^
 --main-class %MAIN_CLASS% ^
 --arguments -DStream-Pi.startupRunnerFileName=run_min.exe ^
@@ -26,5 +26,5 @@ echo Done now renaming ..
 cd %INSTALL_DIR%
 echo run dir
 dir
-ren *.exe stream-pi-server-windows-x64-%VERSION%-installer.exe
+ren *.msi stream-pi-server-windows-x64-%VERSION%-installer.msi
 dir
