@@ -143,7 +143,6 @@
                 <configuration>
                     <commandlineArgs>-DStream-Pi.startupRunnerFileName=run_min -DStream-Pi.startupMode=maximise</commandlineArgs>
                     <options>
-                        <option>-Dglass.gtk.uiScale=1.0</option>
                         <option>-Dprism.verbose=true</option>
                         <option>-Djavafx.verbose=true</option>
                         <option>-Dprism.forceGPU=true</option>
