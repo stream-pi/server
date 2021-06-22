@@ -68,8 +68,8 @@ jobs:
           --app-version ${{ env.VERSION }} \
           --type app-image
 
-          $NEW_V=${{ env.VERSION }}
-          $NEW_V=${NEW_V//-/_}
+          NEW_V=${{ env.VERSION }}
+          NEW_V=${NEW_V//-/_}
 
           # Create App Image
           .github/scripts/jpackage.sh \
