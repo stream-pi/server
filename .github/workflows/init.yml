@@ -1,9 +1,7 @@
 name: Init
 
 on:
-  push:
-    tags:
-      - '*'
+  [push]
 
 
 jobs:
