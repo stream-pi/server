@@ -1,7 +1,6 @@
 name: Init
 
-on:
-  [push]
+on: [push]
 
 
 jobs:
