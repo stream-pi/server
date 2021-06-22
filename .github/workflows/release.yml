@@ -30,6 +30,12 @@ jobs:
           workflow: build.yml
           name: linux-deb
           path: target/install
+      - name: Download linux rpm
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build.yml
+          name: linux-rpm
+          path: target/install
       - name: Download linux zip
         uses: dawidd6/action-download-artifact@v2
         with:

@@ -67,8 +67,15 @@ jobs:
           --app-version ${{ env.VERSION }} \
           --type app-image
 
+          # Create App Image
+          .github/scripts/jpackage.sh \
+          --icon assets/linux-icon.png \
+          --app-version ${{ env.VERSION }} \
+          --type rpm
+
           cd $INSTALL_DIR
           mv *.deb stream-pi-server-linux-x64-${{ env.VERSION }}-debian.deb
+          mv *.rpm stream-pi-server-linux-x64-${{ env.VERSION }}-debian.rpm
           mv 'Stream-Pi Server' stream-pi-server-${{ env.VERSION }}
           zip -r stream-pi-server-linux-x64-${{ env.VERSION }}-executable.zip stream-pi-server-${{ env.VERSION }}
           rm -r stream-pi-server-${{ env.VERSION }}
@@ -81,6 +88,11 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: linux-deb
+          path: target/install/stream-pi-server-linux-x64-${{ env.VERSION }}-debian.deb
+      - name: Saving Linux x64 RPM
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-rpm
           path: target/install/stream-pi-server-linux-x64-${{ env.VERSION }}-debian.deb
       - name: Saving Linux x64 ZIP
         uses: actions/upload-artifact@v2
@@ -139,10 +151,11 @@ jobs:
           --license-file LICENSE.txt \
           --type dmg
 
-          # Create DMG
+          # Create PKG
           .github/scripts/jpackage.sh \
           --icon assets/macos-icon.icns \
           --license-file LICENSE.txt \
+          --mac-package-identifier stream-pi-server
           --type pkg
 
           cd $INSTALL_DIR
