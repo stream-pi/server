@@ -71,9 +71,10 @@ jobs:
           NEW_V=${{ env.VERSION }}
           NEW_V=${NEW_V//-/_}
 
-          # Create App Image
+          # Create RPM
           .github/scripts/jpackage.sh \
           --icon assets/linux-icon.png \
+          --license-file LICENSE.txt \
           --app-version $NEW_V \
           --type rpm
 
@@ -97,7 +98,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: linux-rpm
-          path: target/install/stream-pi-server-linux-x64-${{ env.VERSION }}-debian.deb
+          path: target/install/stream-pi-server-linux-x64-${{ env.VERSION }}-debian.rpm
       - name: Saving Linux x64 ZIP
         uses: actions/upload-artifact@v2
         with:
