@@ -131,7 +131,7 @@ jobs:
       - name: Add REQ_MODULES to environment
         run: |
           echo "REQ_MODULES=$(<req_modules.txt)" >> $GITHUB_ENV
-      - name: Create Bundle using JPackage
+      - name: Create DMG, PKG
         run: |
           # Create DMG
           .github/scripts/jpackage.sh \
@@ -140,6 +140,14 @@ jobs:
           --type dmg
           cd $INSTALL_DIR
           mv *.dmg stream-pi-server-macos-x64-${{ env.VERSION }}.dmg
+
+          # Create DMG
+          .github/scripts/jpackage.sh \
+          --icon assets/macos-icon.icns \
+          --license-file LICENSE.txt \
+          --type pkg
+          cd $INSTALL_DIR
+          mv *.pkg stream-pi-server-macos-x64-${{ env.VERSION }}.pkg
         env:
           MAIN_CLASS: com.stream_pi.server.Main
           JAVAFX_JMODS: /tmp/javafx-jmods-17/
@@ -150,6 +158,11 @@ jobs:
         with:
           name: macos-dmg
           path: target/install/stream-pi-server-macos-x64-${{ env.VERSION }}.dmg
+      - name: Saving MacOS x64 PKG
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos-pkg
+          path: target/install/stream-pi-server-macos-x64-${{ env.VERSION }}.pkg
 
   build-windows:
     runs-on: windows-2019
