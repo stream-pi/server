@@ -51,8 +51,9 @@ jobs:
       - name: Add REQ_MODULES to environment
         run: |
           echo "REQ_MODULES=$(<req_modules.txt)" >> $GITHUB_ENV
-      - name: Create DEB, ZIP
+      - name: Create DEB, PKG, ZIP
         run: |
+
           # Create DEB
           .github/scripts/jpackage.sh \
           --icon assets/linux-icon.png \
@@ -67,10 +68,13 @@ jobs:
           --app-version ${{ env.VERSION }} \
           --type app-image
 
+          $NEW_V=${{ env.VERSION }}
+          $NEW_V=${NEW_V//-/_}
+
           # Create App Image
           .github/scripts/jpackage.sh \
           --icon assets/linux-icon.png \
-          --app-version ${{ env.VERSION }} \
+          --app-version $NEW_V \
           --type rpm
 
           cd $INSTALL_DIR
@@ -155,7 +159,7 @@ jobs:
           .github/scripts/jpackage.sh \
           --icon assets/macos-icon.icns \
           --license-file LICENSE.txt \
-          --mac-package-identifier stream-pi-server
+          --mac-package-identifier stream-pi-server \
           --type pkg
 
           cd $INSTALL_DIR
