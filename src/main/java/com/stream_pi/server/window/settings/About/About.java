@@ -67,8 +67,8 @@ public class About extends VBox
 
         ServerInfo serverInfo = ServerInfo.getInstance();
 
-        Label versionText = new Label(serverInfo.getVersion().getText() + " - "+ serverInfo.getPlatform().getUIName() + " - "+ serverInfo.getReleaseStatus().getUIName());
-        versionText.getStyleClass().add("about_version_label");
+        Label versionLabel = new Label(serverInfo.getVersion().getText() + " - "+ serverInfo.getPlatform().getUIName() + " - "+ serverInfo.getReleaseStatus().getUIName());
+        versionLabel.getStyleClass().add("about_version_label");
 
         Label commStandardLabel = new Label("Comm Standard "+serverInfo.getCommStandardVersion().getText());
         commStandardLabel.getStyleClass().add("about_comm_standard_label");
@@ -82,7 +82,7 @@ public class About extends VBox
         Label currentActionAPILabel = new Label("ActionAPI "+ ActionAPI.API_VERSION.getText());
         currentActionAPILabel.getStyleClass().add("about_current_action_api_label");
 
-        HBox hBox = new HBox(versionText, getSep(),
+        HBox hBox = new HBox(versionLabel, getSep(),
                 commStandardLabel, getSep(),
                 minThemeAPILabel, getSep(),
                 minActionAPILabel, getSep(),
@@ -91,11 +91,24 @@ public class About extends VBox
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(10);
 
+        Label javaVersionLabel = new Label("Java "+System.getProperty("java.version"));
+        javaVersionLabel.getStyleClass().add("about_java_version");
+
+        Label javafxVersionLabel = new Label("JavaFX "+System.getProperty("javafx.version"));
+        javafxVersionLabel.getStyleClass().add("about_javafx_version");
 
         Label buildDateLabel = new Label();
-        buildDateLabel.getStyleClass().add("build-date-label");
+        buildDateLabel.getStyleClass().add("about_build_date_label");
 
-        getChildren().addAll(appIconImageView, tabPane, donateButton, hBox, buildDateLabel);
+        HBox hBox2 = new HBox(javaVersionLabel, getSep(),
+                javafxVersionLabel, getSep(),
+                buildDateLabel);
+
+        hBox2.setAlignment(Pos.CENTER);
+        hBox2.setSpacing(10);
+
+
+        getChildren().addAll(appIconImageView, tabPane, donateButton, hBox, hBox2);
 
 
         try
