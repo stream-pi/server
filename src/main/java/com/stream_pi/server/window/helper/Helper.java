@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
+import org.controlsfx.control.ToggleSwitch;
 
 public class Helper
 {
@@ -86,22 +87,10 @@ public class Helper
         }
         else if(property.getControlType() == ControlType.TOGGLE)
         {
-            ToggleButton toggleButton = new ToggleButton();
-            toggleButton.setSelected(property.getBoolValue());
+            ToggleSwitch toggleSwitch = new ToggleSwitch();
+            toggleSwitch.setSelected(property.getBoolValue());
 
-            if(property.getBoolValue())
-                toggleButton.setText("ON");
-            else
-                toggleButton.setText("OFF");
-
-            toggleButton.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
-                if(t1)
-                    toggleButton.setText("ON");
-                else
-                    toggleButton.setText("OFF");
-            });
-
-            controlNode = toggleButton;
+            controlNode = toggleSwitch;
         }
         else if(property.getControlType() == ControlType.SLIDER_DOUBLE)
         {
