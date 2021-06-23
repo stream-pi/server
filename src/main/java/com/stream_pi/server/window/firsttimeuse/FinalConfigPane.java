@@ -3,9 +3,13 @@ package com.stream_pi.server.window.firsttimeuse;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
+import com.stream_pi.util.alert.StreamPiAlert;
+import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.uihelper.HBoxInputBox;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -53,11 +57,20 @@ public class FinalConfigPane extends VBox
     public void makeChangesToNextButton()
     {
         nextButton.setText("Confirm");
-        nextButton.setOnAction(event -> onConfirmButtonClicked());
+        nextButton.setOnAction(actionEvent -> new Thread(new Task<Void>() {
+            @Override
+            protected Void call()
+            {
+                onConfirmButtonClicked();
+                return null;
+            }
+        }).start());
     }
 
     private void onConfirmButtonClicked()
     {
+        Platform.runLater(()->nextButton.setDisable(true));
+
         StringBuilder errors = new StringBuilder();
 
         String serverNameStr = serverNicknameTextField.getText();
@@ -91,7 +104,7 @@ public class FinalConfigPane extends VBox
                 Config.getInstance().setFirstTimeUse(false);
                 Config.getInstance().save();
 
-                serverListener.restart();
+                Platform.runLater(()->serverListener.restart());
             }
             catch(SevereException e)
             {
@@ -100,11 +113,8 @@ public class FinalConfigPane extends VBox
         }
         else
         {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setResizable(false);
-            alert.getDialogPane().setPrefHeight(250);
-            alert.setContentText("Please rectify the following errors and try again:\n"+errors.toString());
-            alert.show();
+            Platform.runLater(()->nextButton.setDisable(false));
+            new StreamPiAlert("Uh Oh", "Please rectify the following errors and try again:\n"+errors, StreamPiAlertType.ERROR).show();
         }
     }
 }
