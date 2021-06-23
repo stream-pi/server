@@ -72,7 +72,7 @@ public class UIPropertyBox
             rawValue = Math.round(((Slider) controlNode).getValue()) + "";
         else if (controlType == ControlType.TOGGLE) {
             ToggleSwitch toggleSwitch = ((ToggleSwitch) controlNode);
-            if (toggleButton.isSelected())
+            if (toggleSwitch.isSelected())
                 rawValue = "true";
             else
                 rawValue = "false";
