@@ -7,7 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
+import org.controlsfx.control.ToggleSwitch;
 
 public class UIPropertyBox
 {
@@ -71,7 +71,7 @@ public class UIPropertyBox
         else if (controlType == ControlType.SLIDER_INTEGER)
             rawValue = Math.round(((Slider) controlNode).getValue()) + "";
         else if (controlType == ControlType.TOGGLE) {
-            ToggleButton toggleButton = ((ToggleButton) controlNode);
+            ToggleSwitch toggleSwitch = ((ToggleSwitch) controlNode);
             if (toggleButton.isSelected())
                 rawValue = "true";
             else
