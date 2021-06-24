@@ -324,7 +324,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         {
             logger.info("Theme not found. reverting to light theme ...");
             try {
-                Config.getInstance().setCurrentThemeFullName("com.streampi.DefaultLight");
+                Config.getInstance().setCurrentThemeFullName("com.stream_pi.defaultlight");
                 Config.getInstance().save();
 
                 applyDefaultTheme();
