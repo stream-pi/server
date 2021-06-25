@@ -72,12 +72,6 @@ jobs:
           workflow: build.yml
           name: macos-pkg-x64
           path: target/install
-      - name: Download MacOS x86 pkg
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: build.yml
-          name: macos-pkg-x86
-          path: target/install
       - name: Delete old release if exists
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
         continue-on-error: true
