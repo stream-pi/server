@@ -282,6 +282,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
             clearIconButton.setDisable(true);
 
+            hideDisplayTextCheckBox.setSelected(false);
+
             setSendIcon(false);
 
             defaultIconFileTextField.clear();
