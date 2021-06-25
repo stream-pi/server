@@ -36,35 +36,17 @@ jobs:
           workflow: build.yml
           name: linux-deb-x64
           path: target/install
-      - name: Download linux x86 deb
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: build.yml
-          name: linux-deb-x86
-          path: target/install
       - name: Download linux x64 rpm
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
           name: linux-rpm-x64
           path: target/install
-      - name: Download linux x86 rpm
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: build.yml
-          name: linux-rpm-x86
-          path: target/install
       - name: Download linux x64 zip
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
           name: linux-zip-x64
-          path: target/install
-      - name: Download linux x86 zip
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: build.yml
-          name: linux-zip-x86
           path: target/install
       - name: Download MacOS x64 pkg
         uses: dawidd6/action-download-artifact@v2
