@@ -7,7 +7,7 @@ on:
       - completed
 
 jobs:
-  build-linux:
+  build-linux-x64:
     runs-on: ubuntu-20.04
     steps:
       - name: Install packages
@@ -17,6 +17,8 @@ jobs:
         uses: joschi/setup-jdk@v2
         with:
           java-version: 16
+          distribution: adopt-hotspot
+          architecture: x64
       - name: Delete Default.zip
         run: |
           rm -rf src/main/resources/com/stream_pi/server/Default.zip
@@ -93,20 +95,121 @@ jobs:
       - name: Saving Linux x64 DEB
         uses: actions/upload-artifact@v2
         with:
-          name: linux-deb
+          name: linux-deb-x64
           path: target/install/stream-pi-server-linux-x64-${{ env.VERSION }}.deb
       - name: Saving Linux x64 RPM
         uses: actions/upload-artifact@v2
         with:
-          name: linux-rpm
+          name: linux-rpm-x64
           path: target/install/stream-pi-server-linux-x64-${{ env.VERSION }}.rpm
       - name: Saving Linux x64 ZIP
         uses: actions/upload-artifact@v2
         with:
-          name: linux-zip
+          name: linux-zip-x64
           path: target/install/stream-pi-server-linux-x64-${{ env.VERSION }}-executable.zip
+
+  build-linux-x86:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Install packages
+        run: sudo apt install xdg-utils libc6 xdg-utils zlib1g libpng16-16 libasound2 libbsd-dev zip libblkid1 libdbus-1-3 libexpat1 libgpg-error0 liblzma5 libmount1 libpcre3 libselinux1 libsystemd0 libuuid1
+      - uses: actions/checkout@v2
+      - name: Setup java
+        uses: joschi/setup-jdk@v2
+        with:
+          java-version: 16
+          distribution: adopt-hotspot
+          architecture: x86
+      - name: Delete Default.zip
+        run: |
+          rm -rf src/main/resources/com/stream_pi/server/Default.zip
+      - name: Downloading Default.zip ...
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: default-zip
+          path: src/main/resources/com/stream_pi/server
+      - name: Setup JavaFX
+        run: |
+          wget -P /tmp https://download2.gluonhq.com/openjfx/17/openjfx-17-ea+12_linux-x86_bin-jmods.zip
+          unzip /tmp/openjfx-17-ea+12_linux-x86_bin-jmods.zip -d /tmp
+      - name: Download built jars
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: built-jars
+          path: target/lib/
+      - name: Download REQ_MODULES
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: req_modules
+      - name: Download VERSION
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: version
+      - name: Add VERSION to environment
+        run: |
+          echo "VERSION=$(<version.txt)" >> $GITHUB_ENV
+      - name: Add REQ_MODULES to environment
+        run: |
+          echo "REQ_MODULES=$(<req_modules.txt)" >> $GITHUB_ENV
+      - name: Create DEB, PKG, ZIP
+        run: |
+
+          # Create DEB
+          .github/scripts/jpackage.sh \
+          --icon assets/linux-icon.png \
+          --app-version ${{ env.VERSION }} \
+          --linux-menu-group "Stream-Pi" \
+          --license-file LICENSE.txt \
+          --type deb
+
+          # Create App Image
+          .github/scripts/jpackage.sh \
+          --icon assets/linux-icon.png \
+          --app-version ${{ env.VERSION }} \
+          --type app-image
+
+          NEW_V=${{ env.VERSION }}
+          NEW_V=${NEW_V//-/_}
+
+          # Create RPM
+          .github/scripts/jpackage.sh \
+          --icon assets/linux-icon.png \
+          --license-file LICENSE.txt \
+          --app-version $NEW_V \
+          --type rpm
+
+          cd $INSTALL_DIR
+          mv *.deb stream-pi-server-linux-x86-${{ env.VERSION }}.deb
+          mv *.rpm stream-pi-server-linux-x86-${{ env.VERSION }}.rpm
+          mv 'Stream-Pi Server' stream-pi-server-${{ env.VERSION }}
+          zip -r stream-pi-server-linux-x86-${{ env.VERSION }}-executable.zip stream-pi-server-${{ env.VERSION }}
+          rm -r stream-pi-server-${{ env.VERSION }}
+        env:
+          MAIN_CLASS: com.stream_pi.server.Main
+          JAVAFX_JMODS: /tmp/javafx-jmods-17/
+          JPACKAGE_HOME: ${{ env.JAVA_HOME }}
+          INSTALL_DIR: target/install
+      - name: Saving Linux x86 DEB
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-deb-x86
+          path: target/install/stream-pi-server-linux-x86-${{ env.VERSION }}.deb
+      - name: Saving Linux x86 RPM
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-rpm-x86
+          path: target/install/stream-pi-server-linux-x86-${{ env.VERSION }}.rpm
+      - name: Saving Linux x86 ZIP
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-zip-x86
+          path: target/install/stream-pi-server-linux-x86-${{ env.VERSION }}-executable.zip
   
-  build-macos:
+  build-macos-x64:
     runs-on: macos-10.15
     steps:
       - uses: actions/checkout@v2
@@ -114,6 +217,8 @@ jobs:
         uses: joschi/setup-jdk@v2
         with:
           java-version: 16
+          distribution: adopt-hotspot
+          architecture: x64
       - name: Delete Default.zip
         run: |
           rm -rf src/main/resources/com/stream_pi/server/Default.zip
@@ -169,10 +274,78 @@ jobs:
       - name: Saving MacOS x64 PKG
         uses: actions/upload-artifact@v2
         with:
-          name: macos-pkg
+          name: macos-pkg-x64
           path: target/install/stream-pi-server-macos-x64-${{ env.VERSION }}.pkg
 
-  build-windows:
+  build-macos-x86:
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup java
+        uses: joschi/setup-jdk@v2
+        with:
+          java-version: 16
+          distribution: adopt-hotspot
+          architecture: x86
+      - name: Delete Default.zip
+        run: |
+          rm -rf src/main/resources/com/stream_pi/server/Default.zip
+      - name: Downloading Default.zip ...
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: default-zip
+          path: src/main/resources/com/stream_pi/server
+      - name: Setup JavaFX
+        run: |
+          wget -P /tmp https://download2.gluonhq.com/openjfx/17/openjfx-17-ea+12_osx-x86_bin-jmods.zip
+          unzip /tmp/openjfx-17-ea+12_osx-x86_bin-jmods.zip -d /tmp
+      - name: Download built jars
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: built-jars
+          path: target/lib/
+      - name: Download REQ_MODULES
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: req_modules
+      - name: Download VERSION
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: version
+      - name: Add VERSION to environment
+        run: |
+          echo "VERSION=$(<version.txt)" >> $GITHUB_ENV
+      - name: Add REQ_MODULES to environment
+        run: |
+          echo "REQ_MODULES=$(<req_modules.txt)" >> $GITHUB_ENV
+      - name: Create PKG
+        run: |
+
+          # Create PKG
+          .github/scripts/jpackage.sh \
+          --icon assets/macos-icon.icns \
+          --license-file LICENSE.txt \
+          --mac-package-identifier stream-pi-server \
+          --type pkg
+
+          cd $INSTALL_DIR
+          mv *.pkg stream-pi-server-macos-x86-${{ env.VERSION }}.pkg
+        env:
+          MAIN_CLASS: com.stream_pi.server.Main
+          JAVAFX_JMODS: /tmp/javafx-jmods-17/
+          JPACKAGE_HOME: ${{ env.JAVA_HOME }}
+          INSTALL_DIR: target/install
+      - name: Saving MacOS x86 PKG
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos-pkg-x86
+          path: target/install/stream-pi-server-macos-x86-${{ env.VERSION }}.pkg
+
+  build-windows-x64:
     runs-on: windows-2019
     steps:
       - uses: actions/checkout@v2
@@ -180,6 +353,8 @@ jobs:
         uses: joschi/setup-jdk@v2
         with:
           java-version: 16
+          distribution: adopt-hotspot
+          architecture: x64
       - name: Delete Default.zip
         run: |
           del src/main/resources/com/stream_pi/server/Default.zip
@@ -222,5 +397,60 @@ jobs:
       - name: Saving Windows x64 MSI
         uses: actions/upload-artifact@v2
         with:
-          name: windows-msi
+          name: windows-msi-x64
+          path: target/install/*.msi
+
+  build-windows-x86:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup java
+        uses: joschi/setup-jdk@v2
+        with:
+          java-version: 16
+          distribution: adopt-hotspot
+          architecture: x86
+      - name: Delete Default.zip
+        run: |
+          del src/main/resources/com/stream_pi/server/Default.zip
+      - name: Downloading Default.zip ...
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: default-zip
+          path: src/main/resources/com/stream_pi/server
+      - name: Download REQ_MODULES
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: req_modules
+      - name: Download VERSION
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: version
+      - name: Setup JavaFX
+        run: |
+          bitsadmin /Transfer DownsdfloadJavaFX https://download2.gluonhq.com/openjfx/17/openjfx-17-ea+12_windows-x86_bin-jmods.zip D:\openjfx-17-ea+12_windows-x86_bin-jmods.zip
+          Expand-Archive -Force D:\openjfx-17-ea+12_windows-x86_bin-jmods.zip D:\
+      - name: Download built jars
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: built-jars
+          path: target/lib/
+      - name: Create Bundle using JPackage
+        id: project
+        shell: cmd
+        run: |
+          call .github\scripts\jpackage.bat
+        env:
+          MAIN_CLASS: com.stream_pi.server.Main
+          JAVAFX_JMODS: D:\javafx-jmods-17\
+          JPACKAGE_HOME: ${{ env.JAVA_HOME }}
+          INSTALL_DIR: target/install
+      - name: Saving Windows x86 MSI
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-msi-x86
           path: target/install/*.msi

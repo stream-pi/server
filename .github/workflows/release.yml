@@ -18,35 +18,65 @@ jobs:
       - name: Add Version to environment
         run: |
           echo "VERSION=$(<version.txt)" >> $GITHUB_ENV
-      - name: Download windows msi
+      - name: Download windows x64 msi
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
-          name: windows-msi
+          name: windows-msi-x64
           path: target/install
-      - name: Download linux deb
+      - name: Download windows x86 msi
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
-          name: linux-deb
+          name: windows-msi-x86
           path: target/install
-      - name: Download linux rpm
+      - name: Download linux x64 deb
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
-          name: linux-rpm
+          name: linux-deb-x64
           path: target/install
-      - name: Download linux zip
+      - name: Download linux x86 deb
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
-          name: linux-zip
+          name: linux-deb-x86
           path: target/install
-      - name: Download MacOS pkg
+      - name: Download linux x64 rpm
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
-          name: macos-pkg
+          name: linux-rpm-x64
+          path: target/install
+      - name: Download linux x86 rpm
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build.yml
+          name: linux-rpm-x86
+          path: target/install
+      - name: Download linux x64 zip
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build.yml
+          name: linux-zip-x64
+          path: target/install
+      - name: Download linux x86 zip
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build.yml
+          name: linux-zip-x86
+          path: target/install
+      - name: Download MacOS x64 pkg
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build.yml
+          name: macos-pkg-x64
+          path: target/install
+      - name: Download MacOS x86 pkg
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build.yml
+          name: macos-pkg-x86
           path: target/install
       - name: Delete old release if exists
         uses: dev-drprasad/delete-tag-and-release@v0.2.0
