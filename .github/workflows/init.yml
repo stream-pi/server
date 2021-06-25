@@ -13,6 +13,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 16
+          distribution: adopt-hotspot
       - name: Build actions
         run: |
           git clone https://github.com/stream-pi/essential-actions
