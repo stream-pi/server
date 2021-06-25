@@ -26,5 +26,5 @@ echo Done now renaming ..
 cd %INSTALL_DIR%
 echo run dir
 dir
-ren *.msi stream-pi-server-windows-x64-%VERSION%-installer.msi
+ren *.msi stream-pi-server-windows-%ARCH%-%VERSION%-installer.msi
 dir
