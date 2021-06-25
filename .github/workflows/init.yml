@@ -10,10 +10,10 @@ jobs:
         run: sudo apt install unzip
       - uses: actions/checkout@v2
       - name: Setup java
-        uses: actions/setup-java@v2
+        uses: joschi/setup-jdk@v2
         with:
           java-version: 16
-          distribution: adopt-hotspot
+          architecture: x64
       - name: Build actions
         run: |
           git clone https://github.com/stream-pi/essential-actions
