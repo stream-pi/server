@@ -225,7 +225,7 @@ jobs:
           JAVAFX_JMODS: D:\javafx-jmods-17\
           JPACKAGE_HOME: ${{ env.JAVA_HOME }}
           INSTALL_DIR: target/install
-          ARCH: x86
+          ARCH: x64
       - name: Saving Windows x64 MSI
         uses: actions/upload-artifact@v2
         with:
