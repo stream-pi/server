@@ -14,9 +14,10 @@ jobs:
         run: sudo apt install xdg-utils libc6 xdg-utils zlib1g libpng16-16 libasound2 libbsd-dev zip libblkid1 libdbus-1-3 libexpat1 libgpg-error0 liblzma5 libmount1 libpcre3 libselinux1 libsystemd0 libuuid1
       - uses: actions/checkout@v2
       - name: Setup java
-        uses: joschi/setup-jdk@v2
+        uses: actions/setup-java@v2
         with:
           java-version: 16
+          distribution: adopt
           architecture: x64
       - name: Delete Default.zip
         run: |
@@ -114,9 +115,10 @@ jobs:
         run: sudo apt install xdg-utils libc6 xdg-utils zlib1g libpng16-16 libasound2 libbsd-dev zip libblkid1 libdbus-1-3 libexpat1 libgpg-error0 liblzma5 libmount1 libpcre3 libselinux1 libsystemd0 libuuid1
       - uses: actions/checkout@v2
       - name: Setup java
-        uses: joschi/setup-jdk@v2
+        uses: actions/setup-java@v2
         with:
           java-version: 16
+          distribution: adopt
           architecture: x86
       - name: Delete Default.zip
         run: |
@@ -206,15 +208,16 @@ jobs:
         with:
           name: linux-zip-x86
           path: target/install/stream-pi-server-linux-x86-${{ env.VERSION }}-executable.zip
-  
+
   build-macos-x64:
     runs-on: macos-10.15
     steps:
       - uses: actions/checkout@v2
       - name: Setup java
-        uses: joschi/setup-jdk@v2
+        uses: actions/setup-java@v2
         with:
           java-version: 16
+          distribution: adopt
           architecture: x64
       - name: Delete Default.zip
         run: |
@@ -279,9 +282,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup java
-        uses: joschi/setup-jdk@v2
+        uses: actions/setup-java@v2
         with:
           java-version: 16
+          distribution: adopt
           architecture: x86
       - name: Delete Default.zip
         run: |
@@ -346,9 +350,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup java
-        uses: joschi/setup-jdk@v2
+        uses: actions/setup-java@v2
         with:
           java-version: 16
+          distribution: adopt
           architecture: x64
       - name: Delete Default.zip
         run: |
@@ -400,9 +405,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup java
-        uses: joschi/setup-jdk@v2
+        uses: actions/setup-java@v2
         with:
           java-version: 16
+          distribution: adopt
           architecture: x86
       - name: Delete Default.zip
         run: |
