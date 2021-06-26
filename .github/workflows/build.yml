@@ -239,8 +239,8 @@ jobs:
       - name: Setup java
         uses: actions/setup-java@v2
         with:
-          java-version: 16
-          distribution: adopt
+          java-version: 17-ea
+          distribution: zulu
           architecture: x86
       - name: Delete Default.zip
         run: |
