@@ -253,7 +253,8 @@ public class GeneralSettings extends VBox {
 
 
                     int actionSize=-1;
-                    try {
+                    try
+                    {
                         actionSize = Integer.parseInt(actionGridActionBoxSize);
 
                         if(config.getActionGridActionSize() != actionSize)
@@ -268,7 +269,8 @@ public class GeneralSettings extends VBox {
 
 
                     int actionGap=-1;
-                    try {
+                    try
+                    {
                         actionGap = Integer.parseInt(actionGridActionBoxGap);
 
                         if(config.getActionGridActionGap() != actionGap)
