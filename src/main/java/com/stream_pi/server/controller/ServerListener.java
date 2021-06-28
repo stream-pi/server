@@ -33,4 +33,5 @@ public interface ServerListener
     void factoryReset();
 
     void initSoundOnActionClicked();
+    void onServerStartFailure();
 }

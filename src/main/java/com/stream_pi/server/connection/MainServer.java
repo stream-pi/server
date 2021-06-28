@@ -12,13 +12,13 @@ import java.util.Enumeration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
-public class MainServer extends Thread {
+public class MainServer extends Thread
+{
     private ServerListener serverListener;
 
     private Logger logger = Logger.getLogger(MainServer.class.getName());
     private int port;
     private ServerSocket serverSocket = null;
-    //private Server server;
 
     private AtomicBoolean stop = new AtomicBoolean(false);
 
@@ -42,23 +42,20 @@ public class MainServer extends Thread {
 
     public void stopListeningForConnections()
     {
-
-        /*if(server !=null)
-        {
-            if(!server.isShutdown())
-                server.shutdown();
-        }*/
-
         try
         {
             logger.info("Stopping listening for connections ...");
             if(serverSocket!=null)
+            {
                 if(!serverSocket.isClosed())
                 {
                     stop.set(true);
                     serverSocket.close();
                 }
-        } catch (IOException e) {
+            }
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
         finally {
@@ -67,13 +64,15 @@ public class MainServer extends Thread {
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
         logger.warning("Starting main server on port "+port+" ...");
 
-        try {
+        try
+        {
             logger.info("Starting server on port "+port+" ...");
             serverSocket = new ServerSocket(port);
-            setupStageTitle(true);
+            setupStageTitle();
             while(!stop.get())
             {
                 Socket s = serverSocket.accept();
@@ -81,7 +80,6 @@ public class MainServer extends Thread {
 
                 logger.info("New client connected ("+s.getRemoteSocketAddress()+") !");
             }
-
         }
         catch (SocketException e)
         {
@@ -89,7 +87,7 @@ public class MainServer extends Thread {
             {
                 logger.info("Main Server stopped accepting calls ...");
 
-                setupStageTitle(false);
+                serverListener.onServerStartFailure();
 
                 exceptionAndAlertHandler.handleMinorException(new MinorException("Sorry!","Server could not be started at "+port+".\n" +
                         "This could be due to another process or another instance of Stream-Pi Server using the same port. \n\n" +
@@ -105,38 +103,31 @@ public class MainServer extends Thread {
         }
     }
 
-    private void setupStageTitle(boolean isSuccess)
+    private void setupStageTitle()
     {
         try
         {
-            if(isSuccess)
-            {
-                StringBuilder ips = new StringBuilder();
+            StringBuilder ips = new StringBuilder();
 
-                Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
-                while(e.hasMoreElements())
+            Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
+            while(e.hasMoreElements())
+            {
+                NetworkInterface n = e.nextElement();
+                Enumeration<InetAddress> ee = n.getInetAddresses();
+                while (ee.hasMoreElements())
                 {
-                    NetworkInterface n = e.nextElement();
-                    Enumeration<InetAddress> ee = n.getInetAddresses();
-                    while (ee.hasMoreElements())
+                    InetAddress i = ee.nextElement();
+                    String hostAddress = i.getHostAddress();
+                    if(i instanceof Inet4Address)
                     {
-                        InetAddress i = ee.nextElement();
-                        String hostAddress = i.getHostAddress();
-                        if(i instanceof Inet4Address)
-                        {
-                            ips.append(hostAddress);
-                            if(e.hasMoreElements())
-                                ips.append(" / ");
-                        }
+                        ips.append(hostAddress);
+                        if(e.hasMoreElements())
+                            ips.append(" / ");
                     }
                 }
+            }
 
-                Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - IP(s): "+ips+" | Port: "+ port));
-            }
-            else
-            {
-                Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - Offline"));
-            }
+            Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - IP(s): "+ips+" | Port: "+ port));
         }
         catch (Exception e)
         {

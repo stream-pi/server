@@ -140,6 +140,14 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     }
 
     @Override
+    public void onServerStartFailure()
+    {
+        Platform.runLater(()-> getStage().setTitle("Stream-Pi Server - Offline"));
+
+        disableTrayIcon = true;
+    }
+
+    @Override
     public void othInit()
     {
         try
@@ -246,12 +254,13 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         closeSettingsAnimation = createCloseSettingsAnimation(settingsNode, dashboardNode);
     }
 
+    private boolean disableTrayIcon = false;
     public void onCloseRequest(WindowEvent event)
     {
         try
         {
             if(Config.getInstance().getMinimiseToSystemTrayOnClose() &&
-                    SystemTray.isSupported())
+                    SystemTray.isSupported() && !disableTrayIcon)
             {
                 minimiseApp();
                 event.consume();

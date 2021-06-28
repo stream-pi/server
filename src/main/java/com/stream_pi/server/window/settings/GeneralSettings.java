@@ -312,24 +312,24 @@ public class GeneralSettings extends VBox {
 
                     if(config.getStartOnBoot() != startOnBoot)
                     {
-                        if(StartupFlags.RUNNER_FILE_NAME == null)
+                        StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform());
+                        if(startOnBoot)
                         {
-                            new StreamPiAlert("Uh Oh", "No Runner File Name Specified as startup arguments. Cant set run at boot.", StreamPiAlertType.ERROR).show();
-                            startOnBoot = false;
+                            try
+                            {
+                                startAtBoot.create(StartupFlags.RUNNER_FILE_NAME);
+                            }
+                            catch (MinorException e)
+                            {
+                                exceptionAndAlertHandler.handleMinorException(e);
+                                startOnBoot = false;
+                            }
                         }
                         else
                         {
-                            StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform());
-                            if(startOnBoot)
-                            {
-                                startAtBoot.create(new File(StartupFlags.RUNNER_FILE_NAME));
-                            }
-                            else
-                            {
-                                boolean result = startAtBoot.delete();
-                                if(!result)
-                                    new StreamPiAlert("Uh Oh!", "Unable to delete starter file", StreamPiAlertType.ERROR).show();
-                            }
+                            boolean result = startAtBoot.delete();
+                            if(!result)
+                                new StreamPiAlert("Uh Oh!", "Unable to delete starter file", StreamPiAlertType.ERROR).show();
                         }
                     }
 
