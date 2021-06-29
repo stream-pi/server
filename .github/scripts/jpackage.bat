@@ -13,7 +13,7 @@ set /p VERSION=<version.txt
 --java-options "-Dprism.verbose=true -Djavafx.verbose=true -Dprism.dirtyopts=false" ^
 --main-class %MAIN_CLASS% ^
 --arguments -DStream-Pi.startupRunnerFileName=run_min.exe ^
---add-launcher run_min=assets/run_min.properties ^
+--add-launcher run_min=assets/run_min_win.properties ^
 --icon assets/windows-icon.ico ^
 --dest %INSTALL_DIR% ^
 --win-dir-chooser ^

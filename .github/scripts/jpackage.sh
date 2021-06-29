@@ -1,5 +1,5 @@
 $JPACKAGE_HOME/bin/jpackage \
---add-launcher run_min=assets/run_min.properties \
+--add-launcher run_min=assets/run_min_linux.properties \
 --module-path $JAVAFX_JMODS/:target/lib/ \
 --add-modules $REQ_MODULES \
 --input target/lib \
@@ -12,5 +12,5 @@ $JPACKAGE_HOME/bin/jpackage \
 --dest $INSTALL_DIR \
 --name 'Stream-Pi Server' \
 --java-options '-Dprism.verbose=true -Djavafx.verbose=true -Dprism.dirtyopts=false' \
---arguments -DStream-Pi.startupRunnerFileName=run_min \
+--arguments -DStream-Pi.startupRunnerFileName=./run_min \
 "$@"
