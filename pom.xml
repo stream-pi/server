@@ -6,7 +6,7 @@
 
     <groupId>com.stream-pi</groupId>
     <artifactId>server</artifactId>
-    <version>1.0.0-EA+3-SNAPSHOT</version>
+    <version>1.0.0-EA+3</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
