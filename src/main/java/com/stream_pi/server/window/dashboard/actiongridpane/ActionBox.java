@@ -61,7 +61,7 @@ public class ActionBox extends StackPane{
         return col;
     }
 
-    private ActionDetailsPaneListener actionDetailsPaneListener;
+    private final ActionDetailsPaneListener actionDetailsPaneListener;
 
     public void clear()
     {

@@ -309,7 +309,7 @@ public class GeneralSettings extends VBox {
 
                     if(!errors.toString().isEmpty())
                     {
-                        throw new MinorException("Uh Oh!", "Please rectify the following errors and try again :\n"+errors.toString());
+                        throw new MinorException("Uh Oh!", "Please rectify the following errors and try again :\n"+ errors);
                     }
 
                     if(config.getStartOnBoot() != startOnBoot)
