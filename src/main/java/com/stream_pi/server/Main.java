@@ -23,6 +23,9 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.net.URISyntaxException;
+
 public class Main extends Application {
 
     /**
@@ -40,10 +43,18 @@ public class Main extends Application {
             String arg = r[0];
             String val = r[1];
 
-            if(arg.equals("-DStream-Pi.startupRunnerFileName"))
-                StartupFlags.RUNNER_FILE_NAME = val;
-            else if(arg.equals("-DStream-Pi.startupMode"))
-                StartupFlags.START_MINIMISED = val.equals("min");
+            switch (arg)
+            {
+                case "-DStream-Pi.startupRunnerFileName":
+                    StartupFlags.RUNNER_FILE_NAME = val;
+                    break;
+                case "-DStream-Pi.startMinimised":
+                    StartupFlags.START_MINIMISED = val.equals("true");
+                    break;
+                case "-DStream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation":
+                    StartupFlags.APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION = val.equals("true");
+                    break;
+            }
         }
 
         Controller d = new Controller();

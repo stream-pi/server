@@ -1,6 +1,7 @@
 package com.stream_pi.server.window.settings;
 
 import com.stream_pi.action_api.actionproperty.property.FileExtensionFilter;
+import com.stream_pi.server.Main;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.info.StartupFlags;
 import com.stream_pi.server.io.Config;
@@ -38,6 +39,7 @@ import org.w3c.dom.Text;
 
 import java.awt.SystemTray;
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.logging.Logger;
 
 public class GeneralSettings extends VBox {
@@ -319,11 +321,25 @@ public class GeneralSettings extends VBox {
                         {
                             try
                             {
-                                startAtBoot.create(StartupFlags.RUNNER_FILE_NAME);
+                                if(StartupFlags.APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION)
+                                {
+                                    startAtBoot.create(new File(Main.class.getProtectionDomain().getCodeSource().getLocation()
+                                            .toURI()).getParentFile().getParentFile().getAbsolutePath() +
+                                            "/bin/" + StartupFlags.RUNNER_FILE_NAME);
+                                }
+                                else
+                                {
+                                    startAtBoot.create(StartupFlags.RUNNER_FILE_NAME);
+                                }
                             }
                             catch (MinorException e)
                             {
                                 exceptionAndAlertHandler.handleMinorException(e);
+                                startOnBoot = false;
+                            } catch (URISyntaxException e) {
+                                exceptionAndAlertHandler.handleMinorException(new MinorException(
+                                        "Unable to get path \n"+e.getMessage()
+                                ));
                                 startOnBoot = false;
                             }
                         }

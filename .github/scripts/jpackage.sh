@@ -12,5 +12,5 @@ $JPACKAGE_HOME/bin/jpackage \
 --dest $INSTALL_DIR \
 --name 'Stream-Pi Server' \
 --java-options '-Dprism.verbose=true -Djavafx.verbose=true -Dprism.dirtyopts=false' \
---arguments -DStream-Pi.startupRunnerFileName=./run_min \
+--arguments -DStream-Pi.startupRunnerFileName=run_min -DStream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation=true \
 "$@"
