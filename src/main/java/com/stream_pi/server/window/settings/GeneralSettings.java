@@ -324,7 +324,7 @@ public class GeneralSettings extends VBox {
                                 if(StartupFlags.APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION)
                                 {
                                     startAtBoot.create(new File(Main.class.getProtectionDomain().getCodeSource().getLocation()
-                                            .toURI()).getParentFile().getParentFile().getAbsolutePath() +
+                                            .toURI()).getParentFile().getParentFile().getParentFile().getAbsolutePath() +
                                             "/bin/" + StartupFlags.RUNNER_FILE_NAME);
                                 }
                                 else
