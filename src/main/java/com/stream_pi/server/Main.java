@@ -36,7 +36,7 @@ public class Main extends Application {
     public void start(Stage stage) {
         for(String eachArg : getParameters().getRaw())
         {
-            if(!eachArg.startsWith("-DStream-Pi"))
+            if(!eachArg.startsWith("Stream-Pi"))
                 continue;
 
             String[] r = eachArg.split("=");
@@ -45,13 +45,13 @@ public class Main extends Application {
 
             switch (arg)
             {
-                case "-DStream-Pi.startupRunnerFileName":
+                case "Stream-Pi.startupRunnerFileName":
                     StartupFlags.RUNNER_FILE_NAME = val;
                     break;
-                case "-DStream-Pi.startMinimised":
+                case "Stream-Pi.startMinimised":
                     StartupFlags.START_MINIMISED = val.equals("true");
                     break;
-                case "-DStream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation":
+                case "Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation":
                     StartupFlags.APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION = val.equals("true");
                     break;
             }

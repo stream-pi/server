@@ -141,7 +141,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.5</version>
                 <configuration>
-                    <commandlineArgs>-DStream-Pi.startupRunnerFileName=run_min -DStream-Pi.startupMode=maximise</commandlineArgs>
+                    <commandlineArgs>Stream-Pi.startupRunnerFileName=run_min Stream-Pi.startupMode=maximise</commandlineArgs>
                     <options>
                         <option>-Dprism.verbose=true</option>
                         <option>-Djavafx.verbose=true</option>
