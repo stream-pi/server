@@ -9,3 +9,4 @@ streampi.log.lck
 .project
 .factorypath
 .classpath
+.vscode/settings.json
