@@ -29,6 +29,7 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -589,6 +590,15 @@ public class ActionBox extends StackPane{
     public void setDisplayTextLabel(String text)
     {
         displayTextLabel.setText(text);
+
+        if(getAction().getNameFontSize() > -1)
+        {
+            displayTextLabel.setStyle("-fx-font-size: "+getAction().getNameFontSize());
+        }
+        else
+        {
+            displayTextLabel.setStyle(null);
+        }
     }
 
     public void setDisplayTextAlignment(DisplayTextAlignment displayTextAlignment)

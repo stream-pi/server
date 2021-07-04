@@ -29,6 +29,8 @@ import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.HostServices;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
@@ -208,6 +210,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         displayNameTextField = new TextField();
         displayNameTextField.managedProperty().bind(displayNameTextField.visibleProperty());
 
+        displayNameFontSizeTextField = new TextField();
+        displayNameFontSizeTextField.managedProperty().bind(displayNameFontSizeTextField.visibleProperty());
+
         defaultIconFileTextField = new TextField();
         defaultIconFileTextField.textProperty().addListener((observableValue, s, t1) -> {
             try {
@@ -294,6 +299,10 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         hideDisplayTextCheckBox = new CheckBox("Hide");
         hideDisplayTextCheckBox.managedProperty().bind(hideDisplayTextCheckBox.visibleProperty());
 
+        displayNameFontSizeCheckBox = new CheckBox("Default");
+        displayNameFontSizeCheckBox.managedProperty().bind(displayNameFontSizeCheckBox.visibleProperty());
+        displayNameFontSizeTextField.disableProperty().bind(displayNameFontSizeCheckBox.selectedProperty());
+
         hideDefaultIconCheckBox = new CheckBox("Hide");
 
         hideToggleOnIconCheckBox = new CheckBox("Hide");
@@ -333,9 +342,16 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         clearIconHBox.setAlignment(Pos.CENTER_RIGHT);
 
         HBox.setMargin(hideDisplayTextCheckBox, new Insets(0, 0, 0, 45));
-        HBoxInputBox s = new HBoxInputBox("Display Name", displayNameTextField);
+        HBoxInputBox s = new HBoxInputBox("Name", displayNameTextField);
         HBox.setHgrow(s, Priority.ALWAYS);
         displayTextFieldHBox = new HBox(s, hideDisplayTextCheckBox);
+
+
+        HBox.setMargin(displayNameFontSizeCheckBox, new Insets(0,0,0,30));
+        HBoxInputBox t = new HBoxInputBox("Font Size", displayNameFontSizeTextField);
+        HBox.setHgrow(t, Priority.ALWAYS);
+        displayNameLabelFontSizeTextFieldHBox = new HBox(t, displayNameFontSizeCheckBox);
+        displayNameLabelFontSizeTextFieldHBox.managedProperty().bind(displayNameLabelFontSizeTextFieldHBox.visibleProperty());
 
 
         HBox alignmentHBox = new HBox(new Label("Alignment"), SpaceFiller.horizontal(),
@@ -373,7 +389,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         toggleActionsPropsVBox.managedProperty().bind(toggleActionsPropsVBox.visibleProperty());
         toggleActionsPropsVBox.setSpacing(10.0);
 
-        vbox.getChildren().addAll(displayTextFieldHBox,normalToggleActionCommonPropsVBox,
+        vbox.getChildren().addAll(displayTextFieldHBox, displayNameLabelFontSizeTextFieldHBox,
+                normalToggleActionCommonPropsVBox,
                 normalActionsPropsVBox, toggleActionsPropsVBox,
                 clearIconHBox, clientPropertiesVBox,
                 pluginExtraButtonBar);
@@ -517,6 +534,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     private VBox toggleActionsPropsVBox;
 
     private HBox displayTextFieldHBox;
+    private HBox displayNameLabelFontSizeTextFieldHBox;
 
     private ClientConnection clientConnection;
     private ClientProfile clientProfile;
@@ -587,6 +605,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     private TextField displayNameTextField;
     private CheckBox hideDisplayTextCheckBox;
+
+    private TextField displayNameFontSizeTextField;
+    private CheckBox displayNameFontSizeCheckBox;
 
     private CheckBox hideDefaultIconCheckBox;
     private TextField defaultIconFileTextField;
@@ -688,6 +709,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
 
         hideDisplayTextCheckBox.setSelected(!getAction().isShowDisplayText());
+        displayNameFontSizeCheckBox.setSelected(getAction().getNameFontSize() == -1);
 
 
         if(getAction().isInvalid())
@@ -706,9 +728,12 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             normalToggleActionCommonPropsVBox.setVisible(false);
             hideDisplayTextCheckBox.setSelected(false);
             hideDisplayTextCheckBox.setVisible(false);
+
+            displayNameLabelFontSizeTextFieldHBox.setVisible(false);
         }
         else
         {
+            displayNameLabelFontSizeTextFieldHBox.setVisible(true);
             normalToggleActionCommonPropsVBox.setVisible(true);
 
             if(getAction().getActionType() == ActionType.TOGGLE)
@@ -921,6 +946,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             ),
             action, delayBeforeRunning,
             displayNameTextField.getText(),
+            displayNameFontSizeTextField.getText(),
+            displayNameFontSizeCheckBox.isSelected(),
             isCombineChild(),
             !hideDisplayTextCheckBox.isSelected(),
             displayTextColourDefaultCheckBox.isSelected(),
@@ -982,15 +1009,25 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                         finalErrors.append(" * Display Text cannot be hidden since there is no icon.\n");
                 }
             }
+
+            if(!displayNameFontSizeCheckBox.isSelected())
+            {
+                try
+                {
+                    Double.parseDouble(displayNameFontSizeTextField.getText());
+                }
+                catch (NumberFormatException e)
+                {
+                    finalErrors.append(" * Name Label Font Size should be a number.\n");
+                }
+            }
         }
 
         if(getAction().getActionType() == ActionType.NORMAL)
         {
             try
             {
-                int n = Integer.parseInt(delayBeforeRunningTextField.getText());
-
-                if (n<0)
+                if (Integer.parseInt(delayBeforeRunningTextField.getText()) > 0)
                 {
                     finalErrors.append(" * Sleep should be greater than 0.\n");
                 }

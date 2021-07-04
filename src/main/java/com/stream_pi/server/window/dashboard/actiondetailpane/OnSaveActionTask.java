@@ -29,7 +29,7 @@ public class OnSaveActionTask extends Task<Void>
     private Logger logger;
 
 
-    public OnSaveActionTask(ClientConnection connection, Action action, String delayBeforeRunningString, String displayNameText, boolean isCombineChild,
+    public OnSaveActionTask(ClientConnection connection, Action action, String delayBeforeRunningString, String displayNameText, String displayNameLabelSize, boolean isUseDefaultFontSizeForDisplayLabel, boolean isCombineChild,
                             boolean isShowDisplayText, boolean isDefaultDisplayTextColour, String displayTextFontColour, boolean isClearIcon,
                             boolean isHideDefaultIcon, boolean isHideToggleOffIcon, boolean isHideToggleOnIcon, DisplayTextAlignment displayTextAlignment, boolean isTransparentBackground, String backgroundColour,
                             CombineActionPropertiesPane combineActionPropertiesPane, ClientProfile clientProfile, boolean sendIcon, ActionBox actionBox,
@@ -44,6 +44,8 @@ public class OnSaveActionTask extends Task<Void>
         this.connection = connection;
         this.action = action;
         this.displayNameText = displayNameText;
+        this.displayNameLabelSize = displayNameLabelSize;
+        this.isUseDefaultFontSizeForDisplayLabel = isUseDefaultFontSizeForDisplayLabel;
         this.isCombineChild = isCombineChild;
         this.isShowDisplayText = isShowDisplayText;
         this.isDefaultDisplayTextColour = isDefaultDisplayTextColour;
@@ -84,6 +86,8 @@ public class OnSaveActionTask extends Task<Void>
     private boolean isShowDisplayText;
     private boolean isCombineChild;
     private String displayNameText;
+    private String displayNameLabelSize;
+    private boolean isUseDefaultFontSizeForDisplayLabel;
     private boolean isDefaultDisplayTextColour;
     private ArrayList<UIPropertyBox> actionClientProperties;
     private String displayTextFontColour;
@@ -115,6 +119,15 @@ public class OnSaveActionTask extends Task<Void>
     private void runTask()
     {
         action.setDisplayText(displayNameText);
+
+        if(isUseDefaultFontSizeForDisplayLabel)
+        {
+            action.setNameFontSize(-1);
+        }
+        else
+        {
+            action.setNameFontSize(Double.parseDouble(displayNameLabelSize));
+        }
 
         if(!isCombineChild)
         {
