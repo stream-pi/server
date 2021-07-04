@@ -1,12 +1,19 @@
+# Maven
 target/
+
+# IntelliJ IDEA
 .idea/
-data/
-streampi.log
-streampi.log.lck
 *.iml
 
+# Eclipse
 .settings/
 .project
 .factorypath
 .classpath
-.vscode/settings.json
+
+# Misc
+gen/
+data/
+
+#VS Code
+.vscode/
