@@ -364,7 +364,11 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             exit();
         });
 
+        MenuItem openItem = new MenuItem("Open");
+        openItem.addActionListener(l-> unMinimizeApp());
+
         popup.add(exitItem);
+        popup.add(openItem);
 
         TrayIcon trayIcon = new TrayIcon(
             Toolkit.getDefaultToolkit().getImage(Main.class.getResource("app_icon.png")),
@@ -372,15 +376,20 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             popup
         );
 
-        trayIcon.addActionListener(l-> Platform.runLater(()-> {
-            getStage().show();
-            getStage().setAlwaysOnTop(true);
-            getStage().setAlwaysOnTop(false);
-        }));
+        trayIcon.addActionListener(l-> unMinimizeApp());
 
         trayIcon.setImageAutoSize(true);
 
         this.trayIcon = trayIcon;
+    }
+
+    private void unMinimizeApp()
+    {
+        Platform.runLater(()->{
+            getStage().show();
+            getStage().setAlwaysOnTop(true);
+            getStage().setAlwaysOnTop(false);
+        });
     }
 
     private TrayIcon trayIcon = null;
