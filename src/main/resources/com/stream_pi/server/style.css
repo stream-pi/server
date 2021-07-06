@@ -57,8 +57,8 @@
 
 .action_box_display_text_label
 {
-    -fx-font-size : 16;
     -fx-background-color : transparent;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0.0, 0.0);
 }
 
 .action_details_pane_heading_label
