@@ -15,6 +15,7 @@ import com.stream_pi.util.checkforupdates.CheckForUpdates;
 import com.stream_pi.util.checkforupdates.UpdateHyperlinkOnClick;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
+import com.stream_pi.util.platform.Platform;
 import com.stream_pi.util.platform.PlatformType;
 import com.stream_pi.util.startatboot.StartAtBoot;
 import com.stream_pi.util.uihelper.HBoxInputBox;
@@ -22,7 +23,6 @@ import com.stream_pi.util.uihelper.HBoxInputBoxWithDirectoryChooser;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import javafx.application.HostServices;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -168,7 +168,7 @@ public class GeneralSettings extends VBox {
     public void loadDataFromConfig() throws SevereException {
         Config config = Config.getInstance();
 
-        Platform.runLater(()->
+        javafx.application.Platform.runLater(()->
         {
             serverNameTextField.setText(config.getServerName());
             portTextField.setText(config.getPort()+"");
@@ -196,9 +196,7 @@ public class GeneralSettings extends VBox {
                     boolean toBeReloaded = false;
                     boolean dashToBeReRendered = false;
 
-                    Platform.runLater(()->{
-                        saveButton.setDisable(true);
-                    });
+                    javafx.application.Platform.runLater(()-> saveButton.setDisable(true));
 
                     String serverNameStr = serverNameTextField.getText();
                     String serverPortStr = portTextField.getText();
@@ -323,9 +321,24 @@ public class GeneralSettings extends VBox {
                             {
                                 if(StartupFlags.APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION)
                                 {
-                                    startAtBoot.create(new File(Main.class.getProtectionDomain().getCodeSource().getLocation()
-                                            .toURI()).getParentFile().getParentFile().getParentFile().getAbsolutePath() +
-                                            "/bin/" + StartupFlags.RUNNER_FILE_NAME);
+                                    Platform platform = ServerInfo.getInstance().getPlatform();
+
+                                    if(platform == Platform.LINUX)
+                                    {
+                                        startAtBoot.create(new File(Main.class.getProtectionDomain().getCodeSource().getLocation()
+                                                .toURI()).getParentFile().getParentFile().getParentFile().getAbsolutePath() +
+                                                "/bin/" + StartupFlags.RUNNER_FILE_NAME);
+                                    }
+                                    else if(platform == Platform.MAC)
+                                    {
+                                        startAtBoot.create(new File(Main.class.getProtectionDomain().getCodeSource().getLocation()
+                                                .toURI()).getParentFile().getParentFile().getAbsolutePath() +
+                                                "/MacOS/" + StartupFlags.RUNNER_FILE_NAME);
+                                    }
+                                    else
+                                    {
+                                        throw new MinorException("Sorry","appendPathBeforeRunnerFileToOvercomeJPackageLimitation flag is not supported on this platform.");
+                                    }
                                 }
                                 else
                                 {
@@ -456,10 +469,9 @@ public class GeneralSettings extends VBox {
                 {
                     exceptionAndAlertHandler.handleSevereException(e);
                 }
-                finally {
-                    Platform.runLater(()->{
-                        saveButton.setDisable(false);
-                    });
+                finally
+                {
+                    javafx.application.Platform.runLater(()-> saveButton.setDisable(false));
                 }
                 return null;
             }

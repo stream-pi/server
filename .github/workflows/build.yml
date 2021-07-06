@@ -69,9 +69,7 @@ jobs:
           .github/scripts/jpackage.sh \
           --icon assets/linux-icon.png \
           --app-version ${{ env.VERSION }} \
-          --type app-image \
-          --arguments 'Stream-Pi.startupRunnerFileName=run_min Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation=true' \
-          --add-launcher run_min=assets/run_min_linux.properties
+          --type app-image
 
           NEW_V=${{ env.VERSION }}
           NEW_V=${NEW_V//-/_}
@@ -163,9 +161,7 @@ jobs:
           --icon assets/macos-icon.icns \
           --license-file LICENSE.txt \
           --mac-package-identifier stream-pi-server \
-          --type pkg \
-          --arguments 'Stream-Pi.startupRunnerFileName=run_min' \
-          --add-launcher run_min=assets/run_min_macos.properties
+          --type pkg
 
           cd $INSTALL_DIR
           mv *.pkg stream-pi-server-macos-x64-${{ env.VERSION }}.pkg
