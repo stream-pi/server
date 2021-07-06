@@ -1014,7 +1014,15 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             {
                 try
                 {
-                    Double.parseDouble(displayNameFontSizeTextField.getText());
+                    double r = Double.parseDouble(displayNameFontSizeTextField.getText());
+                    if(r < 1)
+                    {
+                        finalErrors.append(" * Name Label Font Size too small.\n");
+                    }
+                    else if(r > getClientProfile().getActionSize())
+                    {
+                        finalErrors.append(" * Name Label Font Size too large.\n");
+                    }
                 }
                 catch (NumberFormatException e)
                 {

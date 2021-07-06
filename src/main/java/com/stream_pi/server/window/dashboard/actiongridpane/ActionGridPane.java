@@ -30,7 +30,8 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-public class ActionGridPane extends ScrollPane implements ActionGridPaneListener {
+public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
+{
 
     private ExceptionAndAlertHandler exceptionAndAlertHandler;
     private ActionDetailsPaneListener actionDetailsPaneListener;

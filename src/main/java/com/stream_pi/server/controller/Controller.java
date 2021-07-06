@@ -789,7 +789,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         return openSettingsTimeline;
     }
 
-    private Animation createCloseSettingsAnimation(Node settingsNode, Node dashboardNode) {
+    private Animation createCloseSettingsAnimation(Node settingsNode, Node dashboardNode)
+    {
         Timeline closeSettingsTimeline = new Timeline();
         closeSettingsTimeline.setCycleCount(1);
 

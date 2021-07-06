@@ -1,5 +1,6 @@
 package com.stream_pi.server.window.settings;
 
+import com.stream_pi.action_api.action.Action;
 import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.client.ClientTheme;
@@ -101,7 +102,8 @@ public class ClientsSettings extends VBox
                             if(clientProfileVBox.getName().isBlank())
                                 errors2.append("        cannot have blank nickname. \n");
 
-                            try {
+                            try 
+                            {
                                 Integer.parseInt(clientProfileVBox.getActionSize());
                             }
                             catch (NumberFormatException e)
@@ -110,13 +112,57 @@ public class ClientsSettings extends VBox
                             }
 
 
-                            try {
+                            try 
+                            {
                                 Integer.parseInt(clientProfileVBox.getActionGap());
                             }
                             catch (NumberFormatException e)
                             {
                                 errors2.append("        Must have integer action Gap. \n");
                             }
+
+                            boolean checkForOutOfBoundsActions = true;
+
+                            try 
+                            {
+                                if(Integer.parseInt(clientProfileVBox.getRows())<1)
+                                {
+                                    errors2.append("        Rows cannot be less than 1");
+                                }
+                            }
+                            catch (NumberFormatException e)
+                            {
+                                errors2.append("        Must have integer columns. \n");
+                                checkForOutOfBoundsActions = false;
+                            }
+
+                            try 
+                            {
+                                if(Integer.parseInt(clientProfileVBox.getCols())<1)
+                                {
+                                    errors2.append("        Columns cannot be less than 1");
+                                }
+                            }
+                            catch (NumberFormatException e)
+                            {
+                                errors2.append("        Must have integer rows. \n");
+                                checkForOutOfBoundsActions = false;
+                            }
+
+                            if(checkForOutOfBoundsActions)
+                            {
+                                for(String id : clientProfileVBox.getClientProfile().getActionsKeySet())
+                                {
+                                    Action action = clientProfileVBox.getClientProfile().getActionByID(id);
+                                    if(action.getLocation().getRow() > (Integer.parseInt(clientProfileVBox.getRows())-1)
+                                        || action.getLocation().getCol() > (Integer.parseInt(clientProfileVBox.getCols())-1))
+                                    {
+                                        errors2.append("        Action '").append(action.getDisplayText()).append("' is out of bounds. Either move it, or increase row/columns.");
+                                    }
+                                }
+                            }
+
+                    
 
                             if(!errors2.toString().isEmpty())
                             {

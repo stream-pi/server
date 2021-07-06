@@ -138,7 +138,6 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
         getChildren().addAll(settingsBase, dashboardBase);
 
-        applyDefaultStylesheet();
         config = Config.getInstance();
 
         initThemes();
@@ -173,6 +172,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
                     clearStylesheets();
                     applyDefaultStylesheet();
                     applyDefaultIconsStylesheet();
+                    applyGlobalDefaultStylesheet();
                     getStage().show();
                     throw new SevereException("No storage permission. Give it!");
                 }
@@ -185,12 +185,24 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         }
     }
 
-    public void initThemes() throws SevereException {
+    public void initThemes() throws SevereException 
+    {
         clearStylesheets();
         registerThemes();
         applyDefaultStylesheet();
         applyDefaultTheme();
         applyDefaultIconsStylesheet();
+        applyGlobalDefaultStylesheet();
+    }
+
+    public void applyGlobalDefaultStylesheet()
+    {
+        File globalCSSFile = new File(getConfig().getDefaultThemesPath()+"/global.css");
+        if(globalCSSFile.exists())
+        {
+            getLogger().info("Found global default style sheet. Adding ...");
+            getStylesheets().add(globalCSSFile.toURI().toString());
+        }
     }
 
     @Override
@@ -323,7 +335,8 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         if(!foundTheme)
         {
             logger.info("Theme not found. reverting to light theme ...");
-            try {
+            try 
+            {
                 Config.getInstance().setCurrentThemeFullName("com.stream_pi.defaultlight");
                 Config.getInstance().save();
 
