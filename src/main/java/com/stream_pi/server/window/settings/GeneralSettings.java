@@ -314,45 +314,16 @@ public class GeneralSettings extends VBox {
 
                     if(config.getStartOnBoot() != startOnBoot)
                     {
-                        StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform());
+                        StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform(), StartupFlags.APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION);
                         if(startOnBoot)
                         {
                             try
                             {
-                                if(StartupFlags.APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION)
-                                {
-                                    Platform platform = ServerInfo.getInstance().getPlatform();
-
-                                    if(platform == Platform.LINUX)
-                                    {
-                                        startAtBoot.create(new File(Main.class.getProtectionDomain().getCodeSource().getLocation()
-                                                .toURI()).getParentFile().getParentFile().getParentFile().getAbsolutePath() +
-                                                "/bin/" + StartupFlags.RUNNER_FILE_NAME);
-                                    }
-                                    else if(platform == Platform.MAC)
-                                    {
-                                        startAtBoot.create(new File(Main.class.getProtectionDomain().getCodeSource().getLocation()
-                                                .toURI()).getParentFile().getParentFile().getAbsolutePath() +
-                                                "/MacOS/" + StartupFlags.RUNNER_FILE_NAME);
-                                    }
-                                    else
-                                    {
-                                        throw new MinorException("Sorry","appendPathBeforeRunnerFileToOvercomeJPackageLimitation flag is not supported on this platform.");
-                                    }
-                                }
-                                else
-                                {
-                                    startAtBoot.create(StartupFlags.RUNNER_FILE_NAME);
-                                }
+                                startAtBoot.create(StartupFlags.RUNNER_FILE_NAME);
                             }
                             catch (MinorException e)
                             {
                                 exceptionAndAlertHandler.handleMinorException(e);
-                                startOnBoot = false;
-                            } catch (URISyntaxException e) {
-                                exceptionAndAlertHandler.handleMinorException(new MinorException(
-                                        "Unable to get path \n"+e.getMessage()
-                                ));
                                 startOnBoot = false;
                             }
                         }
