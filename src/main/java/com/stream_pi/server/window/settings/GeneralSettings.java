@@ -314,7 +314,10 @@ public class GeneralSettings extends VBox {
 
                     if(config.getStartOnBoot() != startOnBoot)
                     {
-                        StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform(), StartupFlags.APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION);
+                        StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform(),
+                                Main.class.getProtectionDomain().getCodeSource().getLocation(),
+                                StartupFlags.APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION);
+
                         if(startOnBoot)
                         {
                             try
