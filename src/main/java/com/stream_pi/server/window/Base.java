@@ -123,7 +123,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         dashboardBase.prefHeightProperty().bind(heightProperty());
 
         alertStackPane = new StackPane();
-        alertStackPane.setVisible(false);
+        alertStackPane.setOpacity(0);
 
 
 
@@ -188,7 +188,8 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     public void initThemes() throws SevereException 
     {
         clearStylesheets();
-        registerThemes();
+        if(themes==null)
+            registerThemes();
         applyDefaultStylesheet();
         applyDefaultTheme();
         applyDefaultIconsStylesheet();
@@ -277,7 +278,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         getStylesheets().clear();
     }
 
-    Themes themes;
+    Themes themes = null;
     public void registerThemes() throws SevereException
     {
         logger.info("Loading themes ...");

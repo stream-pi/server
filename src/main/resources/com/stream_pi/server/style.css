@@ -120,8 +120,8 @@
 
 .alert_scroll_pane {
     -fx-max-height : 300;
-    /*-fx-focus-color: #FFFFFF;
-    -fx-faint-focus-color:#FFFFFF;*/
+    -fx-focus-color: #FFFFFF;
+    -fx-faint-focus-color:#FFFFFF;
 }
 
 .plugins_pane
