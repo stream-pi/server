@@ -4,9 +4,11 @@ import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.PropertySaver;
 import com.stream_pi.action_api.action.ServerConnection;
+import com.stream_pi.action_api.actionproperty.ClientProperties;
 import com.stream_pi.action_api.externalplugin.NormalAction;
 import com.stream_pi.action_api.externalplugin.ToggleAction;
 import com.stream_pi.action_api.externalplugin.ToggleExtras;
+import com.stream_pi.action_api.otheractions.CombineAction;
 import com.stream_pi.server.Main;
 import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.client.Client;
@@ -487,19 +489,26 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 {
                     try
                     {
-                        Thread.sleep(action.getDelayBeforeExecuting());
-
-                        getLogger().info("action "+action.getID()+" clicked!");
-
-                        if(action instanceof ToggleAction)
+                        if(action.getActionType() == ActionType.COMBINE)
                         {
-                            onToggleActionClicked((ToggleAction) action, toggle, profileID,
-                                    client.getRemoteSocketAddress());
+                            try
+                            {
+                                CombineAction combineAction = (CombineAction) action;
+                                for(String eachID: combineAction.getChildrenIDSequential())
+                                {
+                                    startAction(client.getProfileByID(profileID).getActionByID(eachID),
+                                            toggle, profileID, client);
+                                }
+                            }
+                            catch (MinorException e)
+                            {
+                                handleMinorException(e);
+                            }
                         }
-                        else if (action instanceof NormalAction)
+                        else
                         {
-                            onNormalActionClicked((NormalAction) action, profileID,
-                                    client.getRemoteSocketAddress());
+                            startAction(client.getProfileByID(profileID).getActionByID(actionID),
+                                    toggle, profileID, client);
                         }
                     }
                     catch (InterruptedException e)
@@ -515,6 +524,25 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         {
             e.printStackTrace();
             handleMinorException(new MinorException(e.getMessage()));
+        }
+    }
+
+    private void startAction(Action action, boolean toggle, String profileID, Client client) throws InterruptedException
+    {
+        System.out.println(action.getDelayBeforeExecuting()+"WAIITTTT");
+        Thread.sleep(action.getDelayBeforeExecuting());
+
+        getLogger().info("action "+action.getID()+" clicked!");
+
+        if(action instanceof ToggleAction)
+        {
+            onToggleActionClicked((ToggleAction) action, toggle, profileID,
+                    client.getRemoteSocketAddress());
+        }
+        else if (action instanceof NormalAction)
+        {
+            onNormalActionClicked((NormalAction) action, profileID,
+                    client.getRemoteSocketAddress());
         }
     }
 

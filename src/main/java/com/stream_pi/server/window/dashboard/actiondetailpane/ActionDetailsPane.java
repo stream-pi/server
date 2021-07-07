@@ -83,6 +83,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     private ActionGridPaneListener actionGridPaneListener;
 
+    private HBox clearIconHBox;
+
     public ActionDetailsPane(ExceptionAndAlertHandler exceptionAndAlertHandler, HostServices hostServices,
                              ActionGridPaneListener actionGridPaneListener)
     {
@@ -338,7 +340,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         bgColourHBox.setAlignment(Pos.CENTER);
         bgColourHBox.setSpacing(5.0);
 
-        HBox clearIconHBox = new HBox(clearIconButton);
+        clearIconHBox = new HBox(clearIconButton);
+        clearIconHBox.managedProperty().bind(clearIconHBox.visibleProperty());
         clearIconHBox.setAlignment(Pos.CENTER_RIGHT);
 
         HBox.setMargin(hideDisplayTextCheckBox, new Insets(0, 0, 0, 45));
@@ -730,9 +733,12 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             hideDisplayTextCheckBox.setVisible(false);
 
             displayNameLabelFontSizeTextFieldHBox.setVisible(false);
+
+            clearIconHBox.setVisible(false);
         }
         else
         {
+            clearIconHBox.setVisible(true);
             displayNameLabelFontSizeTextFieldHBox.setVisible(true);
             normalToggleActionCommonPropsVBox.setVisible(true);
 
@@ -884,7 +890,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     public void renderClientProperties() throws MinorException
     {
-
         delayBeforeRunningTextField = new TextField();
         delayBeforeRunningTextField.setText(getAction().getDelayBeforeExecuting()+"");
 
@@ -1035,12 +1040,12 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         {
             try
             {
-                if (Integer.parseInt(delayBeforeRunningTextField.getText()) > 0)
+                if (Integer.parseInt(delayBeforeRunningTextField.getText()) < 0)
                 {
                     finalErrors.append(" * Sleep should be greater than 0.\n");
                 }
             }
-            catch (Exception e)
+            catch (NumberFormatException e)
             {
                 finalErrors.append(" * Sleep should be a number.\n");
             }
