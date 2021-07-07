@@ -552,9 +552,12 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         {
             action.onActionClicked();
         }
-        catch (MinorException e)
+        catch (Exception e)
         {
-            sendActionFailed(e, socketAddress, profileID, action.getID());
+            if(e instanceof MinorException)
+                sendActionFailed((MinorException) e, socketAddress, profileID, action.getID());
+            else
+                sendActionFailed(new MinorException(e.getMessage()), socketAddress, profileID, action.getID());
         }
     }
 
@@ -571,9 +574,12 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 action.onToggleOff();
             }
         }
-        catch (MinorException e)
+        catch (Exception e)
         {
-            sendActionFailed(e, socketAddress, profileID, action.getID());
+            if(e instanceof MinorException)
+                sendActionFailed((MinorException) e, socketAddress, profileID, action.getID());
+            else
+                sendActionFailed(new MinorException(e.getMessage()), socketAddress, profileID, action.getID());
         }
     }
 
