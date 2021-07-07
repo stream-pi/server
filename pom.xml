@@ -6,7 +6,7 @@
 
     <groupId>com.stream-pi</groupId>
     <artifactId>server</artifactId>
-    <version>1.0.0-EA+4-SNAPSHOT</version>
+    <version>1.0.0-EA+3</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,7 +14,7 @@
         <maven.compiler.target>11</maven.compiler.target>
 
         <gluonfx.plugin.version>1.0.0</gluonfx.plugin.version>
-        <javafx.version>17-ea+12</javafx.version>
+        <javafx.version>17-ea+14</javafx.version>
 
         <action.api.version>1.0.0-SNAPSHOT</action.api.version>
         <theme.api.version>1.0.0-SNAPSHOT</theme.api.version>
