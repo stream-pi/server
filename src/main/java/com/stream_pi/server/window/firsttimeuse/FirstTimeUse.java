@@ -21,9 +21,6 @@ public class FirstTimeUse extends VBox{
     
     public FirstTimeUse(ExceptionAndAlertHandler exceptionAndAlertHandler, ServerListener serverListener)
     {
-        Font.loadFont(Main.class.getResourceAsStream("Roboto.ttf"), 13);
-        getStylesheets().add(Objects.requireNonNull(Main.class.getResource("style.css")).toExternalForm());
-
         getStyleClass().add("first_time_use_pane");
 
         setSpacing(10.0);
