@@ -60,15 +60,17 @@ public class SettingsBase extends VBox
 
         tabPane.getTabs().addAll(generalSettingsTab, pluginsSettingsTab, themesSettingsTab, clientsSettingsTab, aboutTab);
 
-        setAlignment(Pos.TOP_RIGHT);
 
         closeButton = new Button("Close");
-        VBox.setMargin(closeButton, new Insets(10.0));
+        closeButton.getStyleClass().add("settings_close_button");
+        VBox.setMargin(closeButton, new Insets(5,10, 10, 0));
 
         getChildren().addAll(tabPane, closeButton);
 
         setCache(true);
         setCacheHint(CacheHint.SPEED);
+
+        getStyleClass().add("settings_base");
     }
 
     public void setDefaultTabToGeneral()

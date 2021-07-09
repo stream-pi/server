@@ -226,7 +226,7 @@ public class ActionBox extends StackPane{
                 exceptionAndAlertHandler.handleMinorException(e);
                 e.printStackTrace();
             }
-            catch (Exception     e)
+            catch (Exception e)
             {
                 e.printStackTrace();
             }

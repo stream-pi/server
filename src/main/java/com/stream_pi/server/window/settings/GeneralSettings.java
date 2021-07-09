@@ -29,6 +29,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
@@ -42,9 +43,10 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.logging.Logger;
 
-public class GeneralSettings extends VBox {
-
+public class GeneralSettings extends VBox
+{
     private final TextField serverNameTextField;
+    private final TextField defaultActionLabelFontSizeTextField;
     private final TextField portTextField;
     private final TextField pluginsPathTextField;
     private final TextField themesPathTextField;
@@ -82,6 +84,8 @@ public class GeneralSettings extends VBox {
         logger = Logger.getLogger(GeneralSettings.class.getName());
 
         serverNameTextField = new TextField();
+
+        defaultActionLabelFontSizeTextField = new TextField();
 
         portTextField = new TextField();
 
@@ -122,36 +126,55 @@ public class GeneralSettings extends VBox {
         factoryResetButton = new Button("Factory Reset");
         factoryResetButton.setOnAction(actionEvent -> onFactoryResetButtonClicked());
 
-        getStyleClass().add("general_settings");
+        serverNameTextField.setPrefWidth(200);
 
-        prefWidthProperty().bind(widthProperty());
-        setAlignment(Pos.CENTER);
-        setSpacing(5);
 
-        getChildren().addAll(
+        saveButton = new Button("Save");
+        saveButton.getStyleClass().add("general_settings_save_button");
+        VBox.setMargin(saveButton, new Insets(0,10, 0, 0));
+
+        saveButton.setOnAction(event->save());
+
+        VBox vbox = new VBox(
+                generateSubHeading("Connection"),
                 new HBoxInputBox("Server Name", serverNameTextField),
                 new HBoxInputBox("Port", portTextField),
-                new HBoxInputBox("Grid Pane - Box Size", actionGridPaneActionBoxSize),
-                new HBoxInputBox("Grid Pane - Box Gap", actionGridPaneActionBoxGap),
+                generateSubHeading("Action Grid"),
+                new HBoxInputBox("Action Box Size", actionGridPaneActionBoxSize),
+                new HBoxInputBox("Action Box Gap", actionGridPaneActionBoxGap),
+                new HBoxInputBox("Default New Action Label Font Size", defaultActionLabelFontSizeTextField),
+                generateSubHeading("Others"),
                 new HBoxInputBoxWithDirectoryChooser("Plugins Path", pluginsPathTextField),
                 new HBoxInputBoxWithDirectoryChooser("Themes Path", themesPathTextField),
                 soundHBoxInputBoxWithFileChooser,
                 soundOnActionClickedToggleSwitchHBox,
                 minimizeToSystemTrayOnCloseHBox,
                 startOnBootHBox,
-                showAlertsPopupHBox
+                showAlertsPopupHBox,
+                factoryResetButton,
+                checkForUpdatesButton
         );
 
-        serverNameTextField.setPrefWidth(200);
-
-        saveButton = new Button("Save");
-        saveButton.setOnAction(event->save());
-
-        getChildren().addAll(factoryResetButton, checkForUpdatesButton, saveButton);
-
-        setPadding(new Insets(10));
+        vbox.prefWidthProperty().bind(widthProperty().subtract(15));
 
 
+        vbox.getStyleClass().add("general_settings_vbox");
+
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.getStyleClass().add("general_settings_scroll_pane");
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setContent(vbox);
+
+        getStyleClass().add("general_settings");
+
+        getChildren().addAll(scrollPane, saveButton);
+    }
+
+    private Label generateSubHeading(String text)
+    {
+        Label label = new Label(text);
+        label.getStyleClass().add("general_settings_sub_heading");
+        return label;
     }
 
     private void checkForUpdates()
@@ -172,6 +195,7 @@ public class GeneralSettings extends VBox {
         {
             serverNameTextField.setText(config.getServerName());
             portTextField.setText(config.getPort()+"");
+            defaultActionLabelFontSizeTextField.setText(config.getDefaultActionLabelFontSize()+"");
             pluginsPathTextField.setText(config.getPluginsPath());
             themesPathTextField.setText(config.getThemesPath());
             actionGridPaneActionBoxSize.setText(config.getActionGridActionSize()+"");
@@ -200,6 +224,7 @@ public class GeneralSettings extends VBox {
 
                     String serverNameStr = serverNameTextField.getText();
                     String serverPortStr = portTextField.getText();
+                    String defaultActionLabelFontSizeStr = defaultActionLabelFontSizeTextField.getText();
                     String pluginsPathStr = pluginsPathTextField.getText();
                     String themesPathStr = themesPathTextField.getText();
 
@@ -249,6 +274,19 @@ public class GeneralSettings extends VBox {
                     catch (NumberFormatException e)
                     {
                         errors.append("* Server Port must be integer.\n");
+                    }
+
+                    double defaultActionLabelFontSize=-1;
+                    try
+                    {
+                        defaultActionLabelFontSize = Double.parseDouble(defaultActionLabelFontSizeStr);
+
+                        if (defaultActionLabelFontSize < 1)
+                            errors.append("* Action Label Font Size too small.\n");
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        errors.append("* Action Label Font must be integer.\n");
                     }
 
 
@@ -381,6 +419,8 @@ public class GeneralSettings extends VBox {
                     config.setActionGridSize(actionSize);
                     config.setPluginsPath(pluginsPathStr);
                     config.setThemesPath(themesPathStr);
+
+                    config.setDefaultActionLabelFontSize(defaultActionLabelFontSize);
 
                     config.setMinimiseToSystemTrayOnClose(minimizeToSystemTrayOnClose);
                     StreamPiAlert.setIsShowPopup(showAlertsPopup);

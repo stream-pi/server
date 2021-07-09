@@ -10,7 +10,7 @@
 
 .plugins_settings_each_plugin_button_bar
 {
-	-fx-alignment:center-right;
+	-fx-alignment:CENTER_RIGHT;
 }
 
 .about_license_label
@@ -69,12 +69,6 @@
 .client_settings_each_client_socket_connection_label
 {
     -fx-font-size : 16;
-}
-
-
-.general_settings{
-    -fx-alignment : TOP_CENTER;
-    -fx-padding : 10;
 }
 
 .alert_header
@@ -246,11 +240,6 @@
 }
 
 /*Alert Classes added to default stylesheet to show init error, if occurs */
-.action_box_display_text_label
-{
-    -fx-font-size : 16;
-    -fx-background-color : transparent;
-}
 
 .alert_pane
 {
@@ -293,4 +282,37 @@
 {
     -fx-border-width: 3;
     -fx-border-color:orange;
+}
+
+.general_settings_sub_heading
+{
+    -fx-font-size: 18;
+    -fx-padding: 10 0 5 0;
+}
+
+.general_settings_buttons_vbox
+{
+    -fx-spacing: 5;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.general_settings_vbox
+{
+    -fx-spacing: 5;
+    -fx-padding: 0 15 0 10;
+}
+
+.general_settings_scroll_pane
+{
+    -fx-padding: 0 0 5 0;
+}
+
+.general_settings
+{
+    -fx-alignment: TOP_RIGHT;
+}
+
+.settings_base
+{
+    -fx-alignment: TOP_RIGHT;
 }

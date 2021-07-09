@@ -279,6 +279,17 @@ public class Config
         return (Element) document.getElementsByTagName("others").item(0);
     }
 
+    public double getDefaultActionLabelFontSize()
+    {
+        return XMLConfigHelper.getDoubleProperty(getOthersElement(), "default-action-label-font-size",
+                getDefaultDefaultActionLabelFontSize(), false, true, document, configFile);
+    }
+
+    public double getDefaultDefaultActionLabelFontSize()
+    {
+        return 20;
+    }
+
     public boolean getStartOnBoot()
     {
         return XMLConfigHelper.getBooleanProperty(getOthersElement(), "start-on-boot",
@@ -381,6 +392,11 @@ public class Config
     }
 
     //others
+    public void setDefaultActionLabelFontSize(double value)
+    {
+        getOthersElement().getElementsByTagName("default-action-label-font-size").item(0).setTextContent(value+"");
+    }
+
     public void setStartupOnBoot(boolean value)
     {
         getOthersElement().getElementsByTagName("start-on-boot").item(0).setTextContent(value+"");

@@ -100,7 +100,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         clientPropertiesVBox.setSpacing(10.0);
 
         vbox = new VBox();
-        vbox.setPadding(new Insets(0, 25, 0, 5));
+        //vbox.setPadding(new Insets(0, 25, 0, 5));
         vbox.getStyleClass().add("action_details_pane_vbox");
 
         vbox.setSpacing(10.0);
@@ -119,7 +119,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         setMinHeight(210);
         scrollPane.setContent(vbox);
 
-        vbox.prefWidthProperty().bind(scrollPane.widthProperty());
+        vbox.prefWidthProperty().bind(scrollPane.widthProperty().subtract(25));
         scrollPane.prefWidthProperty().bind(widthProperty());
 
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
@@ -634,6 +634,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         actionClientProperties.clear();
         displayNameTextField.clear();
 
+        displayNameFontSizeTextField.clear();
 
         defaultIconFileTextField.clear();
         toggleOffIconFileTextField.clear();
@@ -712,7 +713,18 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
 
         hideDisplayTextCheckBox.setSelected(!getAction().isShowDisplayText());
-        displayNameFontSizeCheckBox.setSelected(getAction().getNameFontSize() == -1);
+
+        if(getAction().getNameFontSize() == -1)
+        {
+            displayNameFontSizeCheckBox.setSelected(true);
+            displayNameFontSizeTextField.clear();
+        }
+        else
+        {
+            displayNameFontSizeCheckBox.setSelected(false);
+            displayNameFontSizeTextField.setText(getAction().getNameFontSize()+"");
+        }
+
 
 
         if(getAction().isInvalid())
@@ -943,7 +955,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     {
         String delayBeforeRunning = "0";
         if(action.getActionType() != ActionType.FOLDER && action.getActionType() !=ActionType.COMBINE)
-            delayBeforeRunning =delayBeforeRunningTextField.getText();
+            delayBeforeRunning = delayBeforeRunningTextField.getText();
 
         new OnSaveActionTask(
             ClientConnections.getInstance().getClientConnectionBySocketAddress(

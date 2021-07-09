@@ -136,7 +136,4 @@ public class FirstTimeUse extends VBox{
             previousButton.setVisible(true);
         }
     }
-
-
-    
 }

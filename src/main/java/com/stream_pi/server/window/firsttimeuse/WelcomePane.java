@@ -4,7 +4,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
-public class WelcomePane extends VBox{
+public class WelcomePane extends VBox
+{
     public WelcomePane()
     {
         getStyleClass().add("first_time_use_pane_welcome");

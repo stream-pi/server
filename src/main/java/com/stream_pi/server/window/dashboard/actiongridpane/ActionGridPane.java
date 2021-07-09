@@ -87,6 +87,8 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     {
         ExternalPlugin newAction = ExternalPlugins.getInstance().getPluginByModuleName(moduleName).clone();
 
+        newAction.setNameFontSize(Config.getInstance().getDefaultActionLabelFontSize());
+
         if(newAction.getActionType() == ActionType.TOGGLE)
         {
             newAction.setCurrentIconState("false__false");
@@ -126,13 +128,14 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         newAction.setIDRandom();
 
 
+        newAction.setNameFontSize(Config.getInstance().getDefaultActionLabelFontSize());
+
         newAction.setShowDisplayText(true);
         newAction.setDisplayText(displayText);
         newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
 
         newAction.setBgColourHex("");
         newAction.setDisplayTextFontColourHex("");
-
 
         return newAction;
     }
