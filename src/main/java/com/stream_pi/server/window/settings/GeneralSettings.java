@@ -27,10 +27,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -51,7 +48,9 @@ public class GeneralSettings extends VBox
     private final TextField pluginsPathTextField;
     private final TextField themesPathTextField;
     private final TextField actionGridPaneActionBoxSize;
+    private final CheckBox actionGridPaneActionBoxSizeIsDefaultCheckBox;
     private final TextField actionGridPaneActionBoxGap;
+    private final CheckBox actionGridPaneActionBoxGapIsDefaultCheckBox;
     private final ToggleSwitch startOnBootToggleSwitch;
     private final HBoxWithSpaceBetween startOnBootHBox;
     private final TextField soundOnActionClickedFilePathTextField;
@@ -94,7 +93,10 @@ public class GeneralSettings extends VBox
         themesPathTextField = new TextField();
 
         actionGridPaneActionBoxSize = new TextField();
+        actionGridPaneActionBoxSizeIsDefaultCheckBox = new CheckBox("Same as Profile");
+
         actionGridPaneActionBoxGap = new TextField();
+        actionGridPaneActionBoxGapIsDefaultCheckBox = new CheckBox("Same as Profile");
 
         startOnBootToggleSwitch = new ToggleSwitch();
         startOnBootHBox = new HBoxWithSpaceBetween("Start on Boot", startOnBootToggleSwitch);
@@ -140,8 +142,8 @@ public class GeneralSettings extends VBox
                 new HBoxInputBox("Server Name", serverNameTextField),
                 new HBoxInputBox("Port", portTextField),
                 generateSubHeading("Action Grid"),
-                new HBoxInputBox("Action Box Size", actionGridPaneActionBoxSize),
-                new HBoxInputBox("Action Box Gap", actionGridPaneActionBoxGap),
+                new HBoxInputBox("Action Box Size", actionGridPaneActionBoxSize, actionGridPaneActionBoxSizeIsDefaultCheckBox),
+                new HBoxInputBox("Action Box Gap", actionGridPaneActionBoxGap, actionGridPaneActionBoxGapIsDefaultCheckBox),
                 new HBoxInputBox("Default New Action Label Font Size", defaultActionLabelFontSizeTextField),
                 generateSubHeading("Others"),
                 new HBoxInputBoxWithDirectoryChooser("Plugins Path", pluginsPathTextField),
@@ -155,7 +157,7 @@ public class GeneralSettings extends VBox
                 checkForUpdatesButton
         );
 
-        vbox.prefWidthProperty().bind(widthProperty().subtract(15));
+        vbox.prefWidthProperty().bind(widthProperty().subtract(25));
 
 
         vbox.getStyleClass().add("general_settings_vbox");
@@ -168,6 +170,8 @@ public class GeneralSettings extends VBox
         getStyleClass().add("general_settings");
 
         getChildren().addAll(scrollPane, saveButton);
+
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
     }
 
     private Label generateSubHeading(String text)
@@ -199,6 +203,8 @@ public class GeneralSettings extends VBox
             pluginsPathTextField.setText(config.getPluginsPath());
             themesPathTextField.setText(config.getThemesPath());
             actionGridPaneActionBoxSize.setText(config.getActionGridActionSize()+"");
+            actionGridPaneActionBoxSizeIsDefaultCheckBox.setSelected(config.isUseSameActionSizeAsProfile());
+            actionGridPaneActionBoxGapIsDefaultCheckBox.setSelected(config.isUseSameActionGapAsProfile());
             actionGridPaneActionBoxGap.setText(config.getActionGridActionGap()+"");
 
             minimizeToSystemTrayOnCloseToggleSwitch.setSelected(config.getMinimiseToSystemTrayOnClose());
@@ -305,6 +311,11 @@ public class GeneralSettings extends VBox
                         errors.append("* action Size must be integer.\n");
                     }
 
+                    if(actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected() != config.isUseSameActionSizeAsProfile())
+                    {
+                        dashToBeReRendered = true;
+                    }
+
 
                     int actionGap=-1;
                     try
@@ -319,6 +330,11 @@ public class GeneralSettings extends VBox
                     catch (NumberFormatException e)
                     {
                         errors.append("* action Gap must be integer.\n");
+                    }
+
+                    if(actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected() != config.isUseSameActionGapAsProfile())
+                    {
+                        dashToBeReRendered = true;
                     }
 
                     if(pluginsPathStr.isBlank())
@@ -419,6 +435,9 @@ public class GeneralSettings extends VBox
                     config.setActionGridSize(actionSize);
                     config.setPluginsPath(pluginsPathStr);
                     config.setThemesPath(themesPathStr);
+
+                    config.setUseSameActionGapAsProfile(actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected());
+                    config.setUseSameActionSizeAsProfile(actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected());
 
                     config.setDefaultActionLabelFontSize(defaultActionLabelFontSize);
 

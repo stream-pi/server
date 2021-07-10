@@ -404,19 +404,31 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     @Override
     public void handleMinorException(MinorException e)
     {
-        getLogger().log(Level.SEVERE, e.getShortMessage(), e);
+        handleMinorException(e.getMessage(), e);
+    }
+
+    @Override
+    public void handleMinorException(String message, MinorException e)
+    {
+        getLogger().log(Level.SEVERE, message, e);
         e.printStackTrace();
 
-        new StreamPiAlert(e.getTitle(), e.getShortMessage(), StreamPiAlertType.WARNING).show();
+        new StreamPiAlert(e.getTitle(), e.getMessage(), StreamPiAlertType.WARNING).show();
     }
 
     @Override
     public void handleSevereException(SevereException e)
     {
-        getLogger().log(Level.SEVERE, e.getShortMessage(), e);
+        handleSevereException(e.getMessage(), e);
+    }
+
+    @Override
+    public void handleSevereException(String message, SevereException e)
+    {
+        getLogger().log(Level.SEVERE, message, e);
         e.printStackTrace();
 
-        StreamPiAlert alert = new StreamPiAlert(e.getTitle(), e.getShortMessage(), StreamPiAlertType.ERROR);
+        StreamPiAlert alert = new StreamPiAlert(e.getTitle(), e.getMessage(), StreamPiAlertType.ERROR);
 
         alert.setOnClicked(new StreamPiAlertListener()
         {
@@ -757,13 +769,17 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     @Override
     public void sendActionFailed(MinorException exception, SocketAddress socketAddress, String profileID, String actionID)
     {
+        exception.setTitle("Error while running action");
+        
         if(exception.getTitle() != null)
         {
-            exception.setShortMessage(exception.getTitle()+"\n"+exception.getShortMessage());
+            handleMinorException(exception.getTitle()+"\n"+exception.getMessage(), exception);
         }
-
-        exception.setTitle("Error while running action");
-
+        else
+        {
+            handleMinorException(exception);
+        }
+        
         handleMinorException(exception);
 
         executor.execute(new Task<Void>() {

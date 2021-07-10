@@ -291,7 +291,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
             for(MinorException eachException : themes.getErrors())
             {
-                themeErrors.append("\n * ").append(eachException.getShortMessage());
+                themeErrors.append("\n * ").append(eachException.getMessage());
             }
 
             if(themes.getIsBadThemeTheCurrentOne())

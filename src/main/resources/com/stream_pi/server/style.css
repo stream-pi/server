@@ -29,6 +29,17 @@
     -fx-font-size : 19;
 }
 
+.plugins_settings
+{
+    -fx-alignment: TOP_CENTER;
+}
+
+.plugins_settings_save_button_hbox
+{
+    -fx-padding: 0 0 5 0;
+}
+
+
 .action_box
 {
     -fx-border-width: 1px;
@@ -114,8 +125,6 @@
 
 .alert_scroll_pane {
     -fx-max-height : 300;
-    -fx-focus-color: #FFFFFF;
-    -fx-faint-focus-color:#FFFFFF;
 }
 
 .plugins_pane
@@ -179,12 +188,6 @@
 .first_time_use_welcome_pane_next_to_continue_label
 {
     -fx-font-size: 15;
-}
-
-.scroll-pane
-{
-    -fx-focus-color:transparent;
-    -fx-faint-focus-color:transparent;
 }
 
 .plugins_settings_scroll_pane, .themes_settings_scroll_pane, .clients_settings_scroll_pane
@@ -299,20 +302,23 @@
 .general_settings_vbox
 {
     -fx-spacing: 5;
-    -fx-padding: 0 15 0 10;
-}
-
-.general_settings_scroll_pane
-{
-    -fx-padding: 0 0 5 0;
+    -fx-padding: 0 0 0 10;
 }
 
 .general_settings
 {
+    -fx-spacing: 5;
+    -fx-padding: 0 0 5 0;
     -fx-alignment: TOP_RIGHT;
 }
 
 .settings_base
 {
     -fx-alignment: TOP_RIGHT;
+}
+
+ScrollPane
+{
+    -fx-focus-color:transparent;
+    -fx-faint-focus-color:transparent;
 }

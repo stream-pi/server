@@ -31,7 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class PluginsSettings extends VBox {
+public class PluginsSettings extends VBox
+{
 
     private VBox pluginsSettingsVBox;
 
@@ -45,8 +46,6 @@ public class PluginsSettings extends VBox {
 
     public PluginsSettings(ExceptionAndAlertHandler exceptionAndAlertHandler, HostServices hostServices)
     {
-        getStyleClass().add("plugins_settings");
-
         this.hostServices = hostServices;
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
         pluginProperties = new ArrayList<>();
@@ -66,7 +65,6 @@ public class PluginsSettings extends VBox {
 
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
-        setAlignment(Pos.TOP_CENTER);
 
 
         saveButton = new Button("Save");
@@ -75,10 +73,11 @@ public class PluginsSettings extends VBox {
 
 
         HBox hBox = new HBox(saveButton);
+        hBox.getStyleClass().add("plugins_settings_save_button_hbox");
         hBox.setAlignment(Pos.CENTER_RIGHT);
 
         getChildren().addAll(scrollPane, hBox);
-
+        getStyleClass().add("plugins_settings");
     }
 
     private Button saveButton;

@@ -126,8 +126,7 @@ public class ClientConnection extends Thread
                     catch (MinorException e)
                     {
                         e.setTitle("Unable to run onClientDisconnected for "+action.getModuleName());
-                        e.setShortMessage("Detailed message :\n\n"+e.getShortMessage());
-                        exceptionAndAlertHandler.handleMinorException(e);
+                        exceptionAndAlertHandler.handleMinorException("Detailed message :\n\n"+e.getMessage(), e);
                     }
                 }
             }
@@ -184,7 +183,7 @@ public class ClientConnection extends Thread
         catch (MinorException e)
         {
             exitAndRemove();
-            throw new MinorException(e.getShortMessage()+" (client '"+socket.getRemoteSocketAddress()+"' )");
+            throw new MinorException(e.getMessage()+" (client '"+socket.getRemoteSocketAddress()+"' )");
         }
 
         if(!commsStandard.isEqual(ServerInfo.getInstance().getCommStandardVersion()))
@@ -664,8 +663,7 @@ public class ClientConnection extends Thread
                                 catch (MinorException e)
                                 {
                                     e.setTitle("Unable to run onClientConnected for "+moduleName);
-                                    e.setShortMessage("Detailed message :\n\n"+e.getShortMessage());
-                                    exceptionAndAlertHandler.handleMinorException(e);
+                                    exceptionAndAlertHandler.handleMinorException("Detailed message :\n\n"+e.getMessage(), e);
                                 }
                                 return null;
                             }

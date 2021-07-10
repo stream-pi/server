@@ -353,7 +353,7 @@ public class ExternalPlugins
             {
                 e.printStackTrace();
                 errorModules.add(eachPlugin);
-                errorModuleError.add(e.getShortMessage());
+                errorModuleError.add(e.getMessage());
             }
         }
 
@@ -407,7 +407,7 @@ public class ExternalPlugins
                         .append(eachPlugin.getModuleName())
                         .append("\n");
 
-                errors.append(e.getShortMessage());
+                errors.append(e.getMessage());
 
                 errors.append("\n");
             }

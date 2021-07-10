@@ -221,8 +221,16 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     public void renderGrid() throws SevereException
     {
 
-        actionsGridPane.setHgap(Config.getInstance().getActionGridActionGap());
-        actionsGridPane.setVgap(Config.getInstance().getActionGridActionGap());
+        if(Config.getInstance().isUseSameActionGapAsProfile())
+        {
+            actionsGridPane.setHgap(clientProfile.getActionGap());
+            actionsGridPane.setVgap(clientProfile.getActionGap());
+        }
+        else
+        {
+            actionsGridPane.setHgap(Config.getInstance().getActionGridActionGap());
+            actionsGridPane.setVgap(Config.getInstance().getActionGridActionGap());
+        }
 
         if(isFreshRender)
         {
@@ -291,7 +299,8 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
     public ActionBox addBlankActionBox(int col, int row) throws SevereException
     {
-        ActionBox actionBox = new ActionBox(Config.getInstance().getActionGridActionSize(), actionDetailsPaneListener, this,
+        int size = Config.getInstance().isUseSameActionSizeAsProfile() ? getClientProfile().getActionSize() : Config.getInstance().getActionGridActionSize();
+        ActionBox actionBox = new ActionBox(size, actionDetailsPaneListener, this,
                 col, row);
 
         if(getClient().getOrientation() == null)
@@ -331,7 +340,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
             }
             catch (MinorException e)
             {
-                errors.append("*").append(e.getShortMessage()).append("\n");
+                errors.append("*").append(e.getMessage()).append("\n");
             }
         }
 

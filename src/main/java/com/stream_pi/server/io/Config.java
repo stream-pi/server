@@ -279,6 +279,38 @@ public class Config
         return (Element) document.getElementsByTagName("others").item(0);
     }
 
+    public boolean isUseSameActionGapAsProfile()
+    {
+        return XMLConfigHelper.getBooleanProperty(getOthersElement(), "use-default-action-box-gap",
+                getDefaultIsUseSameActionGapAsProfile(), false, true, document, configFile);
+    }
+
+    public boolean getDefaultIsUseSameActionGapAsProfile()
+    {
+        return false;
+    }
+
+    public boolean isUseSameActionSizeAsProfile()
+    {
+        return XMLConfigHelper.getBooleanProperty(getOthersElement(), "use-default-action-box-size",
+                getDefaultIsUseSameActionSizeAsProfile(), false, true, document, configFile);
+    }
+
+    public boolean getDefaultIsUseSameActionSizeAsProfile()
+    {
+        return false;
+    }
+
+    public void setUseSameActionSizeAsProfile(boolean value)
+    {
+        getOthersElement().getElementsByTagName("use-default-action-box-size").item(0).setTextContent(value+"");
+    }
+
+    public void setUseSameActionGapAsProfile(boolean value)
+    {
+        getOthersElement().getElementsByTagName("use-default-action-box-gap").item(0).setTextContent(value+"");
+    }
+
     public double getDefaultActionLabelFontSize()
     {
         return XMLConfigHelper.getDoubleProperty(getOthersElement(), "default-action-label-font-size",

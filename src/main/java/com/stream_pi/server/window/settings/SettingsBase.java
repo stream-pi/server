@@ -63,7 +63,7 @@ public class SettingsBase extends VBox
 
         closeButton = new Button("Close");
         closeButton.getStyleClass().add("settings_close_button");
-        VBox.setMargin(closeButton, new Insets(5,10, 10, 0));
+        VBox.setMargin(closeButton, new Insets(0,10, 10, 0));
 
         getChildren().addAll(tabPane, closeButton);
 

@@ -63,8 +63,7 @@ public class OnDeleteActionTask extends Task<Void>
                 catch (MinorException e)
                 {
                     e.setTitle("Unable to run onActionDeleted for "+action.getModuleName());
-                    e.setShortMessage("Display Text: "+action.getDisplayText()+"\nDetailed message : \n\n"+e.getShortMessage());
-                    exceptionAndAlertHandler.handleMinorException(e);
+                    exceptionAndAlertHandler.handleMinorException("Display Text: "+action.getDisplayText()+"\nDetailed message : \n\n"+e.getMessage(), e);
                 }
             }
 

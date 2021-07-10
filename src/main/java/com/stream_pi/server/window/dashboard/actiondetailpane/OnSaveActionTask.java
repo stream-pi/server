@@ -182,13 +182,10 @@ public class OnSaveActionTask extends Task<Void>
             }
         }
 
-        System.out.println("parent : "+action.getParent());
-
 
         if(action.getActionType() == ActionType.COMBINE)
         {
             List<String> finalChildren = combineActionPropertiesPane.getFinalChildren();
-            System.out.println("2334  "+finalChildren.size());
 
             ClientProperties clientProperties = new ClientProperties();
 
@@ -230,8 +227,7 @@ public class OnSaveActionTask extends Task<Void>
                 catch (MinorException e)
                 {
                     e.setTitle("Error");
-                    e.setShortMessage("onActionSavedFromServer() failed for "+action.getModuleName()+"\n\n"+e.getShortMessage());
-                    exceptionAndAlertHandler.handleMinorException(e);
+                    exceptionAndAlertHandler.handleMinorException("onActionSavedFromServer() failed for "+action.getModuleName()+"\n\n"+e.getMessage(), e);
                 }
             }
 
@@ -277,7 +273,6 @@ public class OnSaveActionTask extends Task<Void>
     {
         for(String state : action.getIcons().keySet())
         {
-            System.out.println("Sending icon " +state+" -> "+action.getID()+ "-> "+clientProfile.getID());
             connection.sendIcon(clientProfile.getID(), action.getID(), state, action.getIcon(state));
         }
     }
