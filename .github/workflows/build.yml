@@ -369,7 +369,7 @@ jobs:
             # Create DEB
             .github/scripts/jpackage.sh \
             --icon assets/linux-icon.png \
-            --app-version ${{ env.VERSION }} \
+            --app-version $VERSION \
             --linux-menu-group "Stream-Pi" \
             --license-file LICENSE.txt \
             --type deb
@@ -377,10 +377,10 @@ jobs:
             # Create App Image
             .github/scripts/jpackage.sh \
             --icon assets/linux-icon.png \
-            --app-version ${{ env.VERSION }} \
+            --app-version $VERSION \
             --type app-image
 
-            NEW_V=${{ env.VERSION }}
+            NEW_V=$VERSION
             NEW_V=${NEW_V//-/_}
 
             # Create RPM
