@@ -362,10 +362,10 @@ jobs:
             unzip /tmp/openjfx-17-ea+14_linux-aarch64_bin-jmods.zip -d /tmp
 
             #Download jdk
-            wget -P /tmp https://cdn.azul.com/zulu/bin/zulu16.30.15-ca-jdk16.0.1-linux_aarch64.tar.gz
-            tar -xvzf /tmp/zulu16.30.15-ca-jdk16.0.1-linux_aarch64.tar.gz
+            axel -n 8 https://cdn.azul.com/zulu/bin/zulu16.30.15-ca-jdk16.0.1-linux_aarch64.tar.gz
+            tar -xvzf zulu16.30.15-ca-jdk16.0.1-linux_aarch64.tar.gz
 
-            JPACKAGE_HOME=/tmp/zulu16.30.15-ca-jdk16.0.1-linux_aarch64/
+            JPACKAGE_HOME=zulu16.30.15-ca-jdk16.0.1-linux_aarch64/
 
             # Create DEB
             .github/scripts/jpackage.sh \
