@@ -359,12 +359,12 @@ jobs:
             axel -n 8 https://cdn.azul.com/zulu/bin/zulu16.30.15-ca-jdk16.0.1-linux_aarch64.tar.gz
             tar -xvzf zulu16.30.15-ca-jdk16.0.1-linux_aarch64.tar.gz
 
-            MAIN_CLASS=com.stream_pi.server.Main
-            JAVAFX_JMODS=/tmp/javafx-jmods-17/
-            JPACKAGE_HOME=zulu16.30.15-ca-jdk16.0.1-linux_aarch64
-            INSTALL_DIR=target/install
-            VERSION=$(<version.txt)
-            REQ_MODULES=$(<req_modules.txt)
+            export MAIN_CLASS=com.stream_pi.server.Main
+            export JAVAFX_JMODS=/tmp/javafx-jmods-17/
+            export JPACKAGE_HOME=zulu16.30.15-ca-jdk16.0.1-linux_aarch64
+            export INSTALL_DIR=target/install
+            export VERSION=$(<version.txt)
+            export REQ_MODULES=$(<req_modules.txt)
 
             # Create DEB
             .github/scripts/jpackage.sh \
