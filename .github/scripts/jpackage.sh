@@ -1,5 +1,3 @@
-echo $JPACKAGE_HOME/bin/jpackage
-
 $JPACKAGE_HOME/bin/jpackage \
 --module-path $JAVAFX_JMODS/:target/lib/ \
 --add-modules $REQ_MODULES \

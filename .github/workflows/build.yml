@@ -367,7 +367,7 @@ jobs:
 
             export MAIN_CLASS=com.stream_pi.server.Main
             export JAVAFX_JMODS=/tmp/javafx-jmods-17/
-            export JPACKAGE_HOME=zulu16.30.15-ca-jdk16.0.1-linux_aarch64/
+            export JPACKAGE_HOME=zulu16.30.15-ca-jdk16.0.1-linux_aarch64
             export INSTALL_DIR=target/install
 
             # Create DEB
