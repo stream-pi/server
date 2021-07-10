@@ -365,7 +365,7 @@ jobs:
             wget -P /tmp https://cdn.azul.com/zulu/bin/zulu16.30.15-ca-jdk16.0.1-linux_aarch64.tar.gz
             tar -xvzf /tmp/zulu16.30.15-ca-jdk16.0.1-linux_aarch64.tar.gz
 
-            export PATH=$PATH:/tmp/zulu16.30.15-ca-jdk16.0.1-linux_aarch64/bin
+            JPACKAGE_HOME=/tmp/zulu16.30.15-ca-jdk16.0.1-linux_aarch64/
 
             # Create DEB
             .github/scripts/jpackage.sh \
@@ -400,7 +400,6 @@ jobs:
         env:
           MAIN_CLASS: com.stream_pi.server.Main
           JAVAFX_JMODS: /tmp/javafx-jmods-17/
-          JPACKAGE_HOME: ${{ env.JAVA_HOME }}
           INSTALL_DIR: target/install
       - name: Saving Linux aarch64 DEB
         uses: actions/upload-artifact@v2
