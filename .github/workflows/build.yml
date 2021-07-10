@@ -231,3 +231,187 @@ jobs:
         with:
           name: windows-msi-x64
           path: target/install/*.msi
+
+  linux-arm32:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2.1.0
+      - name: Delete Default.zip
+        run: |
+          rm -rf src/main/resources/com/stream_pi/server/Default.zip
+      - name: Delete Default.zip
+        run: |
+          rm -rf src/main/resources/com/stream_pi/server/Default.zip
+      - name: Downloading Default.zip ...
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: default-zip
+          path: src/main/resources/com/stream_pi/server
+      - name: Download VERSION
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: version
+      - name: Add VERSION to environment
+        run: |
+          echo "VERSION=$(<version.txt)" >> $GITHUB_ENV
+      - name: Download built jars
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: built-jars
+          path: target/lib/
+      - uses: uraimo/run-on-arch-action@v2.0.10
+        name: Build & save Linux ARM32 ZIP
+        with:
+          arch: armv6
+          distro: buster
+
+          run: |
+            sudo apt update
+            sudo apt install axel unzip zip
+
+            VERSION=$(<version.txt)
+            INSTALL_DIR=target/install
+            mkdir -p $INSTALL_DIR
+            mv target/lib/* $INSTALL_DIR
+            axel -n 8 https://download2.gluonhq.com/openjfx/17/openjfx-17-ea+14_linux-arm32_bin-sdk.zip
+            unzip openjfx-17-ea+14_linux-arm32_bin-sdk.zip -d javafx-sdk-arm32
+            mv javafx-sdk-arm32/javafx-sdk-17/legal javafx-sdk-arm32/javafx-sdk-17/javafx-legal
+
+            # Use Debug libgluon
+            mv javafx-sdk-arm32/javafx-sdk-17/lib/libgluon_drm_debug-1.1.6.so javafx-sdk-arm32/javafx-sdk-17/lib/libgluon_drm.so
+            rm -rf javafx-sdk-arm32/javafx-sdk-17/lib/libgluon_drm-1.1.6.so
+
+            # Use Non Debug libgluon
+            # mv javafx-sdk-arm32/javafx-sdk-17/lib/libgluon_drm-1.1.6.so javafx-sdk-arm32/javafx-sdk-17/lib/libgluon_drm.so
+            # rm -rf javafx-sdk-arm32/javafx-sdk-17/lib/libgluon_drm_debug-1.1.6.so
+
+            mv javafx-sdk-arm32/javafx-sdk-17/lib/* $INSTALL_DIR/
+            cp assets/launchers/arm32-aarch64-jvm/run_desktop $INSTALL_DIR/run_desktop
+            cp assets/linux-icon.png $INSTALL_DIR/app-icon.png
+            chmod +x $INSTALL_DIR/run_desktop
+
+            #Download jdk
+            axel -n 8 https://cdn.azul.com/zulu-embedded/bin/zulu11.48.21-ca-jdk11.0.11-linux_aarch32hf.tar.gz
+            tar -xvzf zulu11.48.21-ca-jdk11.0.11-linux_aarch32hf.tar.gz
+
+            #Run jpackage
+            zulu11.48.21-ca-jdk11.0.11-linux_aarch32hf/bin/jlink  --no-header-files --no-man-pages --add-modules java.base,java.logging,java.net.http,java.scripting,jdk.jsobject,jdk.unsupported,jdk.unsupported.desktop,jdk.xml.dom,java.xml,java.management,jdk.localedata,java.sql,jdk.crypto.ec --output $INSTALL_DIR/jre
+
+            cd target/
+            mv install stream-pi-server
+            zip -r stream-pi-server-linux-arm32-$VERSION-executable.zip stream-pi-server
+
+      - name: Saving Linux ARM32 ZIP
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-zip-arm32
+          path: target/install/stream-pi-server-linux-arm32-${{ env.VERSION }}-executable.zip
+
+  build-linux-aarch64:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Delete Default.zip
+        run: |
+          rm -rf src/main/resources/com/stream_pi/server/Default.zip
+      - name: Downloading Default.zip ...
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: default-zip
+          path: src/main/resources/com/stream_pi/server
+      - name: Download built jars
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: built-jars
+          path: target/lib/
+      - name: Download REQ_MODULES
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: req_modules
+      - name: Download VERSION
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: version
+      - name: Add VERSION to environment
+        run: |
+          echo "VERSION=$(<version.txt)" >> $GITHUB_ENV
+      - name: Add REQ_MODULES to environment
+        run: |
+          echo "REQ_MODULES=$(<req_modules.txt)" >> $GITHUB_ENV
+      - uses: uraimo/run-on-arch-action@v2.0.10
+        name: Build & save Linux ARM32 ZIP
+        with:
+          arch: armv6
+          distro: buster
+
+          run: |
+
+            apt -y update
+            apt -y install xdg-utils libc6 xdg-utils zlib1g libpng16-16 libasound2 libbsd-dev zip libblkid1 libdbus-1-3 libexpat1 libgpg-error0 liblzma5 libmount1 libpcre3 libselinux1 libsystemd0 libuuid1
+
+            wget -P /tmp https://download2.gluonhq.com/openjfx/17/openjfx-17-ea+14_linux-aarch64_bin-jmods.zip
+            unzip /tmp/openjfx-17-ea+14_linux-aarch64_bin-jmods.zip -d /tmp
+
+            #Download jdk
+            wget -P /tmp https://cdn.azul.com/zulu/bin/zulu16.30.15-ca-jdk16.0.1-linux_aarch64.tar.gz
+            tar -xvzf /tmp/zulu16.30.15-ca-jdk16.0.1-linux_aarch64.tar.gz
+
+            export PATH=$PATH:/tmp/zulu16.30.15-ca-jdk16.0.1-linux_aarch64/bin
+
+            # Create DEB
+            .github/scripts/jpackage.sh \
+            --icon assets/linux-icon.png \
+            --app-version ${{ env.VERSION }} \
+            --linux-menu-group "Stream-Pi" \
+            --license-file LICENSE.txt \
+            --type deb
+
+            # Create App Image
+            .github/scripts/jpackage.sh \
+            --icon assets/linux-icon.png \
+            --app-version ${{ env.VERSION }} \
+            --type app-image
+
+            NEW_V=${{ env.VERSION }}
+            NEW_V=${NEW_V//-/_}
+
+            # Create RPM
+            .github/scripts/jpackage.sh \
+            --icon assets/linux-icon.png \
+            --license-file LICENSE.txt \
+            --app-version $NEW_V \
+            --type rpm
+
+            cd $INSTALL_DIR
+            mv *.deb stream-pi-server-linux-aarch64-${{ env.VERSION }}.deb
+            mv *.rpm stream-pi-server-linux-aarch64-${{ env.VERSION }}.rpm
+            mv 'Stream-Pi Server' stream-pi-server-${{ env.VERSION }}
+            zip -r stream-pi-server-linux-aarch64-${{ env.VERSION }}-executable.zip stream-pi-server-${{ env.VERSION }}
+            rm -r stream-pi-server-${{ env.VERSION }}
+        env:
+          MAIN_CLASS: com.stream_pi.server.Main
+          JAVAFX_JMODS: /tmp/javafx-jmods-17/
+          JPACKAGE_HOME: ${{ env.JAVA_HOME }}
+          INSTALL_DIR: target/install
+      - name: Saving Linux aarch64 DEB
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-deb-aarch64
+          path: target/install/stream-pi-server-linux-aarch64-${{ env.VERSION }}.deb
+      - name: Saving Linux aarch64 RPM
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-rpm-aarch64
+          path: target/install/stream-pi-server-linux-aarch64-${{ env.VERSION }}.rpm
+      - name: Saving Linux aarch64 ZIP
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-zip-aarch64
+          path: target/install/stream-pi-server-linux-aarch64-${{ env.VERSION }}-executable.zip

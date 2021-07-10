@@ -42,6 +42,30 @@ jobs:
           workflow: build.yml
           name: linux-zip-x64
           path: target/install
+      - name: Download linux aarch64 deb
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build.yml
+          name: linux-deb-aarch64
+          path: target/install
+      - name: Download linux aarch64 rpm
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build.yml
+          name: linux-rpm-aarch64
+          path: target/install
+      - name: Download linux aarch64 zip
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build.yml
+          name: linux-zip-aarch64
+          path: target/install
+      - name: Download Linux arm32 ZIP
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build.yml
+          name: linux-zip-arm32
+          path: target/install
       - name: Download MacOS x64 pkg
         uses: dawidd6/action-download-artifact@v2
         with:
@@ -78,3 +102,4 @@ jobs:
           tag: ${{  env.VERSION }}
           bodyFile: "body.md"
           prerelease: ${{ env.PRE_RELEASE }}
+
