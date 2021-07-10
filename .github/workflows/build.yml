@@ -348,9 +348,9 @@ jobs:
         run: |
           echo "REQ_MODULES=$(<req_modules.txt)" >> $GITHUB_ENV
       - uses: uraimo/run-on-arch-action@v2.0.10
-        name: Build & save Linux ARM32 ZIP
+        name: Build & save Linux aarch64 ZIP
         with:
-          arch: armv6
+          arch: aarch64
           distro: buster
 
           run: |
