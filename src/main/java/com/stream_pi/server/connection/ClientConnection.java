@@ -339,7 +339,10 @@ public class ClientConnection extends Thread
     private void updateClientOrientation(Message message) throws MinorException
     {
         getClient().setOrientation(Orientation.valueOf(message.getStringValue()));
-        javafx.application.Platform.runLater(()-> serverListener.getDashboardBase().reDrawProfile());
+        if(serverListener.getDashboardBase().getActionGridPane().getClientProfile() != null)
+        {
+            javafx.application.Platform.runLater(()-> serverListener.getDashboardBase().reDrawProfile());
+        }
     }
 
     private void onActionIconReceived(Message message) throws MinorException

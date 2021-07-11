@@ -322,3 +322,8 @@ ScrollPane
     -fx-focus-color:transparent;
     -fx-faint-focus-color:transparent;
 }
+
+.clients_settings_save_button_hbox
+{
+    -fx-padding: 0 0 5 0;
+}
