@@ -357,8 +357,8 @@ jobs:
             mkdir -p $INSTALL_DIR
             mv target/lib/* $INSTALL_DIR
 
-            axel -n 8 https://download2.gluonhq.com/openjfx/17/openjfx-17-ea+14_linux-aarch64_bin-sdk.zip
-            unzip openjfx-17-ea+14_linux-aarch64_bin-sdk.zip -d javafx-sdk-aarch64
+            axel -n 8 https://download2.gluonhq.com/openjfx/17/openjfx-17-ea+14_monocle-linux-aarch64_bin-sdk.zip
+            unzip openjfx-17-ea+14_monocle-linux-aarch64_bin-sdk.zip -d javafx-sdk-aarch64
             mv javafx-sdk-aarch64/javafx-sdk-17/legal javafx-sdk-aarch64/javafx-sdk-17/javafx-legal
 
             # Use Debug libgluon
