@@ -345,12 +345,12 @@ jobs:
       - uses: uraimo/run-on-arch-action@v2.0.10
         name: Build & save Linux aarch64 ZIP
         with:
-          arch: armv6
+          arch: aarch64
           distro: buster
 
           run: |
-            sudo apt update
-            sudo apt install axel unzip zip
+            apt update
+            apt -y install axel unzip zip wget
 
             VERSION=$(<version.txt)
             INSTALL_DIR=target/install
