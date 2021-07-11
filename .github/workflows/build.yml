@@ -270,7 +270,7 @@ jobs:
 
           run: |
             sudo apt update
-            sudo apt install axel unzip zip dpkg-deb fakeroot
+            sudo apt install axel unzip zip
 
             VERSION=$(<version.txt)
             INSTALL_DIR=target/install
@@ -366,29 +366,11 @@ jobs:
             export VERSION=$(<version.txt)
             export REQ_MODULES=$(<req_modules.txt)
 
-            # Create DEB
-            .github/scripts/jpackage.sh \
-            --icon assets/linux-icon.png \
-            --app-version $VERSION \
-            --linux-menu-group "Stream-Pi" \
-            --license-file LICENSE.txt \
-            --type deb
-
             # Create App Image
             .github/scripts/jpackage.sh \
             --icon assets/linux-icon.png \
             --app-version $VERSION \
             --type app-image
-
-            NEW_V=$VERSION
-            NEW_V=${NEW_V//-/_}
-
-            # Create RPM
-            .github/scripts/jpackage.sh \
-            --icon assets/linux-icon.png \
-            --license-file LICENSE.txt \
-            --app-version $NEW_V \
-            --type rpm
 
             cd $INSTALL_DIR
             mv *.deb stream-pi-server-linux-aarch64-${{ env.VERSION }}.deb
@@ -396,16 +378,6 @@ jobs:
             mv 'Stream-Pi Server' stream-pi-server-${{ env.VERSION }}
             zip -r stream-pi-server-linux-aarch64-${{ env.VERSION }}-executable.zip stream-pi-server-${{ env.VERSION }}
             rm -r stream-pi-server-${{ env.VERSION }}
-      - name: Saving Linux aarch64 DEB
-        uses: actions/upload-artifact@v2
-        with:
-          name: linux-deb-aarch64
-          path: target/install/stream-pi-server-linux-aarch64-${{ env.VERSION }}.deb
-      - name: Saving Linux aarch64 RPM
-        uses: actions/upload-artifact@v2
-        with:
-          name: linux-rpm-aarch64
-          path: target/install/stream-pi-server-linux-aarch64-${{ env.VERSION }}.rpm
       - name: Saving Linux aarch64 ZIP
         uses: actions/upload-artifact@v2
         with:

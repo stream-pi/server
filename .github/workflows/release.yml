@@ -42,18 +42,6 @@ jobs:
           workflow: build.yml
           name: linux-zip-x64
           path: target/install
-      - name: Download linux aarch64 deb
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: build.yml
-          name: linux-deb-aarch64
-          path: target/install
-      - name: Download linux aarch64 rpm
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: build.yml
-          name: linux-rpm-aarch64
-          path: target/install
       - name: Download linux aarch64 zip
         uses: dawidd6/action-download-artifact@v2
         with:
