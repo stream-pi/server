@@ -119,13 +119,14 @@ public class About extends VBox
         {
             try
             {
+                Logger.getLogger(getClass().getName()).info("build-date not present");
                 Label buildDateLabel = new Label("Build date/time: " +  new String(inputStream.readAllBytes()));
                 buildDateLabel.getStyleClass().add("about_build_date_label");
                 hBox2.getChildren().addAll(getSep(), buildDateLabel);
             }
             catch (IOException e)
             {
-                e.printStackTrace();
+                Logger.getLogger(getClass().getName()).info("build-date not present");
             }
         }
     }
