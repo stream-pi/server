@@ -243,7 +243,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         }
         else
         {
-            handleSevereException(new SevereException("Unable to delete all files successfully. Installation corrupt. Re-install."));
+            handleSevereException(new SevereException("Unable to delete all files successfully. Config corrupt. Delete directory \n"+getServerInfo().getPrePath()));
         }
     }
 
