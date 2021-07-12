@@ -235,15 +235,13 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
         onQuitApp();
 
-        boolean result = IOHelper.deleteFile(getServerInfo().getPrePath());
-
-        if(result)
+        try
         {
-            init();
+            IOHelper.deleteFile(getServerInfo().getPrePath());
         }
-        else
+        catch (SevereException e)
         {
-            handleSevereException(new SevereException("Unable to delete all files successfully. Config corrupt. Delete directory \n"+getServerInfo().getPrePath()));
+            handleSevereException("Unable to successfully factory reset. Delete directory \n'"+getServerInfo().getPrePath()+"'\nMessage:\n"+e.getMessage(),e);
         }
     }
 

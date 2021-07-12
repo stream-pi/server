@@ -65,7 +65,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
                 return;
 
             closeLogger();
-            logger = Logger.getLogger("");
+            logger = Logger.getLogger("com.stream_pi");
 
             if(new File(ServerInfo.getInstance().getPrePath()).getAbsoluteFile().getParentFile().canWrite())
             {
