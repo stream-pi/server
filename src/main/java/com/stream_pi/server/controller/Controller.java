@@ -413,7 +413,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         getLogger().log(Level.SEVERE, message, e);
         e.printStackTrace();
 
-        new StreamPiAlert(e.getTitle(), e.getMessage(), StreamPiAlertType.WARNING).show();
+        new StreamPiAlert(e.getTitle(), message, StreamPiAlertType.WARNING).show();
     }
 
     @Override
@@ -428,7 +428,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         getLogger().log(Level.SEVERE, message, e);
         e.printStackTrace();
 
-        StreamPiAlert alert = new StreamPiAlert(e.getTitle(), e.getMessage(), StreamPiAlertType.ERROR);
+        StreamPiAlert alert = new StreamPiAlert(e.getTitle(), message, StreamPiAlertType.ERROR);
 
         alert.setOnClicked(new StreamPiAlertListener()
         {
