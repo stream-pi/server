@@ -73,7 +73,6 @@ public class PluginsSettings extends VBox
 
 
         HBox hBox = new HBox(saveButton);
-        hBox.getStyleClass().add("plugins_settings_save_button_hbox");
         hBox.setAlignment(Pos.CENTER_RIGHT);
 
         getChildren().addAll(scrollPane, hBox);

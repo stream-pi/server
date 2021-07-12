@@ -132,7 +132,6 @@ public class GeneralSettings extends VBox
 
 
         saveButton = new Button("Save");
-        saveButton.getStyleClass().add("general_settings_save_button");
         VBox.setMargin(saveButton, new Insets(0,10, 0, 0));
 
         saveButton.setOnAction(event->save());

@@ -34,12 +34,6 @@
     -fx-alignment: TOP_CENTER;
 }
 
-.plugins_settings_save_button_hbox
-{
-    -fx-padding: 0 0 5 0;
-}
-
-
 .action_box
 {
     -fx-border-width: 1px;
@@ -237,9 +231,9 @@
     -fx-spacing: 5;
 }
 
-.plugins_settings, .themes_settings, .clients_settings
+.plugins_settings, .themes_settings, .clients_settings, .general_settings
 {
-    -fx-padding: 0 10 0 0;
+    -fx-padding: 0 0 5 0;
 }
 
 /*Alert Classes added to default stylesheet to show init error, if occurs */
@@ -308,7 +302,6 @@
 .general_settings
 {
     -fx-spacing: 5;
-    -fx-padding: 0 0 5 0;
     -fx-alignment: TOP_RIGHT;
 }
 
@@ -321,9 +314,4 @@ ScrollPane
 {
     -fx-focus-color:transparent;
     -fx-faint-focus-color:transparent;
-}
-
-.clients_settings_save_button_hbox
-{
-    -fx-padding: 0 0 5 0;
 }
