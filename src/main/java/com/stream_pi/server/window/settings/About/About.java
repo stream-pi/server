@@ -100,16 +100,12 @@ public class About extends VBox
         Label javafxVersionLabel = new Label("JavaFX "+System.getProperty("javafx.version"));
         javafxVersionLabel.getStyleClass().add("about_javafx_version");
 
-        Label buildDateLabel = new Label();
-        buildDateLabel.getStyleClass().add("about_build_date_label");
-
         Label javaGCLabel = new Label("GC: "+ManagementFactory.getGarbageCollectorMXBeans().get(0).getName());
         javaGCLabel.getStyleClass().add("about_java_gc");
 
         HBox hBox2 = new HBox(javaVersionLabel, getSep(),
                 javafxVersionLabel, getSep(),
-                javaGCLabel, getSep(),
-                buildDateLabel);
+                javaGCLabel);
 
         hBox2.setAlignment(Pos.CENTER);
         hBox2.setSpacing(10);
@@ -123,7 +119,9 @@ public class About extends VBox
         {
             try
             {
-                buildDateLabel.setText("Build date/time: " +  new String(inputStream.readAllBytes()));
+                Label buildDateLabel = new Label("Build date/time: " +  new String(inputStream.readAllBytes()));
+                buildDateLabel.getStyleClass().add("about_build_date_label");
+                hBox2.getChildren().addAll(getSep(), buildDateLabel);
             }
             catch (IOException e)
             {
