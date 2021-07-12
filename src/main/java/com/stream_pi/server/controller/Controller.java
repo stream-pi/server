@@ -234,10 +234,12 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         getLogger().info("Reset to factory ...");
 
         onQuitApp();
-
-        try
+        
+        try 
         {
             IOHelper.deleteFile(getServerInfo().getPrePath());
+
+            init();
         }
         catch (SevereException e)
         {
