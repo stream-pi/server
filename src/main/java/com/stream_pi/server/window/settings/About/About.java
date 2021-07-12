@@ -18,6 +18,8 @@ import javafx.scene.layout.VBox;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -83,14 +85,14 @@ public class About extends VBox
         Label currentActionAPILabel = new Label("ActionAPI "+ ActionAPI.API_VERSION.getText());
         currentActionAPILabel.getStyleClass().add("about_current_action_api_label");
 
-        HBox hBox = new HBox(versionLabel, getSep(),
+        HBox hBox1 = new HBox(versionLabel, getSep(),
                 commStandardLabel, getSep(),
                 minThemeAPILabel, getSep(),
                 minActionAPILabel, getSep(),
                 currentActionAPILabel);
 
-        hBox.setAlignment(Pos.CENTER);
-        hBox.setSpacing(10);
+        hBox1.setAlignment(Pos.CENTER);
+        hBox1.setSpacing(10);
 
         Label javaVersionLabel = new Label("Java "+System.getProperty("java.version"));
         javaVersionLabel.getStyleClass().add("about_java_version");
@@ -101,15 +103,19 @@ public class About extends VBox
         Label buildDateLabel = new Label();
         buildDateLabel.getStyleClass().add("about_build_date_label");
 
+        Label javaGCLabel = new Label("GC: "+ManagementFactory.getGarbageCollectorMXBeans().get(0).getName());
+        javaGCLabel.getStyleClass().add("about_java_gc");
+
         HBox hBox2 = new HBox(javaVersionLabel, getSep(),
                 javafxVersionLabel, getSep(),
+                javaGCLabel, getSep(),
                 buildDateLabel);
 
         hBox2.setAlignment(Pos.CENTER);
         hBox2.setSpacing(10);
 
 
-        getChildren().addAll(appIconImageView, tabPane, donateButton, hBox, hBox2);
+        getChildren().addAll(appIconImageView, tabPane, donateButton, hBox1, hBox2);
 
 
         InputStream inputStream = Main.class.getResourceAsStream("build-date");

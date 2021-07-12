@@ -143,6 +143,7 @@
                 <configuration>
                     <commandlineArgs>Stream-Pi.startupRunnerFileName=run_min Stream-Pi.startupMode=maximise</commandlineArgs>
                     <options>
+                        <option>-XX:+UnlockExperimentalVMOptions -XX:+UseZGC</option>
                         <option>-Dprism.verbose=true</option>
                         <option>-Djavafx.verbose=true</option>
                         <option>-Dprism.forceGPU=true</option>

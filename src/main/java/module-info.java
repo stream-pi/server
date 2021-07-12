@@ -18,6 +18,7 @@ module com.stream_pi.server
     requires javafx.controls;
     requires javafx.media;
 
+    requires java.management;
     requires java.desktop;
 
     requires java.sql;
