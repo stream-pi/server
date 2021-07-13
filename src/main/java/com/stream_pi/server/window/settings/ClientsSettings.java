@@ -65,7 +65,7 @@ public class ClientsSettings extends VBox
         scrollPane.setContent(clientsSettingsVBox);
 
         saveButton = new Button("Save");
-        VBox.setMargin(saveButton, new Insets(0,10, 0, 0));
+        HBox.setMargin(saveButton, new Insets(0,10, 0, 0));
         saveButton.setOnAction(event -> onSaveButtonClicked());
 
         HBox hBox = new HBox(saveButton);
