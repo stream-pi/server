@@ -14,6 +14,7 @@ import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import com.stream_pi.util.uihelper.SpaceFiller;
 
+import javafx.geometry.Insets;
 import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -68,7 +69,7 @@ public class PluginsSettings extends VBox
 
 
         saveButton = new Button("Save");
-
+        VBox.setMargin(saveButton, new Insets(0,10, 0, 0));
         saveButton.setOnAction(event -> onSaveButtonClicked());
 
 
