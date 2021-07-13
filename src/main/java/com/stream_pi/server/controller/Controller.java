@@ -779,8 +779,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         {
             handleMinorException(exception);
         }
-        
-        handleMinorException(exception);
 
         executor.execute(new Task<Void>() {
             @Override
