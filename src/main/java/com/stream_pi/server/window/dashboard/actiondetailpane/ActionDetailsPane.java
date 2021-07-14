@@ -656,7 +656,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         setActionHeadingLabelText("");
 
         actionBackgroundColourPicker.setValue(Color.WHITE);
+        actionBackgroundColourTransparentCheckBox.setSelected(false);
         displayTextColourPicker.setValue(Color.WHITE);
+        displayTextColourDefaultCheckBox.setSelected(false);
 
         if(actionNull)
         {
@@ -699,16 +701,28 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         displayTextAlignmentComboBox.getSelectionModel().select(getAction().getDisplayTextAlignment());
 
         if(!getAction().getBgColourHex().isEmpty())
+        {
             actionBackgroundColourPicker.setValue(Color.valueOf(getAction().getBgColourHex()));
+            actionBackgroundColourTransparentCheckBox.setSelected(false);
+        }
         else
+        {
+            actionBackgroundColourPicker.setValue(Color.WHITE);
             actionBackgroundColourTransparentCheckBox.setSelected(true);
+        }
 
 
 
         if(!getAction().getDisplayTextFontColourHex().isEmpty())
+        {
             displayTextColourPicker.setValue(Color.valueOf(getAction().getDisplayTextFontColourHex()));
+            displayTextColourDefaultCheckBox.setSelected(false);
+        }
         else
+        {
+            displayTextColourPicker.setValue(Color.WHITE);
             displayTextColourDefaultCheckBox.setSelected(true);
+        }
 
 
         hideDisplayTextCheckBox.setSelected(!getAction().isShowDisplayText());
