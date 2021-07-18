@@ -488,9 +488,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 e.printStackTrace();
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
-            } catch (Exception e)
-            {
-                e.printStackTrace();
             }
         });
     }

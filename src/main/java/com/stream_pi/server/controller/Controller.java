@@ -541,7 +541,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
     private void startAction(Action action, boolean toggle, String profileID, Client client) throws InterruptedException
     {
-        System.out.println(action.getDelayBeforeExecuting()+"WAIITTTT");
         Thread.sleep(action.getDelayBeforeExecuting());
 
         getLogger().info("action "+action.getID()+" clicked!");
@@ -779,6 +778,9 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         {
             handleMinorException(exception);
         }
+
+        if(profileID==null || actionID == null)
+            return;
 
         executor.execute(new Task<Void>() {
             @Override
