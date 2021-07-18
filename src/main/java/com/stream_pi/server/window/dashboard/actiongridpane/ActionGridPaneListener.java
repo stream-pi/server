@@ -6,6 +6,7 @@ import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.action_api.otheractions.FolderAction;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
+import com.stream_pi.util.exception.SevereException;
 
 public interface ActionGridPaneListener
 {
@@ -23,6 +24,6 @@ public interface ActionGridPaneListener
 
     ClientConnection getClientConnection();
 
-    ExternalPlugin createNewActionFromExternalPlugin(String module) throws Exception;
+    ExternalPlugin createNewActionFromExternalPlugin(String module) throws CloneNotSupportedException, SevereException;
     Action createNewOtherAction(ActionType actionType) throws Exception;
 }
