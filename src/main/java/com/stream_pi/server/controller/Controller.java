@@ -369,8 +369,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         MenuItem openItem = new MenuItem("Open");
         openItem.addActionListener(l-> unMinimizeApp());
 
-        popup.add(exitItem);
         popup.add(openItem);
+        popup.add(exitItem);
 
         TrayIcon trayIcon = new TrayIcon(
             Toolkit.getDefaultToolkit().getImage(Main.class.getResource("icon16x16.png")),
