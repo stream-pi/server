@@ -13,8 +13,9 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <gluonfx.plugin.version>1.0.0</gluonfx.plugin.version>
-        <javafx.version>17-ea+14</javafx.version>
+        <gluonfx.plugin.version>1.0.5</gluonfx.plugin.version>
+        <javafx.version>18-ea+2</javafx.version>
+        <javafx.maven.plugin.version>0.0.6</javafx.maven.plugin.version>
 
         <action.api.version>1.0.0-SNAPSHOT</action.api.version>
         <theme.api.version>1.0.0-SNAPSHOT</theme.api.version>
@@ -36,7 +37,8 @@
         <gpg.plugin.version>1.6</gpg.plugin.version>
         <shade.plugin.version>3.2.4</shade.plugin.version>
         <compiler.plugin.version>3.8.1</compiler.plugin.version>
-        <jar.plugin>2.3.1</jar.plugin>
+
+        <jar.plugin.version>3.2.0</jar.plugin.version>
     </properties>
 
 
@@ -124,7 +126,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>${jar.plugin}</version>
+                <version>${jar.plugin.version}</version>
                 <configuration>
                     <outputDirectory>target/lib/</outputDirectory>
                 </configuration>
@@ -139,11 +141,11 @@
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.5</version>
+                <version>${javafx.maven.plugin.version}</version>
                 <configuration>
                     <commandlineArgs>Stream-Pi.startupRunnerFileName=run_min Stream-Pi.startupMode=maximise</commandlineArgs>
                     <options>
-                        <option>-XX:+UnlockExperimentalVMOptions -XX:+UseZGC</option>
+                        <option>-XX:+UseZGC</option>
                         <option>-Dprism.verbose=true</option>
                         <option>-Djavafx.verbose=true</option>
                         <option>-Dprism.forceGPU=true</option>

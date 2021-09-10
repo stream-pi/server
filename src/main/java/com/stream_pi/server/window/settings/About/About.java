@@ -56,7 +56,7 @@ public class About extends VBox
 
 
         Tab contributorsTab = new Tab("Contributors");
-        contributorsTab.setContent(new ContributorsTab());
+        contributorsTab.setContent(new ContributorsTab(hostServices));
 
         Tab contactTab = new Tab("Contact");
         contactTab.setContent(new ContactTab(hostServices));

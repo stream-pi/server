@@ -26,7 +26,8 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.net.URISyntaxException;
 
-public class Main extends Application {
+public class Main extends Application
+{
 
     /**
      * First method to be called
