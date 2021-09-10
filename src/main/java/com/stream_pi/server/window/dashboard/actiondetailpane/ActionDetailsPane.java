@@ -465,6 +465,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
                     combineActionPropertiesPane.getCombineAction().addChild(newAction.getID());
 
+                    action.setClientProperties(combineActionPropertiesPane.getCombineAction().getClientProperties());
+
                     addActionToCurrentClientProfile(newAction);
 
                     ClientConnection connection = ClientConnections.getInstance()

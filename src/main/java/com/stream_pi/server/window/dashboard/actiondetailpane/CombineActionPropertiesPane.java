@@ -103,7 +103,8 @@ public class CombineActionPropertiesPane extends VBox {
         }
     }
 
-    public void onUpButtonClicked(ActionEvent event) {
+    public void onUpButtonClicked(ActionEvent event)
+    {
         try {
             Node node = (Node) event.getSource();
 
@@ -111,16 +112,17 @@ public class CombineActionPropertiesPane extends VBox {
 
             if(currentIndex > 0)
             {
-
                 Property current = combineAction.getClientProperties().getSingleProperty(currentIndex+"");
                 Property aboveOne = combineAction.getClientProperties().getSingleProperty((currentIndex-1)+"");
 
                 combineAction.addChild(current.getRawValue(), currentIndex-1);
                 combineAction.addChild(aboveOne.getRawValue(), currentIndex);
 
+                actionDetailsPane.setAction(combineAction);
                 actionDetailsPane.saveAction(true, true);
                 renderProps();
             }
+
         }
         catch (MinorException e)
         {
@@ -144,6 +146,7 @@ public class CombineActionPropertiesPane extends VBox {
                 combineAction.addChild(current.getRawValue(), currentIndex+1);
                 combineAction.addChild(belowOne.getRawValue(), currentIndex);
 
+                actionDetailsPane.setAction(combineAction);
                 actionDetailsPane.saveAction(true, true);
                 renderProps();
             }
@@ -152,20 +155,5 @@ public class CombineActionPropertiesPane extends VBox {
         {
             e.printStackTrace();
         }
-    }
-
-
-    public List<String> getFinalChildren()
-    {
-        ArrayList<String> children = new ArrayList<>();
-
-        for(int i = 0;i<getChildren().size();i++)
-        {
-            HBox hBox = (HBox) getChildren().get(i);
-            Label label = (Label) hBox.getChildren().get(0);
-            children.add(label.getId());
-        }
-
-        return children;
     }
 }

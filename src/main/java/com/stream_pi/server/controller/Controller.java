@@ -501,27 +501,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 {
                     try
                     {
-                        if(action.getActionType() == ActionType.COMBINE)
-                        {
-                            try
-                            {
-                                CombineAction combineAction = (CombineAction) action;
-                                for(String eachID: combineAction.getChildrenIDSequential())
-                                {
-                                    startAction(client.getProfileByID(profileID).getActionByID(eachID),
-                                            toggle, profileID, client);
-                                }
-                            }
-                            catch (MinorException e)
-                            {
-                                handleMinorException(e);
-                            }
-                        }
-                        else
-                        {
-                            startAction(client.getProfileByID(profileID).getActionByID(actionID),
-                                    toggle, profileID, client);
-                        }
+                        startAction(client.getProfileByID(profileID).getActionByID(actionID),
+                                toggle, profileID, client);
                     }
                     catch (InterruptedException e)
                     {
@@ -541,7 +522,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
     private void startAction(Action action, boolean toggle, String profileID, Client client) throws InterruptedException
     {
-        Thread.sleep(action.getDelayBeforeExecuting());
+
 
         getLogger().info("action "+action.getID()+" clicked!");
 

@@ -183,23 +183,7 @@ public class OnSaveActionTask extends Task<Void>
         }
 
 
-        if(action.getActionType() == ActionType.COMBINE)
-        {
-            List<String> finalChildren = combineActionPropertiesPane.getFinalChildren();
-
-            ClientProperties clientProperties = new ClientProperties();
-
-            for(int i = 0;i<finalChildren.size();i++)
-            {
-               Property property = new Property(i+"", Type.STRING);
-               property.setRawValue(finalChildren.get(i));
-
-                clientProperties.addProperty(property);
-            }
-
-            action.getClientProperties().set(clientProperties);
-        }
-        else
+        if(action.getActionType() != ActionType.COMBINE)
         {
             if(action.getActionType() != ActionType.FOLDER)
                 action.setDelayBeforeExecuting(Integer.parseInt(delayBeforeRunningString));
