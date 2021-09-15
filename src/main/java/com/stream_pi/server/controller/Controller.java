@@ -4,11 +4,9 @@ import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.PropertySaver;
 import com.stream_pi.action_api.action.ServerConnection;
-import com.stream_pi.action_api.actionproperty.ClientProperties;
 import com.stream_pi.action_api.externalplugin.NormalAction;
 import com.stream_pi.action_api.externalplugin.ToggleAction;
 import com.stream_pi.action_api.externalplugin.ToggleExtras;
-import com.stream_pi.action_api.otheractions.CombineAction;
 import com.stream_pi.server.Main;
 import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.client.Client;
@@ -40,7 +38,6 @@ import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.media.AudioClip;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -51,7 +48,6 @@ import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
-import java.io.File;
 import java.net.SocketAddress;
 import java.util.Objects;
 import java.util.Random;
@@ -62,12 +58,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.io.File;
+import java.io.IOException;
+
+import com.stream_pi.server.window.settings.GeneralSettings;
+
 public class Controller extends Base implements PropertySaver, ServerConnection, ToggleExtras
 {
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private MainServer mainServer;
     private Animation openSettingsAnimation;
     private Animation closeSettingsAnimation;
+    public static boolean soundactivated;
 
     public Controller(){
         mainServer = null;
@@ -116,19 +120,24 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
             if(getConfig().isFirstTimeUse())
             {
-                firstTimeUse = new FirstTimeUse(this, this);
-
-                getChildren().add(firstTimeUse);
-
-                firstTimeUse.toFront();
-                getStage().setTitle("Stream-Pi Server");
-                getStage().show();
+                Stage stage = new Stage();
+                Scene s = new Scene(new FirstTimeUse(this, this),
+                        getConfig().getStartupWindowWidth(), getConfig().getStartupWindowHeight());
+                stage.setScene(s);
+                stage.setMinHeight(500);
+                stage.setMinWidth(700);
+                stage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("app_icon.png"))));
+                stage.setTitle("Stream-Pi Server Setup");
+                stage.getScene().getStylesheets().addAll(getStylesheets());
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setOnCloseRequest(event->Platform.exit());
+                stage.show();    
             }
             else
             {
                 if(getConfig().isAllowDonatePopup())
                 {
-                    if(new Random().nextInt(50) == 3)
+                    if(new Random().nextInt(5) == 3)
                         new DonatePopupContent(getHostServices(), this).show();
                 }
 
@@ -142,41 +151,19 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     }
 
     @Override
-    public void onServerStartFailure()
-    {
-        Platform.runLater(()-> getStage().setTitle("Stream-Pi Server - Offline"));
-
-        disableTrayIcon = true;
-    }
-
-    @Override
     public void othInit()
     {
         try
         {
             if(StartupFlags.START_MINIMISED && SystemTray.isSupported())
-            {
                 minimiseApp();
-            }
             else
-            {
                 getStage().show();
-            }
-
-
-
-            StreamPiAlert.setIsShowPopup(getConfig().isShowAlertsPopup());
         }
         catch(MinorException e)
         {
             handleMinorException(e);
         }
-
-        if(getConfig().getSoundOnActionClickedStatus())
-        {
-            initSoundOnActionClicked();
-        }
-
 
         executor.execute(new Task<Void>() {
             @Override
@@ -234,16 +221,17 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         getLogger().info("Reset to factory ...");
 
         onQuitApp();
-        
-        try 
-        {
-            IOHelper.deleteFile(getServerInfo().getPrePath());
 
+        boolean result = IOHelper.deleteFile(getServerInfo().getPrePath());
+
+        if(result)
+        {
+            getStage().close();
             init();
         }
-        catch (SevereException e)
+        else
         {
-            handleSevereException("Unable to successfully factory reset. Delete directory \n'"+getServerInfo().getPrePath()+"'\nMessage:\n"+e.getMessage(),e);
+            handleSevereException(new SevereException("Unable to delete all files successfully. Installation corrupt. Re-install."));
         }
     }
 
@@ -256,13 +244,12 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         closeSettingsAnimation = createCloseSettingsAnimation(settingsNode, dashboardNode);
     }
 
-    private boolean disableTrayIcon = false;
     public void onCloseRequest(WindowEvent event)
     {
         try
         {
             if(Config.getInstance().getMinimiseToSystemTrayOnClose() &&
-                    SystemTray.isSupported() && !disableTrayIcon)
+                    SystemTray.isSupported())
             {
                 minimiseApp();
                 event.consume();
@@ -302,6 +289,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         }
 
         stopServerAndAllConnections();
+        executor.shutdown();
         ExternalPlugins.getInstance().shutDownActions();
         closeLogger();
         Config.nullify();
@@ -309,7 +297,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
     public void exit()
     {
-        executor.shutdown();
         Platform.exit();
     }
 
@@ -326,7 +313,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     {
         getLogger().info("Restarting ...");
 
-        onQuitApp();
+        stopServerAndAllConnections();
         Platform.runLater(this::init);
     }
 
@@ -366,32 +353,23 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             exit();
         });
 
-        MenuItem openItem = new MenuItem("Open");
-        openItem.addActionListener(l-> unMinimizeApp());
-
-        popup.add(openItem);
         popup.add(exitItem);
 
         TrayIcon trayIcon = new TrayIcon(
-            Toolkit.getDefaultToolkit().getImage(Main.class.getResource("icon16x16.png")),
+            Toolkit.getDefaultToolkit().getImage(Main.class.getResource("app_icon.png")),
             "Stream-Pi Server",
             popup
         );
 
-        trayIcon.addActionListener(l-> unMinimizeApp());
+        trayIcon.addActionListener(l-> Platform.runLater(()-> {
+            getStage().show();
+            getStage().setAlwaysOnTop(true);
+            getStage().setAlwaysOnTop(false);
+        }));
 
         trayIcon.setImageAutoSize(true);
 
         this.trayIcon = trayIcon;
-    }
-
-    private void unMinimizeApp()
-    {
-        Platform.runLater(()->{
-            getStage().show();
-            getStage().setAlwaysOnTop(true);
-            getStage().setAlwaysOnTop(false);
-        });
     }
 
     private TrayIcon trayIcon = null;
@@ -404,76 +382,33 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     @Override
     public void handleMinorException(MinorException e)
     {
-        handleMinorException(e.getMessage(), e);
-    }
-
-    @Override
-    public void handleMinorException(String message, MinorException e)
-    {
-        getLogger().log(Level.SEVERE, message, e);
+        getLogger().log(Level.SEVERE, e.getShortMessage(), e);
         e.printStackTrace();
 
-        new StreamPiAlert(e.getTitle(), message, StreamPiAlertType.WARNING).show();
+
+        Platform.runLater(()-> new StreamPiAlert(e.getTitle(), e.getShortMessage(), StreamPiAlertType.WARNING).show());
     }
 
     @Override
-    public void handleSevereException(SevereException e)
-    {
-        handleSevereException(e.getMessage(), e);
-    }
-
-    @Override
-    public void handleSevereException(String message, SevereException e)
-    {
-        getLogger().log(Level.SEVERE, message, e);
+    public void handleSevereException(SevereException e) {
+        getLogger().log(Level.SEVERE, e.getShortMessage(), e);
         e.printStackTrace();
+    
+        Platform.runLater(()->{
+            StreamPiAlert alert = new StreamPiAlert(e.getTitle(), e.getShortMessage(), StreamPiAlertType.ERROR);
 
-        StreamPiAlert alert = new StreamPiAlert(e.getTitle(), message, StreamPiAlertType.ERROR);
-
-        alert.setOnClicked(new StreamPiAlertListener()
-        {
-            @Override
-            public void onClick(String txt)
+            alert.setOnClicked(new StreamPiAlertListener()
             {
-                onQuitApp();
-                exit();
-            }
+                @Override
+                public void onClick(String txt)
+                {    
+                    onQuitApp();
+                    exit();
+                }
+            });
+
+            alert.show();
         });
-
-        alert.show();
-    }
-
-    private AudioClip audioClip = null;
-    private String audioFilePath = null;
-    private void playSound()
-    {
-        if(audioClip.isPlaying())
-        {
-            Platform.runLater(audioClip::stop);
-            return;
-        }
-
-        Platform.runLater(audioClip::play);
-    }
-
-    @Override
-    public void initSoundOnActionClicked()
-    {
-        audioFilePath = getConfig().getSoundOnActionClickedFilePath();
-
-        File file = new File(audioFilePath);
-
-        if(!file.exists())
-        {
-            audioFilePath = null;
-            audioClip = null;
-            getConfig().setSoundOnActionClickedStatus(false);
-            getConfig().setSoundOnActionClickedFilePath("");
-            handleMinorException(new MinorException("The sound file for on action click sound is missing."));
-            return;
-        }
-
-        audioClip = new AudioClip(file.toURI().toString());
     }
 
     @Override
@@ -483,35 +418,48 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         {
             Action action =  client.getProfileByID(profileID).getActionByID(actionID);
 
-            if(getConfig().getSoundOnActionClickedStatus())
+            if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
             {
-                playSound();
-            }
-
-            if(action.isInvalid())
-            {
-                throw new MinorException(
-                        "The action isn't installed on the server."
-                );
-            }
-
-            executor.execute(new Task<Void>() {
-                @Override
-                protected Void call()
+                if(action.isInvalid())
                 {
-                    try
-                    {
-                        startAction(client.getProfileByID(profileID).getActionByID(actionID),
-                                toggle, profileID, client);
-                    }
-                    catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                        getLogger().info("onActionClicked scheduled task was interrupted ...");
-                    }
-                    return null;
+                    throw new MinorException(
+                            "The action isn't installed on the server."
+                    );
                 }
-            });
+                else
+                {
+                    executor.execute(new Task<Void>() {
+                        @Override
+                        protected Void call()
+                        {
+                            try {
+                                Thread.sleep(action.getDelayBeforeExecuting());
+
+                                getLogger().info("action "+action.getID()+" clicked!");
+
+                                playSound();
+
+                                if(action instanceof ToggleAction)
+                                {
+                                    onToggleActionClicked((ToggleAction) action, toggle, profileID,
+                                            client.getRemoteSocketAddress());
+                                }
+                                else if (action instanceof NormalAction)
+                                {
+                                    onNormalActionClicked((NormalAction) action, profileID,
+                                            client.getRemoteSocketAddress());
+                                }
+                            }
+                            catch (InterruptedException e)
+                            {
+                                e.printStackTrace();
+                                getLogger().info("onActionClicked scheduled task was interrupted ...");
+                            }
+                            return null;
+                        }
+                    });
+                }
+            }
         }
         catch (Exception e)
         {
@@ -520,21 +468,25 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         }
     }
 
-    private void startAction(Action action, boolean toggle, String profileID, Client client) throws InterruptedException
+    public void playSound()
     {
-
-
-        getLogger().info("action "+action.getID()+" clicked!");
-
-        if(action instanceof ToggleAction)
+        if(soundactivated)
         {
-            onToggleActionClicked((ToggleAction) action, toggle, profileID,
-                    client.getRemoteSocketAddress());
+            try
+            {
+                String musicFile = System.getProperty("user.home") + "/Stream-Pi/Server/beep-boop.wav";     // For example
+                Media sound = new Media(new File(musicFile).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                mediaPlayer.play();
+            }
+            catch(Exception e)
+            {
+                handleMinorException(new MinorException(e.getMessage()));
+            }
         }
-        else if (action instanceof NormalAction)
+        else
         {
-            onNormalActionClicked((NormalAction) action, profileID,
-                    client.getRemoteSocketAddress());
+            return;
         }
     }
 
@@ -544,12 +496,9 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         {
             action.onActionClicked();
         }
-        catch (Exception e)
+        catch (MinorException e)
         {
-            if(e instanceof MinorException)
-                sendActionFailed((MinorException) e, socketAddress, profileID, action.getID());
-            else
-                sendActionFailed(new MinorException(e.getMessage()), socketAddress, profileID, action.getID());
+            sendActionFailed(e, socketAddress, profileID, action.getID());
         }
     }
 
@@ -566,12 +515,9 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 action.onToggleOff();
             }
         }
-        catch (Exception e)
+        catch (MinorException e)
         {
-            if(e instanceof MinorException)
-                sendActionFailed((MinorException) e, socketAddress, profileID, action.getID());
-            else
-                sendActionFailed(new MinorException(e.getMessage()), socketAddress, profileID, action.getID());
+            sendActionFailed(e, socketAddress, profileID, action.getID());
         }
     }
 
@@ -749,19 +695,14 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     @Override
     public void sendActionFailed(MinorException exception, SocketAddress socketAddress, String profileID, String actionID)
     {
-        exception.setTitle("Error while running action");
-        
         if(exception.getTitle() != null)
         {
-            handleMinorException(exception.getTitle()+"\n"+exception.getMessage(), exception);
-        }
-        else
-        {
-            handleMinorException(exception);
+            exception.setShortMessage(exception.getTitle()+"\n"+exception.getShortMessage());
         }
 
-        if(profileID==null || actionID == null)
-            return;
+        exception.setTitle("Error while running action");
+
+        handleMinorException(exception);
 
         executor.execute(new Task<Void>() {
             @Override
@@ -829,8 +770,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         return openSettingsTimeline;
     }
 
-    private Animation createCloseSettingsAnimation(Node settingsNode, Node dashboardNode)
-    {
+    private Animation createCloseSettingsAnimation(Node settingsNode, Node dashboardNode) {
         Timeline closeSettingsTimeline = new Timeline();
         closeSettingsTimeline.setCycleCount(1);
 
