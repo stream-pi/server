@@ -3,6 +3,7 @@ package com.stream_pi.server.window.dashboard.actiondetailpane;
 import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
+import com.stream_pi.action_api.action.AnimationNames;
 import com.stream_pi.action_api.action.Location;
 import com.stream_pi.action_api.actionproperty.ClientProperties;
 import com.stream_pi.action_api.actionproperty.property.*;
@@ -206,6 +207,28 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         };
         displayTextAlignmentComboBox.setCellFactory(displayTextAlignmentComboBoxFactory);
         displayTextAlignmentComboBox.setButtonCell(displayTextAlignmentComboBoxFactory.call(null));
+        
+        actionAnimationComboBox = new ComboBox<>(FXCollections.observableArrayList(AnimationNames.NONE, AnimationNames.BOUNCE, AnimationNames.BOUNCEINOUT, AnimationNames.FADEINOUT, AnimationNames.FLASH, AnimationNames.FLIP, AnimationNames.JACKINBOX, AnimationNames.JELLO, AnimationNames.PULSE, AnimationNames.ROLLINOUT, AnimationNames.ROTATEINOUT, AnimationNames.RUBBER, AnimationNames.SHAKE, AnimationNames.SWING, AnimationNames.TADA, AnimationNames.WOBBLE, AnimationNames.ZOOM));
+
+        actionAnimationComboBox.managedProperty().bind(actionAnimationComboBox.visibleProperty());
+
+        Callback<ListView<AnimationNames>, ListCell<AnimationNames>> actionAnimationComboBoxFactory = new Callback<>() {
+            @Override
+            public ListCell<AnimationNames> call(ListView<AnimationNames> actionAnimation) {
+                return new ListCell<>() {
+                    @Override
+                    protected void updateItem(AnimationNames actionAnimation, boolean b) {
+                        super.updateItem(actionAnimation, b);
+
+                        if (actionAnimation != null) {
+                            setText(actionAnimation.getUIName());
+                        }
+                    }
+                };
+            }
+        };
+        actionAnimationComboBox.setCellFactory(actionAnimationComboBoxFactory);
+        actionAnimationComboBox.setButtonCell(actionAnimationComboBoxFactory.call(null));
 
         actionClientProperties = new ArrayList<>();
 
@@ -359,12 +382,16 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         HBox alignmentHBox = new HBox(new Label("Alignment"), SpaceFiller.horizontal(),
                 displayTextAlignmentComboBox);
+        
+        HBox animationHBox = new HBox(new Label("Action Animation"), SpaceFiller.horizontal(),
+                actionAnimationComboBox);
 
 
 
         normalToggleActionCommonPropsVBox = new VBox(
                 displayTextColourHBox,
                 alignmentHBox,
+                animationHBox,
                 bgColourHBox
         );
 
@@ -431,6 +458,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                         newAction.setDisplayText("Untitled Action");
                         newAction.setShowDisplayText(true);
                         newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
+                        newAction.setActionAnimation(AnimationNames.NONE);
 
                         if(actionType == ActionType.TOGGLE)
                             newAction.setCurrentIconState("false__false");
@@ -444,6 +472,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                         newAction.setDisplayTextFontColourHex((String) db.getContent(ActionDataFormats.DISPLAY_TEXT_FONT_COLOUR));
                         newAction.setDisplayText((String) db.getContent(ActionDataFormats.DISPLAY_TEXT));
                         newAction.setDisplayTextAlignment((DisplayTextAlignment) db.getContent(ActionDataFormats.DISPLAY_TEXT_ALIGNMENT));
+                        newAction.setActionAnimation((AnimationNames) db.getContent(ActionDataFormats.ACTION_ANIMATION));
                         newAction.setShowDisplayText((boolean) db.getContent(ActionDataFormats.DISPLAY_TEXT_SHOW));
                     }
 
@@ -625,6 +654,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     private CheckBox actionBackgroundColourTransparentCheckBox;
     private CheckBox displayTextColourDefaultCheckBox;
     private ComboBox<DisplayTextAlignment> displayTextAlignmentComboBox;
+    private ComboBox<AnimationNames> actionAnimationComboBox;
 
     public void clear(boolean actionNull)
     {
@@ -698,7 +728,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
 
         displayTextAlignmentComboBox.getSelectionModel().select(getAction().getDisplayTextAlignment());
-
+        
+        actionAnimationComboBox.getSelectionModel().select(getAction().getActionAnimation());
+        
         if(!getAction().getBgColourHex().isEmpty())
         {
             actionBackgroundColourPicker.setValue(Color.valueOf(getAction().getBgColourHex()));
@@ -970,27 +1002,28 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             delayBeforeRunning = delayBeforeRunningTextField.getText();
 
         new OnSaveActionTask(
-            ClientConnections.getInstance().getClientConnectionBySocketAddress(
-                getClient().getRemoteSocketAddress()
-            ),
-            action, delayBeforeRunning,
-            displayNameTextField.getText(),
-            displayNameFontSizeTextField.getText(),
-            displayNameFontSizeCheckBox.isSelected(),
-            isCombineChild(),
-            !hideDisplayTextCheckBox.isSelected(),
-            displayTextColourDefaultCheckBox.isSelected(),
-            "#" + displayTextColourPicker.getValue().toString().substring(2),
-            clearIconButton.isDisable(),
-            hideDefaultIconCheckBox.isSelected(),
-            hideToggleOffIconCheckBox.isSelected(),
-            hideToggleOnIconCheckBox.isSelected(),
-            displayTextAlignmentComboBox.getSelectionModel().getSelectedItem(),
-            actionBackgroundColourTransparentCheckBox.isSelected(),
-            "#" + actionBackgroundColourPicker.getValue().toString().substring(2),
-            getCombineActionPropertiesPane(),
-            clientProfile, sendIcon, actionBox, actionClientProperties, exceptionAndAlertHandler,
-            saveButton, deleteButton, resetToDefaultsButton, runOnActionSavedFromServer, runAsync, this
+                ClientConnections.getInstance().getClientConnectionBySocketAddress(
+                        getClient().getRemoteSocketAddress()
+                ),
+                action, delayBeforeRunning,
+                displayNameTextField.getText(),
+                displayNameFontSizeTextField.getText(),
+                displayNameFontSizeCheckBox.isSelected(),
+                isCombineChild(),
+                !hideDisplayTextCheckBox.isSelected(),
+                displayTextColourDefaultCheckBox.isSelected(),
+                "#" + displayTextColourPicker.getValue().toString().substring(2),
+                clearIconButton.isDisable(),
+                hideDefaultIconCheckBox.isSelected(),
+                hideToggleOffIconCheckBox.isSelected(),
+                hideToggleOnIconCheckBox.isSelected(),
+                displayTextAlignmentComboBox.getSelectionModel().getSelectedItem(),
+                actionAnimationComboBox.getSelectionModel().getSelectedItem(),
+                actionBackgroundColourTransparentCheckBox.isSelected(),
+                "#" + actionBackgroundColourPicker.getValue().toString().substring(2),
+                getCombineActionPropertiesPane(),
+                clientProfile, sendIcon, actionBox, actionClientProperties, exceptionAndAlertHandler,
+                saveButton, deleteButton, resetToDefaultsButton, runOnActionSavedFromServer, runAsync, this
         );
     }
 

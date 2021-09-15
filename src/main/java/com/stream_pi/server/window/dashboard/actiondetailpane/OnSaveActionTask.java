@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
+import com.stream_pi.action_api.action.AnimationNames;
 import com.stream_pi.action_api.actionproperty.ClientProperties;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
@@ -31,7 +32,7 @@ public class OnSaveActionTask extends Task<Void>
 
     public OnSaveActionTask(ClientConnection connection, Action action, String delayBeforeRunningString, String displayNameText, String displayNameLabelSize, boolean isUseDefaultFontSizeForDisplayLabel, boolean isCombineChild,
                             boolean isShowDisplayText, boolean isDefaultDisplayTextColour, String displayTextFontColour, boolean isClearIcon,
-                            boolean isHideDefaultIcon, boolean isHideToggleOffIcon, boolean isHideToggleOnIcon, DisplayTextAlignment displayTextAlignment, boolean isTransparentBackground, String backgroundColour,
+                            boolean isHideDefaultIcon, boolean isHideToggleOffIcon, boolean isHideToggleOnIcon, DisplayTextAlignment displayTextAlignment, AnimationNames actionAnimation, boolean isTransparentBackground, String backgroundColour,
                             CombineActionPropertiesPane combineActionPropertiesPane, ClientProfile clientProfile, boolean sendIcon, ActionBox actionBox,
                             ArrayList<UIPropertyBox> actionClientProperties, ExceptionAndAlertHandler exceptionAndAlertHandler, Button saveButton, Button deleteButton, Button resetButton,
                             boolean runOnActionSavedFromServer, boolean runAsync, ActionDetailsPaneListener actionDetailsPaneListener)
@@ -55,6 +56,7 @@ public class OnSaveActionTask extends Task<Void>
         this.isHideToggleOffIcon = isHideToggleOffIcon;
         this.isHideToggleOnIcon = isHideToggleOnIcon;
         this.displayTextAlignment = displayTextAlignment;
+        this.actionAnimation = actionAnimation;
         this.isTransparentBackground = isTransparentBackground;
         this.combineActionPropertiesPane = combineActionPropertiesPane;
         this.clientProfile = clientProfile;
@@ -96,6 +98,7 @@ public class OnSaveActionTask extends Task<Void>
     private boolean isHideToggleOffIcon;
     private boolean isHideToggleOnIcon;
     private DisplayTextAlignment displayTextAlignment;
+    private AnimationNames actionAnimation;
     private boolean isTransparentBackground;
     private String backgroundColour;
     private CombineActionPropertiesPane combineActionPropertiesPane;
@@ -172,7 +175,8 @@ public class OnSaveActionTask extends Task<Void>
             }
 
             action.setDisplayTextAlignment(displayTextAlignment);
-
+            
+            action.setActionAnimation(actionAnimation);
 
             if(isTransparentBackground)
                 action.setBgColourHex("");

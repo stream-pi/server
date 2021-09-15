@@ -14,5 +14,6 @@ public class ActionDataFormats
     public static final DataFormat DISPLAY_TEXT_FONT_COLOUR = new DataFormat("Display Text Font Colour");
     public static final DataFormat DISPLAY_TEXT = new DataFormat("Display Text");
     public static final DataFormat DISPLAY_TEXT_ALIGNMENT = new DataFormat("Display Text Alignment");
+    public static final DataFormat ACTION_ANIMATION = new DataFormat("Action Animation");
     public static final DataFormat DISPLAY_TEXT_SHOW = new DataFormat("Display Text Show");
 }
