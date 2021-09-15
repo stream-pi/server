@@ -3,6 +3,7 @@ package com.stream_pi.server.window.dashboard.actiongridpane;
 import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
+import com.stream_pi.action_api.action.AnimationNames;
 import com.stream_pi.action_api.action.Location;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
@@ -99,6 +100,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         newAction.setShowDisplayText(true);
         newAction.setDisplayText("Untitled Action");
         newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
+        newAction.setActionAnimation(AnimationNames.NONE);
 
         newAction.setBgColourHex("");
         newAction.setDisplayTextFontColourHex("");
@@ -133,6 +135,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         newAction.setShowDisplayText(true);
         newAction.setDisplayText(displayText);
         newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
+        newAction.setActionAnimation(AnimationNames.NONE);
 
         newAction.setBgColourHex("");
         newAction.setDisplayTextFontColourHex("");
