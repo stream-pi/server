@@ -97,6 +97,7 @@ public class About extends VBox
         Label javaVersionLabel = new Label("Java "+System.getProperty("java.version"));
         javaVersionLabel.getStyleClass().add("about_java_version");
 
+        System.out.println(System.getProperty("javafx.version")+" JAVAFX VRESION");
         Label javafxVersionLabel = new Label("JavaFX "+System.getProperty("javafx.version"));
         javafxVersionLabel.getStyleClass().add("about_javafx_version");
 

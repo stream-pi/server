@@ -23,9 +23,7 @@ import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.actionproperty.ServerProperties;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
-import com.stream_pi.action_api.externalplugin.ExternalPlugin;
-import com.stream_pi.action_api.externalplugin.ToggleAction;
-import com.stream_pi.action_api.externalplugin.ToggleExtras;
+import com.stream_pi.action_api.externalplugin.*;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.exception.StreamPiException;
@@ -287,8 +285,8 @@ public class ExternalPlugins
 
                 if(eachPlugin instanceof ToggleAction)
                     ((ToggleAction) eachPlugin).setToggleExtras(getToggleExtras());
-
-
+                else if(eachPlugin instanceof GaugeAction)
+                    ((GaugeAction) eachPlugin).setGaugeExtras(getGaugeExtras());
 
                 eachPlugin.initProperties();
 
@@ -517,8 +515,22 @@ public class ExternalPlugins
         this.toggleExtras = toggleExtras;
     }
 
-    public ToggleExtras getToggleExtras() {
+    public ToggleExtras getToggleExtras()
+    {
         return toggleExtras;
+    }
+
+
+    private GaugeExtras gaugeExtras = null;
+
+    public void setGaugeExtras(GaugeExtras gaugeExtras)
+    {
+        this.gaugeExtras = gaugeExtras;
+    }
+
+    public GaugeExtras getGaugeExtras()
+    {
+        return gaugeExtras;
     }
 
     private ServerConnection serverConnection = null;

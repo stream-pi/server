@@ -5,6 +5,8 @@ import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.PropertySaver;
 import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.actionproperty.ClientProperties;
+import com.stream_pi.action_api.actionproperty.GaugeProperties;
+import com.stream_pi.action_api.externalplugin.GaugeExtras;
 import com.stream_pi.action_api.externalplugin.NormalAction;
 import com.stream_pi.action_api.externalplugin.ToggleAction;
 import com.stream_pi.action_api.externalplugin.ToggleExtras;
@@ -30,6 +32,7 @@ import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.*;
 import com.stream_pi.util.iohelper.IOHelper;
+import eu.hansolo.medusa.Gauge;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -62,7 +65,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 
-public class Controller extends Base implements PropertySaver, ServerConnection, ToggleExtras
+public class Controller extends Base implements PropertySaver, ServerConnection, ToggleExtras, GaugeExtras
 {
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private MainServer mainServer;
@@ -98,6 +101,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
             ExternalPlugins.getInstance().setPropertySaver(this);
             ExternalPlugins.getInstance().setToggleExtras(this);
+            ExternalPlugins.getInstance().setGaugeExtras(this);
 
             ExternalPlugins.getInstance().setServerConnection(this);
 
@@ -910,14 +914,16 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
     @Override
     public void setToggleStatus(boolean currentStatus, String profileID, String actionID, SocketAddress clientSocketAddress)
-            throws MinorException
     {
         ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(
                 clientSocketAddress
         );
 
         if(clientConnection == null)
-            throw new ClientNotFoundException("setToggleStatus failed because no client found with given socket address");
+        {
+            getLogger().warning("setToggleStatus failed because no client found with given socket address");
+            return;
+        }
 
         new Thread(new Task<Void>() {
             @Override
@@ -935,5 +941,83 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             }
         }).start();
 
+    }
+
+    @Override
+    public void updateGauge(GaugeProperties gaugeProperties, String profileID, String actionID, SocketAddress clientSocketAddress)
+    {
+        ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(
+                clientSocketAddress
+        );
+
+        if(clientConnection == null)
+        {
+            getLogger().warning("updateGauge failed because no client found with given socket address");
+            return;
+        }
+
+
+        ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByIDAndProfileID(actionID, profileID);
+
+        if (actionBox != null)
+        {
+            Platform.runLater(()-> actionBox.updateGauge(gaugeProperties));
+        }
+
+        new Thread(new Task<Void>() {
+            @Override
+            protected Void call()
+            {
+                try
+                {
+                    clientConnection.updateActionGaugeProperties(gaugeProperties, profileID, actionID);
+                }
+                catch (SevereException e)
+                {
+                    handleSevereException(e);
+                }
+                return null;
+            }
+        }).start();
+
+    }
+
+    @Override
+    public void updateGaugeValue(double value, String profileID, String actionID, SocketAddress clientSocketAddress)
+    {
+
+        ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(
+                clientSocketAddress
+        );
+
+        if(clientConnection == null)
+        {
+            getLogger().warning("updateGaugeValue failed because no client found with given socket address");
+            return;
+        }
+
+
+        ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByIDAndProfileID(actionID, profileID);
+
+        if (actionBox != null)
+        {
+            Platform.runLater(()-> actionBox.updateGaugeValue(value));
+        }
+
+        new Thread(new Task<Void>() {
+            @Override
+            protected Void call()
+            {
+                try
+                {
+                    clientConnection.setActionGaugeValue(value, profileID, actionID);
+                }
+                catch (SevereException e)
+                {
+                    handleSevereException(e);
+                }
+                return null;
+            }
+        }).start();
     }
 }

@@ -5,9 +5,11 @@ import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.action.Location;
 import com.stream_pi.action_api.actionproperty.ClientProperties;
+import com.stream_pi.action_api.actionproperty.GaugeProperties;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
+import com.stream_pi.action_api.externalplugin.GaugeAction;
 import com.stream_pi.action_api.otheractions.CombineAction;
 import com.stream_pi.action_api.otheractions.FolderAction;
 import com.stream_pi.server.action.ExternalPlugins;
@@ -26,6 +28,7 @@ import com.stream_pi.util.exception.StreamPiException;
 import com.stream_pi.util.platform.Platform;
 import com.stream_pi.util.platform.ReleaseStatus;
 import com.stream_pi.util.version.Version;
+import eu.hansolo.medusa.Gauge;
 import javafx.concurrent.Task;
 import javafx.geometry.Orientation;
 
@@ -520,8 +523,6 @@ public class ClientConnection extends Thread
 
     public synchronized void registerActionToProfile(Message message) throws StreamPiException
     {
-
-
         String[] r = message.getStringArrValue();
 
         String profileID = r[0];
@@ -559,14 +560,17 @@ public class ClientConnection extends Thread
 
         //client properties
 
-        int clientPropertiesSize = Integer.parseInt(r[17]);
+        boolean isAnimatedGauge = r[17].equals("true");
+
+
+        int clientPropertiesSize = Integer.parseInt(r[18]);
 
         ClientProperties clientProperties = new ClientProperties();
 
         if(actionType == ActionType.FOLDER)
             clientProperties.setDuplicatePropertyAllowed(true);
 
-        for(int i = 18;i<((clientPropertiesSize*2) + 18); i+=2)
+        for(int i = 19;i<((clientPropertiesSize*2) + 19); i+=2)
         {
             Property property = new Property(r[i], Type.STRING);
             property.setRawValue(r[i+1]);
@@ -591,7 +595,7 @@ public class ClientConnection extends Thread
 
         boolean isInvalidAction = false;
 
-        if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE)
+        if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE || actionType == ActionType.GAUGE)
         {
             String moduleName = r[4];
             Version version = new Version(r[3]);
@@ -633,6 +637,10 @@ public class ClientConnection extends Thread
 
                         newPlugin.setDelayBeforeExecuting(delayBeforeRunning);
 
+                        if (actionType == ActionType.GAUGE)
+                        {
+                            newPlugin.setGaugeAnimated(isAnimatedGauge);
+                        }
 
                         ClientProperties finalClientProperties = new ClientProperties();
 
@@ -662,11 +670,23 @@ public class ClientConnection extends Thread
                                 try
                                 {
                                     newPlugin.onClientConnected();
+
+                                    if (newPlugin instanceof GaugeAction)
+                                    {
+                                        System.out.println("120312398123891283");
+                                        System.out.println(newPlugin.getGaugeProperties().getSkinType());
+                                        updateActionGaugeProperties(newPlugin.getGaugeProperties(), newPlugin.getProfileID(), newPlugin.getID());
+                                    }
                                 }
                                 catch (MinorException e)
                                 {
                                     e.setTitle("Unable to run onClientConnected for "+moduleName);
                                     exceptionAndAlertHandler.handleMinorException("Detailed message :\n\n"+e.getMessage(), e);
+                                }
+                                catch (SevereException e)
+                                {
+                                    e.setTitle("Unable to run onClientConnected for "+moduleName);
+                                    exceptionAndAlertHandler.handleSevereException("Detailed message :\n\n"+e.getMessage(), e);
                                 }
                                 return null;
                             }
@@ -761,7 +781,7 @@ public class ClientConnection extends Thread
         a.add(action.getID());
         a.add(action.getActionType()+"");
 
-        if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
+        if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE || action.getActionType() == ActionType.GAUGE)
         {
             a.add(action.getVersion().getText());
             System.out.println("VERSION :sdd "+action.getVersion().getText());
@@ -772,7 +792,7 @@ public class ClientConnection extends Thread
         }
 
 
-        if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE)
+        if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE || action.getActionType() == ActionType.GAUGE)
         {
             a.add(action.getModuleName());
         }
@@ -826,6 +846,14 @@ public class ClientConnection extends Thread
 
         ClientProperties clientProperties = action.getClientProperties();
 
+        if(action.getActionType() == ActionType.GAUGE)
+        {
+            a.add(action.isGaugeAnimated()+"");
+        }
+        else
+        {
+            a.add("false");
+        }
 
         a.add(clientProperties.getSize()+"");
 
@@ -842,6 +870,11 @@ public class ClientConnection extends Thread
 
         message.setStringArrValue(x);
         sendMessage(message);
+
+        if (action.getActionType() == ActionType.GAUGE)
+        {
+            updateActionGaugeProperties(action.getGaugeProperties(), profileID, action.getID());
+        }
     }
 
     public void getClientScreenDetails() throws SevereException
@@ -929,6 +962,26 @@ public class ClientConnection extends Thread
         Message message = new Message("set_toggle_status");
 
         message.setStringArrValue(profileID, actionID, status+"");
+
+        sendMessage(message);
+    }
+
+    public void updateActionGaugeProperties(GaugeProperties gaugeProperties, String profileID, String actionID) throws SevereException
+    {
+        Message message = new Message("set_action_gauge_properties");
+
+        message.setStringArrValue(profileID, actionID);
+        message.setObject(gaugeProperties);
+
+        sendMessage(message);
+    }
+
+    public void setActionGaugeValue(double value, String profileID, String actionID) throws SevereException
+    {
+        Message message = new Message("set_action_gauge_value");
+
+        message.setStringArrValue(profileID, actionID);
+        message.setDoubleValue(value);
 
         sendMessage(message);
     }

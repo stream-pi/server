@@ -85,6 +85,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
     private HBox clearIconHBox;
 
+    private HBox displayTextAlignmentComboBoxHBox;
+
     public ActionDetailsPane(ExceptionAndAlertHandler exceptionAndAlertHandler, HostServices hostServices,
                              ActionGridPaneListener actionGridPaneListener)
     {
@@ -186,8 +188,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         displayTextAlignmentComboBox = new ComboBox<>(FXCollections.observableArrayList(DisplayTextAlignment.TOP,
                 DisplayTextAlignment.CENTER, DisplayTextAlignment.BOTTOM));
-
-        displayTextAlignmentComboBox.managedProperty().bind(displayTextAlignmentComboBox.visibleProperty());
 
         Callback<ListView<DisplayTextAlignment>, ListCell<DisplayTextAlignment>> displayTextAlignmentComboBoxFactory = new Callback<>() {
             @Override
@@ -357,14 +357,17 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         displayNameLabelFontSizeTextFieldHBox.managedProperty().bind(displayNameLabelFontSizeTextFieldHBox.visibleProperty());
 
 
-        HBox alignmentHBox = new HBox(new Label("Alignment"), SpaceFiller.horizontal(),
+        displayTextAlignmentComboBoxHBox = new HBox(new Label("Alignment"), SpaceFiller.horizontal(),
                 displayTextAlignmentComboBox);
+
+
+        displayTextAlignmentComboBoxHBox.managedProperty().bind(displayTextAlignmentComboBoxHBox.visibleProperty());
 
 
 
         normalToggleActionCommonPropsVBox = new VBox(
                 displayTextColourHBox,
-                alignmentHBox,
+                displayTextAlignmentComboBoxHBox,
                 bgColourHBox
         );
 
@@ -392,9 +395,21 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         toggleActionsPropsVBox.managedProperty().bind(toggleActionsPropsVBox.visibleProperty());
         toggleActionsPropsVBox.setSpacing(10.0);
 
+
+        isAnimatedGaugeCheckBox = new CheckBox();
+
+        gaugeActionsPropsVBox = new VBox(
+                new HBoxWithSpaceBetween("Animated", isAnimatedGaugeCheckBox)
+        );
+
+
+        gaugeActionsPropsVBox.managedProperty().bind(gaugeActionsPropsVBox.visibleProperty());
+        gaugeActionsPropsVBox.setSpacing(10.0);
+
+
         vbox.getChildren().addAll(displayTextFieldHBox, displayNameLabelFontSizeTextFieldHBox,
                 normalToggleActionCommonPropsVBox,
-                normalActionsPropsVBox, toggleActionsPropsVBox,
+                normalActionsPropsVBox, toggleActionsPropsVBox, gaugeActionsPropsVBox,
                 clearIconHBox, clientPropertiesVBox,
                 pluginExtraButtonBar);
 
@@ -530,9 +545,14 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         streamPiAlert.show();
     }
 
+    // TODO: এটা কে ইতটু ঠিক করতে হবে  ...
+
     private VBox normalActionsPropsVBox;
     private VBox normalToggleActionCommonPropsVBox;
     private VBox toggleActionsPropsVBox;
+    private VBox gaugeActionsPropsVBox;
+
+    private CheckBox isAnimatedGaugeCheckBox;
 
     private HBox displayTextFieldHBox;
     private HBox displayNameLabelFontSizeTextFieldHBox;
@@ -753,6 +773,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             setReturnButtonForCombineActionChildVisible(true);
             normalActionsPropsVBox.setVisible(false);
             normalToggleActionCommonPropsVBox.setVisible(false);
+            gaugeActionsPropsVBox.setVisible(false);
             hideDisplayTextCheckBox.setSelected(false);
             hideDisplayTextCheckBox.setVisible(false);
 
@@ -799,6 +820,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             else
             {
                 normalActionsPropsVBox.setVisible(true);
+
+
                 toggleActionsPropsVBox.setVisible(false);
 
 
@@ -812,9 +835,19 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 hideDefaultIconCheckBox.setSelected(isDefaultHidden);
             }
 
-            setReturnButtonForCombineActionChildVisible(false);
-            hideDisplayTextCheckBox.setVisible(true);
+            boolean isGaugeAction = getAction().getActionType() == ActionType.GAUGE;
+            displayNameLabelFontSizeTextFieldHBox.setVisible(!isGaugeAction);
+            displayTextAlignmentComboBoxHBox.setVisible(!isGaugeAction);
+            hideDisplayTextCheckBox.setVisible(!isGaugeAction);
 
+            gaugeActionsPropsVBox.setVisible(isGaugeAction);
+
+            if (isGaugeAction)
+            {
+                isAnimatedGaugeCheckBox.setSelected(getAction().isGaugeAnimated());
+            }
+
+            setReturnButtonForCombineActionChildVisible(false);
             setFolderButtonVisible(getAction().getActionType().equals(ActionType.FOLDER));
             setResetToDefaultsButtonVisible(!(getAction().getActionType().equals(ActionType.FOLDER) || getAction().getActionType().equals(ActionType.COMBINE)));
 
@@ -823,7 +856,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
 
 
-        if(getAction().getActionType() == ActionType.NORMAL || getAction().getActionType() == ActionType.TOGGLE)
+        if(getAction().getActionType() == ActionType.NORMAL || getAction().getActionType() == ActionType.TOGGLE || getAction().getActionType() == ActionType.GAUGE)
         {
             setActionHeadingLabelText(getAction().getName());
         }
@@ -839,7 +872,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
 
 
-        if(getAction().getActionType() == ActionType.NORMAL || getAction().getActionType() == ActionType.TOGGLE)
+        if(getAction().getActionType() == ActionType.NORMAL || getAction().getActionType() == ActionType.TOGGLE || getAction().getActionType() == ActionType.GAUGE)
         {
             renderClientProperties();
             renderPluginExtraButtonBar();
@@ -990,7 +1023,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             "#" + actionBackgroundColourPicker.getValue().toString().substring(2),
             getCombineActionPropertiesPane(),
             clientProfile, sendIcon, actionBox, actionClientProperties, exceptionAndAlertHandler,
-            saveButton, deleteButton, resetToDefaultsButton, runOnActionSavedFromServer, runAsync, this
+            saveButton, deleteButton, resetToDefaultsButton, runOnActionSavedFromServer, runAsync, isAnimatedGaugeCheckBox.isSelected(), this
         );
     }
 

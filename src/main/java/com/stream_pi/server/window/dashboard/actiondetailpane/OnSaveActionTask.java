@@ -34,7 +34,7 @@ public class OnSaveActionTask extends Task<Void>
                             boolean isHideDefaultIcon, boolean isHideToggleOffIcon, boolean isHideToggleOnIcon, DisplayTextAlignment displayTextAlignment, boolean isTransparentBackground, String backgroundColour,
                             CombineActionPropertiesPane combineActionPropertiesPane, ClientProfile clientProfile, boolean sendIcon, ActionBox actionBox,
                             ArrayList<UIPropertyBox> actionClientProperties, ExceptionAndAlertHandler exceptionAndAlertHandler, Button saveButton, Button deleteButton, Button resetButton,
-                            boolean runOnActionSavedFromServer, boolean runAsync, ActionDetailsPaneListener actionDetailsPaneListener)
+                            boolean runOnActionSavedFromServer, boolean runAsync, boolean isGaugeAnimated, ActionDetailsPaneListener actionDetailsPaneListener)
     {
         this.saveButton = saveButton;
         this.deleteButton = deleteButton;
@@ -64,6 +64,7 @@ public class OnSaveActionTask extends Task<Void>
         this.backgroundColour = backgroundColour;
         this.actionClientProperties = actionClientProperties;
         this.runOnActionSavedFromServer = runOnActionSavedFromServer;
+        this.isGaugeAnimated = isGaugeAnimated;
         this.actionDetailsPaneListener = actionDetailsPaneListener;
 
         logger = Logger.getLogger(getClass().getName());
@@ -105,6 +106,7 @@ public class OnSaveActionTask extends Task<Void>
     private ExceptionAndAlertHandler exceptionAndAlertHandler;
     private Action action;
     private ClientConnection connection;
+    private boolean isGaugeAnimated;
 
     private void setSaveDeleteResetButtonState(boolean state)
     {
@@ -154,7 +156,8 @@ public class OnSaveActionTask extends Task<Void>
 
             if(action.getActionType() == ActionType.NORMAL ||
             action.getActionType() == ActionType.FOLDER ||
-            action.getActionType() == ActionType.COMBINE)
+            action.getActionType() == ActionType.COMBINE ||
+            action.getActionType() == ActionType.GAUGE)
             {
                 if(isHideDefaultIcon)
                 {
@@ -179,6 +182,11 @@ public class OnSaveActionTask extends Task<Void>
             else
             {
                 action.setBgColourHex(backgroundColour);
+            }
+
+            if(action.getActionType() == ActionType.GAUGE)
+            {
+                action.setGaugeAnimated(isGaugeAnimated);
             }
         }
 
@@ -225,7 +233,7 @@ public class OnSaveActionTask extends Task<Void>
             if(!isCombineChild)
             {
                 Platform.runLater(()->{
-                  //  actionBox.clear();
+                    actionBox.clear();
                     actionBox.setAction(action);
                     //actionBox.baseInit();
                     actionBox.init();

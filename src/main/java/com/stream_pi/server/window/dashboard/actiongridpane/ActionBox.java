@@ -5,11 +5,13 @@ import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.action.Location;
 import com.stream_pi.action_api.actionproperty.ClientProperties;
+import com.stream_pi.action_api.actionproperty.GaugeProperties;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.controller.ActionDataFormats;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiondetailpane.ActionDetailsPaneListener;
 import com.stream_pi.util.exception.MinorException;
+import eu.hansolo.medusa.Gauge;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
@@ -29,6 +31,7 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -39,8 +42,8 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
 
-public class ActionBox extends StackPane{
-
+public class ActionBox extends StackPane
+{
     private Label displayTextLabel;
 
     private int row;
@@ -72,29 +75,13 @@ public class ActionBox extends StackPane{
         setBackground(Background.EMPTY);
         removeFontIcon();
         getChildren().clear();
+        displayTextLabel = null;
+        gauge = null;
         baseInit();
     }
 
-    public void baseInit()
+    public void initMouseAndTouchListeners()
     {
-        displayTextLabel = new Label();
-        displayTextLabel.setWrapText(true);
-        displayTextLabel.setTextAlignment(TextAlignment.CENTER);
-        displayTextLabel.getStyleClass().add("action_box_display_text_label");
-        displayTextLabel.prefHeightProperty().bind(heightProperty());
-        displayTextLabel.prefWidthProperty().bind(widthProperty());
-
-
-        getChildren().addAll(displayTextLabel);
-
-        setMinSize(size, size);
-        setMaxSize(size, size);
-
-        getStyleClass().add("action_box");
-        setIcon(null);
-        getStyleClass().add("action_box_valid");
-
-
         setOnDragOver(dragEvent ->
         {
             if(dragEvent.getDragboard().hasContent(ActionDataFormats.ACTION_TYPE))
@@ -115,7 +102,7 @@ public class ActionBox extends StackPane{
 
                     ActionType actionType = (ActionType) db.getContent(ActionDataFormats.ACTION_TYPE);
 
-                    if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE)
+                    if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE || actionType == ActionType.GAUGE)
                     {
                         String moduleName = (String) dragEvent.getDragboard().getContent(ActionDataFormats.MODULE_NAME);
 
@@ -236,7 +223,8 @@ public class ActionBox extends StackPane{
             if(getAction()!=null)
             {
                 if(getAction().getActionType() == ActionType.NORMAL ||
-                    getAction().getActionType() == ActionType.TOGGLE)
+                        getAction().getActionType() == ActionType.TOGGLE ||
+                        getAction().getActionType() == ActionType.GAUGE)
                 {
                     Dragboard db = startDragAndDrop(TransferMode.ANY);
 
@@ -263,6 +251,8 @@ public class ActionBox extends StackPane{
         });
 
         setOnMouseClicked(mouseEvent -> {
+
+            System.out.println("1 xyzabc");
             if(action != null)
             {
                 if(mouseEvent.getClickCount() == 2 && getAction().getActionType() == ActionType.FOLDER)
@@ -273,6 +263,9 @@ public class ActionBox extends StackPane{
                 {
                     try
                     {
+
+
+                        System.out.println("2  xyzabc");
                         actionDetailsPaneListener.onActionClicked(action, this);
 
                         if(mouseEvent.getButton().equals(MouseButton.SECONDARY))
@@ -290,6 +283,19 @@ public class ActionBox extends StackPane{
             }
 
         });
+    }
+
+    public void baseInit()
+    {
+
+        setMinSize(size, size);
+        setMaxSize(size, size);
+
+        getStyleClass().add("action_box");
+        setIcon(null);
+        getStyleClass().add("action_box_valid");
+
+
 
         actionContextMenu = new ContextMenu();
 
@@ -315,10 +321,6 @@ public class ActionBox extends StackPane{
         showToggleOnMenuItem.setOnAction(event-> fakeToggle(true));
 
         actionContextMenu.getItems().addAll(deleteActionMenuItem, showToggleOffMenuItem, showToggleOnMenuItem);
-
-
-        setCache(true);
-        setCacheHint(CacheHint.QUALITY);
     }
 
     private MenuItem showToggleOffMenuItem;
@@ -366,7 +368,16 @@ public class ActionBox extends StackPane{
 
         this.col = col;
         this.row = row;
+
+
+
+        setCache(true);
+        setCacheHint(CacheHint.QUALITY);
+
         baseInit();
+
+        initMouseAndTouchListeners();
+
     }
     
     public void setIcon(byte[] iconByteArray)
@@ -457,9 +468,16 @@ public class ActionBox extends StackPane{
         this.row = row;
 
 
+        setCache(true);
+        setCacheHint(CacheHint.QUALITY);
+
         baseInit();
 
+        initMouseAndTouchListeners();
+
         init();
+
+
 
     }
 
@@ -477,30 +495,68 @@ public class ActionBox extends StackPane{
         init(false);
     }
 
+    private Gauge gauge = null;
+
     public void init(boolean start)
     {
         setBackground(null);
         setStyle(null);
-        displayTextLabel.setStyle(null);
 
         showToggleOffMenuItem.setVisible(getAction().getActionType() == ActionType.TOGGLE);
         showToggleOnMenuItem.setVisible(getAction().getActionType() == ActionType.TOGGLE);
 
-        if(getAction().isShowDisplayText())
-        {
-            setDisplayTextAlignment(action.getDisplayTextAlignment());
-            setDisplayTextFontColourAndSize(action.getDisplayTextFontColourHex());
-            setDisplayTextLabel(getAction().getDisplayText());
-        }
-        else
-            setDisplayTextLabel("");
-
-        setBackgroundColour(action.getBgColourHex());
 
         setInvalid(action.isInvalid());
 
         Platform.runLater(()->{
-            try {
+            try
+            {
+                if(getAction().getActionType() == ActionType.GAUGE)
+                {
+                    if (gauge == null)
+                    {
+                        gauge = new Gauge();
+                        gauge.setOnMouseClicked(getOnMouseClicked());
+                        gauge.setAnimated(getAction().isGaugeAnimated());
+
+                        getChildren().add(gauge);
+                    }
+
+                    //updateGaugeValue(getAction().getGaugeProperties().getValue());
+                    updateGauge(getAction().getGaugeProperties());
+
+
+                    setGaugeTitle(getAction().getDisplayText());
+                }
+                else
+                {
+                    displayTextLabel = new Label();
+                    displayTextLabel.setWrapText(true);
+                    displayTextLabel.setTextAlignment(TextAlignment.CENTER);
+                    displayTextLabel.getStyleClass().add("action_box_display_text_label");
+                    displayTextLabel.prefHeightProperty().bind(heightProperty());
+                    displayTextLabel.prefWidthProperty().bind(widthProperty());
+
+
+                    getChildren().addAll(displayTextLabel);
+
+
+                    if(getAction().isShowDisplayText())
+                    {
+                        setDisplayTextAlignment(action.getDisplayTextAlignment());
+                        setDisplayTextFontColourAndSize(action.getDisplayTextFontColourHex());
+                        setDisplayTextLabel(getAction().getDisplayText());
+                    }
+                    else
+                    {
+                        setDisplayTextLabel("");
+                    }
+
+
+                }
+
+
+
                 if(action.getActionType() == ActionType.TOGGLE)
                 {
                     fakeToggle(start);
@@ -519,6 +575,7 @@ public class ActionBox extends StackPane{
                         setIcon(null);
                     }
                 }
+                setBackgroundColour(action.getBgColourHex());
             }
             catch (Exception e)
             {
@@ -526,6 +583,33 @@ public class ActionBox extends StackPane{
             }
         });
     }
+
+    public void setGaugeTitle(String text)
+    {
+        gauge.setTitle(text);
+    }
+
+    public void updateGauge(GaugeProperties gaugeProperties)
+    {
+        gauge.setSkinType(gaugeProperties.getSkinType());
+        gauge.setMinValue(gaugeProperties.getMinValue());
+        gauge.setMaxValue(gaugeProperties.getMaxValue());
+        gauge.setSections(gaugeProperties.getSections());
+        gauge.setUnit(gaugeProperties.getUnit());
+        gauge.setSubTitle(gaugeProperties.getSubTitle());
+        gauge.setDecimals(gaugeProperties.getDecimals());
+
+
+        setGaugeTextColour(getAction().getDisplayTextFontColourHex());
+
+        updateGaugeValue(gaugeProperties.getValue());
+    }
+
+    public void updateGaugeValue(double value)
+    {
+        gauge.setValue(value);
+    }
+
 
     public void fakeToggle(boolean isON)
     {
@@ -622,6 +706,20 @@ public class ActionBox extends StackPane{
         {
             displayTextLabel.setStyle(totalStyle);
         }
+    }
+
+    public void setGaugeTextColour(String colorStr)
+    {
+        Color color = Color.valueOf("#242424");
+        if (!colorStr.isEmpty())
+        {
+            color = Color.valueOf(colorStr);
+        }
+
+        gauge.setTitleColor(color);
+        gauge.setSubTitleColor(color);
+        gauge.setUnitColor(color);
+        gauge.setValueColor(color);
     }
 
     public void setBackgroundColour(String colour)

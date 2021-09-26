@@ -103,11 +103,17 @@ public class PluginsPane extends VBox {
                         toggleIcon.getStyleClass().add("plugins_pane_each_plugin_button_icon_toggle");
                         eachNormalActionPluginButton.setGraphic(toggleIcon);
                     }
-                    else
+                    else if(eachAction.getActionType() == ActionType.GAUGE)
                     {
-                        FontIcon cogs = new FontIcon("fas-cogs");
-                        cogs.getStyleClass().add("plugins_pane_each_plugin_button_icon_normal");
-                        eachNormalActionPluginButton.setGraphic(cogs);
+                        FontIcon dynamicIcon = new FontIcon("fas-magic");
+                        dynamicIcon.getStyleClass().add("plugins_pane_each_plugin_button_icon_dynamic");
+                        eachNormalActionPluginButton.setGraphic(dynamicIcon);
+                    }
+                    else if(eachAction.getActionType() == ActionType.NORMAL)
+                    {
+                        FontIcon normalIcon = new FontIcon("fas-cogs");
+                        normalIcon.getStyleClass().add("plugins_pane_each_plugin_button_icon_normal");
+                        eachNormalActionPluginButton.setGraphic(normalIcon);
                     }
                 }
                 else

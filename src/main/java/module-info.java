@@ -18,6 +18,8 @@ module com.stream_pi.server
     requires javafx.controls;
     requires javafx.media;
 
+    requires eu.hansolo.medusa;
+
     requires java.management;
     requires java.desktop;
 
