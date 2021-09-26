@@ -4,6 +4,7 @@ import com.stream_pi.action_api.action.Action;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionGridPaneListener;
 import com.stream_pi.util.exception.MinorException;
+import com.stream_pi.util.exception.SevereException;
 import javafx.stage.Window;
 
 public interface ActionDetailsPaneListener {
@@ -26,4 +27,8 @@ public interface ActionDetailsPaneListener {
     void refresh();
 
     void onDeleteButtonClicked();
+
+    void renderAction(Action action) throws MinorException;
+
+    void clearActionBox(int col, int row, int colSpan, int rowSpan);
 }

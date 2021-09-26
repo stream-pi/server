@@ -376,9 +376,14 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         FileChooser.ExtensionFilter iconExtensions = new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif");
 
+        colSpanTextField = new TextField();
+        rowSpanTextField = new TextField();
+
         normalActionsPropsVBox = new VBox(
                 new HBoxInputBoxWithFileChooser("Icon", defaultIconFileTextField, hideDefaultIconCheckBox,
-                        iconExtensions)
+                        iconExtensions),
+                new HBoxInputBox("Col Span", colSpanTextField),
+                new HBoxInputBox("Row Span", rowSpanTextField)
         );
 
         normalActionsPropsVBox.managedProperty().bind(normalActionsPropsVBox.visibleProperty());
@@ -545,8 +550,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         streamPiAlert.show();
     }
 
-    // TODO: এটা কে ইতটু ঠিক করতে হবে  ...
-
     private VBox normalActionsPropsVBox;
     private VBox normalToggleActionCommonPropsVBox;
     private VBox toggleActionsPropsVBox;
@@ -639,6 +642,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     private CheckBox hideToggleOffIconCheckBox;
     private TextField toggleOffIconFileTextField;
 
+    private TextField colSpanTextField;
+    private TextField rowSpanTextField;
+
     private Button clearIconButton;
     private ColorPicker actionBackgroundColourPicker;
     private ColorPicker displayTextColourPicker;
@@ -710,6 +716,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         isCombineChild = getAction().getLocation().getCol() == -1;
 
         displayNameTextField.setText(getAction().getDisplayText());
+
+        colSpanTextField.setText(getAction().getColSpan()+"");
+        rowSpanTextField.setText(getAction().getRowSpan()+"");
 
         vbox.setVisible(true);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -1023,7 +1032,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             "#" + actionBackgroundColourPicker.getValue().toString().substring(2),
             getCombineActionPropertiesPane(),
             clientProfile, sendIcon, actionBox, actionClientProperties, exceptionAndAlertHandler,
-            saveButton, deleteButton, resetToDefaultsButton, runOnActionSavedFromServer, runAsync, isAnimatedGaugeCheckBox.isSelected(), this
+            saveButton, deleteButton, resetToDefaultsButton, runOnActionSavedFromServer, runAsync, isAnimatedGaugeCheckBox.isSelected(), this,
+            rowSpanTextField.getText(), colSpanTextField.getText()
         );
     }
 
@@ -1091,9 +1101,71 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     finalErrors.append(" * Name Label Font Size should be a number.\n");
                 }
             }
+
+            try
+            {
+                int rowSpan = Integer.parseInt(rowSpanTextField.getText());
+
+                int row = getAction().getLocation().getRow();
+                int col = getAction().getLocation().getCol();
+
+                if(rowSpan < 1)
+                {
+                    finalErrors.append(" * Row Span should be at least 1.\n");
+                }
+                else if((row+rowSpan) > getClientProfile().getRows())
+                {
+                    finalErrors.append(" * Row Span cannot be bigger than the Profile Rows Size.\n");
+                }
+                else
+                {
+                    for (int i = (row+1); i< (row+rowSpan); i++)
+                    {
+                        if(actionGridPaneListener.getActionBox(col, i).getAction() != null)
+                        {
+                            finalErrors.append(" * Location Conflict with Action on Col. ").append(col).append(", Row. ").append(i).append(". Move it before doing this.\n");
+                        }
+                    }
+                }
+            }
+            catch (NumberFormatException e)
+            {
+                finalErrors.append(" * Row Span should be a number.\n");
+            }
+
+            try
+            {
+                int colSpan = Integer.parseInt(colSpanTextField.getText());
+
+                int row = getAction().getLocation().getRow();
+                int col = getAction().getLocation().getCol();
+
+                if(colSpan < 1)
+                {
+                    finalErrors.append(" * Column Span should be at least 1.\n");
+                }
+                else if((col+colSpan) > getClientProfile().getCols())
+                {
+                    finalErrors.append(" * Column Span cannot be bigger than the Profile Column Size.\n");
+                }
+                else
+                {
+                    for (int i = (col+1); i< (col+colSpan); i++)
+                    {
+                        if(actionGridPaneListener.getActionBox(i, row).getAction() != null)
+                        {
+                            finalErrors.append(" * Location Conflict with Action on Col. ").append(i).append(", Row. ").append(row).append(". Move it before doing this.\n");
+                        }
+                    }
+                }
+            }
+            catch (NumberFormatException e)
+            {
+                finalErrors.append(" * Column Span should be a number.\n");
+            }
         }
 
-        if(getAction().getActionType() == ActionType.NORMAL)
+        if(getAction().getActionType() == ActionType.NORMAL || getAction().getActionType() == ActionType.TOGGLE || getAction().getActionType() == ActionType.GAUGE)
         {
             try
             {
@@ -1182,4 +1254,18 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         streamPiAlert.show();
     }
+
+    @Override
+    public void renderAction(Action action) throws MinorException
+    {
+        actionGridPaneListener.renderAction(action);
+    }
+
+    @Override
+    public void clearActionBox(int col, int row, int colSpan, int rowSpan)
+    {
+        actionGridPaneListener.clearActionBox(col, row, colSpan, rowSpan);
+    }
+
+
 }

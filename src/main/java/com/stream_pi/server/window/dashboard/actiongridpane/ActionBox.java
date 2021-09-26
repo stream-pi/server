@@ -25,12 +25,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -370,6 +365,8 @@ public class ActionBox extends StackPane
         this.row = row;
 
 
+        this.managedProperty().bind(visibleProperty());
+
 
         setCache(true);
         setCacheHint(CacheHint.QUALITY);
@@ -468,6 +465,8 @@ public class ActionBox extends StackPane
         this.row = row;
 
 
+        this.managedProperty().bind(visibleProperty());
+
         setCache(true);
         setCacheHint(CacheHint.QUALITY);
 
@@ -480,6 +479,36 @@ public class ActionBox extends StackPane
 
 
     }
+
+    public void configureSize()
+    {
+        int rowSpan = getAction().getRowSpan(), colSpan = getAction().getColSpan();
+
+
+        GridPane.setRowSpan(this, rowSpan);
+        GridPane.setColumnSpan(this, colSpan);
+
+        int actionWidth = (size*colSpan) + (actionGridPaneListener.getCurrentProfile().getActionGap()*(colSpan-1));
+        int actionHeight = (size*rowSpan) + (actionGridPaneListener.getCurrentProfile().getActionGap()*(rowSpan-1));
+
+        setMinSize(actionWidth, actionHeight);
+        setMaxSize(actionWidth, actionHeight);
+
+        for (int i = getCol(); i< getCol()+colSpan; i++)
+        {
+            for (int j = getRow(); j<getRow()+rowSpan; j++)
+            {
+                if (i == getAction().getLocation().getCol() && j == getAction().getLocation().getRow())
+                {
+                    continue;
+                }
+
+                actionGridPaneListener.getActionBox(i, j).setVisible(false);
+            }
+        }
+
+    }
+
 
     public Action getAction() {
         return action;
@@ -501,6 +530,8 @@ public class ActionBox extends StackPane
     {
         setBackground(null);
         setStyle(null);
+
+        configureSize();
 
         showToggleOffMenuItem.setVisible(getAction().getActionType() == ActionType.TOGGLE);
         showToggleOnMenuItem.setVisible(getAction().getActionType() == ActionType.TOGGLE);

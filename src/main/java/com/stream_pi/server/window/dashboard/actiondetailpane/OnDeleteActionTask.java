@@ -43,7 +43,7 @@ public class OnDeleteActionTask extends Task<Void>
     private ClientConnection connection;
     private Action action;
     private ActionBox actionBox;
-    private ActionDetailsPane actionDetailsPane;
+    private ActionDetailsPaneListener actionDetailsPane;
     private boolean isCombineChild;
     private ClientProfile clientProfile;
     private CombineActionPropertiesPane combineActionPropertiesPane;
@@ -118,7 +118,8 @@ public class OnDeleteActionTask extends Task<Void>
             else
             {
                 Platform.runLater(()->{
-                    actionBox.clear();
+                    actionDetailsPane.clearActionBox(action.getLocation().getCol(), action.getLocation().getRow(),
+                            action.getColSpan(), action.getRowSpan());
                     actionDetailsPane.clear();
                 });
             }

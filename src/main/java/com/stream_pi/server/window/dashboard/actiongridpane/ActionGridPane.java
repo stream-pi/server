@@ -76,6 +76,21 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         return actionBoxHashMap.getOrDefault(actionID, null);
     }
 
+    @Override
+    public ActionBox getActionBox(int col, int row)
+    {
+        return actionBoxes[col][row];
+    }
+
+    @Override
+    public void clearActionBox(int col, int row, int colSpan, int rowSpan)
+    {
+        showNonUsedBoxes(col, row, colSpan, rowSpan);
+
+        actionBoxes[col][row].clear();
+    }
+
+
     public void setActionDetailsPaneListener(ActionDetailsPaneListener actionDetailsPaneListener) {
         this.actionDetailsPaneListener = actionDetailsPaneListener;
     }
@@ -286,6 +301,8 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
                         actionBoxes[col][row].clear();
                     }
                 }
+
+                actionBoxes[col][row].setVisible(true);
             }
         }
 
@@ -331,12 +348,9 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
             logger.info("action ID : "+eachAction.getID()+
                     "\nInvalid : "+eachAction.isInvalid());
 
-            try {
-                renderAction(eachAction);
-            }
-            catch (SevereException e)
+            try
             {
-                exceptionAndAlertHandler.handleSevereException(e);
+                renderAction(eachAction);
             }
             catch (MinorException e)
             {
@@ -358,8 +372,11 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
     private Logger logger;
 
-    public void renderAction(Action action) throws SevereException, MinorException
+    @Override
+    public void renderAction(Action action) throws MinorException
     {
+        System.out.println("CURRENT PARENT : "+currentParent);
+        System.out.println("action parent : "+action.getParent());
         if(!action.getParent().equals(currentParent))
         {
             logger.info("Skipping action "+action.getID()+", not current parent!");
@@ -382,6 +399,23 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         Location location = action.getLocation();
 
         ActionBox actionBox = actionBoxes[location.getCol()][location.getRow()];
+
+        boolean makeNonUsedBoxesVisible = false;
+
+        if(actionBox.getAction() != null)
+        {
+            System.out.println("A "+GridPane.getColumnSpan(actionBox));
+            System.out.println("B "+action.getColSpan());
+            System.out.println("C "+actionBox.getAction().getColSpan());
+            makeNonUsedBoxesVisible = (GridPane.getColumnSpan(actionBox) != action.getColSpan()) || (GridPane.getRowSpan(actionBox) != action.getRowSpan());
+        }
+
+        System.out.println(makeNonUsedBoxesVisible+"Asdasdasdasd");
+        if (makeNonUsedBoxesVisible)
+        {
+            showNonUsedBoxes(action.getLocation().getCol(), action.getLocation().getRow(), GridPane.getColumnSpan(actionBox),  GridPane.getRowSpan(actionBox));
+        }
+
         actionBox.clear();
         actionBox.setAction(action);
         actionBox.init();
@@ -409,6 +443,23 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         System.out.println(location.getCol()+","+location.getRow());
         actionsGridPane.add(actionBox, location.getRow(), location.getCol());*/
 
+    }
+
+    public void showNonUsedBoxes(int col, int row, int colSpan, int rowSpan)
+    {
+        for (int i = row; i< (row+rowSpan); i++)
+        {
+            actionBoxes[col][i].setVisible(true);
+            GridPane.setColumnSpan(actionBoxes[col][i], 1);
+            GridPane.setRowSpan(actionBoxes[col][i], 1);
+        }
+
+        for (int j = col; j< (col+colSpan); j++)
+        {
+            actionBoxes[j][row].setVisible(true);
+            GridPane.setColumnSpan(actionBoxes[j][row], 1);
+            GridPane.setRowSpan(actionBoxes[j][row], 1);
+        }
     }
 
     public void setRows(int rows)
@@ -452,13 +503,17 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     }
 
     @Override
-    public void renderFolder(FolderAction action) {
+    public void renderFolder(FolderAction action)
+    {
         setCurrentParent(action.getID());
         setPreviousParent(action.getParent());
-        try {
+        try
+        {
             renderGrid();
             renderActions();
-        } catch (SevereException e) {
+        }
+        catch (SevereException e)
+        {
             e.printStackTrace();
         }
     }

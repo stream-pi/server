@@ -15,7 +15,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-public class DashboardBase extends SplitPane implements DashboardInterface {
+public class DashboardBase extends SplitPane implements DashboardInterface
+{
 
     private final SplitPane leftSplitPane;
 

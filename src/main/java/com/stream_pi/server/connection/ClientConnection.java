@@ -551,26 +551,30 @@ public class ClientConnection extends Thread
         String row = r[13];
         String col = r[14];
 
+
+        String rowSpan = r[15];
+        String colSpan = r[16];
+
         Location location = new Location(Integer.parseInt(row), Integer.parseInt(col));
 
-        String root = r[15];
+        String root = r[17];
 
-        int delayBeforeRunning = Integer.parseInt(r[16]);
+        int delayBeforeRunning = Integer.parseInt(r[18]);
 
 
         //client properties
 
-        boolean isAnimatedGauge = r[17].equals("true");
+        boolean isAnimatedGauge = r[19].equals("true");
 
 
-        int clientPropertiesSize = Integer.parseInt(r[18]);
+        int clientPropertiesSize = Integer.parseInt(r[20]);
 
         ClientProperties clientProperties = new ClientProperties();
 
         if(actionType == ActionType.FOLDER)
             clientProperties.setDuplicatePropertyAllowed(true);
 
-        for(int i = 19;i<((clientPropertiesSize*2) + 19); i+=2)
+        for(int i = 21;i<((clientPropertiesSize*2) + 21); i+=2)
         {
             Property property = new Property(r[i], Type.STRING);
             property.setRawValue(r[i+1]);
@@ -632,6 +636,8 @@ public class ClientConnection extends Thread
                         newPlugin.setNameFontSize(displayLabelFontSize);
 
                         newPlugin.setLocation(location);
+                        newPlugin.setRowSpan(Integer.parseInt(rowSpan));
+                        newPlugin.setColSpan(Integer.parseInt(colSpan));
 
                         newPlugin.setParent(root);
 
@@ -673,7 +679,6 @@ public class ClientConnection extends Thread
 
                                     if (newPlugin instanceof GaugeAction)
                                     {
-                                        System.out.println("120312398123891283");
                                         System.out.println(newPlugin.getGaugeProperties().getSkinType());
                                         updateActionGaugeProperties(newPlugin.getGaugeProperties(), newPlugin.getProfileID(), newPlugin.getID());
                                     }
@@ -744,6 +749,8 @@ public class ClientConnection extends Thread
         action.setNameFontSize(displayLabelFontSize);
 
         action.setLocation(location);
+        action.setRowSpan(Integer.parseInt(rowSpan));
+        action.setColSpan(Integer.parseInt(colSpan));
 
         action.setParent(root);
 
@@ -837,6 +844,9 @@ public class ClientConnection extends Thread
             a.add(action.getLocation().getRow()+"");
             a.add(action.getLocation().getCol()+"");
         }
+
+        a.add(action.getRowSpan()+"");
+        a.add(action.getColSpan()+"");
 
         a.add(action.getParent());
 

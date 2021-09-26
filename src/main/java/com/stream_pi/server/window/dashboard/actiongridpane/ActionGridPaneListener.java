@@ -6,6 +6,7 @@ import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.action_api.otheractions.FolderAction;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
+import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 
 public interface ActionGridPaneListener
@@ -15,6 +16,7 @@ public interface ActionGridPaneListener
     ActionBox getActionBoxByIDAndProfileID(String actionID, String profileID);
 
     void renderFolder(FolderAction action);
+    void renderAction(Action action) throws MinorException;
 
     String getCurrentParent();
 
@@ -24,6 +26,9 @@ public interface ActionGridPaneListener
 
     ClientConnection getClientConnection();
 
+    ActionBox getActionBox(int col, int row);
+
     ExternalPlugin createNewActionFromExternalPlugin(String module) throws CloneNotSupportedException, SevereException;
     Action createNewOtherAction(ActionType actionType) throws Exception;
+    void clearActionBox(int col, int row, int colSpan, int rowSpan);
 }

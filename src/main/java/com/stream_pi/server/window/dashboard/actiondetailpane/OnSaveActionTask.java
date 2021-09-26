@@ -34,7 +34,8 @@ public class OnSaveActionTask extends Task<Void>
                             boolean isHideDefaultIcon, boolean isHideToggleOffIcon, boolean isHideToggleOnIcon, DisplayTextAlignment displayTextAlignment, boolean isTransparentBackground, String backgroundColour,
                             CombineActionPropertiesPane combineActionPropertiesPane, ClientProfile clientProfile, boolean sendIcon, ActionBox actionBox,
                             ArrayList<UIPropertyBox> actionClientProperties, ExceptionAndAlertHandler exceptionAndAlertHandler, Button saveButton, Button deleteButton, Button resetButton,
-                            boolean runOnActionSavedFromServer, boolean runAsync, boolean isGaugeAnimated, ActionDetailsPaneListener actionDetailsPaneListener)
+                            boolean runOnActionSavedFromServer, boolean runAsync, boolean isGaugeAnimated, ActionDetailsPaneListener actionDetailsPaneListener,
+                            String rowSpanStr, String colSpanStr)
     {
         this.saveButton = saveButton;
         this.deleteButton = deleteButton;
@@ -66,6 +67,8 @@ public class OnSaveActionTask extends Task<Void>
         this.runOnActionSavedFromServer = runOnActionSavedFromServer;
         this.isGaugeAnimated = isGaugeAnimated;
         this.actionDetailsPaneListener = actionDetailsPaneListener;
+        this.rowSpanStr = rowSpanStr;
+        this.colSpanStr = colSpanStr;
 
         logger = Logger.getLogger(getClass().getName());
 
@@ -107,6 +110,8 @@ public class OnSaveActionTask extends Task<Void>
     private Action action;
     private ClientConnection connection;
     private boolean isGaugeAnimated;
+    private String rowSpanStr;
+    private String colSpanStr;
 
     private void setSaveDeleteResetButtonState(boolean state)
     {
@@ -188,6 +193,9 @@ public class OnSaveActionTask extends Task<Void>
             {
                 action.setGaugeAnimated(isGaugeAnimated);
             }
+
+            action.setRowSpan(Integer.parseInt(rowSpanStr));
+            action.setColSpan(Integer.parseInt(colSpanStr));
         }
 
 
@@ -233,10 +241,20 @@ public class OnSaveActionTask extends Task<Void>
             if(!isCombineChild)
             {
                 Platform.runLater(()->{
-                    actionBox.clear();
-                    actionBox.setAction(action);
+
+                    try
+                    {
+                        actionDetailsPaneListener.renderAction(action);
+                    }
+                    catch (MinorException e)
+                    {
+                        exceptionAndAlertHandler.handleMinorException(e);
+                    }
+
+                    //actionBox.clear();
+                    //actionBox.setAction(action);
                     //actionBox.baseInit();
-                    actionBox.init();
+                    //actionBox.init();
                 });
 
                 setSaveDeleteResetButtonState(false);
