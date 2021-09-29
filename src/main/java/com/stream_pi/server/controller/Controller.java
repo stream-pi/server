@@ -5,7 +5,7 @@ import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.PropertySaver;
 import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.actionproperty.ClientProperties;
-import com.stream_pi.action_api.actionproperty.GaugeProperties;
+import com.stream_pi.action_api.actionproperty.gaugeproperties.GaugeProperties;
 import com.stream_pi.action_api.externalplugin.GaugeExtras;
 import com.stream_pi.action_api.externalplugin.NormalAction;
 import com.stream_pi.action_api.externalplugin.ToggleAction;
@@ -999,7 +999,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
         ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByIDAndProfileID(actionID, profileID);
 
-        if (actionBox != null)
+        if (actionBox != null && actionBox.getAction() != null)
         {
             Platform.runLater(()-> actionBox.updateGaugeValue(value));
         }

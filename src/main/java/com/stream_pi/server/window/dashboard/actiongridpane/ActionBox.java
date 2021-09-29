@@ -5,7 +5,7 @@ import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.action.Location;
 import com.stream_pi.action_api.actionproperty.ClientProperties;
-import com.stream_pi.action_api.actionproperty.GaugeProperties;
+import com.stream_pi.action_api.actionproperty.gaugeproperties.GaugeProperties;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.controller.ActionDataFormats;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
@@ -154,7 +154,8 @@ public class ActionBox extends StackPane
                         }
                         catch (Exception e)
                         {
-                            exceptionAndAlertHandler.handleMinorException(new MinorException("Error","onCreate() failed for "+action.getModuleName()+"\n\n"+e.getMessage()));
+                            e.printStackTrace();
+                            exceptionAndAlertHandler.handleMinorException(new MinorException("Error","onCreate() failed for "+newAction.getModuleName()+"\n\n"+e.getMessage()));
                         }
 
 
@@ -286,9 +287,15 @@ public class ActionBox extends StackPane
         setMinSize(size, size);
         setMaxSize(size, size);
 
+
+        GridPane.setRowSpan(this, 1);
+        GridPane.setColumnSpan(this, 1);
+
         getStyleClass().add("action_box");
         setIcon(null);
         getStyleClass().add("action_box_valid");
+
+
 
 
 
@@ -630,8 +637,13 @@ public class ActionBox extends StackPane
         gauge.setSubTitle(gaugeProperties.getSubTitle());
         gauge.setDecimals(gaugeProperties.getDecimals());
 
+        gauge.setSectionsVisible(gaugeProperties.isSectionsVisible());
+
+        setGaugeForegroundBaseColor(gaugeProperties.getForegroundBaseColor());
+        setGaugeBarColor(gaugeProperties.getBarColor());
 
         setGaugeTextColour(getAction().getDisplayTextFontColourHex());
+
 
         updateGaugeValue(gaugeProperties.getValue());
     }
@@ -752,6 +764,31 @@ public class ActionBox extends StackPane
         gauge.setUnitColor(color);
         gauge.setValueColor(color);
     }
+    public void setGaugeBarColor(Color newCol)
+    {
+        if (newCol == null)
+        {
+            gauge.setForegroundBaseColor(Color.valueOf("#242424"));
+        }
+        else
+        {
+            gauge.setBarColor(newCol);
+        }
+    }
+
+    public void setGaugeForegroundBaseColor(Color newCol)
+    {
+        if (newCol == null)
+        {
+            gauge.setForegroundBaseColor(Color.valueOf("#242424"));
+        }
+        else
+        {
+            gauge.setForegroundBaseColor(newCol);
+        }
+    }
+
+
 
     public void setBackgroundColour(String colour)
     {
