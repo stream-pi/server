@@ -6,6 +6,7 @@ import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.action.Location;
 import com.stream_pi.action_api.actionproperty.ClientProperties;
 import com.stream_pi.action_api.actionproperty.gaugeproperties.GaugeProperties;
+import com.stream_pi.action_api.actionproperty.gaugeproperties.SerializableColor;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.controller.ActionDataFormats;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
@@ -405,7 +406,7 @@ public class ActionBox extends StackPane
                                     new ByteArrayInputStream(iconByteArray), size, size, false, true
                             ), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
 
-                                    new BackgroundSize(100, 100, true, true, true, false))
+                                    new BackgroundSize(100, 100, true, true, true, true))
                     )
             );
         }
@@ -764,27 +765,19 @@ public class ActionBox extends StackPane
         gauge.setUnitColor(color);
         gauge.setValueColor(color);
     }
-    public void setGaugeBarColor(Color newCol)
+    public void setGaugeBarColor(SerializableColor newCol)
     {
-        if (newCol == null)
+        if (newCol != null)
         {
-            gauge.setForegroundBaseColor(Color.valueOf("#242424"));
-        }
-        else
-        {
-            gauge.setBarColor(newCol);
+            gauge.setBarColor(newCol.getColor());
         }
     }
 
-    public void setGaugeForegroundBaseColor(Color newCol)
+    public void setGaugeForegroundBaseColor(SerializableColor newCol)
     {
-        if (newCol == null)
+        if (newCol != null)
         {
-            gauge.setForegroundBaseColor(Color.valueOf("#242424"));
-        }
-        else
-        {
-            gauge.setForegroundBaseColor(newCol);
+            gauge.setForegroundBaseColor(newCol.getColor());
         }
     }
 
