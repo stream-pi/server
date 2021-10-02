@@ -18,6 +18,7 @@ package com.stream_pi.server.client;
 
 import com.stream_pi.action_api.action.Action;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
@@ -40,6 +41,15 @@ public class ClientProfile implements Cloneable {
         this.actionGap = actionGap;
         this.actionSize = actionSize;
     }
+
+    public ArrayList<Action> getActions()
+    {
+        ArrayList<Action> p = new ArrayList<>();
+        for(String profile : actions.keySet())
+            p.add(actions.get(profile));
+        return p;
+    }
+
 
     public ClientProfile(String name, int rows, int cols, int actionSize, int actionGap)
     {

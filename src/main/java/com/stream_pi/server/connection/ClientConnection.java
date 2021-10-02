@@ -300,6 +300,9 @@ public class ClientConnection extends Thread
                         case "client_orientation":  updateClientOrientation(message);
                             break;
 
+                        case "refresh_all_gauges": refreshAllGauges();
+                            break;
+
                         default:                    logger.warning("Command '"+header+"' does not match records. Make sure client and server versions are equal.");
 
 
@@ -1002,5 +1005,19 @@ public class ClientConnection extends Thread
         Message message = new Message("action_failed");
         message.setStringArrValue(profileID, actionID);
         sendMessage(message);
+    }
+
+    public void refreshAllGauges() throws SevereException
+    {
+        for(ClientProfile clientProfile : client.getAllClientProfiles())
+        {
+            for(Action action : clientProfile.getActions())
+            {
+                if(action.getActionType() == ActionType.GAUGE)
+                {
+                    updateActionGaugeProperties(action.getGaugeProperties(), action.getProfileID(), action.getID());
+                }
+            }
+        }
     }
 }
