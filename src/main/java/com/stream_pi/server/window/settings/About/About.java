@@ -24,6 +24,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -115,13 +116,14 @@ public class About extends VBox
         getChildren().addAll(appIconImageView, tabPane, donateButton, hBox1, hBox2);
 
 
-        InputStream inputStream = Main.class.getResourceAsStream("build-date");
+        InputStream inputStream = Main.class.getResourceAsStream("build.properties");
         if(inputStream != null)
         {
             try
             {
-                Logger.getLogger(getClass().getName()).info("build-date not present");
-                Label buildDateLabel = new Label("Build date/time: " +  new String(inputStream.readAllBytes()));
+                Properties properties = new Properties();
+                properties.load(inputStream);
+                Label buildDateLabel = new Label("Build date/time: " +  properties.getProperty("build.date"));
                 buildDateLabel.getStyleClass().add("about_build_date_label");
                 hBox2.getChildren().addAll(getSep(), buildDateLabel);
             }
