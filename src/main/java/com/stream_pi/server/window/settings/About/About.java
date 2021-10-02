@@ -128,7 +128,7 @@ public class About extends VBox
             }
             catch (IOException e)
             {
-                Logger.getLogger(getClass().getName()).info("build-date not present");
+                Logger.getLogger(getClass().getName()).warning("build.properties not present");
             }
         }
     }
