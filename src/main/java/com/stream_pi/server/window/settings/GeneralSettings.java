@@ -93,10 +93,10 @@ public class GeneralSettings extends VBox
         themesPathTextField = new TextField();
 
         actionGridPaneActionBoxSize = new TextField();
-        actionGridPaneActionBoxSizeIsDefaultCheckBox = new CheckBox("Same as Profile");
+        actionGridPaneActionBoxSizeIsDefaultCheckBox = new CheckBox("Follow Profile Defaults");
 
         actionGridPaneActionBoxGap = new TextField();
-        actionGridPaneActionBoxGapIsDefaultCheckBox = new CheckBox("Same as Profile");
+        actionGridPaneActionBoxGapIsDefaultCheckBox = new CheckBox("Follow Profile Defaults");
 
         startOnBootToggleSwitch = new ToggleSwitch();
         startOnBootHBox = new HBoxWithSpaceBetween("Start on Boot", startOnBootToggleSwitch);
@@ -108,7 +108,7 @@ public class GeneralSettings extends VBox
 
         soundOnActionClickedFilePathTextField = new TextField();
 
-        HBoxInputBoxWithFileChooser soundHBoxInputBoxWithFileChooser =  new HBoxInputBoxWithFileChooser("Sound File Path", soundOnActionClickedFilePathTextField,
+        HBoxInputBoxWithFileChooser soundHBoxInputBoxWithFileChooser =  new HBoxInputBoxWithFileChooser("Sound on Action Clicked", soundOnActionClickedFilePathTextField,
                 new FileChooser.ExtensionFilter("Sounds","*.mp3","*.mp4", "*.m4a", "*.m4v","*.wav","*.aif", "*.aiff","*.fxm","*.flv","*.m3u8"));
 
         soundHBoxInputBoxWithFileChooser.setUseLast(false);
@@ -143,11 +143,12 @@ public class GeneralSettings extends VBox
                 generateSubHeading("Action Grid"),
                 new HBoxInputBox("Action Box Size", actionGridPaneActionBoxSize, actionGridPaneActionBoxSizeIsDefaultCheckBox),
                 new HBoxInputBox("Action Box Gap", actionGridPaneActionBoxGap, actionGridPaneActionBoxGapIsDefaultCheckBox),
-                new HBoxInputBox("Default New Action Label Font Size", defaultActionLabelFontSizeTextField),
-                generateSubHeading("Others"),
-                new HBoxInputBoxWithDirectoryChooser("Plugins Path", pluginsPathTextField),
-                new HBoxInputBoxWithDirectoryChooser("Themes Path", themesPathTextField),
+                new HBoxInputBox("Action Box - Default Text Font Size", defaultActionLabelFontSizeTextField),
+                generateSubHeading("Locations"),
+                new HBoxInputBoxWithDirectoryChooser("Plugins", pluginsPathTextField),
+                new HBoxInputBoxWithDirectoryChooser("Themes", themesPathTextField),
                 soundHBoxInputBoxWithFileChooser,
+                generateSubHeading("Others"),
                 soundOnActionClickedToggleSwitchHBox,
                 minimizeToSystemTrayOnCloseHBox,
                 startOnBootHBox,

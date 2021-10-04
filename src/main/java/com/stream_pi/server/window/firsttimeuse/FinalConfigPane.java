@@ -36,8 +36,8 @@ public class FinalConfigPane extends VBox
 
         getStyleClass().add("first_time_use_pane_final_config");
 
-        Label label = new Label("Thats it. Now just name your Stream-Pi Server, and the port where the server will run on!\n" +
-            "You can leave the default value of the port as it is.");
+        Label label = new Label("You're almost finished with setting up your Stream-Pi Server. Now all you need to do is to choose a name for your Stream-Pi Server, and, choose which port you want the Stream-Pi Server to operate on.\n" +
+                "We recommend that you give your Stream-Pi Server a short name & that you use the Default port that has already been typed in for you. You can change it from Settings in case it conflicts with other services or applications.");
         label.setWrapText(true);
         label.getStyleClass().add("first_time_use_pane_final_config_label");
 
