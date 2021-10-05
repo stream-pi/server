@@ -34,4 +34,6 @@ public interface ServerListener
 
     void initSoundOnActionClicked();
     void onServerStartFailure();
+
+    void showUserChooseIPDialog();
 }

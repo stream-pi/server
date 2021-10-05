@@ -26,6 +26,7 @@ import com.stream_pi.server.window.dashboard.DashboardBase;
 import com.stream_pi.server.window.dashboard.DonatePopupContent;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.server.window.firsttimeuse.FirstTimeUse;
+import com.stream_pi.server.window.settings.IPChooserComboBox;
 import com.stream_pi.server.window.settings.SettingsBase;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertListener;
@@ -40,9 +41,12 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioClip;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -221,6 +225,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
                     //Server
                     mainServer.setPort(getConfig().getPort());
+                    mainServer.setIP(getConfig().getIP());
                     mainServer.start();
                 }
                 catch (SevereException e)
@@ -230,6 +235,44 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 return null;
             }
         });
+    }
+
+    @Override
+    public void showUserChooseIPDialog()
+    {
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER);
+
+        IPChooserComboBox ipChooserComboBox = new IPChooserComboBox(this);
+        ipChooserComboBox.configureOptions();
+
+        Label headLabel = new Label("Your current selected IP ("+getConfig().getIP()+") is not available. Select a new one to bind :");
+        headLabel.setWrapText(true);
+
+        vBox.getChildren().addAll(headLabel, ipChooserComboBox);
+
+        StreamPiAlert streamPiAlert = new StreamPiAlert("Uh Oh!", StreamPiAlertType.WARNING, vBox, "Proceed");
+
+        streamPiAlert.setOnClicked(new StreamPiAlertListener()
+        {
+            @Override
+            public void onClick(String s)
+            {
+                try
+                {
+                    getConfig().setIP(ipChooserComboBox.getSelectedIP());
+                    getConfig().save();
+                    restart();
+                }
+                catch (SevereException e)
+                {
+                    handleSevereException(e);
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        streamPiAlert.show();
     }
 
     @Override

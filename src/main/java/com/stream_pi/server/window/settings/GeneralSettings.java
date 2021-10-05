@@ -1,5 +1,6 @@
 package com.stream_pi.server.window.settings;
 
+import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.actionproperty.property.FileExtensionFilter;
 import com.stream_pi.server.Main;
 import com.stream_pi.server.controller.ServerListener;
@@ -7,12 +8,14 @@ import com.stream_pi.server.info.StartupFlags;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.info.ServerInfo;
-
+import com.stream_pi.theme_api.Theme;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.checkforupdates.CheckForUpdates;
 import com.stream_pi.util.checkforupdates.UpdateHyperlinkOnClick;
+import com.stream_pi.util.combobox.StreamPiComboBox;
+import com.stream_pi.util.combobox.StreamPiComboBoxFactory;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.platform.Platform;
@@ -23,21 +26,26 @@ import com.stream_pi.util.uihelper.HBoxInputBoxWithDirectoryChooser;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import javafx.application.HostServices;
+import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.util.Callback;
 import org.controlsfx.control.ToggleSwitch;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.w3c.dom.Text;
 
 import java.awt.SystemTray;
 import java.io.File;
-import java.net.URISyntaxException;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.logging.Logger;
 
 public class GeneralSettings extends VBox
@@ -45,6 +53,7 @@ public class GeneralSettings extends VBox
     private final TextField serverNameTextField;
     private final TextField defaultActionLabelFontSizeTextField;
     private final TextField portTextField;
+    private final IPChooserComboBox ipChooserComboBox;
     private final TextField pluginsPathTextField;
     private final TextField themesPathTextField;
     private final TextField actionGridPaneActionBoxSize;
@@ -87,6 +96,8 @@ public class GeneralSettings extends VBox
         defaultActionLabelFontSizeTextField = new TextField();
 
         portTextField = new TextField();
+
+        ipChooserComboBox = new IPChooserComboBox(exceptionAndAlertHandler);
 
         pluginsPathTextField = new TextField();
 
@@ -140,6 +151,7 @@ public class GeneralSettings extends VBox
                 generateSubHeading("Connection"),
                 new HBoxInputBox("Server Name", serverNameTextField),
                 new HBoxInputBox("Port", portTextField),
+                new HBoxWithSpaceBetween("IP", ipChooserComboBox),
                 generateSubHeading("Action Grid"),
                 new HBoxInputBox("Action Box Size", actionGridPaneActionBoxSize, actionGridPaneActionBoxSizeIsDefaultCheckBox),
                 new HBoxInputBox("Action Box Gap", actionGridPaneActionBoxGap, actionGridPaneActionBoxGapIsDefaultCheckBox),
@@ -173,6 +185,8 @@ public class GeneralSettings extends VBox
 
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
     }
+
+
 
     private Label generateSubHeading(String text)
     {
@@ -213,6 +227,8 @@ public class GeneralSettings extends VBox
 
             soundOnActionClickedToggleSwitch.setSelected(config.getSoundOnActionClickedStatus());
             soundOnActionClickedFilePathTextField.setText(config.getSoundOnActionClickedFilePath());
+
+            ipChooserComboBox.configureOptions(config.getIP());
         });
     }
 
@@ -366,6 +382,15 @@ public class GeneralSettings extends VBox
                         throw new MinorException("Uh Oh!", "Please rectify the following errors and try again :\n"+ errors);
                     }
 
+
+
+                    if (!ipChooserComboBox.getSelectedIP().equals(config.getIP()))
+                    {
+                        config.setIP(ipChooserComboBox.getSelectedIP());
+
+                        toBeReloaded = true;
+                    }
+
                     if(config.getStartOnBoot() != startOnBoot)
                     {
                         StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform(),
@@ -513,8 +538,8 @@ public class GeneralSettings extends VBox
 
     private void onFactoryResetButtonClicked()
     {
-        StreamPiAlert confirmation = new StreamPiAlert("Warning","Are you sure?\n" +
-                "This will erase everything.",StreamPiAlertType.WARNING);
+        StreamPiAlert confirmation = new StreamPiAlert("Warning", "Are you sure?\n" +
+                "This will erase everything.", StreamPiAlertType.WARNING);
 
         String yesButton = "Yes";
         String noButton = "No";
@@ -524,8 +549,7 @@ public class GeneralSettings extends VBox
         confirmation.setOnClicked(new StreamPiAlertListener() {
             @Override
             public void onClick(String s) {
-                if(s.equals(yesButton))
-                {
+                if (s.equals(yesButton)) {
                     serverListener.factoryReset();
                 }
             }

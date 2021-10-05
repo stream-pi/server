@@ -108,6 +108,16 @@ public class Config
                 getDefaultPort(), false, true, document, configFile);
     }
 
+    public String getIP()
+    {
+        return XMLConfigHelper.getStringProperty(getCommsElement(), "ip", null, false, true, document, configFile);
+    }
+
+    public void setIP(String ip)
+    {
+        getCommsElement().getElementsByTagName("ip").item(0).setTextContent(ip);
+    }
+
     //default getters
     public String getDefaultServerName()
     {
