@@ -5,6 +5,7 @@ import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.Main;
 import javafx.application.HostServices;
 import javafx.event.Event;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.control.*;
@@ -40,10 +41,11 @@ public class About extends VBox
 
         setAlignment(Pos.TOP_CENTER);
 
-        Image appIcon = new Image(Objects.requireNonNull(Main.class.getResourceAsStream("app_icon.png")));
+        Image appIcon = new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/256x256.png")));
         ImageView appIconImageView = new ImageView(appIcon);
-        appIconImageView.setFitHeight(196);
-        appIconImageView.setFitWidth(182);
+        VBox.setMargin(appIconImageView, new Insets(10, 0, 10, 0));
+        appIconImageView.setFitHeight(128);
+        appIconImageView.setFitWidth(128);
 
         TabPane tabPane = new TabPane();
         tabPane.addEventFilter(SwipeEvent.ANY, Event::consume);

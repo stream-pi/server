@@ -103,11 +103,11 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         stage = (Stage) getScene().getWindow();
 
         getStage().getIcons().clear();
-        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icon256x256.png"))));
-        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icon48x48.png"))));
-        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icon32x32.png"))));
-        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icon24x24.png"))));
-        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icon16x16.png"))));
+        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/256x256.png"))));
+        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/48x48.png"))));
+        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/32x32.png"))));
+        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/24x24.png"))));
+        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/16x16.png"))));
         
         getStage().setMinWidth(720);
         getStage().setMinHeight(530);
@@ -217,7 +217,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     {
         logger.info("Applying default stylesheet ...");
 
-        Font.loadFont(Main.class.getResourceAsStream("Roboto.ttf"), 13);
+        loadFonts();
         getStylesheets().add(Main.class.getResource("style.css").toExternalForm());
 
         logger.info("... Done!");
@@ -225,8 +225,13 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
     public void applyDefaultIconsStylesheet()
     {
-        Font.loadFont(Main.class.getResourceAsStream("Roboto.ttf"), 13);
         getStylesheets().add(Main.class.getResource("default_icons.css").toExternalForm());
+    }
+
+    private void loadFonts()
+    {
+        Font.loadFont(Main.class.getResourceAsStream("fonts/Roboto.ttf"), 13);
+        Font.loadFont(Main.class.getResourceAsStream("fonts/Roboto-Bold.ttf"), 13);
     }
 
     public DashboardBase getDashboardBase()

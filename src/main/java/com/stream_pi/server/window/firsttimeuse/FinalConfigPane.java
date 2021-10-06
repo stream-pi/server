@@ -3,25 +3,31 @@ package com.stream_pi.server.window.firsttimeuse;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
+import com.stream_pi.server.window.settings.IPChooserComboBox;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.uihelper.HBoxInputBox;
 
+import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class FinalConfigPane extends VBox
 {
     private TextField serverNicknameTextField;
     private TextField serverPortTextField;
+    private IPChooserComboBox ipChooserComboBox;
     private Button nextButton;
 
     private ExceptionAndAlertHandler exceptionAndAlertHandler;
@@ -43,11 +49,24 @@ public class FinalConfigPane extends VBox
 
         serverNicknameTextField = new TextField();
         serverPortTextField = new TextField(Config.getDefaultPort()+"");
+        ipChooserComboBox = new IPChooserComboBox(exceptionAndAlertHandler);
+        ipChooserComboBox.configureOptions();
 
         HBoxInputBox serverNickNameInputBox = new HBoxInputBox("Server Nickname", serverNicknameTextField, 200);
         HBoxInputBox serverPortInputBox = new HBoxInputBox("Server Port", serverPortTextField);
+        HBoxWithSpaceBetween ipChooserHBox = new HBoxWithSpaceBetween("Server IP Binding", ipChooserComboBox);
 
-        getChildren().addAll(label, serverNickNameInputBox, serverPortInputBox);
+        Label warningLabel = new Label(
+                "Stream-Pi is not encrypted yet. Use this only in absolutely private networks. Do not use this in a public network (Railway Station, Park).\n" +
+                        "Stream-Pi project is not responsible if your computer is compromised because of connecting Stream-Pi to a malicious network."
+        );
+        warningLabel.setWrapText(true);
+        warningLabel.getStyleClass().add("first_time_use_pane_final_config_warning_label");
+
+
+
+        setAlignment(Pos.TOP_CENTER);
+        getChildren().addAll(label, serverNickNameInputBox, serverPortInputBox, ipChooserHBox, warningLabel);
 
         setSpacing(10.0);
 
@@ -101,6 +120,7 @@ public class FinalConfigPane extends VBox
             {
                 Config.getInstance().setServerName(serverNameStr);
                 Config.getInstance().setServerPort(serverPort);
+                Config.getInstance().setIP(ipChooserComboBox.getSelectedIP());
                 Config.getInstance().setFirstTimeUse(false);
                 Config.getInstance().save();
 

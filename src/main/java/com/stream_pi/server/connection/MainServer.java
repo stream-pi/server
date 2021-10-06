@@ -73,7 +73,7 @@ public class MainServer extends Thread
     @Override
     public void run()
     {
-        Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - Starting Server... "));
+        Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - Starting Server ... "));
 
         try
         {

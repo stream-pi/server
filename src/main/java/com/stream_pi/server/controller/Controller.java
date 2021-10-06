@@ -247,6 +247,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         ipChooserComboBox.configureOptions();
 
         Label headLabel = new Label("Your current selected IP ("+getConfig().getIP()+") is not available. Select a new one to bind :");
+        headLabel.getStyleClass().add("invalid_ip_prompt_label");
         headLabel.setWrapText(true);
 
         vBox.getChildren().addAll(headLabel, ipChooserComboBox);
