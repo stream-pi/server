@@ -1,6 +1,7 @@
 package com.stream_pi.server.window;
 
 import com.stream_pi.server.controller.ServerListener;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.Main;
@@ -23,6 +24,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -100,6 +103,9 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     
     public void initBase() throws SevereException
     {
+
+        initI18n();
+
         stage = (Stage) getScene().getWindow();
 
         getStage().getIcons().clear();
@@ -150,6 +156,11 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         dashboardBase.getLeftSplitPane().setDividerPositions(config.getLeftDividerPositions());
 
         dashboardBase.toFront();
+    }
+
+    private void initI18n()
+    {
+        I18N.init(new Locale("hi"));
     }
 
     private void checkPrePathDirectory() throws SevereException
@@ -230,8 +241,8 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
     private void loadFonts()
     {
-        Font.loadFont(Main.class.getResourceAsStream("fonts/Roboto.ttf"), 13);
-        Font.loadFont(Main.class.getResourceAsStream("fonts/Roboto-Bold.ttf"), 13);
+       // Font.loadFont(Main.class.getResourceAsStream("fonts/Roboto.ttf"), 13);
+      //  Font.loadFont(Main.class.getResourceAsStream("fonts/Roboto-Bold.ttf"), 13);
     }
 
     public DashboardBase getDashboardBase()

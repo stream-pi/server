@@ -4,6 +4,7 @@ import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.connection.ClientConnections;
+import com.stream_pi.server.i18n.I18N;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.CacheHint;
@@ -55,7 +56,7 @@ public class ClientAndProfileSelectorPane extends HBox {
 
     public void initUI()
     {
-        noClientsConnectedLabel = new Label("No Clients Connected");
+        noClientsConnectedLabel = new Label(I18N.getString("window.dashboard.ClientAndProfileSelectorPane.noClientsConnectedLabel"));
         noClientsConnectedLabel.getStyleClass().add("client_and_profile_selector_pane_no_clients_connected_label");
         noClientsConnectedLabel.managedProperty().bind(noClientsConnectedLabel.visibleProperty());
 

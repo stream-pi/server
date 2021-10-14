@@ -1,6 +1,14 @@
-.root {
-  -fx-font-family : 'Roboto';
+@font-face {
+    src: url("fonts/NotoSans-Regular.ttf");
 }
+
+
+
+.root {
+   -fx-font-family: "Noto Sans";
+
+}
+
 
 .about_donate_hyperlink
 {
