@@ -421,7 +421,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         popup.add(exitItem);
 
         TrayIcon trayIcon = new TrayIcon(
-            Toolkit.getDefaultToolkit().getImage(Main.class.getResource("icon16x16.png")),
+            Toolkit.getDefaultToolkit().getImage(Main.class.getResource("icons/24x24.png")),
             "Stream-Pi Server",
             popup
         );
