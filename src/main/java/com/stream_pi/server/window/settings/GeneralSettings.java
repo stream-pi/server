@@ -4,6 +4,7 @@ import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.actionproperty.property.FileExtensionFilter;
 import com.stream_pi.server.Main;
 import com.stream_pi.server.controller.ServerListener;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.info.StartupFlags;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
@@ -104,22 +105,22 @@ public class GeneralSettings extends VBox
         themesPathTextField = new TextField();
 
         actionGridPaneActionBoxSize = new TextField();
-        actionGridPaneActionBoxSizeIsDefaultCheckBox = new CheckBox("Follow Profile Defaults");
+        actionGridPaneActionBoxSizeIsDefaultCheckBox = new CheckBox(I18N.getString("window.settings.GeneralSettings.followProfileDefaults"));
 
         actionGridPaneActionBoxGap = new TextField();
-        actionGridPaneActionBoxGapIsDefaultCheckBox = new CheckBox("Follow Profile Defaults");
+        actionGridPaneActionBoxGapIsDefaultCheckBox = new CheckBox(I18N.getString("window.settings.GeneralSettings.followProfileDefaults"));
 
         startOnBootToggleSwitch = new ToggleSwitch();
-        startOnBootHBox = new HBoxWithSpaceBetween("Start on Boot", startOnBootToggleSwitch);
+        startOnBootHBox = new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.startOnBoot"), startOnBootToggleSwitch);
         startOnBootHBox.managedProperty().bind(startOnBootHBox.visibleProperty());
 
         soundOnActionClickedToggleSwitch = new ToggleSwitch();
-        soundOnActionClickedToggleSwitchHBox = new HBoxWithSpaceBetween("Sound on Action Clicked", soundOnActionClickedToggleSwitch);
+        soundOnActionClickedToggleSwitchHBox = new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.soundOnActionClicked"), soundOnActionClickedToggleSwitch);
 
 
         soundOnActionClickedFilePathTextField = new TextField();
 
-        HBoxInputBoxWithFileChooser soundHBoxInputBoxWithFileChooser =  new HBoxInputBoxWithFileChooser("Sound on Action Clicked", soundOnActionClickedFilePathTextField,
+        HBoxInputBoxWithFileChooser soundHBoxInputBoxWithFileChooser =  new HBoxInputBoxWithFileChooser(I18N.getString("window.settings.GeneralSettings.soundOnActionClicked"), soundOnActionClickedFilePathTextField,
                 new FileChooser.ExtensionFilter("Sounds","*.mp3","*.mp4", "*.m4a", "*.m4v","*.wav","*.aif", "*.aiff","*.fxm","*.flv","*.m3u8"));
 
         soundHBoxInputBoxWithFileChooser.setUseLast(false);

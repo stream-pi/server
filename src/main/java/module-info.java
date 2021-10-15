@@ -30,5 +30,5 @@ module com.stream_pi.server
     requires org.controlsfx.controls;
 
     exports com.stream_pi.server;
-    opens com.stream_pi.server.window.settings.About;
+    opens com.stream_pi.server.window.settings.about;
 }

@@ -12,10 +12,15 @@ public class I18N
         RESOURCE_BUNDLE = ResourceBundle.getBundle("com.stream_pi.server.i18n.lang", locale);
     }
 
-    public static String getString(String key)
+    public static String getString(String key, Object... args)
     {
-        System.out.println("LOCALL : "+RESOURCE_BUNDLE.getLocale());
-        System.out.println(RESOURCE_BUNDLE.getString(key));
-        return RESOURCE_BUNDLE.getString(key);
+        if (args.length == 0)
+        {
+            return RESOURCE_BUNDLE.getString(key);
+        }
+        else
+        {
+            return String.format(RESOURCE_BUNDLE.getString(key), args);
+        }
     }
 }

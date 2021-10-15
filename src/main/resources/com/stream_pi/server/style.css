@@ -1,12 +1,10 @@
-@font-face {
+/*@font-face {
     src: url("fonts/NotoSans-Regular.ttf");
-}
+}*/
 
 
 
 .root {
-   -fx-font-family: "Noto Sans";
-
 }
 
 

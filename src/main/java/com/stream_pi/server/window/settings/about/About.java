@@ -1,13 +1,14 @@
-package com.stream_pi.server.window.settings.About;
+package com.stream_pi.server.window.settings.about;
 
 import com.stream_pi.action_api.ActionAPI;
+import com.stream_pi.util.Util;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.Main;
 import javafx.application.HostServices;
 import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.CacheHint;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,17 +17,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.Scanner;
 import java.util.logging.Logger;
 
 public class About extends VBox
@@ -54,20 +49,20 @@ public class About extends VBox
         tabPane.setMaxWidth(600);
         VBox.setVgrow(tabPane, Priority.ALWAYS);
 
-        Tab licenseTab = new Tab("License");
+        Tab licenseTab = new Tab(I18N.getString("window.settings.about.About.licenseTabHeading"));
         licenseTab.setContent(new LicenseTab());
 
 
-        Tab contributorsTab = new Tab("Contributors");
+        Tab contributorsTab = new Tab(I18N.getString("window.settings.about.About.contributorsTabHeading"));
         contributorsTab.setContent(new ContributorsTab(hostServices));
 
-        Tab contactTab = new Tab("Contact");
+        Tab contactTab = new Tab(I18N.getString("window.settings.about.About.contactTabHeading"));
         contactTab.setContent(new ContactTab(hostServices));
 
         tabPane.getTabs().addAll(licenseTab, contributorsTab, contactTab);
 
 
-        Hyperlink donateButton = new Hyperlink("DONATE");
+        Hyperlink donateButton = new Hyperlink(I18N.getString("window.settings.about.About.donate"));
         donateButton.setOnAction(event -> openWebpage("https://www.patreon.com/streampi"));
         donateButton.getStyleClass().add("about_donate_hyperlink");
 
@@ -76,34 +71,38 @@ public class About extends VBox
         Label versionLabel = new Label(serverInfo.getVersion().getText() + " - "+ serverInfo.getPlatform().getUIName() + " - "+ serverInfo.getReleaseStatus().getUIName());
         versionLabel.getStyleClass().add("about_version_label");
 
-        Label commStandardLabel = new Label("Comm Standard "+serverInfo.getCommStandardVersion().getText());
+        Label commStandardLabel = new Label(I18N.getString("window.settings.about.About.commStandard", serverInfo.getCommStandardVersion().getText()));
         commStandardLabel.getStyleClass().add("about_comm_standard_label");
 
-        Label minThemeAPILabel = new Label("Min ThemeAPI "+serverInfo.getMinThemeSupportVersion().getText());
+        Label minThemeAPILabel = new Label(I18N.getString("window.settings.about.About.minThemeAPI", serverInfo.getMinThemeSupportVersion().getText()));
         minThemeAPILabel.getStyleClass().add("about_min_theme_api_label");
 
-        Label minActionAPILabel = new Label("Min ActionAPI "+serverInfo.getMinPluginSupportVersion().getText());
+        Label minActionAPILabel = new Label(I18N.getString("window.settings.about.About.minActionAPI", serverInfo.getMinPluginSupportVersion().getText()));
         minActionAPILabel.getStyleClass().add("about_min_action_api_label");
 
-        Label currentActionAPILabel = new Label("ActionAPI "+ ActionAPI.API_VERSION.getText());
+        Label currentActionAPILabel = new Label(I18N.getString("window.settings.about.About.currentActionAPI", ActionAPI.API_VERSION.getText()));
         currentActionAPILabel.getStyleClass().add("about_current_action_api_label");
+
+        Label currentUtilLabel = new Label(I18N.getString("window.settings.about.About.currentUtil", Util.VERSION.getText()));
+        currentUtilLabel.getStyleClass().add("about_current_util_label");
 
         HBox hBox1 = new HBox(versionLabel, getSep(),
                 commStandardLabel, getSep(),
                 minThemeAPILabel, getSep(),
                 minActionAPILabel, getSep(),
-                currentActionAPILabel);
+                currentActionAPILabel, getSep(),
+                currentUtilLabel);
 
         hBox1.setAlignment(Pos.CENTER);
         hBox1.setSpacing(10);
 
-        Label javaVersionLabel = new Label("Java "+System.getProperty("java.version"));
+        Label javaVersionLabel = new Label(I18N.getString("window.settings.about.About.java", System.getProperty("java.version")));
         javaVersionLabel.getStyleClass().add("about_java_version");
 
-        Label javafxVersionLabel = new Label("JavaFX "+System.getProperty("javafx.version"));
+        Label javafxVersionLabel = new Label(I18N.getString("window.settings.about.About.javafx", System.getProperty("javafx.version")));
         javafxVersionLabel.getStyleClass().add("about_javafx_version");
 
-        Label javaGCLabel = new Label("GC: "+ManagementFactory.getGarbageCollectorMXBeans().get(0).getName());
+        Label javaGCLabel = new Label(I18N.getString("window.settings.about.About.gc", ManagementFactory.getGarbageCollectorMXBeans().get(0).getName()));
         javaGCLabel.getStyleClass().add("about_java_gc");
 
         HBox hBox2 = new HBox(javaVersionLabel, getSep(),
@@ -124,7 +123,7 @@ public class About extends VBox
             {
                 Properties properties = new Properties();
                 properties.load(inputStream);
-                Label buildDateLabel = new Label("Build date/time: " +  properties.getProperty("build.date"));
+                Label buildDateLabel = new Label(I18N.getString("window.settings.about.About.buildDate", properties.getProperty("build.date")));
                 buildDateLabel.getStyleClass().add("about_build_date_label");
                 hBox2.getChildren().addAll(getSep(), buildDateLabel);
             }

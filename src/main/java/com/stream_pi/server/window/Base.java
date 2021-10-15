@@ -20,7 +20,6 @@ import com.stream_pi.util.platform.Platform;
 import javafx.application.HostServices;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -160,7 +159,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
     private void initI18n()
     {
-        I18N.init(new Locale("hi"));
+        I18N.init(new Locale("en", "IN"));
     }
 
     private void checkPrePathDirectory() throws SevereException
@@ -186,7 +185,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
                     applyDefaultIconsStylesheet();
                     applyGlobalDefaultStylesheet();
                     getStage().show();
-                    throw new SevereException("No storage permission. Give it!");
+                    throw new SevereException(I18N.getString("window.Base.noStoragePermission"));
                 }
             }
         }
@@ -228,7 +227,6 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     {
         logger.info("Applying default stylesheet ...");
 
-        loadFonts();
         getStylesheets().add(Main.class.getResource("style.css").toExternalForm());
 
         logger.info("... Done!");
@@ -237,12 +235,6 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     public void applyDefaultIconsStylesheet()
     {
         getStylesheets().add(Main.class.getResource("default_icons.css").toExternalForm());
-    }
-
-    private void loadFonts()
-    {
-       // Font.loadFont(Main.class.getResourceAsStream("fonts/Roboto.ttf"), 13);
-      //  Font.loadFont(Main.class.getResourceAsStream("fonts/Roboto-Bold.ttf"), 13);
     }
 
     public DashboardBase getDashboardBase()
@@ -276,14 +268,6 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     {
         logger.info("Applying theme '"+t.getFullName()+"' ...");
 
-        if(t.getFonts() != null)
-        {
-            for(String fontFile : t.getFonts())
-            {
-                Font.loadFont(fontFile.replace("%20",""), 13);
-            }
-        }
-
         currentTheme = t;
         getStylesheets().addAll(t.getStylesheets());
 
@@ -315,17 +299,16 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
             {
                 if(getConfig().getCurrentThemeFullName().equals(getConfig().getDefaultCurrentThemeFullName()))
                 {
-                    throw new SevereException("Unable to get default theme ("+getConfig().getDefaultCurrentThemeFullName()+")\n" +
-                            "Please restore the theme or reinstall.");
+                    throw new SevereException(I18N.getString("window.Base.unableToGetDefaultTheme", getConfig().getDefaultCurrentThemeFullName()));
                 }
 
-                themeErrors.append("\n\nReverted to default theme! (").append(getConfig().getDefaultCurrentThemeFullName()).append(")");
+                themeErrors.append("\n\n").append(I18N.getString("window.Base.revertedToDefaultTheme ", getConfig().getDefaultCurrentThemeFullName()));
 
                 getConfig().setCurrentThemeFullName(getConfig().getDefaultCurrentThemeFullName());
                 getConfig().save();
             }
 
-            handleMinorException(new MinorException("Theme Loading issues", themeErrors.toString()));
+            handleMinorException(new MinorException(I18N.getString("window.Base.themeLoadingIssues"), themeErrors.toString()));
         }
         logger.info("...Themes loaded successfully !");
     }

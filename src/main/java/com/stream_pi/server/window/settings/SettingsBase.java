@@ -2,11 +2,10 @@ package com.stream_pi.server.window.settings;
 
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
-import com.stream_pi.server.window.settings.About.About;
+import com.stream_pi.server.window.settings.about.About;
 import javafx.application.HostServices;
 import javafx.event.Event;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.control.*;
 import javafx.scene.input.SwipeEvent;
