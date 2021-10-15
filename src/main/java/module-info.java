@@ -31,4 +31,5 @@ module com.stream_pi.server
 
     exports com.stream_pi.server;
     opens com.stream_pi.server.window.settings.about;
+    opens com.stream_pi.server.combobox;
 }

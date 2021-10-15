@@ -338,3 +338,8 @@ ScrollPane
 {
     -fx-padding: 50 50 50 50;
 }
+
+.first_time_use_welcome_pane_next_to_continue_label
+{
+    -fx-padding: 0 0 15 0;
+}

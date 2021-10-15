@@ -12,6 +12,7 @@ import java.awt.*;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -25,6 +26,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import com.stream_pi.server.Main;
+import com.stream_pi.server.i18n.I18N;
+import com.stream_pi.server.i18n.Language;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.iohelper.IOHelper;
@@ -310,6 +313,25 @@ public class Config
     {
         return false;
     }
+
+
+    public void setCurrentLanguageLocale(Locale locale)
+    {
+        getOthersElement().getElementsByTagName("language-locale").item(0).setTextContent(locale.toLanguageTag());
+    }
+
+    public Locale getCurrentLanguageLocale()
+    {
+        return Locale.forLanguageTag(XMLConfigHelper.getStringProperty(getOthersElement(), "language-locale",
+                getDefaultLanguageLocale(), false, true, document, configFile));
+    }
+
+    public String getDefaultLanguageLocale()
+    {
+        return Locale.getDefault().toLanguageTag();
+    }
+
+
 
     public void setUseSameActionSizeAsProfile(boolean value)
     {

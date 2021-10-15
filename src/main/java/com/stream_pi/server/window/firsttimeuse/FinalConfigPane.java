@@ -3,7 +3,7 @@ package com.stream_pi.server.window.firsttimeuse;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
-import com.stream_pi.server.window.settings.IPChooserComboBox;
+import com.stream_pi.server.combobox.IPChooserComboBox;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.SevereException;
@@ -13,15 +13,10 @@ import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
 
 public class FinalConfigPane extends VBox
 {

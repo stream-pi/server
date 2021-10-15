@@ -99,11 +99,12 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         else if(logFallbackHandler != null)
             logFallbackHandler.close();
     }
-    
+
+    public boolean isOpenFirstTime = false;
+
     public void initBase() throws SevereException
     {
-
-        initI18n();
+        I18N.initAvailableLanguages();
 
         stage = (Stage) getScene().getWindow();
 
@@ -120,18 +121,9 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         serverInfo = ServerInfo.getInstance();
 
 
-        settingsBase = new SettingsBase(getHostServices(), this, this);
-        settingsBase.prefWidthProperty().bind(widthProperty());
-        settingsBase.prefHeightProperty().bind(heightProperty());
-
-        dashboardBase = new DashboardBase(this, getHostServices());
-        dashboardBase.prefWidthProperty().bind(widthProperty());
-        dashboardBase.prefHeightProperty().bind(heightProperty());
 
         alertStackPane = new StackPane();
         alertStackPane.setOpacity(0);
-
-
 
         StreamPiAlert.setParent(alertStackPane);
 
@@ -142,14 +134,29 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
         checkPrePathDirectory();
 
-        getChildren().addAll(settingsBase, dashboardBase);
-
         config = Config.getInstance();
+
+        initI18n();
+
+        settingsBase = new SettingsBase(getHostServices(), this, this);
+        settingsBase.prefWidthProperty().bind(widthProperty());
+        settingsBase.prefHeightProperty().bind(heightProperty());
+
+        dashboardBase = new DashboardBase(this, getHostServices());
+        dashboardBase.prefWidthProperty().bind(widthProperty());
+        dashboardBase.prefHeightProperty().bind(heightProperty());
+
+        getChildren().addAll(settingsBase, dashboardBase);
 
         initThemes();
 
-        stage.setWidth(config.getStartupWindowWidth());
-        stage.setHeight(config.getStartupWindowHeight());
+        if (!isOpenFirstTime)
+        {
+            stage.setWidth(config.getStartupWindowWidth());
+            stage.setHeight(config.getStartupWindowHeight());
+
+            isOpenFirstTime = true;
+        }
 
         dashboardBase.setDividerPositions(config.getRightDividerPositions());
         dashboardBase.getLeftSplitPane().setDividerPositions(config.getLeftDividerPositions());
@@ -157,9 +164,20 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         dashboardBase.toFront();
     }
 
-    private void initI18n()
+    private void initI18n() throws SevereException
     {
-        I18N.init(new Locale("en", "IN"));
+        if (I18N.isLanguageAvailable(config.getCurrentLanguageLocale()))
+        {
+            I18N.init(config.getCurrentLanguageLocale());
+        }
+        else
+        {
+            getLogger().warning("No translation available for locale : "+config.getCurrentLanguageLocale());
+            getLogger().warning("Setting it to en_UK ...");
+            getConfig().setCurrentLanguageLocale(new Locale("en", "UK"));
+            getConfig().save();
+            initI18n();
+        }
     }
 
     private void checkPrePathDirectory() throws SevereException

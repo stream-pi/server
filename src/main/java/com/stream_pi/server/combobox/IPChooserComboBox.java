@@ -1,4 +1,4 @@
-package com.stream_pi.server.window.settings;
+package com.stream_pi.server.combobox;
 
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.SevereException;
@@ -15,7 +15,7 @@ import java.util.Enumeration;
 
 public class IPChooserComboBox extends ComboBox<String>
 {
-    private ExceptionAndAlertHandler exceptionAndAlertHandler;
+    private final ExceptionAndAlertHandler exceptionAndAlertHandler;
 
     public IPChooserComboBox(ExceptionAndAlertHandler exceptionAndAlertHandler)
     {

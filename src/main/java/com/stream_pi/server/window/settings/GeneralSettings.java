@@ -1,25 +1,21 @@
 package com.stream_pi.server.window.settings;
 
-import com.stream_pi.action_api.action.DisplayTextAlignment;
-import com.stream_pi.action_api.actionproperty.property.FileExtensionFilter;
 import com.stream_pi.server.Main;
+import com.stream_pi.server.combobox.IPChooserComboBox;
+import com.stream_pi.server.combobox.LanguageChooserComboBox;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.info.StartupFlags;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.info.ServerInfo;
-import com.stream_pi.theme_api.Theme;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.checkforupdates.CheckForUpdates;
 import com.stream_pi.util.checkforupdates.UpdateHyperlinkOnClick;
-import com.stream_pi.util.combobox.StreamPiComboBox;
-import com.stream_pi.util.combobox.StreamPiComboBoxFactory;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
-import com.stream_pi.util.platform.Platform;
 import com.stream_pi.util.platform.PlatformType;
 import com.stream_pi.util.startatboot.StartAtBoot;
 import com.stream_pi.util.uihelper.HBoxInputBox;
@@ -27,26 +23,16 @@ import com.stream_pi.util.uihelper.HBoxInputBoxWithDirectoryChooser;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import javafx.application.HostServices;
-import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import javafx.util.Callback;
 import org.controlsfx.control.ToggleSwitch;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.w3c.dom.Text;
 
 import java.awt.SystemTray;
 import java.io.File;
-import java.net.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.logging.Logger;
 
 public class GeneralSettings extends VBox
@@ -73,6 +59,7 @@ public class GeneralSettings extends VBox
     private final Button saveButton;
     private final Button checkForUpdatesButton;
     private final Button factoryResetButton;
+    private final LanguageChooserComboBox languageChooserComboBox;
 
     private Logger logger;
 
@@ -99,6 +86,8 @@ public class GeneralSettings extends VBox
         portTextField = new TextField();
 
         ipChooserComboBox = new IPChooserComboBox(exceptionAndAlertHandler);
+
+        languageChooserComboBox = new LanguageChooserComboBox();
 
         pluginsPathTextField = new TextField();
 
@@ -162,6 +151,7 @@ public class GeneralSettings extends VBox
                 new HBoxInputBoxWithDirectoryChooser("Themes", themesPathTextField),
                 soundHBoxInputBoxWithFileChooser,
                 generateSubHeading("Others"),
+                new HBoxWithSpaceBetween("Language", languageChooserComboBox),
                 soundOnActionClickedToggleSwitchHBox,
                 minimizeToSystemTrayOnCloseHBox,
                 startOnBootHBox,
@@ -230,6 +220,8 @@ public class GeneralSettings extends VBox
             soundOnActionClickedFilePathTextField.setText(config.getSoundOnActionClickedFilePath());
 
             ipChooserComboBox.configureOptions(config.getIP());
+
+            languageChooserComboBox.getSelectionModel().select(I18N.getLanguage(config.getCurrentLanguageLocale()));
         });
     }
 

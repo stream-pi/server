@@ -115,22 +115,23 @@ public class About extends VBox
 
         getChildren().addAll(appIconImageView, tabPane, donateButton, hBox1, hBox2);
 
-
-        InputStream inputStream = Main.class.getResourceAsStream("build.properties");
-        if(inputStream != null)
+        try
         {
-            try
+            InputStream inputStream = Main.class.getResourceAsStream("build.properties");
+            if (inputStream != null)
             {
                 Properties properties = new Properties();
                 properties.load(inputStream);
+                inputStream.close();
+
                 Label buildDateLabel = new Label(I18N.getString("window.settings.about.About.buildDate", properties.getProperty("build.date")));
                 buildDateLabel.getStyleClass().add("about_build_date_label");
                 hBox2.getChildren().addAll(getSep(), buildDateLabel);
             }
-            catch (IOException e)
-            {
-                Logger.getLogger(getClass().getName()).warning("build.properties not present");
-            }
+        }
+        catch (IOException e)
+        {
+            Logger.getLogger(getClass().getName()).warning("build.properties not present");
         }
     }
 
