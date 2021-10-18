@@ -118,40 +118,40 @@ public class GeneralSettings extends VBox
         soundHBoxInputBoxWithFileChooser.getFileChooseButton().disableProperty().bind(soundOnActionClickedToggleSwitch.selectedProperty().not());
 
         minimizeToSystemTrayOnCloseToggleSwitch = new ToggleSwitch();
-        minimizeToSystemTrayOnCloseHBox = new HBoxWithSpaceBetween("Minimise To Tray On Close", minimizeToSystemTrayOnCloseToggleSwitch);
+        minimizeToSystemTrayOnCloseHBox = new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.minimiseToTrayOnClose"), minimizeToSystemTrayOnCloseToggleSwitch);
 
         showAlertsPopupToggleSwitch = new ToggleSwitch();
-        showAlertsPopupHBox = new HBoxWithSpaceBetween("Show Popup On Alert", showAlertsPopupToggleSwitch);
+        showAlertsPopupHBox = new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.showPopupOnAlert"), showAlertsPopupToggleSwitch);
 
-        checkForUpdatesButton = new Button("Check for updates");
+        checkForUpdatesButton = new Button(I18N.getString("window.settings.GeneralSettings.checkForUpdates"));
         checkForUpdatesButton.setOnAction(event->checkForUpdates());
 
-        factoryResetButton = new Button("Factory Reset");
+        factoryResetButton = new Button(I18N.getString("window.settings.GeneralSettings.factoryReset"));
         factoryResetButton.setOnAction(actionEvent -> onFactoryResetButtonClicked());
 
         serverNameTextField.setPrefWidth(200);
 
 
-        saveButton = new Button("Save");
+        saveButton = new Button(I18N.getString("window.settings.GeneralSettings.save"));
         VBox.setMargin(saveButton, new Insets(0,10, 0, 0));
 
         saveButton.setOnAction(event->save());
 
         VBox vbox = new VBox(
-                generateSubHeading("Connection"),
-                new HBoxInputBox("Server Name", serverNameTextField),
-                new HBoxInputBox("Port", portTextField),
-                new HBoxWithSpaceBetween("IP", ipChooserComboBox),
-                generateSubHeading("Action Grid"),
-                new HBoxInputBox("Action Box Size", actionGridPaneActionBoxSize, actionGridPaneActionBoxSizeIsDefaultCheckBox),
-                new HBoxInputBox("Action Box Gap", actionGridPaneActionBoxGap, actionGridPaneActionBoxGapIsDefaultCheckBox),
-                new HBoxInputBox("Action Box - Default Text Font Size", defaultActionLabelFontSizeTextField),
-                generateSubHeading("Locations"),
-                new HBoxInputBoxWithDirectoryChooser("Plugins", pluginsPathTextField),
-                new HBoxInputBoxWithDirectoryChooser("Themes", themesPathTextField),
+                generateSubHeading(I18N.getString("window.settings.GeneralSettings.connection")),
+                new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.serverName"), serverNameTextField),
+                new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.port"), portTextField),
+                new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.ip"), ipChooserComboBox),
+                generateSubHeading(I18N.getString("window.settings.GeneralSettings.actionGrid")),
+                new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.actionBoxSize"), actionGridPaneActionBoxSize, actionGridPaneActionBoxSizeIsDefaultCheckBox),
+                new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.actionBoxGap"), actionGridPaneActionBoxGap, actionGridPaneActionBoxGapIsDefaultCheckBox),
+                new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.actionBoxDefaultTextFontSize"), defaultActionLabelFontSizeTextField),
+                generateSubHeading(I18N.getString("window.settings.GeneralSettings.locations")),
+                new HBoxInputBoxWithDirectoryChooser(I18N.getString("window.settings.GeneralSettings.plugins"), pluginsPathTextField),
+                new HBoxInputBoxWithDirectoryChooser(I18N.getString("window.settings.GeneralSettings.themes"), themesPathTextField),
                 soundHBoxInputBoxWithFileChooser,
-                generateSubHeading("Others"),
-                new HBoxWithSpaceBetween("Language", languageChooserComboBox),
+                generateSubHeading(I18N.getString("window.settings.GeneralSettings.others")),
+                new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.language"), languageChooserComboBox),
                 soundOnActionClickedToggleSwitchHBox,
                 minimizeToSystemTrayOnCloseHBox,
                 startOnBootHBox,
@@ -261,7 +261,7 @@ public class GeneralSettings extends VBox
 
                     if(serverNameStr.isBlank())
                     {
-                        errors.append("* Server Name cannot be blank.\n");
+                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.serverNameCannotBeBlank")).append("\n");
                     }
                     else
                     {
@@ -277,9 +277,9 @@ public class GeneralSettings extends VBox
                         serverPort = Integer.parseInt(serverPortStr);
 
                         if (serverPort < 1024)
-                            errors.append("* Server Port must be more than 1024\n");
+                            errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.serverPortMustBeGreaterThan1024")).append("\n");
                         else if(serverPort > 65535)
-                            errors.append("* Server Port must be lesser than 65535\n");
+                            errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.serverPortMustBeLesserThan65535")).append("\n");
 
                         if(config.getPort()!=serverPort)
                         {
@@ -288,7 +288,7 @@ public class GeneralSettings extends VBox
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* Server Port must be integer.\n");
+                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.serverPortMustBeInteger")).append("\n");
                     }
 
                     double defaultActionLabelFontSize=-1;
@@ -297,11 +297,11 @@ public class GeneralSettings extends VBox
                         defaultActionLabelFontSize = Double.parseDouble(defaultActionLabelFontSizeStr);
 
                         if (defaultActionLabelFontSize < 1)
-                            errors.append("* Action Label Font Size too small.\n");
+                            errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionLabelFontSizeTooSmall")).append("\n");
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* Action Label Font must be integer.\n");
+                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionLabelFontSizeMustBeInteger")).append("\n");
                     }
 
 
@@ -317,7 +317,7 @@ public class GeneralSettings extends VBox
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* action Size must be integer.\n");
+                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionSizeMustBeInteger")).append("\n");
                     }
 
                     if(actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected() != config.isUseSameActionSizeAsProfile())
@@ -338,7 +338,7 @@ public class GeneralSettings extends VBox
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* action Gap must be integer.\n");
+                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionGapMustBeInteger")).append("\n");
                     }
 
                     if(actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected() != config.isUseSameActionGapAsProfile())
@@ -348,7 +348,7 @@ public class GeneralSettings extends VBox
 
                     if(pluginsPathStr.isBlank())
                     {
-                        errors.append("* Plugins Path must not be blank.\n");
+                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.pluginsPathMustNotBeBlank")).append("\n");
                     }
                     else
                     {
@@ -360,7 +360,7 @@ public class GeneralSettings extends VBox
 
                     if(themesPathStr.isBlank())
                     {
-                        errors.append("* Themes Path must not be blank.\n");
+                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.themesPathMustNotBeBlank")).append("\n");
                     }
                     else
                     {
@@ -372,7 +372,7 @@ public class GeneralSettings extends VBox
 
                     if(!errors.toString().isEmpty())
                     {
-                        throw new MinorException("Uh Oh!", "Please rectify the following errors and try again :\n"+ errors);
+                        throw new MinorException(I18N.getString("window.settings.GeneralSettings.pleaseRectifyTheFollowingErrors") + "\n"+ errors);
                     }
 
 
@@ -406,7 +406,7 @@ public class GeneralSettings extends VBox
                         {
                             boolean result = startAtBoot.delete();
                             if(!result)
-                                new StreamPiAlert("Uh Oh!", "Unable to delete starter file", StreamPiAlertType.ERROR).show();
+                                new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.unableToDeleteStarterFile"), StreamPiAlertType.ERROR).show();
                         }
                     }
 
@@ -414,7 +414,7 @@ public class GeneralSettings extends VBox
                     {
                         if(!SystemTray.isSupported()) 
                         {
-                            StreamPiAlert alert = new StreamPiAlert("Not Supported", "Tray System not supported on this platform ", StreamPiAlertType.ERROR);
+                            StreamPiAlert alert = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.traySystemNotSupported"), StreamPiAlertType.ERROR);
                             alert.show();
 
                             minimizeToSystemTrayOnClose = false;
@@ -425,8 +425,7 @@ public class GeneralSettings extends VBox
                     {
                         if(soundOnActionClickedFilePath.isBlank())
                         {
-                            StreamPiAlert alert = new StreamPiAlert("No sound file specified",
-                                    "Sound File cannot be empty", StreamPiAlertType.ERROR);
+                            StreamPiAlert alert = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.soundFileCannotBeEmpty"), StreamPiAlertType.ERROR);
                             alert.show();
 
                             soundOnActionClicked = false;
