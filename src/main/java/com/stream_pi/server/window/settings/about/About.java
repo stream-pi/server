@@ -5,6 +5,7 @@ import com.stream_pi.util.Util;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.Main;
+import com.stream_pi.util.links.Links;
 import javafx.application.HostServices;
 import javafx.event.Event;
 import javafx.geometry.Insets;
@@ -63,7 +64,7 @@ public class About extends VBox
 
 
         Hyperlink donateButton = new Hyperlink(I18N.getString("window.settings.about.About.donate"));
-        donateButton.setOnAction(event -> openWebpage("https://www.patreon.com/streampi"));
+        donateButton.setOnAction(event -> openWebpage(Links.getDonateLink()));
         donateButton.getStyleClass().add("about_donate_hyperlink");
 
         ServerInfo serverInfo = ServerInfo.getInstance();

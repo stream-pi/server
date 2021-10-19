@@ -9,6 +9,7 @@ import com.stream_pi.action_api.actionproperty.gaugeproperties.GaugeProperties;
 import com.stream_pi.action_api.actionproperty.gaugeproperties.SerializableColor;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.controller.ActionDataFormats;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiondetailspane.ActionDetailsPaneListener;
 import com.stream_pi.util.exception.MinorException;
@@ -150,7 +151,7 @@ public class ActionBox extends StackPane
                         catch (Exception e)
                         {
                             e.printStackTrace();
-                            exceptionAndAlertHandler.handleMinorException(new MinorException("Error","onCreate() failed for "+newAction.getModuleName()+"\n\n"+e.getMessage()));
+                            exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("window.dashboard.actiongridpane.ActionBox.onCreateFailed", newAction.getModuleName(), e.getMessage())));
                         }
 
 
@@ -242,8 +243,6 @@ public class ActionBox extends StackPane
         });
 
         setOnMouseClicked(mouseEvent -> {
-
-            System.out.println("1 xyzabc");
             if(action != null)
             {
                 if(mouseEvent.getClickCount() == 2 && getAction().getActionType() == ActionType.FOLDER)
@@ -254,9 +253,6 @@ public class ActionBox extends StackPane
                 {
                     try
                     {
-
-
-                        System.out.println("2  xyzabc");
                         actionDetailsPaneListener.onActionClicked(action, this);
 
                         if(mouseEvent.getButton().equals(MouseButton.SECONDARY))
@@ -293,24 +289,23 @@ public class ActionBox extends StackPane
 
 
 
-
         actionContextMenu = new ContextMenu();
 
-        MenuItem deleteActionMenuItem = new MenuItem("Delete Action");
+        MenuItem deleteActionMenuItem = new MenuItem(I18N.getString("window.dashboard.actiongridpane.ActionBox.deleteAction"));
         deleteActionMenuItem.getStyleClass().add("action_box_delete_menu_item");
         FontIcon deleteIcon = new FontIcon("fas-trash");
         deleteIcon.getStyleClass().add("action_box_delete_menu_item_icon");
         deleteActionMenuItem.setGraphic(deleteIcon);
         deleteActionMenuItem.setOnAction(event-> deleteAction());
 
-        showToggleOffMenuItem = new MenuItem("Show Toggle OFF");
+        showToggleOffMenuItem = new MenuItem(I18N.getString("window.dashboard.actiongridpane.ActionBox.showToggleOff"));
         showToggleOffMenuItem.getStyleClass().add("action_box_toggle_off_menu_item");
         FontIcon toggleOffIcon = new FontIcon("fas-toggle-off");
         toggleOffIcon.getStyleClass().add("action_box_toggle_off_menu_item_icon");
         showToggleOffMenuItem.setGraphic(toggleOffIcon);
         showToggleOffMenuItem.setOnAction(event-> fakeToggle(false));
 
-        showToggleOnMenuItem = new MenuItem("Show Toggle ON");
+        showToggleOnMenuItem = new MenuItem(I18N.getString("window.dashboard.actiongridpane.ActionBox.showToggleOn"));
         showToggleOnMenuItem.getStyleClass().add("action_box_toggle_on_menu_item");
         FontIcon toggleOnIcon = new FontIcon("fas-toggle-on");
         toggleOnIcon.getStyleClass().add("action_box_toggle_on_menu_item_icon");
@@ -555,7 +550,6 @@ public class ActionBox extends StackPane
                         getChildren().add(gauge);
                     }
 
-                    //updateGaugeValue(getAction().getGaugeProperties().getValue());
                     updateGauge(getAction().getGaugeProperties());
 
 

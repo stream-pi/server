@@ -9,6 +9,7 @@ import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
@@ -143,8 +144,6 @@ public class OnSaveActionTask extends Task<Void>
             else
             {
                 action.setDisplayTextFontColourHex(displayTextFontColour);
-                //String fontColour = "#" + displayTextColourPicker.getValue().toString().substring(2);
-                //action.setDisplayTextFontColourHex(fontColour);
             }
 
 
@@ -167,7 +166,9 @@ public class OnSaveActionTask extends Task<Void>
                 else
                 {
                     if(action.getIcon("default") != null)
+                    {
                         action.setCurrentIconState("default");
+                    }
                 }
             }
             else if (action.getActionType() == ActionType.TOGGLE)
@@ -222,8 +223,7 @@ public class OnSaveActionTask extends Task<Void>
                 }
                 catch (MinorException e)
                 {
-                    e.setTitle("Error");
-                    exceptionAndAlertHandler.handleMinorException("onActionSavedFromServer() failed for "+action.getModuleName()+"\n\n"+e.getMessage(), e);
+                    exceptionAndAlertHandler.handleMinorException(I18N.getString("window.dashboard.actiondetailspane.OnSaveActionTask.onActionSavedFromServerFailed", action.getModuleName(), e.getMessage()), e);
                 }
             }
 
@@ -237,7 +237,6 @@ public class OnSaveActionTask extends Task<Void>
             if(!isCombineChild)
             {
                 Platform.runLater(()->{
-
                     try
                     {
                         actionDetailsPaneListener.renderAction(action);
@@ -246,11 +245,6 @@ public class OnSaveActionTask extends Task<Void>
                     {
                         exceptionAndAlertHandler.handleMinorException(e);
                     }
-
-                    //actionBox.clear();
-                    //actionBox.setAction(action);
-                    //actionBox.baseInit();
-                    //actionBox.init();
                 });
 
                 setSaveDeleteResetButtonState(false);

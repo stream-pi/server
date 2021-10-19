@@ -15,6 +15,7 @@ import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.connection.ClientConnections;
 import com.stream_pi.server.connection.MainServer;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.info.StartupFlags;
 import com.stream_pi.server.io.Config;
@@ -115,7 +116,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 getChildren().add(firstTimeUse);
 
                 firstTimeUse.toFront();
-                getStage().setTitle("Stream-Pi Server");
+                getStage().setTitle( I18N.getString("controller.Controller.stream-pi-server"));
                 getStage().show();
             }
             else
@@ -138,7 +139,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     @Override
     public void onServerStartFailure()
     {
-        Platform.runLater(()-> getStage().setTitle("Stream-Pi Server - Offline"));
+        Platform.runLater(()-> getStage().setTitle(I18N.getString("controller.Controller.stream-pi-server-offline")));
 
         disableTrayIcon = true;
     }
@@ -232,13 +233,19 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         IPChooserComboBox ipChooserComboBox = new IPChooserComboBox(this);
         ipChooserComboBox.configureOptions();
 
-        Label headLabel = new Label("Your current selected IP ("+getConfig().getIP()+") is not available. Select a new one to bind :");
+        String ip = getConfig().getIP();
+        if (ip.isBlank())
+        {
+            ip = I18N.getString("combobox.IPChooserComboBox.allAddresses");
+        }
+
+        Label headLabel = new Label(I18N.getString("controller.Controller.IPnotAvailable", ip));
         headLabel.getStyleClass().add("invalid_ip_prompt_label");
         headLabel.setWrapText(true);
 
         vBox.getChildren().addAll(headLabel, ipChooserComboBox);
 
-        StreamPiAlert streamPiAlert = new StreamPiAlert("Uh Oh!", StreamPiAlertType.WARNING, vBox, "Proceed");
+        StreamPiAlert streamPiAlert = new StreamPiAlert(StreamPiAlertType.WARNING, vBox, I18N.getString("controller.Controller.proceed"));
 
         streamPiAlert.setOnClicked(new StreamPiAlertListener()
         {
@@ -277,7 +284,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         }
         catch (SevereException e)
         {
-            handleSevereException("Unable to successfully factory reset. Delete directory \n'"+getServerInfo().getPrePath()+"'\nMessage:\n"+e.getMessage(),e);
+            handleSevereException(I18N.getString("controller.Controller.factoryResetUnsuccessful", getServerInfo().getPrePath(), e.getMessage()),e);
         }
     }
 
@@ -405,7 +412,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
         TrayIcon trayIcon = new TrayIcon(
             Toolkit.getDefaultToolkit().getImage(Main.class.getResource("icons/24x24.png")),
-            "Stream-Pi Server",
+            I18N.getString("controller.Controller.stream-pi-server"),
             popup
         );
 
@@ -500,7 +507,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             audioClip = null;
             getConfig().setSoundOnActionClickedStatus(false);
             getConfig().setSoundOnActionClickedFilePath("");
-            handleMinorException(new MinorException("The sound file for on action click sound is missing."));
+            handleMinorException(new MinorException(I18N.getString("controller.Controller.actionClickSoundFileMissing")));
             return;
         }
 
@@ -521,9 +528,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
             if(action.isInvalid())
             {
-                throw new MinorException(
-                        "The action isn't installed on the server."
-                );
+                throw new MinorException(I18N.getString("controller.Controller.pluginNotInstalledOnServer", action.getModuleName()));
             }
 
             executor.execute(new Task<Void>() {
@@ -553,8 +558,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
     private void startAction(Action action, boolean toggle, String profileID, Client client) throws InterruptedException
     {
-
-
         getLogger().info("action "+action.getID()+" clicked!");
 
         if(action instanceof ToggleAction)
@@ -780,8 +783,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     @Override
     public void sendActionFailed(MinorException exception, SocketAddress socketAddress, String profileID, String actionID)
     {
-        exception.setTitle("Error while running action");
-        
+        exception.setTitle(I18N.getString("controller.Controller.errorWhileRunningAction"));
+
         if(exception.getTitle() != null)
         {
             handleMinorException(exception.getTitle()+"\n"+exception.getMessage(), exception);

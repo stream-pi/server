@@ -11,6 +11,7 @@ import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiondetailspane.ActionDetailsPaneListener;
@@ -110,7 +111,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         newAction.setIDRandom();
 
         newAction.setShowDisplayText(true);
-        newAction.setDisplayText("Untitled Action");
+        newAction.setDisplayText(I18N.getString("window.dashboard.actiongridpane.ActionGridPane.untitledAction"));
         newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
 
         newAction.setBgColourHex("");
@@ -127,16 +128,18 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         String displayText;
         if(actionType == ActionType.FOLDER)
         {
-            displayText = "Untitled Folder";
+            displayText = I18N.getString("window.dashboard.actiongridpane.ActionGridPane.untitledFolder");
             newAction = new FolderAction();
         }
         else if(actionType == ActionType.COMBINE)
         {
-            displayText = "Untitled Combine";
+            displayText = I18N.getString("window.dashboard.actiongridpane.ActionGridPane.untitledCombine");
             newAction = new CombineAction();
         }
         else
-            throw new IllegalArgumentException("External Plugins are not supported here!");
+        {
+            throw new IllegalArgumentException(I18N.getString("window.dashboard.actiongridpane.ActionGridPane.externalPluginsAreNotSupportedHere"));
+        }
 
         newAction.setIDRandom();
 
@@ -358,7 +361,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
         if(!errors.toString().isEmpty())
         {
-            exceptionAndAlertHandler.handleMinorException(new MinorException("Error while rendering following actions", errors.toString()));
+            exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("window.dashboard.actiongridpane.ActionGridPane.errorWhileRenderingFollowingActions", errors)));
         }
     }
 
@@ -373,8 +376,6 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     @Override
     public void renderAction(Action action) throws MinorException
     {
-        System.out.println("CURRENT PARENT : "+currentParent);
-        System.out.println("action parent : "+action.getParent());
         if(!action.getParent().equals(currentParent))
         {
             logger.info("Skipping action "+action.getID()+", not current parent!");
@@ -389,8 +390,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
         if(action.getLocation().getRow() >= rows || action.getLocation().getCol() >= cols)
         {
-            throw new MinorException("action "+action.getDisplayText()+" ("+action.getID()+") falls outside bounds.\n" +
-                    "   Consider increasing rows/cols from client settings and relocating/deleting it.");
+            throw new MinorException(I18N.getString("window.dashboard.actiongridpane.ActionGridPane.actionOutsideBounds", action.getDisplayText(), action.getID()));
         }
 
 
@@ -402,13 +402,9 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
         if(actionBox.getAction() != null)
         {
-            System.out.println("A "+GridPane.getColumnSpan(actionBox));
-            System.out.println("B "+action.getColSpan());
-            System.out.println("C "+actionBox.getAction().getColSpan());
             makeNonUsedBoxesVisible = (GridPane.getColumnSpan(actionBox) != action.getColSpan()) || (GridPane.getRowSpan(actionBox) != action.getRowSpan());
         }
 
-        System.out.println(makeNonUsedBoxesVisible+"Asdasdasdasd");
         if (makeNonUsedBoxesVisible)
         {
             showNonUsedBoxes(action.getLocation().getCol(), action.getLocation().getRow(), GridPane.getColumnSpan(actionBox),  GridPane.getRowSpan(actionBox));
@@ -419,28 +415,6 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         actionBox.init();
 
         actionBoxHashMap.put(action.getID(), actionBox);
-
-        /*ActionBox actionBox = new ActionBox(Config.getInstance().getActionGridActionSize(), action, actionDetailsPaneListener, exceptionAndAlertHandler, this);
-
-        Location location = action.getLocation();
-
-        actionBox.setStreamPiParent(currentParent);
-        actionBox.setRow(location.getRow());
-        actionBox.setCol(location.getCol());
-
-        for(Node node : actionsGridPane.getChildren())
-        {
-            if(GridPane.getColumnIndex(node) == location.getRow() &&
-            GridPane.getRowIndex(node) == location.getCol())
-            {
-                actionsGridPane.getChildren().remove(node);
-                break;
-            }
-        }
-
-        System.out.println(location.getCol()+","+location.getRow());
-        actionsGridPane.add(actionBox, location.getRow(), location.getCol());*/
-
     }
 
     public void showNonUsedBoxes(int col, int row, int colSpan, int rowSpan)
@@ -522,7 +496,6 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
         if(!getPreviousParent().equals("root"))
         {
-            System.out.println("parent : "+getPreviousParent());
             setPreviousParent(getClientProfile().getActionByID(
                     getPreviousParent()
             ).getParent());

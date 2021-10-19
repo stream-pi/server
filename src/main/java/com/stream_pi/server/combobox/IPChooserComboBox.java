@@ -1,5 +1,6 @@
 package com.stream_pi.server.combobox;
 
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.SevereException;
 import javafx.scene.control.ComboBox;
@@ -55,7 +56,7 @@ public class IPChooserComboBox extends ComboBox<String>
             int si = 0, ci = 0;
 
             getItems().clear();
-            getItems().add("All Addresses");
+            getItems().add(I18N.getString("combobox.IPChooserComboBox.allAddresses"));
             Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
             while(e.hasMoreElements())
             {

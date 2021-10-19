@@ -9,6 +9,7 @@ import com.stream_pi.action_api.actionproperty.property.*;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.action_api.otheractions.CombineAction;
 import com.stream_pi.action_api.otheractions.FolderAction;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
@@ -124,13 +125,13 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-        openFolderButton = new Button("Open Folder");
+        openFolderButton = new Button(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.openFolder"));
         openFolderButton.managedProperty().bind(openFolderButton.visibleProperty());
         FontIcon folderOpenIcon = new FontIcon("far-folder-open");
         openFolderButton.setGraphic(folderOpenIcon);
         openFolderButton.setOnAction(event -> onOpenFolderButtonClicked());
 
-        saveButton = new Button("Save");
+        saveButton = new Button(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.save"));
         saveButton.getStyleClass().add("action_details_pane_save_button");
         FontIcon syncIcon = new FontIcon("far-save");
         syncIcon.getStyleClass().add("action_details_save_delete_button_icon");
@@ -145,7 +146,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         deleteButton.setOnAction(event -> onDeleteButtonClicked());
 
 
-        resetToDefaultsButton = new Button("Reset");
+        resetToDefaultsButton = new Button(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.reset"));
         resetToDefaultsButton.managedProperty().bind(resetToDefaultsButton.visibleProperty());
         resetToDefaultsButton.getStyleClass().add("action_details_pane_reset_button");
         FontIcon resetToDefaultsIcon = new FontIcon("fas-sync-alt");
@@ -153,7 +154,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         resetToDefaultsButton.setGraphic(resetToDefaultsIcon);
         resetToDefaultsButton.setOnAction(event -> onResetToDefaultsButtonClicked());
 
-        returnButtonForCombineActionChild = new Button("Return");
+        returnButtonForCombineActionChild = new Button(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.return"));
         returnButtonForCombineActionChild.setGraphic(new FontIcon("fas-caret-left"));
         returnButtonForCombineActionChild.managedProperty().bind(returnButtonForCombineActionChild.visibleProperty());
         returnButtonForCombineActionChild.setOnAction(event -> {
@@ -271,7 +272,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         });
 
 
-        clearIconButton = new Button("Clear Icon");
+        clearIconButton = new Button(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.clearIcon"));
         clearIconButton.managedProperty().bind(clearIconButton.visibleProperty());
         clearIconButton.setOnAction(event ->
         {
@@ -294,18 +295,18 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             toggleOnIconFileTextField.clear();
         });
 
-        hideDisplayTextCheckBox = new CheckBox("Hide");
+        hideDisplayTextCheckBox = new CheckBox(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.hide"));
         hideDisplayTextCheckBox.managedProperty().bind(hideDisplayTextCheckBox.visibleProperty());
 
-        displayNameFontSizeCheckBox = new CheckBox("Default");
+        displayNameFontSizeCheckBox = new CheckBox(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.default"));
         displayNameFontSizeCheckBox.managedProperty().bind(displayNameFontSizeCheckBox.visibleProperty());
         displayNameFontSizeTextField.disableProperty().bind(displayNameFontSizeCheckBox.selectedProperty());
 
-        hideDefaultIconCheckBox = new CheckBox("Hide");
+        hideDefaultIconCheckBox = new CheckBox(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.hide"));
 
-        hideToggleOnIconCheckBox = new CheckBox("Hide");
+        hideToggleOnIconCheckBox = new CheckBox(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.hide"));
 
-        hideToggleOffIconCheckBox = new CheckBox("Hide");
+        hideToggleOffIconCheckBox = new CheckBox(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.hide"));
 
         actionBackgroundColourPicker = new ColorPicker();
         actionBackgroundColourPicker.managedProperty().bind(actionBackgroundColourPicker.visibleProperty());
@@ -313,25 +314,25 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         displayTextColourPicker = new ColorPicker();
         displayTextColourPicker.managedProperty().bind(displayTextColourPicker.visibleProperty());
 
-        actionBackgroundColourTransparentCheckBox = new CheckBox("Default");
+        actionBackgroundColourTransparentCheckBox = new CheckBox(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.default"));
         actionBackgroundColourPicker.disableProperty()
                 .bind(actionBackgroundColourTransparentCheckBox.selectedProperty());
 
         HBox.setMargin(actionBackgroundColourTransparentCheckBox, new Insets(0, 0, 0, 10));
 
 
-        displayTextColourDefaultCheckBox = new CheckBox("Default");
+        displayTextColourDefaultCheckBox = new CheckBox(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.default"));
         displayTextColourPicker.disableProperty()
                 .bind(displayTextColourDefaultCheckBox.selectedProperty());
 
         HBox.setMargin(displayTextColourDefaultCheckBox, new Insets(0, 0, 0, 10));
 
-        HBox displayTextColourHBox = new HBox(new Label("Display Text Colour"), SpaceFiller.horizontal(), displayTextColourPicker,
+        HBox displayTextColourHBox = new HBox(new Label(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.displayTextColour")), SpaceFiller.horizontal(), displayTextColourPicker,
                 displayTextColourDefaultCheckBox);
         displayTextColourHBox.setAlignment(Pos.CENTER);
         displayTextColourHBox.setSpacing(5.0);
 
-        HBox bgColourHBox = new HBox(new Label("Background Colour"), SpaceFiller.horizontal(), actionBackgroundColourPicker,
+        HBox bgColourHBox = new HBox(new Label(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.backgroundColour")), SpaceFiller.horizontal(), actionBackgroundColourPicker,
                 actionBackgroundColourTransparentCheckBox);
         bgColourHBox.setAlignment(Pos.CENTER);
         bgColourHBox.setSpacing(5.0);
@@ -341,19 +342,19 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         clearIconHBox.setAlignment(Pos.CENTER_RIGHT);
 
         HBox.setMargin(hideDisplayTextCheckBox, new Insets(0, 0, 0, 45));
-        HBoxInputBox s = new HBoxInputBox("Name", displayNameTextField);
+        HBoxInputBox s = new HBoxInputBox(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.name"), displayNameTextField);
         HBox.setHgrow(s, Priority.ALWAYS);
         displayTextFieldHBox = new HBox(s, hideDisplayTextCheckBox);
 
 
         HBox.setMargin(displayNameFontSizeCheckBox, new Insets(0,0,0,30));
-        HBoxInputBox t = new HBoxInputBox("Font Size", displayNameFontSizeTextField);
+        HBoxInputBox t = new HBoxInputBox(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.fontSize"), displayNameFontSizeTextField);
         HBox.setHgrow(t, Priority.ALWAYS);
         displayNameLabelFontSizeTextFieldHBox = new HBox(t, displayNameFontSizeCheckBox);
         displayNameLabelFontSizeTextFieldHBox.managedProperty().bind(displayNameLabelFontSizeTextFieldHBox.visibleProperty());
 
 
-        displayTextAlignmentComboBoxHBox = new HBox(new Label("Alignment"), SpaceFiller.horizontal(),
+        displayTextAlignmentComboBoxHBox = new HBox(new Label(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.alignment")), SpaceFiller.horizontal(),
                 displayTextAlignmentComboBox);
 
 
@@ -370,26 +371,26 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         normalToggleActionCommonPropsVBox.managedProperty().bind(normalToggleActionCommonPropsVBox.visibleProperty());
         normalToggleActionCommonPropsVBox.setSpacing(10.0);
 
-        FileChooser.ExtensionFilter iconExtensions = new FileChooser.ExtensionFilter("Images", "*.jpeg", "*.jpg", "*.png", "*.gif");
+        FileChooser.ExtensionFilter iconExtensions = new FileChooser.ExtensionFilter(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.images"), "*.jpeg", "*.jpg", "*.png", "*.gif");
 
         colSpanTextField = new TextField();
         rowSpanTextField = new TextField();
 
         normalActionsPropsVBox = new VBox(
-                new HBoxInputBoxWithFileChooser("Icon", defaultIconFileTextField, hideDefaultIconCheckBox,
+                new HBoxInputBoxWithFileChooser(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.icon"), defaultIconFileTextField, hideDefaultIconCheckBox,
                         iconExtensions),
-                new HBoxInputBox("Col Span", colSpanTextField),
-                new HBoxInputBox("Row Span", rowSpanTextField)
+                new HBoxInputBox(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.columnSpan"), colSpanTextField),
+                new HBoxInputBox(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.rowSpan"), rowSpanTextField)
         );
 
         normalActionsPropsVBox.managedProperty().bind(normalActionsPropsVBox.visibleProperty());
         normalActionsPropsVBox.setSpacing(10.0);
 
         toggleActionsPropsVBox = new VBox(
-                new HBoxInputBoxWithFileChooser("Toggle Off Icon", toggleOffIconFileTextField, hideToggleOffIconCheckBox,
+                new HBoxInputBoxWithFileChooser(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.toggleOffIcon"), toggleOffIconFileTextField, hideToggleOffIconCheckBox,
                         iconExtensions),
 
-                new HBoxInputBoxWithFileChooser("Toggle On Icon", toggleOnIconFileTextField, hideToggleOnIconCheckBox,
+                new HBoxInputBoxWithFileChooser(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.toggleOnIcon"), toggleOnIconFileTextField, hideToggleOnIconCheckBox,
                         iconExtensions)
         );
 
@@ -400,7 +401,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         isAnimatedGaugeCheckBox = new CheckBox();
 
         gaugeActionsPropsVBox = new VBox(
-                new HBoxWithSpaceBetween("Animated", isAnimatedGaugeCheckBox)
+                new HBoxWithSpaceBetween(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.animated"), isAnimatedGaugeCheckBox)
         );
 
 
@@ -444,7 +445,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
                     if(isNew)
                     {
-                        newAction.setDisplayText("Untitled Action");
+                        newAction.setDisplayText(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.untitledAction"));
                         newAction.setShowDisplayText(true);
                         newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
 
@@ -475,7 +476,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     }
                     catch (MinorException e)
                     {
-                        exceptionAndAlertHandler.handleMinorException("onCreate() failed for "+getAction().getModuleName()+"\n\n"+e.getMessage(), e);
+                        exceptionAndAlertHandler.handleMinorException(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.onCreateFailed", getAction().getModuleName(), e.getMessage()), e);
                     }
 
                     combineActionPropertiesPane.getCombineAction().addChild(newAction.getID());
@@ -512,8 +513,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     private void onResetToDefaultsButtonClicked()
     {
         StreamPiAlert streamPiAlert = new StreamPiAlert(
-                "Warning",
-                "Are you sure you want to reset the action?",
+                I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.resetAreYouSure"),
                 StreamPiAlertType.WARNING
         );
 
@@ -765,7 +765,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         if(getAction().isInvalid())
         {
-            setActionHeadingLabelText("Invalid action ("+getAction().getModuleName()+")");
+            setActionHeadingLabelText(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.invalidAction", getAction().getModuleName()));
             return;
         }
 
@@ -866,11 +866,11 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         }
         else if(getAction().getActionType() == ActionType.COMBINE)
         {
-            setActionHeadingLabelText("Combine action");
+            setActionHeadingLabelText(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.combineAction"));
         }
         else if(getAction().getActionType() == ActionType.FOLDER)
         {
-            setActionHeadingLabelText("Folder action");
+            setActionHeadingLabelText(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.folderAction"));
         }
 
 
@@ -955,7 +955,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         delayBeforeRunningTextField.setText(getAction().getDelayBeforeExecuting()+"");
 
         clientPropertiesVBox.getChildren().add(
-                new HBoxInputBox("Delay before running (milli-seconds)", delayBeforeRunningTextField, 100)
+                new HBoxInputBox(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.delayBeforeRunning"), delayBeforeRunningTextField, 100)
         );
 
         for(int i =0;i< getAction().getClientProperties().getSize(); i++)
@@ -1056,7 +1056,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         if(displayNameStr.isBlank())
         {
-            finalErrors.append(" * Display Name cannot be blank\n");
+            finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.displayNameCannotBeBlank")).append("\n");
         }
 
         if(!isCombineChild())
@@ -1067,13 +1067,15 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 {
                     if(hideDisplayTextCheckBox.isSelected() && hideDefaultIconCheckBox.isSelected())
                     {
-                        finalErrors.append(" * Both Icon and display text check box cannot be hidden.\n");
+                        finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.bothIconAndDisplayTextCannotBeHidden")).append("\n");
                     }
                 }
                 else
                 {
                     if(hideDisplayTextCheckBox.isSelected())
-                        finalErrors.append(" * Display Text cannot be hidden since there is no icon.\n");
+                    {
+                        finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.displayTextCannotBeHiddenSinceThereIsNoIcon")).append("\n");
+                    }
                 }
             }
 
@@ -1084,16 +1086,16 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     double r = Double.parseDouble(displayNameFontSizeTextField.getText());
                     if(r < 1)
                     {
-                        finalErrors.append(" * Name Label Font Size too small.\n");
+                        finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.nameLabelFontSizeTooSmall")).append("\n");
                     }
                     else if(r > getClientProfile().getActionSize())
                     {
-                        finalErrors.append(" * Name Label Font Size too large.\n");
+                        finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.nameLabelFontSizeTooLarge")).append("\n");
                     }
                 }
                 catch (NumberFormatException e)
                 {
-                    finalErrors.append(" * Name Label Font Size should be a number.\n");
+                    finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.nameLabelFontSizeMustBeInteger")).append("\n");
                 }
             }
 
@@ -1106,11 +1108,11 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
                 if(rowSpan < 1)
                 {
-                    finalErrors.append(" * Row Span should be at least 1.\n");
+                    finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.rowSpanMustBeGreaterThan0")).append("\n");
                 }
                 else if((row+rowSpan) > getClientProfile().getRows())
                 {
-                    finalErrors.append(" * Row Span cannot be bigger than the Profile Rows Size.\n");
+                    finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.rowSpanCannotBeBiggerThanProfileRowsSize")).append("\n");
                 }
                 else
                 {
@@ -1118,14 +1120,14 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     {
                         if(actionGridPaneListener.getActionBox(col, i).getAction() != null)
                         {
-                            finalErrors.append(" * Location Conflict with Action on Col. ").append(col).append(", Row. ").append(i).append(". Move it before doing this.\n");
+                            finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.rowColumnSpanLocationConflict", i, col)).append("\n");
                         }
                     }
                 }
             }
             catch (NumberFormatException e)
             {
-                finalErrors.append(" * Row Span should be a number.\n");
+                finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.rowSpanMustBeInteger")).append("\n");
             }
 
             try
@@ -1137,11 +1139,11 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
                 if(colSpan < 1)
                 {
-                    finalErrors.append(" * Column Span should be at least 1.\n");
+                    finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.columnSpanMustBeGreaterThan0")).append("\n");
                 }
                 else if((col+colSpan) > getClientProfile().getCols())
                 {
-                    finalErrors.append(" * Column Span cannot be bigger than the Profile Column Size.\n");
+                    finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.columnSpanCannotBeBiggerThanProfileRowsSize")).append("\n");
                 }
                 else
                 {
@@ -1149,14 +1151,14 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     {
                         if(actionGridPaneListener.getActionBox(i, row).getAction() != null)
                         {
-                            finalErrors.append(" * Location Conflict with Action on Col. ").append(i).append(", Row. ").append(row).append(". Move it before doing this.\n");
+                            finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.rowColumnSpanLocationConflict", i, col)).append("\n");
                         }
                     }
                 }
             }
             catch (NumberFormatException e)
             {
-                finalErrors.append(" * Column Span should be a number.\n");
+                finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.columnSpanMustBeInteger")).append("\n");
             }
         }
 
@@ -1166,12 +1168,12 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             {
                 if (Integer.parseInt(delayBeforeRunningTextField.getText()) < 0)
                 {
-                    finalErrors.append(" * Sleep should be greater than 0.\n");
+                    finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.delayBeforeRunningMustBeGreaterThan0")).append("\n");
                 }
             }
             catch (NumberFormatException e)
             {
-                finalErrors.append(" * Sleep should be a number.\n");
+                finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.delayBeforeRunningMustBeInteger")).append("\n");
             }
         }
 
@@ -1193,13 +1195,15 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     }
                     catch (NumberFormatException e)
                     {
-                        finalErrors.append("        -> ").append(clientProperty.getDisplayName()).append(" must be integer.\n");
+                        finalErrors.append("        -> ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.clientPropertyMustBeInteger", clientProperty.getDisplayName())).append("\n");
                     }
                 }
                 else
                 {
                     if(value.isBlank() && !clientProperty.isCanBeBlank())
-                        finalErrors.append("        -> ").append(clientProperty.getDisplayName()).append(" cannot be blank.\n");
+                    {
+                        finalErrors.append("        -> ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.clientPropertyCannotBeBlank", clientProperty.getDisplayName())).append("\n");
+                    }
                 }
             }
         }
@@ -1207,8 +1211,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         if(!finalErrors.toString().isEmpty())
         {
-            throw new MinorException("You made mistakes",
-                    finalErrors.toString());
+            throw new MinorException(I18N.getString("window.dashboard.actiondetailspane.rectifyTheFollowingErrorsAndTryAgain", finalErrors));
         }
     }
 
@@ -1216,8 +1219,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     public void onDeleteButtonClicked()
     {
         StreamPiAlert streamPiAlert = new StreamPiAlert(
-                "Warning",
-                "Are you sure you want to delete the action?",
+                I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.deleteAreYouSure"),
                 StreamPiAlertType.WARNING
         );
 

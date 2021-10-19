@@ -57,7 +57,7 @@ public class Config
         catch (Exception e)
         {
             e.printStackTrace();
-            throw new SevereException("Config", "Unable to read config.xml\n"+e.getMessage());
+            throw new SevereException(I18N.getString("io.config.unableToReadConfig", e.getMessage()));
         }
     }
 
@@ -76,8 +76,10 @@ public class Config
 
     Logger logger = Logger.getLogger(Config.class.getName());
 
-    public void save() throws SevereException {
-        try {
+    public void save() throws SevereException
+    {
+        try
+        {
             logger.info("Saving config ...");
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             Result output = new StreamResult(configFile);
@@ -85,8 +87,11 @@ public class Config
 
             transformer.transform(input, output);
             logger.info("... Done!");
-        } catch (Exception e) {
-            throw new SevereException("Config", "unable to save config.xml");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw new SevereException(I18N.getString("io.config.unableToSaveConfig", e.getMessage()));
         }
     }
 

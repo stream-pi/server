@@ -62,7 +62,7 @@ public class ClientAndProfileSelectorPane extends HBox {
 
         clientsComboBox = new ComboBox<>();
         clientsComboBox.getStyleClass().add("client_and_profile_selector_pane_client_selector_combo_box");
-        clientsComboBox.setPromptText("Choose client");
+        clientsComboBox.setPromptText(I18N.getString("window.dashboard.ClientAndProfileSelectorPane.chooseClient"));
 
         clientsComboBox.valueProperty().addListener((observableValue, oldVal, newVal) -> {
             if(oldVal!=newVal && newVal!=null)
@@ -88,7 +88,7 @@ public class ClientAndProfileSelectorPane extends HBox {
 
                         if(clientConnection == null)
                         {
-                            setText("Choose client");
+                            setText(I18N.getString("window.dashboard.ClientAndProfileSelectorPane.chooseClient"));
                         }
                         else
                         {
@@ -106,7 +106,7 @@ public class ClientAndProfileSelectorPane extends HBox {
 
         clientProfilesComboBox = new ComboBox<>();
         clientProfilesComboBox.getStyleClass().add("client_and_profile_selector_pane_profile_selector_combo_box");
-        clientProfilesComboBox.setPromptText("Choose Profile");
+        clientProfilesComboBox.setPromptText(I18N.getString("window.dashboard.ClientAndProfileSelectorPane.chooseProfile"));
         clientProfilesComboBox.valueProperty().addListener((observableValue, oldVal, newVal) -> {
             if(oldVal!=newVal && newVal!=null)
             {
@@ -128,7 +128,7 @@ public class ClientAndProfileSelectorPane extends HBox {
 
                         if(profile == null)
                         {
-                            setText("Choose Profile");
+                            setText(I18N.getString("window.dashboard.ClientAndProfileSelectorPane.chooseProfile"));
                         }
                         else
                         {

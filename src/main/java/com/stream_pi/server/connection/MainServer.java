@@ -100,28 +100,17 @@ public class MainServer extends Thread
                 logger.info("New client connected ("+s.getRemoteSocketAddress()+") !");
             }
         }
-        catch (BindException | UnknownHostException e)
-        {
-            e.printStackTrace();
-            logger.warning("Main Server stopped accepting calls ...");
-            serverListener.onServerStartFailure();
-
-
-            serverListener.showUserChooseIPDialog();
-        }
         catch (SocketException e)
         {
+            e.printStackTrace();
             if(!e.getMessage().contains("Socket closed") && !e.getMessage().contains("Interrupted function call: accept failed"))
             {
 
                 logger.warning("Main Server stopped accepting calls ...");
                 serverListener.onServerStartFailure();
 
-                exceptionAndAlertHandler.handleMinorException(new MinorException("Sorry!","Server could not be started at "+port+".\n" +
-                        "This could be due to another process or another instance of Stream-Pi Server using the same port. \n\n" +
-                        "If another Server Instance probably running, close it. If not, try changing the port in settings and restart Stream-Pi Server." +
-                        "If the problem still persists, consider contacting us. \n\nFull Message : "+e.getMessage()));
-                e.printStackTrace();
+
+                serverListener.showUserChooseIPDialog();
             }
         }
         catch (IOException e)

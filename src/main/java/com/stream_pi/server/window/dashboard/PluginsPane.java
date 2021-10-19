@@ -4,6 +4,7 @@ import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.action.ExternalPlugins;
 
 import com.stream_pi.server.controller.ActionDataFormats;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.HostServices;
 import javafx.geometry.Insets;
@@ -55,7 +56,7 @@ public class PluginsPane extends VBox {
         settingsHBox.getStyleClass().add("plugins_pane_settings_button_parent");
         settingsHBox.setAlignment(Pos.CENTER_RIGHT);
 
-        Label pluginsLabel = new Label("Plugins");
+        Label pluginsLabel = new Label(I18N.getString("window.dashboard.PluginsPane.plugins"));
         pluginsLabel.getStyleClass().add("plugins_pane_top_label");
 
         getChildren().addAll(pluginsLabel, pluginsAccordion, SpaceFiller.vertical(), settingsHBox);
@@ -185,7 +186,7 @@ public class PluginsPane extends VBox {
         VBox vBox = new VBox();
         vBox.getStyleClass().add("plugins_pane_each_plugin_box_parent");
 
-        Button folderActionButton = new Button("Folder");
+        Button folderActionButton = new Button(I18N.getString("window.dashboard.PluginsPane.folder"));
         folderActionButton.getStyleClass().add("plugins_pane_each_plugin_button");
         folderActionButton.setMaxWidth(Double.MAX_VALUE);
         folderActionButton.setAlignment(Pos.CENTER_LEFT);
@@ -207,7 +208,7 @@ public class PluginsPane extends VBox {
 
 
 
-        Button combineActionButton = new Button("Combine");
+        Button combineActionButton = new Button(I18N.getString("window.dashboard.PluginsPane.combine"));
         combineActionButton.getStyleClass().add("plugins_pane_each_plugin_button");
         combineActionButton.setMaxWidth(Double.MAX_VALUE);
         combineActionButton.setAlignment(Pos.CENTER_LEFT);
@@ -236,7 +237,7 @@ public class PluginsPane extends VBox {
 
         vBox.getChildren().addAll(h1, h2);
 
-        TitledPane pane = new TitledPane("Stream-Pi", vBox);
+        TitledPane pane = new TitledPane(I18N.getString("window.dashboard.PluginsPane.stream-pi"), vBox);
         pane.getStyleClass().add("plugins_pane_each_plugin_category_titled_pane");
 
         pluginsAccordion.getPanes().add(pane);
