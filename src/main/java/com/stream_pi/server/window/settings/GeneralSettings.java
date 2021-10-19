@@ -384,6 +384,14 @@ public class GeneralSettings extends VBox
                         toBeReloaded = true;
                     }
 
+                    if (!languageChooserComboBox.getSelectedLocale().equals(config.getCurrentLanguageLocale()))
+                    {
+                        config.setCurrentLanguageLocale(languageChooserComboBox.getSelectedLocale());
+
+                        toBeReloaded = true;
+                    }
+
+
                     if(config.getStartOnBoot() != startOnBoot)
                     {
                         StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform(),
