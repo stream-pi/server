@@ -9,13 +9,18 @@ import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.HostServices;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import org.controlsfx.control.ToggleSwitch;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.util.ArrayList;
@@ -54,7 +59,7 @@ public class ThemesSettings extends VBox
 
         getChildren().addAll(scrollPane);
 
-        toggleButtons = new ArrayList<>();
+        toggleSwitches = new ArrayList<>();
 
     }
 
@@ -76,11 +81,11 @@ public class ThemesSettings extends VBox
         this.currentThemeFullName = currentThemeFullName;
     }
 
-    private ArrayList<ToggleButton> toggleButtons;
+    private ArrayList<ToggleSwitch> toggleSwitches;
 
     public void loadThemes()
     {
-        toggleButtons.clear();
+        toggleSwitches.clear();
 
         Platform.runLater(()-> themesSettingsVBox.getChildren().clear());
 
@@ -116,45 +121,39 @@ public class ThemesSettings extends VBox
                 topRowHBox.getChildren().addAll(SpaceFiller.horizontal(), helpButton);
             }
 
-            ToggleButton toggleButton = new ToggleButton();
-            toggleButton.getStyleClass().add("themes_settings_each_theme_toggle_button");
+            ToggleSwitch toggleSwitch = new ToggleSwitch();
+            toggleSwitch.getStyleClass().add("themes_settings_each_theme_toggle_switch");
 
-            toggleButton.setSelected(theme.getFullName().equals(currentThemeFullName));
-            toggleButton.setId(theme.getFullName());
+            toggleSwitch.setSelected(theme.getFullName().equals(currentThemeFullName));
+            toggleSwitch.setId(theme.getFullName());
 
 
             if(theme.getFullName().equals(currentThemeFullName))
             {
-                toggleButton.setText(I18N.getString("window.settings.ThemesSettings.toggleON"));
-                toggleButton.setSelected(true);
-                toggleButton.setDisable(true);
-            }
-            else
-            {
-                toggleButton.setText(I18N.getString("window.settings.ThemesSettings.toggleOFF"));
+                toggleSwitch.setSelected(true);
+                toggleSwitch.setDisable(true);
             }
 
-            toggleButton.setOnAction(event -> {
-                ToggleButton toggleButton1 = (ToggleButton) event.getSource();
 
-                try {
-                    Config.getInstance().setCurrentThemeFullName(toggleButton1.getId());
+            toggleSwitch.setOnMouseClicked(event -> {
+                ToggleSwitch toggleSwitch1 = (ToggleSwitch) event.getSource();
+
+                try
+                {
+                    Config.getInstance().setCurrentThemeFullName(toggleSwitch1.getId());
                     Config.getInstance().save();
 
-
-                    for(ToggleButton toggleButton2 : toggleButtons)
+                    for(ToggleSwitch toggleSwitch2 : toggleSwitches)
                     {
-                        if(toggleButton2.getId().equals(Config.getInstance().getCurrentThemeFullName()))
+                        if(toggleSwitch2.getId().equals(Config.getInstance().getCurrentThemeFullName()))
                         {
-                            toggleButton2.setDisable(true);
-                            toggleButton2.setText(I18N.getString("window.settings.ThemesSettings.toggleON"));
-                            toggleButton2.setSelected(true);
+                            toggleSwitch2.setDisable(true);
+                            toggleSwitch2.setSelected(true);
                         }
                         else
                         {
-                            toggleButton2.setDisable(false);
-                            toggleButton2.setText(I18N.getString("window.settings.ThemesSettings.toggleOFF"));
-                            toggleButton2.setSelected(false);
+                            toggleSwitch2.setDisable(false);
+                            toggleSwitch2.setSelected(false);
                         }
                     }
 
@@ -166,7 +165,7 @@ public class ThemesSettings extends VBox
                 }
             });
 
-            HBox hBox = new HBox(toggleButton);
+            HBox hBox = new HBox(toggleSwitch);
             hBox.getStyleClass().add("themes_settings_each_theme_toggle_button_parent");
 
             hBox.setAlignment(Pos.TOP_RIGHT);
@@ -179,7 +178,7 @@ public class ThemesSettings extends VBox
             Platform.runLater(()->themesSettingsVBox.getChildren().add(vBox));
 
 
-            toggleButtons.add(toggleButton);
+            toggleSwitches.add(toggleSwitch);
         }
 
     }

@@ -1,4 +1,4 @@
-package com.stream_pi.server.window.dashboard.actiondetailpane;
+package com.stream_pi.server.window.dashboard.actiondetailspane;
 
 import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
@@ -29,10 +29,7 @@ import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.HostServices;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -102,7 +99,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         clientPropertiesVBox.setSpacing(10.0);
 
         vbox = new VBox();
-        //vbox.setPadding(new Insets(0, 25, 0, 5));
         vbox.getStyleClass().add("action_details_pane_vbox");
 
         vbox.setSpacing(10.0);

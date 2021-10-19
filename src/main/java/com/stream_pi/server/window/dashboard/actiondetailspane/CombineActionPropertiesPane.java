@@ -1,4 +1,4 @@
-package com.stream_pi.server.window.dashboard.actiondetailpane;
+package com.stream_pi.server.window.dashboard.actiondetailspane;
 
 import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.actionproperty.property.Property;
@@ -15,9 +15,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.javafx.FontIcon;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CombineActionPropertiesPane extends VBox {
     private CombineAction combineAction;

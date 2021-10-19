@@ -102,6 +102,7 @@ public class MainServer extends Thread
         }
         catch (BindException | UnknownHostException e)
         {
+            e.printStackTrace();
             logger.warning("Main Server stopped accepting calls ...");
             serverListener.onServerStartFailure();
 

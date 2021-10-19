@@ -10,16 +10,14 @@ import com.stream_pi.action_api.actionproperty.gaugeproperties.SerializableColor
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.controller.ActionDataFormats;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
-import com.stream_pi.server.window.dashboard.actiondetailpane.ActionDetailsPaneListener;
+import com.stream_pi.server.window.dashboard.actiondetailspane.ActionDetailsPaneListener;
 import com.stream_pi.util.exception.MinorException;
 import eu.hansolo.medusa.Gauge;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.input.ClipboardContent;
@@ -28,15 +26,11 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.ByteArrayInputStream;
-import java.io.ObjectInputStream;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
-import java.util.List;
 
 public class ActionBox extends StackPane
 {

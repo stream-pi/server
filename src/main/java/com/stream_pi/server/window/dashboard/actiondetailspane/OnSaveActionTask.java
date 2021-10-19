@@ -1,15 +1,11 @@
-package com.stream_pi.server.window.dashboard.actiondetailpane;
+package com.stream_pi.server.window.dashboard.actiondetailspane;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
-import com.stream_pi.action_api.actionproperty.ClientProperties;
-import com.stream_pi.action_api.actionproperty.property.Property;
-import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;

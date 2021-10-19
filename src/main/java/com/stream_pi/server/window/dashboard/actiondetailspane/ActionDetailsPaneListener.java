@@ -1,10 +1,8 @@
-package com.stream_pi.server.window.dashboard.actiondetailpane;
+package com.stream_pi.server.window.dashboard.actiondetailspane;
 
 import com.stream_pi.action_api.action.Action;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
-import com.stream_pi.server.window.dashboard.actiongridpane.ActionGridPaneListener;
 import com.stream_pi.util.exception.MinorException;
-import com.stream_pi.util.exception.SevereException;
 import javafx.stage.Window;
 
 public interface ActionDetailsPaneListener {

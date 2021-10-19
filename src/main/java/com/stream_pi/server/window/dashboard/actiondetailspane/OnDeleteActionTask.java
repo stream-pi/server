@@ -1,4 +1,4 @@
-package com.stream_pi.server.window.dashboard.actiondetailpane;
+package com.stream_pi.server.window.dashboard.actiondetailspane;
 
 import java.util.logging.Logger;
 

@@ -5,15 +5,12 @@ import java.util.logging.Logger;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionGridPane;
-import com.stream_pi.server.window.dashboard.actiondetailpane.ActionDetailsPane;
+import com.stream_pi.server.window.dashboard.actiondetailspane.ActionDetailsPane;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.SevereException;
 import javafx.application.HostServices;
 import javafx.geometry.Orientation;
 import javafx.scene.control.SplitPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 
 public class DashboardBase extends SplitPane implements DashboardInterface
 {
