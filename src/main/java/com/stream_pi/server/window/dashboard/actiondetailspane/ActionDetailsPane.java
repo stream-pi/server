@@ -475,7 +475,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     }
                     catch (MinorException e)
                     {
-                        e.setTitle("Error");
                         exceptionAndAlertHandler.handleMinorException("onCreate() failed for "+getAction().getModuleName()+"\n\n"+e.getMessage(), e);
                     }
 

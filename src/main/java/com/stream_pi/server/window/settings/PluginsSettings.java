@@ -108,13 +108,13 @@ public class PluginsSettings extends VBox
                             }
                             catch (NumberFormatException e)
                             {
-                                errors.append("        -> ").append(I18N.getString("window.settings.PluginsSettings.propertyMustBeInteger", serverProperty.getDisplayName())).append(("\n"));
+                                errors.append("        -> ").append(I18N.getString("window.settings.PluginsSettings.serverPropertyMustBeInteger", serverProperty.getDisplayName())).append(("\n"));
                             }
                         }
                         else
                         {
                             if(value.isBlank() && !serverProperty.isCanBeBlank())
-                                errors.append("        -> ").append(I18N.getString("window.settings.PluginsSettings.propertyCannotBeBlank", serverProperty.getDisplayName())).append(("\n"));
+                                errors.append("        -> ").append(I18N.getString("window.settings.PluginsSettings.serverPropertyCannotBeBlank", serverProperty.getDisplayName())).append(("\n"));
                         }
                     }
                     else if(serverProperty.getControlType() == ControlType.TEXT_FIELD_MASKED)
@@ -122,7 +122,7 @@ public class PluginsSettings extends VBox
                         String value = ((TextField) controlNode).getText();
 
                         if(value.isBlank() && !serverProperty.isCanBeBlank())
-                            errors.append("        -> ").append(I18N.getString("window.settings.PluginsSettings.propertyCannotBeBlank", serverProperty.getDisplayName())).append(("\n"));
+                            errors.append("        -> ").append(I18N.getString("window.settings.PluginsSettings.serverPropertyCannotBeBlank", serverProperty.getDisplayName())).append(("\n"));
                     }
                 }
 
