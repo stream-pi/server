@@ -4,6 +4,7 @@ import com.stream_pi.action_api.actionproperty.property.ControlType;
 import com.stream_pi.action_api.actionproperty.property.FileExtensionFilter;
 import com.stream_pi.action_api.actionproperty.property.ListValue;
 import com.stream_pi.action_api.actionproperty.property.Property;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
@@ -57,7 +58,7 @@ public class Helper
 
                             if(listValue == null)
                             {
-                                setText("Choose value");
+                                setText(I18N.getString("window.helper.Helper.chooseValue"));
                             }
                             else
                             {

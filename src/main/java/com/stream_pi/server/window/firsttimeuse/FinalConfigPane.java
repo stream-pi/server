@@ -1,6 +1,7 @@
 package com.stream_pi.server.window.firsttimeuse;
 
 import com.stream_pi.server.controller.ServerListener;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.combobox.IPChooserComboBox;
@@ -37,8 +38,7 @@ public class FinalConfigPane extends VBox
 
         getStyleClass().add("first_time_use_pane_final_config");
 
-        Label label = new Label("You're almost finished with setting up your Stream-Pi Server. Now all you need to do is to choose a name for your Stream-Pi Server, and, choose which port you want the Stream-Pi Server to operate on.\n" +
-                "We recommend that you give your Stream-Pi Server a short name & that you use the Default port that has already been typed in for you. You can change it from Settings in case it conflicts with other services or applications.");
+        Label label = new Label(I18N.getString("window.firsttimeuse.FinalConfigPane.header"));
         label.setWrapText(true);
         label.getStyleClass().add("first_time_use_pane_final_config_label");
 
@@ -47,21 +47,18 @@ public class FinalConfigPane extends VBox
         ipChooserComboBox = new IPChooserComboBox(exceptionAndAlertHandler);
         ipChooserComboBox.configureOptions();
 
-        HBoxInputBox serverNickNameInputBox = new HBoxInputBox("Server Nickname", serverNicknameTextField, 200);
-        HBoxInputBox serverPortInputBox = new HBoxInputBox("Server Port", serverPortTextField);
-        HBoxWithSpaceBetween ipChooserHBox = new HBoxWithSpaceBetween("Server IP Binding", ipChooserComboBox);
+        HBoxInputBox serverNickNameInputBox = new HBoxInputBox(I18N.getString("window.firsttimeuse.FinalConfigPane.serverNickname"), serverNicknameTextField, 200);
+        HBoxInputBox serverPortInputBox = new HBoxInputBox(I18N.getString("window.firsttimeuse.FinalConfigPane.serverPort"), serverPortTextField);
+        HBoxWithSpaceBetween ipChooserHBox = new HBoxWithSpaceBetween(I18N.getString("window.firsttimeuse.FinalConfigPane.serverIPBinding"), ipChooserComboBox);
 
-        Label warningLabel = new Label(
-                "Stream-Pi is not encrypted yet. Use this only in absolutely private networks. Do not use this in a public network (Railway Station, Park).\n" +
-                        "Stream-Pi project is not responsible if your computer is compromised because of connecting Stream-Pi to a malicious network."
-        );
-        warningLabel.setWrapText(true);
-        warningLabel.getStyleClass().add("first_time_use_pane_final_config_warning_label");
+        Label securityWarningLabel = new Label(I18N.getString("window.firsttimeuse.FinalConfigPane.securityWarning"));
+        securityWarningLabel.setWrapText(true);
+        securityWarningLabel.getStyleClass().add("first_time_use_pane_final_config_security_warning_label");
 
 
 
         setAlignment(Pos.TOP_CENTER);
-        getChildren().addAll(label, serverNickNameInputBox, serverPortInputBox, ipChooserHBox, warningLabel);
+        getChildren().addAll(label, serverNickNameInputBox, serverPortInputBox, ipChooserHBox, securityWarningLabel);
 
         setSpacing(10.0);
 
@@ -70,7 +67,7 @@ public class FinalConfigPane extends VBox
 
     public void makeChangesToNextButton()
     {
-        nextButton.setText("Confirm");
+        nextButton.setText(I18N.getString("window.firsttimeuse.FinalConfigPane.confirm"));
         nextButton.setOnAction(actionEvent -> new Thread(new Task<Void>() {
             @Override
             protected Void call()
@@ -90,9 +87,9 @@ public class FinalConfigPane extends VBox
         String serverNameStr = serverNicknameTextField.getText();
         String serverPortStr = serverPortTextField.getText();
 
-        if(serverNameStr.isBlank() || serverNameStr.isEmpty())
+        if(serverNameStr.isBlank())
         {
-            errors.append("* Server Name cannot be blank.\n");
+            errors.append("* ").append(I18N.getString("window.firsttimeuse.FinalConfigPane.serverNameCannotBeBlank")).append("\n");
         }
 
         int serverPort=-1;
@@ -100,13 +97,17 @@ public class FinalConfigPane extends VBox
             serverPort = Integer.parseInt(serverPortStr);
 
             if (serverPort < 1024)
-                errors.append("* Server Port must be more than 1024\n");
+            {
+                errors.append("* ").append(I18N.getString("window.firsttimeuse.FinalConfigPane.serverPortMustBeGreaterThan1024")).append("\n");
+            }
             else if(serverPort > 65535)
-                errors.append("* Server Port must be lesser than 65535\n");
+            {
+                errors.append("* ").append(I18N.getString("window.firsttimeuse.FinalConfigPane.serverPortMustBeLesserThan65535")).append("\n");
+            }
         }
         catch (NumberFormatException e)
         {
-            errors.append("* Server Port must be integer.\n");
+            errors.append("* ").append(I18N.getString("window.firsttimeuse.FinalConfigPane.serverPortMustBeInteger")).append("\n");
         }
 
         if(errors.toString().isEmpty())
@@ -129,7 +130,7 @@ public class FinalConfigPane extends VBox
         else
         {
             Platform.runLater(()->nextButton.setDisable(false));
-            new StreamPiAlert("Uh Oh", "Please rectify the following errors and try again:\n"+errors, StreamPiAlertType.ERROR).show();
+            new StreamPiAlert(I18N.getString("window.firsttimeuse.FinalConfigPane.rectifyTheFollowingErrorsAndTryAgain", errors), StreamPiAlertType.ERROR).show();
         }
     }
 }
