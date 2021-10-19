@@ -1,6 +1,7 @@
 package com.stream_pi.server.window.settings;
 
 import com.stream_pi.server.controller.Controller;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.theme_api.Theme;
 import com.stream_pi.theme_api.Themes;
@@ -100,7 +101,7 @@ public class ThemesSettings extends VBox
             HBox topRowHBox = new HBox(shortNameLabel);
             topRowHBox.getStyleClass().add("themes_settings_each_theme_header");
 
-            Label versionLabel = new Label("Version : "+theme.getVersion().getText());
+            Label versionLabel = new Label(I18N.getString("window.settings.ThemesSettings.version", theme.getVersion().getText()));
             versionLabel.getStyleClass().add("themes_settings_each_theme_version_label");
 
             if(theme.getWebsite() != null)
@@ -124,20 +125,17 @@ public class ThemesSettings extends VBox
 
             if(theme.getFullName().equals(currentThemeFullName))
             {
-                toggleButton.setText("ON");
+                toggleButton.setText(I18N.getString("window.settings.ThemesSettings.toggleON"));
                 toggleButton.setSelected(true);
                 toggleButton.setDisable(true);
             }
             else
             {
-                toggleButton.setText("OFF");
+                toggleButton.setText(I18N.getString("window.settings.ThemesSettings.toggleOFF"));
             }
 
             toggleButton.setOnAction(event -> {
                 ToggleButton toggleButton1 = (ToggleButton) event.getSource();
-
-
-                toggleButton.setText("ON");
 
                 try {
                     Config.getInstance().setCurrentThemeFullName(toggleButton1.getId());
@@ -149,13 +147,13 @@ public class ThemesSettings extends VBox
                         if(toggleButton2.getId().equals(Config.getInstance().getCurrentThemeFullName()))
                         {
                             toggleButton2.setDisable(true);
-                            toggleButton2.setText("ON");
+                            toggleButton2.setText(I18N.getString("window.settings.ThemesSettings.toggleON"));
                             toggleButton2.setSelected(true);
                         }
                         else
                         {
                             toggleButton2.setDisable(false);
-                            toggleButton2.setText("OFF");
+                            toggleButton2.setText(I18N.getString("window.settings.ThemesSettings.toggleOFF"));
                             toggleButton2.setSelected(false);
                         }
                     }

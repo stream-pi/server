@@ -23,13 +23,24 @@ public class I18N
 
     public static String getString(String key, Object... args)
     {
-        if (args.length == 0)
+        String result;
+
+        if (RESOURCE_BUNDLE.containsKey(key))
         {
-            return RESOURCE_BUNDLE.getString(key);
+            result = RESOURCE_BUNDLE.getString(key);
         }
         else
         {
-            return String.format(RESOURCE_BUNDLE.getString(key), args);
+            result = key;
+        }
+
+        if (args.length == 0)
+        {
+            return result;
+        }
+        else
+        {
+            return String.format(result, args);
         }
     }
 

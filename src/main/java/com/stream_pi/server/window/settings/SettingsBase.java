@@ -1,6 +1,7 @@
 package com.stream_pi.server.window.settings;
 
 import com.stream_pi.server.controller.ServerListener;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.settings.about.About;
 import javafx.application.HostServices;
@@ -38,29 +39,29 @@ public class SettingsBase extends VBox
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         VBox.setVgrow(tabPane, Priority.ALWAYS);
 
-        Tab generalSettingsTab = new Tab("General");
+        Tab generalSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.general"));
         generalSettings = new GeneralSettings(exceptionAndAlertHandler, serverListener, hostServices);
         generalSettingsTab.setContent(generalSettings);
 
-        Tab pluginsSettingsTab = new Tab("Plugins");
+        Tab pluginsSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.plugins"));
         pluginsSettings = new PluginsSettings(exceptionAndAlertHandler, hostServices);
         pluginsSettingsTab.setContent(pluginsSettings);
 
-        Tab themesSettingsTab = new Tab("Themes");
+        Tab themesSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.themes"));
         themesSettings = new ThemesSettings(hostServices);
         themesSettingsTab.setContent(themesSettings);
 
-        Tab clientsSettingsTab = new Tab("Clients");
+        Tab clientsSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.clients"));
         clientsSettings = new ClientsSettings(exceptionAndAlertHandler, serverListener);
         clientsSettingsTab.setContent(clientsSettings);
 
-        Tab aboutTab = new Tab("About");
+        Tab aboutTab = new Tab(I18N.getString("window.settings.SettingsBase.about"));
         aboutTab.setContent(new About(hostServices));
 
         tabPane.getTabs().addAll(generalSettingsTab, pluginsSettingsTab, themesSettingsTab, clientsSettingsTab, aboutTab);
 
 
-        closeButton = new Button("Close");
+        closeButton = new Button(I18N.getString("window.settings.SettingsBase.close"));
         closeButton.getStyleClass().add("settings_close_button");
         VBox.setMargin(closeButton, new Insets(0,10, 10, 0));
 

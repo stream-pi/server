@@ -295,8 +295,9 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     {
         try
         {
-            if(Config.getInstance().getMinimiseToSystemTrayOnClose() &&
-                    SystemTray.isSupported() && !disableTrayIcon)
+            if(getConfig().getMinimiseToSystemTrayOnClose() &&
+                    SystemTray.isSupported() && !disableTrayIcon &&
+                    !getConfig().isFirstTimeUse())
             {
                 minimiseApp();
                 event.consume();
@@ -305,10 +306,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
             onQuitApp();
             exit();
-        }
-        catch (SevereException e)
-        {
-            handleSevereException(e);
         }
         catch (MinorException e)
         {

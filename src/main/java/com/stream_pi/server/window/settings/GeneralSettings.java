@@ -436,9 +436,7 @@ public class GeneralSettings extends VBox
                             if(!soundFile.exists() || !soundFile.isFile())
                             {
 
-                                StreamPiAlert alert = new StreamPiAlert("File not found",
-                                        "No sound file at \n"+soundOnActionClickedFilePath+"\n" +
-                                                "Unable to set sound on action clicked.", StreamPiAlertType.ERROR);
+                                StreamPiAlert alert = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.soundFileNotFound"), StreamPiAlertType.ERROR);
                                 alert.show();
 
                                 soundOnActionClicked = false;
@@ -481,12 +479,7 @@ public class GeneralSettings extends VBox
 
                     if(toBeReloaded)
                     {
-                        StreamPiAlert restartPrompt = new StreamPiAlert(
-                                "Warning",
-                                "Stream-Pi Server needs to be restarted for these changes to take effect. Restart?\n" +
-                                        "All your current connections will be disconnected.",
-                                StreamPiAlertType.WARNING
-                        );
+                        StreamPiAlert restartPrompt = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.restartPromptWarning"), StreamPiAlertType.WARNING);
 
                         String yesOption = "Yes";
                         String noOption = "No";
@@ -530,8 +523,7 @@ public class GeneralSettings extends VBox
 
     private void onFactoryResetButtonClicked()
     {
-        StreamPiAlert confirmation = new StreamPiAlert("Warning", "Are you sure?\n" +
-                "This will erase everything.", StreamPiAlertType.WARNING);
+        StreamPiAlert confirmation = new StreamPiAlert( I18N.getString("window.settings.GeneralSettings.resetAreYouSure"), StreamPiAlertType.WARNING);
 
         String yesButton = "Yes";
         String noButton = "No";

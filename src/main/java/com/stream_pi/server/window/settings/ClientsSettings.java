@@ -7,6 +7,7 @@ import com.stream_pi.server.client.ClientTheme;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.connection.ClientConnections;
 import com.stream_pi.server.controller.ServerListener;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
@@ -64,7 +65,7 @@ public class ClientsSettings extends VBox
         clientsSettingsVBox.prefWidthProperty().bind(scrollPane.widthProperty().subtract(25));
         scrollPane.setContent(clientsSettingsVBox);
 
-        saveButton = new Button("Save");
+        saveButton = new Button(I18N.getString("window.settings.ClientsSettings.save"));
         HBox.setMargin(saveButton, new Insets(0,10, 0, 0));
         saveButton.setOnAction(event -> onSaveButtonClicked());
 
@@ -93,7 +94,7 @@ public class ClientsSettings extends VBox
                         StringBuilder errors = new StringBuilder();
 
                         if(clientSettingsVBox.getNickname().isBlank())
-                            errors.append("    Cannot have blank nickname. \n");
+                            errors.append("    ").append(I18N.getString("window.settings.ClientsSettings.clientCannotHaveBlankNickname")).append("\n");
 
 
                         for(ClientProfileVBox clientProfileVBox : clientSettingsVBox.getClientProfileVBoxes())
@@ -101,7 +102,7 @@ public class ClientsSettings extends VBox
                             StringBuilder errors2 = new StringBuilder();
 
                             if(clientProfileVBox.getName().isBlank())
-                                errors2.append("        cannot have blank nickname. \n");
+                                errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.profileNameCannotBeBlank")).append(" \n");
 
                             try 
                             {
@@ -109,7 +110,7 @@ public class ClientsSettings extends VBox
                             }
                             catch (NumberFormatException e)
                             {
-                                errors2.append("        Must have integer action Size. \n");
+                                errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.actionSizeMustBeInteger")).append("\n");
                             }
 
 
@@ -119,7 +120,7 @@ public class ClientsSettings extends VBox
                             }
                             catch (NumberFormatException e)
                             {
-                                errors2.append("        Must have integer action Gap. \n");
+                                errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.actionGapMustBeInteger")).append("\n");
                             }
 
                             boolean checkForOutOfBoundsActions = true;
@@ -128,12 +129,12 @@ public class ClientsSettings extends VBox
                             {
                                 if(Integer.parseInt(clientProfileVBox.getRows())<1)
                                 {
-                                    errors2.append("        Rows cannot be less than 1");
+                                    errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.rowsCannotBeLesserThan1")).append("\n");
                                 }
                             }
                             catch (NumberFormatException e)
                             {
-                                errors2.append("        Must have integer columns. \n");
+                                errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.rowsMustBeInteger")).append("\n");
                                 checkForOutOfBoundsActions = false;
                             }
 
@@ -141,12 +142,12 @@ public class ClientsSettings extends VBox
                             {
                                 if(Integer.parseInt(clientProfileVBox.getCols())<1)
                                 {
-                                    errors2.append("        Columns cannot be less than 1");
+                                    errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.columnsCannotBeLesserThan1")).append("\n");
                                 }
                             }
                             catch (NumberFormatException e)
                             {
-                                errors2.append("        Must have integer rows. \n");
+                                errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.columnsMustBeInteger")).append("\n");
                                 checkForOutOfBoundsActions = false;
                             }
 
@@ -158,7 +159,7 @@ public class ClientsSettings extends VBox
                                     if(action.getLocation().getRow() > (Integer.parseInt(clientProfileVBox.getRows())-1)
                                         || action.getLocation().getCol() > (Integer.parseInt(clientProfileVBox.getCols())-1))
                                     {
-                                        errors2.append("        Action '").append(action.getDisplayText()).append("' is out of bounds. Either move it, or increase row/columns.");
+                                        errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.actionOutOfBounds", action.getDisplayText())).append("\n");
                                     }
                                 }
                             }
@@ -190,8 +191,7 @@ public class ClientsSettings extends VBox
                     }
 
                     if(!finalErrors.toString().isEmpty())
-                        throw new MinorException("You made form mistakes",
-                                "Please fix the following issues : \n"+finalErrors);
+                        throw new MinorException(I18N.getString("window.settings.ClientsSettings.validationError", finalErrors));
 
 
 
@@ -244,7 +244,7 @@ public class ClientsSettings extends VBox
         if(clientConnections.size() == 0)
         {
             Platform.runLater(()->{
-                clientsSettingsVBox.getChildren().add(new Label("No Clients Connected."));
+                clientsSettingsVBox.getChildren().add(new Label(I18N.getString("window.settings.ClientsSettings.noClientsConnected")));
                 saveButton.setVisible(false);
             });
         }
@@ -444,7 +444,7 @@ public class ClientsSettings extends VBox
             VBox.setMargin(profilesAccordion, new Insets(0,0,20,0));
 
 
-            Button addNewProfileButton = new Button("Add new Profile");
+            Button addNewProfileButton = new Button(I18N.getString("window.settings.ClientsSettings.addNewProfile"));
             addNewProfileButton.setOnAction(event -> onNewProfileButtonClicked());
 
             setSpacing(10.0);
@@ -458,14 +458,14 @@ public class ClientsSettings extends VBox
                     socketConnectionLabel,
                     platformLabel,
                     versionLabel,
-                    new HBoxInputBox("Nickname",nicknameTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.nickname"), nicknameTextField),
                     new HBox(
-                        new Label("Theme"),
+                        new Label(I18N.getString("window.settings.ClientsSettings.theme")),
                         SpaceFiller.horizontal(),
                         themesComboBox
                     ),
 
-                    new HBox(new Label("Startup Profile"),
+                    new HBox(new Label(I18N.getString("window.settings.ClientsSettings.startupProfile")),
                             SpaceFiller.horizontal(),
                             profilesComboBox),
 
@@ -493,7 +493,7 @@ public class ClientsSettings extends VBox
 
             nicknameTextField.setText(client.getNickName());
 
-            platformLabel.setText("Platform : "+client.getPlatform().getUIName());
+            platformLabel.setText(I18N.getString("window.settings.ClientsSettings.platform"));
 
             setClient(client);
 
@@ -525,7 +525,7 @@ public class ClientsSettings extends VBox
         public void onNewProfileButtonClicked()
         {
             ClientProfile clientProfile = new ClientProfile(
-                    "Untitled Profile",
+                    I18N.getString("window.settings.ClientsSettings.untitledProfile"),
                     3,
                     3,
                     100,
@@ -549,15 +549,13 @@ public class ClientsSettings extends VBox
         {
             if(clientProfileVBoxes.size() == 1)
             {
-                exceptionAndAlertHandler.handleMinorException(new MinorException("Only one",
-                        "You cannot delete all profiles"));
+                exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("window.settings.ClientsSettings.cannotDeleteAllProfilesError")));
             }
             else
             {
                 if(profilesComboBox.getSelectionModel().getSelectedItem().getID().equals(clientProfileVBox.getClientProfile().getID()))
                 {
-                    exceptionAndAlertHandler.handleMinorException(new MinorException("Default",
-                            "You cannot delete default profile. Change to another one to delete this."));
+                    exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("window.settings.ClientsSettings.cannotDeleteDefaultProfileError")));
                 }
                 else
                 {
@@ -636,18 +634,18 @@ public class ClientsSettings extends VBox
             actionSizeTextField = new TextField();
             actionGapTextField = new TextField();
 
-            removeButton = new Button("Remove");
+            removeButton = new Button(I18N.getString("window.settings.ClientsSettings.remove"));
 
             HBox hBox = new HBox(removeButton);
             hBox.setAlignment(Pos.CENTER_RIGHT);
 
 
             getChildren().addAll(
-                    new HBoxInputBox("Name ", nameTextField),
-                    new HBoxInputBox("Rows", rowsTextField),
-                    new HBoxInputBox("Columns", colsTextField),
-                    new HBoxInputBox("Action Size", actionSizeTextField),
-                    new HBoxInputBox("Action Gap", actionGapTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.name"), nameTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.rows"), rowsTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.columns"), colsTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.actionSize"), actionSizeTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.actionGap"), actionGapTextField),
                     hBox
             );
         }

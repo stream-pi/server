@@ -2,6 +2,7 @@ package com.stream_pi.server.window.settings;
 
 import com.stream_pi.action_api.actionproperty.property.ListValue;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.action_api.actionproperty.property.ControlType;
 import com.stream_pi.action_api.actionproperty.property.Property;
@@ -68,7 +69,7 @@ public class PluginsSettings extends VBox
 
 
 
-        saveButton = new Button("Save");
+        saveButton = new Button(I18N.getString("window.settings.PluginsSettings.save"));
         HBox.setMargin(saveButton, new Insets(0,10, 0, 0));
         saveButton.setOnAction(event -> onSaveButtonClicked());
 
@@ -107,13 +108,13 @@ public class PluginsSettings extends VBox
                             }
                             catch (NumberFormatException e)
                             {
-                                errors.append("        -> ").append(serverProperty.getDisplayName()).append(" must be integer.\n");
+                                errors.append("        -> ").append(I18N.getString("window.settings.PluginsSettings.propertyMustBeInteger", serverProperty.getDisplayName())).append(("\n"));
                             }
                         }
                         else
                         {
                             if(value.isBlank() && !serverProperty.isCanBeBlank())
-                                errors.append("        -> ").append(serverProperty.getDisplayName()).append(" cannot be blank.\n");
+                                errors.append("        -> ").append(I18N.getString("window.settings.PluginsSettings.propertyCannotBeBlank", serverProperty.getDisplayName())).append(("\n"));
                         }
                     }
                     else if(serverProperty.getControlType() == ControlType.TEXT_FIELD_MASKED)
@@ -121,20 +122,19 @@ public class PluginsSettings extends VBox
                         String value = ((TextField) controlNode).getText();
 
                         if(value.isBlank() && !serverProperty.isCanBeBlank())
-                            errors.append("        -> ").append(serverProperty.getDisplayName()).append(" cannot be blank.\n");
+                            errors.append("        -> ").append(I18N.getString("window.settings.PluginsSettings.propertyCannotBeBlank", serverProperty.getDisplayName())).append(("\n"));
                     }
                 }
 
                 if(!errors.toString().isBlank())
                 {
-                    finalErrors.append("    * ").append(p.getName()).append("\n").append(errors.toString()).append("\n");
+                    finalErrors.append("    * ").append(p.getName()).append("\n").append(errors).append("\n");
                 }
             }
 
             if(!finalErrors.toString().isEmpty())
             {
-                throw new MinorException("Form Validation Errors",
-                        "Please rectify the following errors and try again \n"+finalErrors.toString());
+                throw new MinorException(I18N.getString("window.settings.PluginsSettings.validationError", finalErrors));
             }
 
             //save
@@ -170,7 +170,7 @@ public class PluginsSettings extends VBox
     public void showPluginInitError()
     {
         Platform.runLater(()->{
-            pluginsSettingsVBox.getChildren().add(new Label("Plugin init error. Resolve issues and restart."));
+            pluginsSettingsVBox.getChildren().add(new Label(I18N.getString("window.settings.PluginsSettings.pluginInitError")));
             saveButton.setVisible(false);
         });
     }
@@ -186,7 +186,7 @@ public class PluginsSettings extends VBox
         if(actions.size() == 0)
         {
             Platform.runLater(()->{
-                Label l = new Label("No Plugins Installed.");
+                Label l = new Label(I18N.getString("window.settings.PluginsSettings.noPluginsInstalled"));
                 l.getStyleClass().add("plugins_pane_no_plugins_installed_label");
                 pluginsSettingsVBox.getChildren().add(l);
                 saveButton.setVisible(false);
@@ -234,7 +234,7 @@ public class PluginsSettings extends VBox
             Label moduleLabel = new Label(action.getModuleName());
             moduleLabel.getStyleClass().add("plugins_settings_each_plugin_module_label");
 
-            Label versionLabel = new Label("Version : "+action.getVersion().getText());
+            Label versionLabel = new Label(I18N.getString("window.settings.PluginsSettings.version", action.getVersion().getText()));
             versionLabel.getStyleClass().add("plugins_settings_each_plugin_version_label");
 
             VBox serverPropertiesVBox = new VBox();
