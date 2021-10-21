@@ -198,7 +198,8 @@ public class GeneralSettings extends VBox
         });
     }
 
-    public void loadDataFromConfig() throws SevereException {
+    public void loadData() throws SevereException
+    {
         Config config = Config.getInstance();
 
         javafx.application.Platform.runLater(()->
@@ -483,8 +484,7 @@ public class GeneralSettings extends VBox
 
                     config.save();
 
-
-                    loadDataFromConfig();
+                    loadData();
 
                     if(toBeReloaded)
                     {

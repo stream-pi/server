@@ -21,6 +21,7 @@ import com.stream_pi.util.loggerhelper.StreamPiLogFileHandler;
 
 import com.stream_pi.util.platform.Platform;
 import javafx.application.HostServices;
+import javafx.scene.CacheHint;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -124,8 +125,9 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         serverInfo = ServerInfo.getInstance();
 
 
-
         alertStackPane = new StackPane();
+        alertStackPane.setCache(true);
+        alertStackPane.setCacheHint(CacheHint.SPEED);
         alertStackPane.setOpacity(0);
 
         StreamPiAlert.setParent(alertStackPane);

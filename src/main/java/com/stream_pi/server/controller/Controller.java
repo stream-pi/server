@@ -180,7 +180,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             {
                 try
                 {
-                    getSettingsBase().getGeneralSettings().loadDataFromConfig();
+                    getSettingsBase().getGeneralSettings().loadData();
 
                     //themes
                     getSettingsBase().getThemesSettings().setThemes(getThemes());
@@ -919,7 +919,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                     try {
                         getSettingsBase().getClientsSettings().loadData();
 
-                        getSettingsBase().getGeneralSettings().loadDataFromConfig();
+                        getSettingsBase().getGeneralSettings().loadData();
                         getSettingsBase().getPluginsSettings().loadPlugins();
 
                         getSettingsBase().getThemesSettings().setThemes(getThemes());
