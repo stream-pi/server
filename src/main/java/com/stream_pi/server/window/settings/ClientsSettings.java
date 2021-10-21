@@ -93,8 +93,8 @@ public class ClientsSettings extends VBox
                     {
                         StringBuilder errors = new StringBuilder();
 
-                        if(clientSettingsVBox.getNickname().isBlank())
-                            errors.append("    ").append(I18N.getString("window.settings.ClientsSettings.clientCannotHaveBlankNickname")).append("\n");
+                        if(clientSettingsVBox.getName().isBlank())
+                            errors.append("    ").append(I18N.getString("window.settings.ClientsSettings.clientCannotHaveBlankName")).append("\n");
 
 
                         for(ClientProfileVBox clientProfileVBox : clientSettingsVBox.getClientProfileVBoxes())
@@ -180,7 +180,7 @@ public class ClientsSettings extends VBox
                         if(!errors.toString().isEmpty())
                         {
                             finalErrors.append("* ")
-                                    .append(clientSettingsVBox.getRealNickName())
+                                    .append(clientSettingsVBox.getRealName())
                                     .append("\n")
                                     .append(errors)
                                     .append("\n");
@@ -283,19 +283,19 @@ public class ClientsSettings extends VBox
             return client.getDisplayWidth();
         }
 
-        private TextField nicknameTextField;
+        private TextField nameTextField;
 
-        public String getNickname() {
-            return nicknameTextField.getText();
+        public String getName() {
+            return nameTextField.getText();
         }
 
-        private Label nickNameLabel;
+        private Label nameLabel;
 
         private Label versionLabel;
 
-        public String getRealNickName()
+        public String getRealName()
         {
-            return nickNameLabel.getText();
+            return nameLabel.getText();
         }
 
         private com.stream_pi.util.platform.Platform platform;
@@ -339,7 +339,7 @@ public class ClientsSettings extends VBox
         public void saveClientAndProfileDetails() throws SevereException, CloneNotSupportedException, MinorException {
 
             getConnection().saveClientDetails(
-                    nicknameTextField.getText(),
+                    nameTextField.getText(),
                     profilesComboBox.getSelectionModel().getSelectedItem().getID(),
                     themesComboBox.getSelectionModel().getSelectedItem().getFullName()
             );
@@ -431,10 +431,10 @@ public class ClientsSettings extends VBox
             socketConnectionLabel = new Label();
             socketConnectionLabel.getStyleClass().add("client_settings_each_client_socket_connection_label");
 
-            nicknameTextField = new TextField();
+            nameTextField = new TextField();
 
-            nickNameLabel = new Label();
-            nickNameLabel.getStyleClass().add("client_settings_each_client_nick_name_label");
+            nameLabel = new Label();
+            nameLabel.getStyleClass().add("client_settings_each_client_nick_name_label");
 
             versionLabel = new Label();
             versionLabel.getStyleClass().add("client_settings_each_client_version_label");
@@ -454,11 +454,11 @@ public class ClientsSettings extends VBox
 
 
             this.getChildren().addAll(
-                    nickNameLabel,
+                    nameLabel,
                     socketConnectionLabel,
                     platformLabel,
                     versionLabel,
-                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.nickname"), nicknameTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.name"), nameTextField),
                     new HBox(
                         new Label(I18N.getString("window.settings.ClientsSettings.theme")),
                         SpaceFiller.horizontal(),
@@ -491,7 +491,7 @@ public class ClientsSettings extends VBox
                     )
             );
 
-            nicknameTextField.setText(client.getNickName());
+            nameTextField.setText(client.getName());
 
             platformLabel.setText(I18N.getString("window.settings.ClientsSettings.platform"));
 
@@ -499,7 +499,7 @@ public class ClientsSettings extends VBox
 
             socketConnectionLabel.setText(client.getRemoteSocketAddress().toString().substring(1)); //substring removes the `/`
 
-            nickNameLabel.setText(client.getNickName());
+            nameLabel.setText(client.getName());
 
             versionLabel.setText(client.getReleaseStatus().getUIName()+" "+client.getVersion().getText());
 
@@ -641,11 +641,11 @@ public class ClientsSettings extends VBox
 
 
             getChildren().addAll(
-                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.name"), nameTextField),
-                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.rows"), rowsTextField),
-                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.columns"), colsTextField),
-                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.actionSize"), actionSizeTextField),
-                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.actionGap"), actionGapTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileName"), nameTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileRows"), rowsTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileColumns"), colsTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileActionSize"), actionSizeTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileActionGap"), actionGapTextField),
                     hBox
             );
         }

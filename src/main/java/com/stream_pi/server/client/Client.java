@@ -28,7 +28,7 @@ import java.util.List;
 
 public class Client
 {
-    private String nickName;
+    private String name;
     private final SocketAddress remoteSocketAddress;
     private final Platform platform;
     private final Version version;
@@ -48,14 +48,14 @@ public class Client
     private Orientation orientation;
 
     public Client(Version version, ReleaseStatus releaseStatus, Version commStandardVersion,
-                  Version themeAPIVersion, String nickName, Platform platform, SocketAddress remoteSocketAddress,
+                  Version themeAPIVersion, String name, Platform platform, SocketAddress remoteSocketAddress,
                   Orientation orientation)
     {
         this.version = version;
         this.releaseStatus = releaseStatus;
         this.commStandardVersion = commStandardVersion;
         this.themeAPIVersion = themeAPIVersion;
-        this.nickName = nickName;
+        this.name = name;
         this.remoteSocketAddress = remoteSocketAddress;
         this.platform = platform;
         this.profiles = new HashMap<>();
@@ -107,9 +107,9 @@ public class Client
 
     //client Profiles
 
-    public void setNickName(String nickName)
+    public void setName(String name)
     {
-        this.nickName = nickName;
+        this.name = name;
     }
 
     public List<ClientProfile> getAllClientProfiles()
@@ -143,9 +143,9 @@ public class Client
         return platform;
     }
 
-    public String getNickName()
+    public String getName()
     {
-        return nickName;
+        return name;
     }
 
     public Version getVersion()

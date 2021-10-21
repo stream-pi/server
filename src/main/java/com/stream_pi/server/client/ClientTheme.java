@@ -1,14 +1,16 @@
 package com.stream_pi.server.client;
 
+import com.stream_pi.util.version.Version;
+
 public class ClientTheme implements Cloneable
 {
     public String fullName;
     public String shortName;
     public String author;
-    public String version;
+    public Version version;
 
     public ClientTheme(String fullName, String shortName,
-                       String author, String version)
+                       String author, Version version)
     {
         this.fullName = fullName;
         this.shortName = shortName;
@@ -31,7 +33,7 @@ public class ClientTheme implements Cloneable
         return author;
     }
 
-    public String getVersion() {
+    public Version getVersion() {
         return version;
     }
 

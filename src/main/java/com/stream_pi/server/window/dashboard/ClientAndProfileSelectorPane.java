@@ -93,7 +93,7 @@ public class ClientAndProfileSelectorPane extends HBox {
                         else
                         {
                             Client client = clientConnection.getClient();
-                            setText(client.getNickName());
+                            setText(client.getName());
                         }
                     }
                 };
