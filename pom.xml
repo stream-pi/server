@@ -14,7 +14,7 @@
         <maven.compiler.target>11</maven.compiler.target>
 
         <gluonfx.plugin.version>1.0.5</gluonfx.plugin.version>
-        <javafx.version>17.0.1</javafx.version>
+        <javafx.version>17.0.0.1</javafx.version>
         <javafx.maven.plugin.version>0.0.6</javafx.maven.plugin.version>
 
         <action.api.version>1.0.0-SNAPSHOT</action.api.version>
