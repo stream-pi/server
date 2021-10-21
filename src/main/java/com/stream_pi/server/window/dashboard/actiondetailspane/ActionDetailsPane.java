@@ -21,6 +21,7 @@ import com.stream_pi.server.controller.ActionDataFormats;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionGridPaneListener;
 import com.stream_pi.server.window.helper.Helper;
 import com.stream_pi.util.alert.StreamPiAlert;
+import com.stream_pi.util.alert.StreamPiAlertButton;
 import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.MinorException;
@@ -445,7 +446,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
                     if(isNew)
                     {
-                        newAction.setDisplayText(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.untitledAction"));
                         newAction.setShowDisplayText(true);
                         newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
 
@@ -463,8 +463,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                         newAction.setDisplayTextAlignment((DisplayTextAlignment) db.getContent(ActionDataFormats.DISPLAY_TEXT_ALIGNMENT));
                         newAction.setShowDisplayText((boolean) db.getContent(ActionDataFormats.DISPLAY_TEXT_SHOW));
                     }
-
-                    newAction.setLocation(new Location(-1, -1));
 
                     newAction.setParent(getAction().getID());
                     newAction.setProfileID(actionGridPaneListener.getCurrentProfile().getID());
@@ -514,18 +512,14 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     {
         StreamPiAlert streamPiAlert = new StreamPiAlert(
                 I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.resetAreYouSure"),
-                StreamPiAlertType.WARNING
+                StreamPiAlertType.WARNING,
+                StreamPiAlertButton.YES, StreamPiAlertButton.NO
         );
-
-        String optionYes = "Yes";
-        String optionNo = "No";
-
-        streamPiAlert.setButtons(optionYes, optionNo);
 
         streamPiAlert.setOnClicked(new StreamPiAlertListener() {
             @Override
-            public void onClick(String s) {
-                if(s.equals(optionYes))
+            public void onClick(StreamPiAlertButton s) {
+                if(s.equals(StreamPiAlertButton.YES))
                 {
                     getAction().getClientProperties().resetToDefaults();
 
@@ -708,12 +702,12 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     {
 
         //Combine Child action
-        isCombineChild = getAction().getLocation().getCol() == -1;
+        isCombineChild = getAction().getLocation() == null;
 
         displayNameTextField.setText(getAction().getDisplayText());
 
-        colSpanTextField.setText(getAction().getColSpan()+"");
-        rowSpanTextField.setText(getAction().getRowSpan()+"");
+        colSpanTextField.setText(getAction().getLocation().getColSpan()+"");
+        rowSpanTextField.setText(getAction().getLocation().getRowSpan()+"");
 
         vbox.setVisible(true);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
@@ -750,7 +744,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         hideDisplayTextCheckBox.setSelected(!getAction().isShowDisplayText());
 
-        if(getAction().getNameFontSize() == -1)
+        if(getAction().getDisplayTextFontSize() == -1)
         {
             displayNameFontSizeCheckBox.setSelected(true);
             displayNameFontSizeTextField.clear();
@@ -758,7 +752,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         else
         {
             displayNameFontSizeCheckBox.setSelected(false);
-            displayNameFontSizeTextField.setText(getAction().getNameFontSize()+"");
+            displayNameFontSizeTextField.setText(getAction().getDisplayTextFontSize()+"");
         }
 
 
@@ -1220,20 +1214,16 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     {
         StreamPiAlert streamPiAlert = new StreamPiAlert(
                 I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.deleteAreYouSure"),
-                StreamPiAlertType.WARNING
+                StreamPiAlertType.WARNING,
+                StreamPiAlertButton.YES, StreamPiAlertButton.NO
         );
-
-        String optionYes = "Yes";
-        String optionNo = "No";
-
-        streamPiAlert.setButtons(optionYes, optionNo);
 
         ActionDetailsPane actionDetailsPane = this;
 
         streamPiAlert.setOnClicked(new StreamPiAlertListener() {
             @Override
-            public void onClick(String s) {
-                if(s.equals(optionYes))
+            public void onClick(StreamPiAlertButton s) {
+                if(s.equals(StreamPiAlertButton.YES))
                 {
                     new OnDeleteActionTask(
                             ClientConnections.getInstance().getClientConnectionBySocketAddress(

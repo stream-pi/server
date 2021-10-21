@@ -82,7 +82,7 @@ public class Client
 
     public void addTheme(ClientTheme clientTheme) throws CloneNotSupportedException
     {
-        themes.put(clientTheme.getThemeFullName(), (ClientTheme) clientTheme.clone());
+        themes.put(clientTheme.getFullName(), (ClientTheme) clientTheme.clone());
     }
 
     public ArrayList<ClientTheme> getThemes()

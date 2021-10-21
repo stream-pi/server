@@ -328,12 +328,12 @@ public class Config
     public Locale getCurrentLanguageLocale()
     {
         return Locale.forLanguageTag(XMLConfigHelper.getStringProperty(getOthersElement(), "language-locale",
-                getDefaultLanguageLocale(), false, true, document, configFile));
+                getDefaultLanguageLocale().toLanguageTag(), false, true, document, configFile));
     }
 
-    public String getDefaultLanguageLocale()
+    public Locale getDefaultLanguageLocale()
     {
-        return Locale.getDefault().toLanguageTag();
+        return Locale.getDefault();
     }
 
 
@@ -348,13 +348,13 @@ public class Config
         getOthersElement().getElementsByTagName("use-default-action-box-gap").item(0).setTextContent(value+"");
     }
 
-    public double getDefaultActionLabelFontSize()
+    public double getDefaultActionDisplayTextFontSize()
     {
-        return XMLConfigHelper.getDoubleProperty(getOthersElement(), "default-action-label-font-size",
-                getDefaultDefaultActionLabelFontSize(), false, true, document, configFile);
+        return XMLConfigHelper.getDoubleProperty(getOthersElement(), "default-action-display-text-font-size",
+                getDefaultDefaultActionDisplayTextFontSize(), false, true, document, configFile);
     }
 
-    public double getDefaultDefaultActionLabelFontSize()
+    public double getDefaultDefaultActionDisplayTextFontSize()
     {
         return 20;
     }
@@ -461,9 +461,9 @@ public class Config
     }
 
     //others
-    public void setDefaultActionLabelFontSize(double value)
+    public void setDefaultActionDisplayTextFontSize(double value)
     {
-        getOthersElement().getElementsByTagName("default-action-label-font-size").item(0).setTextContent(value+"");
+        getOthersElement().getElementsByTagName("default-action-display-text-font-size").item(0).setTextContent(value+"");
     }
 
     public void setStartupOnBoot(boolean value)
@@ -494,6 +494,7 @@ public class Config
 
         config.setThemesPath(config.getDefaultThemesPath());
         config.setPluginsPath(config.getDefaultPluginsPath());
+        config.setCurrentLanguageLocale(config.getDefaultLanguageLocale());
 
         if(SystemTray.isSupported())
         {

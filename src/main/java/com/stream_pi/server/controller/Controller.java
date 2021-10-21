@@ -25,6 +25,7 @@ import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.server.window.firsttimeuse.FirstTimeUse;
 import com.stream_pi.server.combobox.IPChooserComboBox;
 import com.stream_pi.util.alert.StreamPiAlert;
+import com.stream_pi.util.alert.StreamPiAlertButton;
 import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.*;
@@ -245,12 +246,12 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
         vBox.getChildren().addAll(headLabel, ipChooserComboBox);
 
-        StreamPiAlert streamPiAlert = new StreamPiAlert(StreamPiAlertType.WARNING, vBox, I18N.getString("controller.Controller.proceed"));
+        StreamPiAlert streamPiAlert = new StreamPiAlert(StreamPiAlertType.WARNING, vBox, new StreamPiAlertButton(I18N.getString("controller.Controller.proceed")));
 
         streamPiAlert.setOnClicked(new StreamPiAlertListener()
         {
             @Override
-            public void onClick(String s)
+            public void onClick(StreamPiAlertButton s)
             {
                 try
                 {
@@ -471,7 +472,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         alert.setOnClicked(new StreamPiAlertListener()
         {
             @Override
-            public void onClick(String txt)
+            public void onClick(StreamPiAlertButton s)
             {
                 onQuitApp();
                 exit();

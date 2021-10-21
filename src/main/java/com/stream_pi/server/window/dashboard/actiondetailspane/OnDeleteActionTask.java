@@ -119,7 +119,7 @@ public class OnDeleteActionTask extends Task<Void>
             {
                 Platform.runLater(()->{
                     actionDetailsPane.clearActionBox(action.getLocation().getCol(), action.getLocation().getRow(),
-                            action.getColSpan(), action.getRowSpan());
+                            action.getLocation().getColSpan(), action.getLocation().getRowSpan());
                     actionDetailsPane.clear();
                 });
             }

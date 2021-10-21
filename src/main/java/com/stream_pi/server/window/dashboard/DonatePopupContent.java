@@ -4,6 +4,7 @@ import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.alert.StreamPiAlert;
+import com.stream_pi.util.alert.StreamPiAlertButton;
 import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.MinorException;
@@ -38,7 +39,7 @@ public class DonatePopupContent
         streamPiAlert.setOnClicked(new StreamPiAlertListener()
         {
             @Override
-            public void onClick(String buttonClicked) 
+            public void onClick(StreamPiAlertButton buttonClicked)
             {
                 try
                 {

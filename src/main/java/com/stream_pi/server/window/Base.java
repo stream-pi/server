@@ -1,5 +1,6 @@
 package com.stream_pi.server.window;
 
+import com.stream_pi.action_api.ActionAPI;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.io.Config;
@@ -9,7 +10,9 @@ import com.stream_pi.server.window.dashboard.DashboardBase;
 import com.stream_pi.server.window.firsttimeuse.FirstTimeUse;
 import com.stream_pi.server.window.settings.SettingsBase;
 import com.stream_pi.theme_api.Theme;
+import com.stream_pi.theme_api.ThemeAPI;
 import com.stream_pi.theme_api.Themes;
+import com.stream_pi.util.Util;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
@@ -67,7 +70,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
                 return;
 
             closeLogger();
-            logger = Logger.getLogger("com.stream_pi");
+            logger = Logger.getLogger("");
 
             if(new File(ServerInfo.getInstance().getPrePath()).getAbsoluteFile().getParentFile().canWrite())
             {
@@ -168,7 +171,19 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     {
         if (I18N.isLanguageAvailable(config.getCurrentLanguageLocale()))
         {
+            Locale defaultLocale = Locale.getDefault();
+            Locale.setDefault(new Locale("this locale does not exist"));
+            // This sets the local to a non-existing locale to prevent the system from selecting default system locale.
+            // This is done because the proper way of removing fallback locales is not available on Java 9+
+            // As ResourceBundle.Control is not supported on modular projects.
+
+
+            Util.initI18n(config.getCurrentLanguageLocale());
+            ActionAPI.initI18n(config.getCurrentLanguageLocale());
+            ThemeAPI.initI18n(config.getCurrentLanguageLocale());
             I18N.init(config.getCurrentLanguageLocale());
+
+            Locale.setDefault(defaultLocale); // Reset locale back to defaults ...
         }
         else
         {
@@ -302,7 +317,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     {
         logger.info("Loading themes ...");
 
-        themes = new Themes(getConfig().getDefaultThemesPath(), getConfig().getThemesPath(), getConfig().getCurrentThemeFullName(), serverInfo.getMinThemeSupportVersion());
+        themes = new Themes(getConfig().getDefaultThemesPath(), getConfig().getThemesPath(), getConfig().getCurrentThemeFullName());
         
         if(!themes.getErrors().isEmpty())
         {

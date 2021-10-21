@@ -1,6 +1,7 @@
 package com.stream_pi.server.window.settings.about;
 
 import com.stream_pi.action_api.ActionAPI;
+import com.stream_pi.theme_api.ThemeAPI;
 import com.stream_pi.util.Util;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.info.ServerInfo;
@@ -75,13 +76,13 @@ public class About extends VBox
         Label commStandardLabel = new Label(I18N.getString("window.settings.about.About.commStandard", serverInfo.getCommStandardVersion().getText()));
         commStandardLabel.getStyleClass().add("about_comm_standard_label");
 
-        Label minThemeAPILabel = new Label(I18N.getString("window.settings.about.About.minThemeAPI", serverInfo.getMinThemeSupportVersion().getText()));
+        Label minThemeAPILabel = new Label(I18N.getString("window.settings.about.About.minThemeAPI", ThemeAPI.MIN_VERSION_SUPPORTED.getText()));
         minThemeAPILabel.getStyleClass().add("about_min_theme_api_label");
 
-        Label minActionAPILabel = new Label(I18N.getString("window.settings.about.About.minActionAPI", serverInfo.getMinPluginSupportVersion().getText()));
+        Label minActionAPILabel = new Label(I18N.getString("window.settings.about.About.minActionAPI", ActionAPI.MIN_VERSION_SUPPORTED.getText()));
         minActionAPILabel.getStyleClass().add("about_min_action_api_label");
 
-        Label currentActionAPILabel = new Label(I18N.getString("window.settings.about.About.currentActionAPI", ActionAPI.API_VERSION.getText()));
+        Label currentActionAPILabel = new Label(I18N.getString("window.settings.about.About.currentActionAPI", ActionAPI.VERSION.getText()));
         currentActionAPILabel.getStyleClass().add("about_current_action_api_label");
 
         Label currentUtilLabel = new Label(I18N.getString("window.settings.about.About.currentUtil", Util.VERSION.getText()));

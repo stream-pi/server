@@ -341,7 +341,7 @@ public class ClientsSettings extends VBox
             getConnection().saveClientDetails(
                     nicknameTextField.getText(),
                     profilesComboBox.getSelectionModel().getSelectedItem().getID(),
-                    themesComboBox.getSelectionModel().getSelectedItem().getThemeFullName()
+                    themesComboBox.getSelectionModel().getSelectedItem().getFullName()
             );
 
             for(ClientProfileVBox clientProfileVBox : clientProfileVBoxes)

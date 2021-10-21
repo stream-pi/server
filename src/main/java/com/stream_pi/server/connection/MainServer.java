@@ -1,6 +1,7 @@
 package com.stream_pi.server.connection;
 
 import com.stream_pi.server.controller.ServerListener;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
@@ -105,7 +106,6 @@ public class MainServer extends Thread
             e.printStackTrace();
             if(!e.getMessage().contains("Socket closed") && !e.getMessage().contains("Interrupted function call: accept failed"))
             {
-
                 logger.warning("Main Server stopped accepting calls ...");
                 serverListener.onServerStartFailure();
 
@@ -115,8 +115,8 @@ public class MainServer extends Thread
         }
         catch (IOException e)
         {
-            exceptionAndAlertHandler.handleSevereException(new SevereException("MainServer io Exception occurred!"));
             e.printStackTrace();
+            exceptionAndAlertHandler.handleSevereException(new SevereException(I18N.getString("connection.MainServer.IOExceptionOccurred", e.getMessage())));
         }
     }
 
@@ -145,17 +145,17 @@ public class MainServer extends Thread
                     }
                 }
 
-                Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - IP(s): "+ips+" | Port: "+ port));
+                Platform.runLater(()-> serverListener.getStage().setTitle(I18N.getString("connection.MainServer.stream-pi-server-ip-plural", ips, port)));
             }
             else
             {
-                Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - IP: "+ip+" | Port: "+ port));
+                Platform.runLater(()-> serverListener.getStage().setTitle(I18N.getString("connection.MainServer.stream-pi-server-ip-singular", ip, port)));
             }
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            exceptionAndAlertHandler.handleMinorException(new MinorException("Error",e.getMessage()));
+            exceptionAndAlertHandler.handleMinorException(new MinorException(e.getMessage()));
         }
     }
 }

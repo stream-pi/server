@@ -19,8 +19,6 @@ public class ServerInfo {
 
     private String prePath;
 
-    private Version minThemeSupportVersion;
-    private Version minPluginSupportVersion;
     private Version commStandardVersion;
 
     private static ServerInfo instance = null;
@@ -29,8 +27,6 @@ public class ServerInfo {
     private ServerInfo()
     {
         version = new Version(1,0,0);
-        minThemeSupportVersion = new Version(1,0,0);
-        minPluginSupportVersion = new Version(1,0,0);
         commStandardVersion = new Version(1,0,0);
 
         releaseStatus = ReleaseStatus.EA;
@@ -77,16 +73,6 @@ public class ServerInfo {
     public ReleaseStatus getReleaseStatus()
     {
         return releaseStatus;
-    }
-
-    public Version getMinThemeSupportVersion()
-    {
-        return minThemeSupportVersion;
-    }
-
-    public Version getMinPluginSupportVersion()
-    {
-        return minPluginSupportVersion;
     }
 
     public Version getCommStandardVersion()

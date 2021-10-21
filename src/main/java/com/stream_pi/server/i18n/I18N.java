@@ -14,11 +14,11 @@ import java.util.logging.Logger;
 
 public class I18N
 {
-    public static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle("com.stream_pi.server.i18n.lang");
+    public static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(I18N.class.getPackageName()+".lang");
 
     public static void init(Locale locale)
     {
-        RESOURCE_BUNDLE = ResourceBundle.getBundle("com.stream_pi.server.i18n.lang", locale);
+        RESOURCE_BUNDLE = ResourceBundle.getBundle(I18N.class.getPackageName()+".lang", locale);
     }
 
     public static String getString(String key, Object... args)

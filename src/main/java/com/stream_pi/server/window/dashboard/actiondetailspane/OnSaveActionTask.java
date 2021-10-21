@@ -126,11 +126,11 @@ public class OnSaveActionTask extends Task<Void>
 
         if(isUseDefaultFontSizeForDisplayLabel)
         {
-            action.setNameFontSize(-1);
+            action.setDisplayTextFontSize(-1);
         }
         else
         {
-            action.setNameFontSize(Double.parseDouble(displayNameLabelSize));
+            action.setDisplayTextFontSize(Double.parseDouble(displayNameLabelSize));
         }
 
         if(!isCombineChild)
@@ -191,8 +191,12 @@ public class OnSaveActionTask extends Task<Void>
                 action.setGaugeAnimated(isGaugeAnimated);
             }
 
-            action.setRowSpan(Integer.parseInt(rowSpanStr));
-            action.setColSpan(Integer.parseInt(colSpanStr));
+
+            if(action.getLocation() != null)
+            {
+                action.getLocation().setRowSpan(Integer.parseInt(rowSpanStr));
+                action.getLocation().setColSpan(Integer.parseInt(colSpanStr));
+            }
         }
 
 

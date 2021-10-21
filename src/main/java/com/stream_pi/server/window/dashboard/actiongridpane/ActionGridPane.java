@@ -101,7 +101,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     {
         ExternalPlugin newAction = ExternalPlugins.getInstance().getPluginByModuleName(moduleName).clone();
 
-        newAction.setNameFontSize(Config.getInstance().getDefaultActionLabelFontSize());
+        newAction.setDisplayTextFontSize(Config.getInstance().getDefaultActionDisplayTextFontSize());
 
         if(newAction.getActionType() == ActionType.TOGGLE)
         {
@@ -111,7 +111,6 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         newAction.setIDRandom();
 
         newAction.setShowDisplayText(true);
-        newAction.setDisplayText(I18N.getString("window.dashboard.actiongridpane.ActionGridPane.untitledAction"));
         newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
 
         newAction.setBgColourHex("");
@@ -125,15 +124,12 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     {
         Action newAction;
 
-        String displayText;
         if(actionType == ActionType.FOLDER)
         {
-            displayText = I18N.getString("window.dashboard.actiongridpane.ActionGridPane.untitledFolder");
             newAction = new FolderAction();
         }
         else if(actionType == ActionType.COMBINE)
         {
-            displayText = I18N.getString("window.dashboard.actiongridpane.ActionGridPane.untitledCombine");
             newAction = new CombineAction();
         }
         else
@@ -144,10 +140,9 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         newAction.setIDRandom();
 
 
-        newAction.setNameFontSize(Config.getInstance().getDefaultActionLabelFontSize());
+        newAction.setDisplayTextFontSize(Config.getInstance().getDefaultActionDisplayTextFontSize());
 
         newAction.setShowDisplayText(true);
-        newAction.setDisplayText(displayText);
         newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
 
         newAction.setBgColourHex("");
@@ -402,7 +397,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
         if(actionBox.getAction() != null)
         {
-            makeNonUsedBoxesVisible = (GridPane.getColumnSpan(actionBox) != action.getColSpan()) || (GridPane.getRowSpan(actionBox) != action.getRowSpan());
+            makeNonUsedBoxesVisible = (GridPane.getColumnSpan(actionBox) != action.getLocation().getColSpan()) || (GridPane.getRowSpan(actionBox) != action.getLocation().getRowSpan());
         }
 
         if (makeNonUsedBoxesVisible)

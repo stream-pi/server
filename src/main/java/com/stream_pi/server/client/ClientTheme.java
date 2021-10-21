@@ -2,23 +2,23 @@ package com.stream_pi.server.client;
 
 public class ClientTheme implements Cloneable
 {
-    public String themeFullName;
+    public String fullName;
     public String shortName;
     public String author;
     public String version;
 
-    public ClientTheme(String themeFullName, String shortName,
+    public ClientTheme(String fullName, String shortName,
                        String author, String version)
     {
-        this.themeFullName = themeFullName;
+        this.fullName = fullName;
         this.shortName = shortName;
         this.author = author;
         this.version = version;
     }
 
-    public String getThemeFullName()
+    public String getFullName()
     {
-        return themeFullName;
+        return fullName;
     }
 
     public String getShortName()

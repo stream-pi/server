@@ -10,6 +10,7 @@ import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.util.alert.StreamPiAlert;
+import com.stream_pi.util.alert.StreamPiAlertButton;
 import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.checkforupdates.CheckForUpdates;
@@ -17,7 +18,7 @@ import com.stream_pi.util.checkforupdates.UpdateHyperlinkOnClick;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.platform.PlatformType;
-import com.stream_pi.util.startatboot.StartAtBoot;
+import com.stream_pi.util.startonboot.StartOnBoot;
 import com.stream_pi.util.uihelper.HBoxInputBox;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithDirectoryChooser;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
@@ -204,7 +205,7 @@ public class GeneralSettings extends VBox
         {
             serverNameTextField.setText(config.getServerName());
             portTextField.setText(config.getPort()+"");
-            defaultActionLabelFontSizeTextField.setText(config.getDefaultActionLabelFontSize()+"");
+            defaultActionLabelFontSizeTextField.setText(config.getDefaultActionDisplayTextFontSize()+"");
             pluginsPathTextField.setText(config.getPluginsPath());
             themesPathTextField.setText(config.getThemesPath());
             actionGridPaneActionBoxSize.setText(config.getActionGridActionSize()+"");
@@ -394,7 +395,7 @@ public class GeneralSettings extends VBox
 
                     if(config.getStartOnBoot() != startOnBoot)
                     {
-                        StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform(),
+                        StartOnBoot startAtBoot = new StartOnBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform(),
                                 Main.class.getProtectionDomain().getCodeSource().getLocation(),
                                 StartupFlags.APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION);
 
@@ -462,7 +463,7 @@ public class GeneralSettings extends VBox
                     config.setUseSameActionGapAsProfile(actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected());
                     config.setUseSameActionSizeAsProfile(actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected());
 
-                    config.setDefaultActionLabelFontSize(defaultActionLabelFontSize);
+                    config.setDefaultActionDisplayTextFontSize(defaultActionLabelFontSize);
 
                     config.setMinimiseToSystemTrayOnClose(minimizeToSystemTrayOnClose);
                     StreamPiAlert.setIsShowPopup(showAlertsPopup);
@@ -487,17 +488,14 @@ public class GeneralSettings extends VBox
 
                     if(toBeReloaded)
                     {
-                        StreamPiAlert restartPrompt = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.restartPromptWarning"), StreamPiAlertType.WARNING);
-
-                        String yesOption = "Yes";
-                        String noOption = "No";
-
-                        restartPrompt.setButtons(yesOption, noOption);
+                        StreamPiAlert restartPrompt = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.restartPromptWarning"),
+                                StreamPiAlertType.WARNING, StreamPiAlertButton.YES, StreamPiAlertButton.NO
+                        );
 
                         restartPrompt.setOnClicked(new StreamPiAlertListener() {
                             @Override
-                            public void onClick(String s) {
-                                if(s.equals(yesOption))
+                            public void onClick(StreamPiAlertButton s) {
+                                if(s.equals(StreamPiAlertButton.YES))
                                 {
                                     serverListener.restart();
                                 }
@@ -531,17 +529,14 @@ public class GeneralSettings extends VBox
 
     private void onFactoryResetButtonClicked()
     {
-        StreamPiAlert confirmation = new StreamPiAlert( I18N.getString("window.settings.GeneralSettings.resetAreYouSure"), StreamPiAlertType.WARNING);
-
-        String yesButton = "Yes";
-        String noButton = "No";
-
-        confirmation.setButtons(yesButton, noButton);
+        StreamPiAlert confirmation = new StreamPiAlert( I18N.getString("window.settings.GeneralSettings.resetAreYouSure"),
+                StreamPiAlertType.WARNING, StreamPiAlertButton.YES, StreamPiAlertButton.NO
+        );
 
         confirmation.setOnClicked(new StreamPiAlertListener() {
             @Override
-            public void onClick(String s) {
-                if (s.equals(yesButton)) {
+            public void onClick(StreamPiAlertButton s) {
+                if (s.equals(StreamPiAlertButton.YES)) {
                     serverListener.factoryReset();
                 }
             }
