@@ -40,6 +40,8 @@
         <compiler.plugin.version>3.8.1</compiler.plugin.version>
 
         <jar.plugin.version>3.2.0</jar.plugin.version>
+
+        <build.helper.plugin.version>1.10</build.helper.plugin.version>
     </properties>
 
 
@@ -208,7 +210,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.10</version>
+                <version>${build.helper.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>timestamp-property</id>
@@ -217,7 +219,7 @@
                         </goals>
                         <configuration>
                             <name>build.date</name>
-                            <pattern>dd/MM/yyyy hh:mm aa z</pattern>
+                            <pattern>dd/MM/yyyy HH:mm z</pattern>
                             <locale>en_IN</locale>
                             <timeZone>Asia/Kolkata</timeZone>
                         </configuration>
