@@ -10,7 +10,7 @@ $JPACKAGE_HOME/bin/jpackage \
 --copyright "Copyright 2019-21 Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)" \
 --dest $INSTALL_DIR \
 --name 'Stream-Pi Server' \
---java-options '-XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Dprism.verbose=true -Dprism.lcdtext=false -Djavafx.verbose=true -Dprism.dirtyopts=false' \
+--java-options '-XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Dprism.lcdtext=false -Dprism.verbose=true -Djavafx.verbose=true -Dprism.dirtyopts=false' \
 --arguments 'Stream-Pi.startupRunnerFileName=run_min Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation=true' \
 --add-launcher run_min=assets/run_min_linux_and_macos.properties \
 "$@"
