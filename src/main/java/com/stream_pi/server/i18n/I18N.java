@@ -14,8 +14,9 @@ import java.util.*;
 
 public class I18N
 {
-    private static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(I18N.class.getPackageName()+".lang");
     public static Locale BASE_LOCALE = new Locale("base_locale");
+    private static ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(I18N.class.getPackageName()+".lang");
+
 
     public static void init(Locale locale)
     {
