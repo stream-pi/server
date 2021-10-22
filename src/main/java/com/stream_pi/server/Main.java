@@ -28,6 +28,7 @@ import java.net.URISyntaxException;
 
 public class Main extends Application
 {
+
     /**
      * First method to be called
      * This method first parses all the available command line arguments passed.
