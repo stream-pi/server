@@ -449,6 +449,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                         newAction.setShowDisplayText(true);
                         newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
 
+                        newAction.setDisplayText(newAction.getName());
+                        newAction.getClientProperties().resetToDefaults();
+
                         if(actionType == ActionType.TOGGLE)
                             newAction.setCurrentIconState("false__false");
                     }
@@ -706,8 +709,11 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         displayNameTextField.setText(getAction().getDisplayText());
 
-        colSpanTextField.setText(getAction().getLocation().getColSpan()+"");
-        rowSpanTextField.setText(getAction().getLocation().getRowSpan()+"");
+        if (!isCombineChild)
+        {
+            colSpanTextField.setText(getAction().getLocation().getColSpan()+"");
+            rowSpanTextField.setText(getAction().getLocation().getRowSpan()+"");
+        }
 
         vbox.setVisible(true);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
