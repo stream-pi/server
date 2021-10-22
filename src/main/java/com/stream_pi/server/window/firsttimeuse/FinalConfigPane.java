@@ -130,7 +130,7 @@ public class FinalConfigPane extends VBox
         else
         {
             Platform.runLater(()->nextButton.setDisable(false));
-            new StreamPiAlert(I18N.getString("window.firsttimeuse.FinalConfigPane.rectifyTheFollowingErrorsAndTryAgain", errors), StreamPiAlertType.ERROR).show();
+            new StreamPiAlert(I18N.getString("validationError", errors), StreamPiAlertType.ERROR).show();
         }
     }
 }

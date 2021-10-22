@@ -1205,7 +1205,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         if(!finalErrors.toString().isEmpty())
         {
-            throw new MinorException(I18N.getString("window.dashboard.actiondetailspane.rectifyTheFollowingErrorsAndTryAgain", finalErrors));
+            throw new MinorException(I18N.getString("validationError", finalErrors));
         }
     }
 

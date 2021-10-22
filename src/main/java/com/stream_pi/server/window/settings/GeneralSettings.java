@@ -374,7 +374,7 @@ public class GeneralSettings extends VBox
 
                     if(!errors.toString().isEmpty())
                     {
-                        throw new MinorException(I18N.getString("window.settings.GeneralSettings.rectifyTheFollowingErrorsAndTryAgain", errors));
+                        throw new MinorException(I18N.getString("validationError", errors));
                     }
 
 
