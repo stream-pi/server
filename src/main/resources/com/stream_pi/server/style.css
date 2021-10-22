@@ -195,6 +195,7 @@
 .first_time_use_welcome_pane_next_to_continue_label
 {
     -fx-font-size: 15;
+    -fx-padding: 0 0 15 0;
 }
 
 .plugins_settings_scroll_pane, .themes_settings_scroll_pane, .clients_settings_scroll_pane
@@ -337,9 +338,4 @@ ScrollPane
 .settings_about_tab_app_icon
 {
     -fx-padding: 50 50 50 50;
-}
-
-.first_time_use_welcome_pane_next_to_continue_label
-{
-    -fx-padding: 0 0 15 0;
 }
