@@ -244,7 +244,7 @@ public class ClientsSettings extends VBox
         if(clientConnections.size() == 0)
         {
             Platform.runLater(()->{
-                clientsSettingsVBox.getChildren().add(new Label(I18N.getString("window.settings.ClientsSettings.noClientsConnected")));
+                clientsSettingsVBox.getChildren().add(new Label(I18N.getString("noClientsConnected")));
                 saveButton.setVisible(false);
             });
         }

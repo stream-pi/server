@@ -56,7 +56,7 @@ public class ClientAndProfileSelectorPane extends HBox {
 
     public void initUI()
     {
-        noClientsConnectedLabel = new Label(I18N.getString("window.dashboard.ClientAndProfileSelectorPane.noClientsConnectedLabel"));
+        noClientsConnectedLabel = new Label(I18N.getString("noClientsConnected"));
         noClientsConnectedLabel.getStyleClass().add("client_and_profile_selector_pane_no_clients_connected_label");
         noClientsConnectedLabel.managedProperty().bind(noClientsConnectedLabel.visibleProperty());
 
@@ -117,7 +117,7 @@ public class ClientAndProfileSelectorPane extends HBox {
 
 
         clientProfilesComboBox.managedProperty().bind(clientProfilesComboBox.visibleProperty());
-        Callback<ListView<ClientProfile>, ListCell<ClientProfile>> clientProfilesComboBoxFactory = new Callback<ListView<ClientProfile>, ListCell<ClientProfile>>() {
+        Callback<ListView<ClientProfile>, ListCell<ClientProfile>> clientProfilesComboBoxFactory = new Callback<>() {
             @Override
             public ListCell<ClientProfile> call(ListView<ClientProfile> clientProfileListView) {
                 return new ListCell<>()

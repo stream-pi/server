@@ -183,12 +183,9 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
             Util.initI18n(config.getCurrentLanguageLocale());
             ActionAPI.initI18n(config.getCurrentLanguageLocale());
             ThemeAPI.initI18n(config.getCurrentLanguageLocale());
+            I18N.init(config.getCurrentLanguageLocale());
 
             Locale.setDefault(defaultLocale); // Reset locale back to defaults ...
-
-
-
-            I18N.init(config.getCurrentLanguageLocale());
         }
         else
         {
@@ -265,14 +262,14 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     {
         logger.info("Applying default stylesheet ...");
 
-        getStylesheets().add(Main.class.getResource("style.css").toExternalForm());
+        getStylesheets().add(Objects.requireNonNull(Main.class.getResource("style.css")).toExternalForm());
 
         logger.info("... Done!");
     }
 
     public void applyDefaultIconsStylesheet()
     {
-        getStylesheets().add(Main.class.getResource("default_icons.css").toExternalForm());
+        getStylesheets().add(Objects.requireNonNull(Main.class.getResource("default_icons.css")).toExternalForm());
     }
 
     public DashboardBase getDashboardBase()
