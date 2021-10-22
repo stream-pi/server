@@ -2,6 +2,7 @@ package com.stream_pi.server.i18n;
 
 import com.stream_pi.server.Main;
 import com.stream_pi.util.exception.SevereException;
+import com.stream_pi.util.i18n.language.Language;
 import javafx.scene.control.Label;
 
 import java.io.IOException;
@@ -44,14 +45,14 @@ public class I18N
         }
     }
 
-    private static List<Language> languages;
+    private static HashMap<Locale, Language> languages;
 
     public static void initAvailableLanguages() throws SevereException
     {
         try
         {
 
-            languages = new ArrayList<>();
+            languages = new HashMap<>();
 
             InputStream inputStream = I18N.class.getResourceAsStream("i18n.properties");
             if (inputStream != null)
@@ -68,7 +69,7 @@ public class I18N
                     if (!key.isBlank() && !fullName.isBlank())
                     {
                         Locale locale = Locale.forLanguageTag(key);
-                        languages.add(new Language(fullName, locale));
+                        languages.put(locale, new Language(fullName, locale));
                     }
                 }
             }
@@ -91,19 +92,11 @@ public class I18N
 
     public static Language getLanguage(Locale locale)
     {
-        for (Language language : languages)
-        {
-            if (language.getLocale() == locale)
-            {
-                return language;
-            }
-        }
-
-        return null;
+        return languages.getOrDefault(locale, null);
     }
 
     public static List<Language> getLanguages()
     {
-        return languages;
+        return new ArrayList<>(languages.values());
     }
 }

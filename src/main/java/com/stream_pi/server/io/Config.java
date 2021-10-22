@@ -10,7 +10,6 @@ package com.stream_pi.server.io;
 
 import java.awt.*;
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
@@ -27,14 +26,12 @@ import javax.xml.transform.stream.StreamResult;
 
 import com.stream_pi.server.Main;
 import com.stream_pi.server.i18n.I18N;
-import com.stream_pi.server.i18n.Language;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.iohelper.IOHelper;
 import com.stream_pi.util.xmlconfighelper.XMLConfigHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 public class Config
 {
