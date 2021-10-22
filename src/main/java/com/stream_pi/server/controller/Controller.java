@@ -52,6 +52,7 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.io.File;
 import java.net.SocketAddress;
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -117,7 +118,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 getChildren().add(firstTimeUse);
 
                 firstTimeUse.toFront();
-                getStage().setTitle( I18N.getString("controller.Controller.stream-pi-server"));
+                getStage().setTitle(I18N.getString("windowTitle"));
                 getStage().show();
             }
             else
@@ -140,7 +141,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     @Override
     public void onServerStartFailure()
     {
-        Platform.runLater(()-> getStage().setTitle(I18N.getString("controller.Controller.stream-pi-server-offline")));
+        Platform.runLater(()-> getStage().setTitle(I18N.getString("windowTitle") + " - " + I18N.getString("controller.Controller.offline")));
 
         disableTrayIcon = true;
     }
@@ -467,7 +468,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         getLogger().log(Level.SEVERE, message, e);
         e.printStackTrace();
 
-        StreamPiAlert alert = new StreamPiAlert(e.getTitle(), message, StreamPiAlertType.ERROR);
+        StreamPiAlert alert = new StreamPiAlert(e.getTitle(), message +"\n" + I18N.getString("controller.Controller.willNowExit"), StreamPiAlertType.ERROR);
 
         alert.setOnClicked(new StreamPiAlertListener()
         {
@@ -814,6 +815,12 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             }
         });
 
+    }
+
+    @Override
+    public Locale getCurrentLanguageLocale()
+    {
+        return getConfig().getCurrentLanguageLocale();
     }
 
     private Animation createOpenSettingsAnimation(Node settingsNode, Node dashboardNode) {

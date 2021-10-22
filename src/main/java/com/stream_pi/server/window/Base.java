@@ -337,7 +337,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
                     throw new SevereException(I18N.getString("window.Base.unableToGetDefaultTheme", getConfig().getDefaultCurrentThemeFullName()));
                 }
 
-                themeErrors.append("\n\n").append(I18N.getString("window.Base.revertedToDefaultTheme ", getConfig().getDefaultCurrentThemeFullName()));
+                themeErrors.append("\n\n").append(I18N.getString("window.Base.revertedToDefaultTheme", getConfig().getDefaultCurrentThemeFullName()));
 
                 getConfig().setCurrentThemeFullName(getConfig().getDefaultCurrentThemeFullName());
                 getConfig().save();

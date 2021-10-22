@@ -659,13 +659,11 @@ public class ClientConnection extends Thread
                                 }
                                 catch (MinorException e)
                                 {
-                                    e.setTitle("Unable to run onClientConnected for "+moduleName);
-                                    exceptionAndAlertHandler.handleMinorException("Detailed message :\n\n"+e.getMessage(), e);
+                                    exceptionAndAlertHandler.handleMinorException(I18N.getString("connection.ClientConnection.runOnClientConnectedFailed", moduleName, e.getMessage()), e);
                                 }
                                 catch (SevereException e)
                                 {
-                                    e.setTitle("Unable to run onClientConnected for "+moduleName);
-                                    exceptionAndAlertHandler.handleSevereException("Detailed message :\n\n"+e.getMessage(), e);
+                                    exceptionAndAlertHandler.handleSevereException(I18N.getString("connection.ClientConnection.runOnClientConnectedFailed", moduleName, e.getMessage()), e);
                                 }
                                 return null;
                             }
@@ -675,7 +673,7 @@ public class ClientConnection extends Thread
                     }
                     catch (CloneNotSupportedException e)
                     {
-                        exceptionAndAlertHandler.handleMinorException(new MinorException("action", "Unable to clone"));
+                        exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("connection.ClientConnection.unableToCloneAction", moduleName)));
                     }
 
                     checkIfReady();

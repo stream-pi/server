@@ -237,7 +237,7 @@ public class PluginsPane extends VBox {
 
         vBox.getChildren().addAll(h1, h2);
 
-        TitledPane pane = new TitledPane(I18N.getString("window.dashboard.PluginsPane.stream-pi"), vBox);
+        TitledPane pane = new TitledPane(I18N.getString("title"), vBox);
         pane.getStyleClass().add("plugins_pane_each_plugin_category_titled_pane");
 
         pluginsAccordion.getPanes().add(pane);

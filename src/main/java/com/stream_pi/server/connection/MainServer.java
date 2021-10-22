@@ -145,11 +145,11 @@ public class MainServer extends Thread
                     }
                 }
 
-                Platform.runLater(()-> serverListener.getStage().setTitle(I18N.getString("connection.MainServer.stream-pi-server-ip-plural", ips, port)));
+                Platform.runLater(()-> serverListener.getStage().setTitle(I18N.getString("windowTitle") + " - " + I18N.getString("connection.MainServer.streamPiIPPlural", ips, port)));
             }
             else
             {
-                Platform.runLater(()-> serverListener.getStage().setTitle(I18N.getString("connection.MainServer.stream-pi-server-ip-singular", ip, port)));
+                Platform.runLater(()-> serverListener.getStage().setTitle(I18N.getString("windowTitle") + " - " + I18N.getString("connection.MainServer.streamPIIPSingular", ip, port)));
             }
         }
         catch (Exception e)

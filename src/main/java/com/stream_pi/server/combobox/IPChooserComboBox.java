@@ -82,7 +82,7 @@ public class IPChooserComboBox extends ComboBox<String>
         }
         catch (SocketException e)
         {
-            exceptionAndAlertHandler.handleSevereException(new SevereException("Error", "Unable to retrieve network interfaces!"));
+            exceptionAndAlertHandler.handleSevereException(new SevereException(I18N.getString("combobox.IPChooserComboBox.unableToRetrieveNetworkInterfaces")));
         }
     }
 
