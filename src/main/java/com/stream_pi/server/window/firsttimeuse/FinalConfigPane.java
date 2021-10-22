@@ -38,7 +38,7 @@ public class FinalConfigPane extends VBox
 
         getStyleClass().add("first_time_use_pane_final_config");
 
-        Label label = new Label(I18N.getString("window.firsttimeuse.FinalConfigPane.header"));
+        Label label = new Label(I18N.getString("window.firsttimeuse.FinalConfigPane.subHeading"));
         label.setWrapText(true);
         label.getStyleClass().add("first_time_use_pane_final_config_label");
 

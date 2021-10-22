@@ -174,7 +174,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         if (I18N.isLanguageAvailable(config.getCurrentLanguageLocale()))
         {
             Locale defaultLocale = Locale.getDefault();
-            Locale.setDefault(new Locale("this locale does not exist"));
+            Locale.setDefault(I18N.BASE_LOCALE);
             // This sets the local to a non-existing locale to prevent the system from selecting default system locale.
             // This is done because the proper way of removing fallback locales is not available on Java 9+
             // As ResourceBundle.Control is not supported on modular projects.
@@ -183,15 +183,18 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
             Util.initI18n(config.getCurrentLanguageLocale());
             ActionAPI.initI18n(config.getCurrentLanguageLocale());
             ThemeAPI.initI18n(config.getCurrentLanguageLocale());
-            I18N.init(config.getCurrentLanguageLocale());
 
             Locale.setDefault(defaultLocale); // Reset locale back to defaults ...
+
+
+
+            I18N.init(config.getCurrentLanguageLocale());
         }
         else
         {
             getLogger().warning("No translation available for locale : "+config.getCurrentLanguageLocale());
-            getLogger().warning("Setting it to en_UK ...");
-            getConfig().setCurrentLanguageLocale(new Locale("en", "UK"));
+            getLogger().warning("Setting it to base ...");
+            getConfig().setCurrentLanguageLocale(I18N.BASE_LOCALE);
             getConfig().save();
             initI18n();
         }
