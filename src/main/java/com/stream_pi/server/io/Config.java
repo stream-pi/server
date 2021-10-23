@@ -302,7 +302,7 @@ public class Config
 
     public boolean getDefaultIsUseSameActionGapAsProfile()
     {
-        return false;
+        return true;
     }
 
     public boolean isUseSameActionSizeAsProfile()
@@ -313,7 +313,7 @@ public class Config
 
     public boolean getDefaultIsUseSameActionSizeAsProfile()
     {
-        return false;
+        return true;
     }
 
 

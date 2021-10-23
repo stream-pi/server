@@ -101,8 +101,6 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     {
         ExternalPlugin newAction = ExternalPlugins.getInstance().getPluginByModuleName(moduleName).clone();
 
-        newAction.setDisplayTextFontSize(Config.getInstance().getDefaultActionDisplayTextFontSize());
-
         if(newAction.getActionType() == ActionType.TOGGLE)
         {
             newAction.setCurrentIconState("false__false");
