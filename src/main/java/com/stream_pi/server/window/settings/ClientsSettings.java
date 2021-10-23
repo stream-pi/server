@@ -300,7 +300,8 @@ public class ClientsSettings extends VBox
 
         private com.stream_pi.util.platform.Platform platform;
 
-        public com.stream_pi.util.platform.Platform getPlatform() {
+        public com.stream_pi.util.platform.Platform getPlatform()
+        {
             return platform;
         }
 
@@ -493,7 +494,7 @@ public class ClientsSettings extends VBox
 
             nameTextField.setText(client.getName());
 
-            platformLabel.setText(I18N.getString("window.settings.ClientsSettings.platform"));
+            platformLabel.setText(I18N.getString("window.settings.ClientsSettings.platform", client.getPlatform().getUIName()));
 
             setClient(client);
 
