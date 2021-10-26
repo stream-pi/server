@@ -110,7 +110,7 @@ public class ClientsSettings extends VBox
                             }
                             catch (NumberFormatException e)
                             {
-                                errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.actionSizeMustBeNumeric")).append("\n");
+                                errors2.append("        ").append(I18N.getString("actionSizeMustBeNumeric")).append("\n");
                             }
 
 
@@ -120,7 +120,7 @@ public class ClientsSettings extends VBox
                             }
                             catch (NumberFormatException e)
                             {
-                                errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.actionGapMustBeNumeric")).append("\n");
+                                errors2.append("        ").append(I18N.getString("actionGapMustBeNumeric")).append("\n");
                             }
 
 
@@ -131,7 +131,7 @@ public class ClientsSettings extends VBox
                             }
                             catch (NumberFormatException e)
                             {
-                                errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.actionDefaultDisplayTextFontSizeMustBeNumeric")).append("\n");
+                                errors2.append("        ").append(I18N.getString("actionDisplayTextFontSizeMustBeNumeric")).append("\n");
                             }
 
                             boolean checkForOutOfBoundsActions = true;

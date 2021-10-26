@@ -89,7 +89,7 @@ public class FinalConfigPane extends VBox
 
         if(serverNameStr.isBlank())
         {
-            errors.append("* ").append(I18N.getString("window.firsttimeuse.FinalConfigPane.serverNameCannotBeBlank")).append("\n");
+            errors.append("* ").append(I18N.getString("serverNameCannotBeBlank")).append("\n");
         }
 
         int serverPort=-1;
@@ -98,16 +98,16 @@ public class FinalConfigPane extends VBox
 
             if (serverPort < 1024)
             {
-                errors.append("* ").append(I18N.getString("window.firsttimeuse.FinalConfigPane.serverPortMustBeGreaterThan1024")).append("\n");
+                errors.append("* ").append(I18N.getString("serverPortMustBeGreaterThan1024")).append("\n");
             }
             else if(serverPort > 65535)
             {
-                errors.append("* ").append(I18N.getString("window.firsttimeuse.FinalConfigPane.serverPortMustBeLesserThan65535")).append("\n");
+                errors.append("* ").append(I18N.getString("serverPortMustBeLesserThan65535")).append("\n");
             }
         }
         catch (NumberFormatException e)
         {
-            errors.append("* ").append(I18N.getString("window.firsttimeuse.FinalConfigPane.serverPortMustBeInteger")).append("\n");
+            errors.append("* ").append(I18N.getString("serverPortMustBeInteger")).append("\n");
         }
 
         if(errors.toString().isEmpty())

@@ -267,7 +267,7 @@ public class GeneralSettings extends VBox
 
                     if(serverNameStr.isBlank())
                     {
-                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.serverNameCannotBeBlank")).append("\n");
+                        errors.append("* ").append(I18N.getString("serverNameCannotBeBlank")).append("\n");
                     }
                     else
                     {
@@ -283,9 +283,9 @@ public class GeneralSettings extends VBox
                         serverPort = Integer.parseInt(serverPortStr);
 
                         if (serverPort < 1024)
-                            errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.serverPortMustBeGreaterThan1024")).append("\n");
+                            errors.append("* ").append(I18N.getString("serverPortMustBeGreaterThan1024")).append("\n");
                         else if(serverPort > 65535)
-                            errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.serverPortMustBeLesserThan65535")).append("\n");
+                            errors.append("* ").append(I18N.getString("serverPortMustBeLesserThan65535")).append("\n");
 
                         if(config.getPort()!=serverPort)
                         {
@@ -294,7 +294,7 @@ public class GeneralSettings extends VBox
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.serverPortMustBeInteger")).append("\n");
+                        errors.append("* ").append(I18N.getString("serverPortMustBeInteger")).append("\n");
                     }
 
                     double defaultActionLabelFontSize=-1;
@@ -307,7 +307,7 @@ public class GeneralSettings extends VBox
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionDisplayTextFontSizeMustBeNumeric")).append("\n");
+                        errors.append("* ").append(I18N.getString("actionDisplayTextFontSizeMustBeNumeric")).append("\n");
                     }
 
 
@@ -323,7 +323,7 @@ public class GeneralSettings extends VBox
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionSizeMustBeNumeric")).append("\n");
+                        errors.append("* ").append(I18N.getString("actionSizeMustBeNumeric")).append("\n");
                     }
 
                     if(actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected() != config.getActionGridUseSameActionSizeAsProfile())
@@ -344,7 +344,7 @@ public class GeneralSettings extends VBox
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionGapMustBeNumeric")).append("\n");
+                        errors.append("* ").append(I18N.getString("actionGapMustBeNumeric")).append("\n");
                     }
 
                     if(actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected() != config.getActionGridUseSameActionGapAsProfile())
