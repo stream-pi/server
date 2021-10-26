@@ -349,10 +349,15 @@ public class ActionBox extends StackPane
         return actionGridPaneListener;
     }
 
-    private int size;
+    private double size;
     private ActionGridPaneListener actionGridPaneListener;
-    public ActionBox(int size, ActionDetailsPaneListener actionDetailsPaneListener, ActionGridPaneListener actionGridPaneListener,
-                     int col, int row)
+
+    private double actionGridDisplayTextFontSize;
+    private double profileDisplayTextFontSize;
+    private boolean isUseProfileDefaultForDisplayTextFontSize;
+
+    public ActionBox(double size, ActionDetailsPaneListener actionDetailsPaneListener, ActionGridPaneListener actionGridPaneListener,
+                     int col, int row, double actionGridDisplayTextFontSize, double profileDisplayTextFontSize, boolean isUseProfileDefaultForDisplayTextFontSize)
     {
         this.actionGridPaneListener = actionGridPaneListener;
         this.actionDetailsPaneListener = actionDetailsPaneListener;
@@ -360,6 +365,10 @@ public class ActionBox extends StackPane
 
         this.col = col;
         this.row = row;
+
+        this.actionGridDisplayTextFontSize = actionGridDisplayTextFontSize;
+        this.profileDisplayTextFontSize = profileDisplayTextFontSize;
+        this.isUseProfileDefaultForDisplayTextFontSize = isUseProfileDefaultForDisplayTextFontSize;
 
 
         this.managedProperty().bind(visibleProperty());
@@ -448,35 +457,6 @@ public class ActionBox extends StackPane
     private Action action = null;
     private ExceptionAndAlertHandler exceptionAndAlertHandler;
 
-
-    public ActionBox(int size, Action action, ActionDetailsPaneListener actionDetailsPaneListener, ExceptionAndAlertHandler exceptionAndAlertHandler, ActionGridPaneListener actionGridPaneListener,
-                     int col, int row)
-    {
-        this.actionGridPaneListener = actionGridPaneListener;
-        this.exceptionAndAlertHandler = exceptionAndAlertHandler;
-        this.action = action;
-        this.actionDetailsPaneListener = actionDetailsPaneListener;
-        this.size = size;
-
-        this.col = col;
-        this.row = row;
-
-
-        this.managedProperty().bind(visibleProperty());
-
-        setCache(true);
-        setCacheHint(CacheHint.QUALITY);
-
-        baseInit();
-
-        initMouseAndTouchListeners();
-
-        init();
-
-
-
-    }
-
     public void configureSize()
     {
         int rowSpan = getAction().getLocation().getRowSpan(), colSpan = getAction().getLocation().getColSpan();
@@ -485,8 +465,8 @@ public class ActionBox extends StackPane
         GridPane.setRowSpan(this, rowSpan);
         GridPane.setColumnSpan(this, colSpan);
 
-        int actionWidth = (size*colSpan) + (actionGridPaneListener.getCurrentProfile().getActionGap()*(colSpan-1));
-        int actionHeight = (size*rowSpan) + (actionGridPaneListener.getCurrentProfile().getActionGap()*(rowSpan-1));
+        double actionWidth = (size*colSpan) + (actionGridPaneListener.getCurrentProfile().getActionGap()*(colSpan-1));
+        double actionHeight = (size*rowSpan) + (actionGridPaneListener.getCurrentProfile().getActionGap()*(rowSpan-1));
 
         setMinSize(actionWidth, actionHeight);
         setMaxSize(actionWidth, actionHeight);
@@ -729,10 +709,25 @@ public class ActionBox extends StackPane
             totalStyle+="-fx-text-fill : "+colour+";";
         }
 
-        if(getAction().getDisplayTextFontSize() > -1)
+        if(isUseProfileDefaultForDisplayTextFontSize)
         {
-            totalStyle+="-fx-font-size: "+getAction().getDisplayTextFontSize()+";";
+            if(getAction().getDisplayTextFontSize() > -1)
+            {
+                totalStyle+="-fx-font-size: "+getAction().getDisplayTextFontSize()+";";
+            }
+            else
+            {
+                totalStyle+="-fx-font-size: "+profileDisplayTextFontSize+";";
+            }
         }
+        else
+        {
+            totalStyle+="-fx-font-size: "+actionGridDisplayTextFontSize+";";
+        }
+
+
+
+
 
         if(!totalStyle.isBlank())
         {

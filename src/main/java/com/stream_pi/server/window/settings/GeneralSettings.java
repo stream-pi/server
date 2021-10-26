@@ -48,6 +48,7 @@ public class GeneralSettings extends VBox
     private final CheckBox actionGridPaneActionBoxSizeIsDefaultCheckBox;
     private final TextField actionGridPaneActionBoxGap;
     private final CheckBox actionGridPaneActionBoxGapIsDefaultCheckBox;
+    private final CheckBox actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox;
     private final ToggleSwitch startOnBootToggleSwitch;
     private final HBoxWithSpaceBetween startOnBootHBox;
     private final TextField soundOnActionClickedFilePathTextField;
@@ -82,7 +83,6 @@ public class GeneralSettings extends VBox
 
         serverNameTextField = new TextField();
 
-        defaultActionLabelFontSizeTextField = new TextField();
 
         portTextField = new TextField();
 
@@ -99,6 +99,9 @@ public class GeneralSettings extends VBox
 
         actionGridPaneActionBoxGap = new TextField();
         actionGridPaneActionBoxGapIsDefaultCheckBox = new CheckBox(I18N.getString("window.settings.GeneralSettings.followProfileDefaults"));
+
+        defaultActionLabelFontSizeTextField = new TextField();
+        actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox = new CheckBox(I18N.getString("window.settings.GeneralSettings.followProfileDefaults"));
 
         startOnBootToggleSwitch = new ToggleSwitch();
         startOnBootHBox = new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.startOnBoot"), startOnBootToggleSwitch);
@@ -146,7 +149,7 @@ public class GeneralSettings extends VBox
                 generateSubHeading(I18N.getString("window.settings.GeneralSettings.actionGrid")),
                 new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.actionBoxSize"), actionGridPaneActionBoxSize, actionGridPaneActionBoxSizeIsDefaultCheckBox),
                 new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.actionBoxGap"), actionGridPaneActionBoxGap, actionGridPaneActionBoxGapIsDefaultCheckBox),
-                new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.actionBoxDefaultTextFontSize"), defaultActionLabelFontSizeTextField),
+                new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.actionBoxDisplayTextFontSize"), defaultActionLabelFontSizeTextField, actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox),
                 generateSubHeading(I18N.getString("window.settings.GeneralSettings.locations")),
                 new HBoxInputBoxWithDirectoryChooser(I18N.getString("window.settings.GeneralSettings.plugins"), pluginsPathTextField),
                 new HBoxInputBoxWithDirectoryChooser(I18N.getString("window.settings.GeneralSettings.themes"), themesPathTextField),
@@ -206,12 +209,13 @@ public class GeneralSettings extends VBox
         {
             serverNameTextField.setText(config.getServerName());
             portTextField.setText(config.getPort()+"");
-            defaultActionLabelFontSizeTextField.setText(config.getDefaultActionDisplayTextFontSize()+"");
+            defaultActionLabelFontSizeTextField.setText(config.getActionGridActionDisplayTextFontSize()+"");
             pluginsPathTextField.setText(config.getPluginsPath());
             themesPathTextField.setText(config.getThemesPath());
             actionGridPaneActionBoxSize.setText(config.getActionGridActionSize()+"");
-            actionGridPaneActionBoxSizeIsDefaultCheckBox.setSelected(config.isUseSameActionSizeAsProfile());
-            actionGridPaneActionBoxGapIsDefaultCheckBox.setSelected(config.isUseSameActionGapAsProfile());
+            actionGridPaneActionBoxSizeIsDefaultCheckBox.setSelected(config.getActionGridUseSameActionSizeAsProfile());
+            actionGridPaneActionBoxGapIsDefaultCheckBox.setSelected(config.getActionGridUseSameActionGapAsProfile());
+            actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox.setSelected(config.getActionGridUseSameActionDisplayTextFontSizeAsProfile());
             actionGridPaneActionBoxGap.setText(config.getActionGridActionGap()+"");
 
             minimizeToSystemTrayOnCloseToggleSwitch.setSelected(config.getMinimiseToSystemTrayOnClose());
@@ -303,14 +307,14 @@ public class GeneralSettings extends VBox
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionLabelFontSizeMustBeInteger")).append("\n");
+                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionDisplayTextFontSizeMustBeNumeric")).append("\n");
                     }
 
 
-                    int actionSize=-1;
+                    double actionSize=-1;
                     try
                     {
-                        actionSize = Integer.parseInt(actionGridActionBoxSize);
+                        actionSize = Double.parseDouble(actionGridActionBoxSize);
 
                         if(config.getActionGridActionSize() != actionSize)
                         {
@@ -319,19 +323,19 @@ public class GeneralSettings extends VBox
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionSizeMustBeInteger")).append("\n");
+                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionSizeMustBeNumeric")).append("\n");
                     }
 
-                    if(actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected() != config.isUseSameActionSizeAsProfile())
+                    if(actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected() != config.getActionGridUseSameActionSizeAsProfile())
                     {
                         dashToBeReRendered = true;
                     }
 
 
-                    int actionGap=-1;
+                    double actionGap=-1;
                     try
                     {
-                        actionGap = Integer.parseInt(actionGridActionBoxGap);
+                        actionGap = Double.parseDouble(actionGridActionBoxGap);
 
                         if(config.getActionGridActionGap() != actionGap)
                         {
@@ -340,10 +344,15 @@ public class GeneralSettings extends VBox
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionGapMustBeInteger")).append("\n");
+                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionGapMustBeNumeric")).append("\n");
                     }
 
-                    if(actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected() != config.isUseSameActionGapAsProfile())
+                    if(actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected() != config.getActionGridUseSameActionGapAsProfile())
+                    {
+                        dashToBeReRendered = true;
+                    }
+
+                    if (actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox.isSelected() != config.getActionGridUseSameActionDisplayTextFontSizeAsProfile())
                     {
                         dashToBeReRendered = true;
                     }
@@ -456,15 +465,16 @@ public class GeneralSettings extends VBox
 
                     config.setServerName(serverNameStr);
                     config.setServerPort(serverPort);
-                    config.setActionGridGap(actionGap);
-                    config.setActionGridSize(actionSize);
+                    config.setActionGridActionGap(actionGap);
+                    config.setActionGridActionSize(actionSize);
+                    config.setActionGridActionDisplayTextFontSize(defaultActionLabelFontSize);
                     config.setPluginsPath(pluginsPathStr);
                     config.setThemesPath(themesPathStr);
 
-                    config.setUseSameActionGapAsProfile(actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected());
-                    config.setUseSameActionSizeAsProfile(actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected());
+                    config.setActionGridUseSameActionGapAsProfile(actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected());
+                    config.setActionGridUseSameActionSizeAsProfile(actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected());
+                    config.setActionGridUseSameActionDisplayTextFontSizeAsProfile(actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox.isSelected());
 
-                    config.setDefaultActionDisplayTextFontSize(defaultActionLabelFontSize);
 
                     config.setMinimiseToSystemTrayOnClose(minimizeToSystemTrayOnClose);
                     StreamPiAlert.setIsShowPopup(showAlertsPopup);

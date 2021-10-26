@@ -23,15 +23,18 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
-public class ClientProfile implements Cloneable {
+public class ClientProfile implements Cloneable
+{
 
     private String name, ID;
 
-    private int rows, cols, actionSize, actionGap;
+    private int rows, cols;
+
+    private double actionDefaultDisplayTextFontSize, actionSize, actionGap;
 
     private final HashMap<String, Action> actions;
 
-    public ClientProfile(String name, String ID, int rows, int cols, int actionSize, int actionGap)
+    public ClientProfile(String name, String ID, int rows, int cols, double actionSize, double actionGap, double actionDefaultDisplayTextFontSize)
     {
         this.actions = new HashMap<>();
         this.ID = ID;
@@ -40,6 +43,7 @@ public class ClientProfile implements Cloneable {
         this.cols = cols;
         this.actionGap = actionGap;
         this.actionSize = actionSize;
+        this.actionDefaultDisplayTextFontSize = actionDefaultDisplayTextFontSize;
     }
 
     public ArrayList<Action> getActions()
@@ -51,9 +55,9 @@ public class ClientProfile implements Cloneable {
     }
 
 
-    public ClientProfile(String name, int rows, int cols, int actionSize, int actionGap)
+    public ClientProfile(String name, int rows, int cols, double actionSize, double actionGap, double actionDefaultDisplayTextFontSize)
     {
-        this(name, UUID.randomUUID().toString(), rows, cols, actionSize, actionGap);
+        this(name, UUID.randomUUID().toString(), rows, cols, actionSize, actionGap, actionDefaultDisplayTextFontSize);
     }
 
     public Action getActionByID(String ID)
@@ -95,12 +99,12 @@ public class ClientProfile implements Cloneable {
         return cols;
     }
 
-    public int getActionSize()
+    public double getActionSize()
     {
         return actionSize;
     }
 
-    public int getActionGap()
+    public double getActionGap()
     {
         return actionGap;
     }
@@ -120,12 +124,12 @@ public class ClientProfile implements Cloneable {
         this.ID = ID;
     }
 
-    public void setActionSize(int actionSize)
+    public void setActionSize(double actionSize)
     {
         this.actionSize = actionSize;
     }
 
-    public void setActionGap(int actionGap)
+    public void setActionGap(double actionGap)
     {
         this.actionGap = actionGap;
     }
@@ -135,6 +139,15 @@ public class ClientProfile implements Cloneable {
         this.name = name;
     }
 
+    public double getActionDefaultDisplayTextFontSize()
+    {
+        return actionDefaultDisplayTextFontSize;
+    }
+
+    public void setActionDefaultDisplayTextFontSize(double actionDefaultDisplayTextFontSize)
+    {
+        this.actionDefaultDisplayTextFontSize = actionDefaultDisplayTextFontSize;
+    }
 
     public Object clone() throws CloneNotSupportedException
     {

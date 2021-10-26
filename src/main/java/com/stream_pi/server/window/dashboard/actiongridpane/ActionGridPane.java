@@ -108,6 +108,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
         newAction.setIDRandom();
 
+
         newAction.setShowDisplayText(true);
         newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
 
@@ -137,8 +138,6 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
         newAction.setIDRandom();
 
-
-        newAction.setDisplayTextFontSize(Config.getInstance().getDefaultActionDisplayTextFontSize());
 
         newAction.setShowDisplayText(true);
         newAction.setDisplayTextAlignment(DisplayTextAlignment.CENTER);
@@ -230,7 +229,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     public void renderGrid() throws SevereException
     {
 
-        if(Config.getInstance().isUseSameActionGapAsProfile())
+        if(Config.getInstance().getActionGridUseSameActionGapAsProfile())
         {
             actionsGridPane.setHgap(clientProfile.getActionGap());
             actionsGridPane.setVgap(clientProfile.getActionGap());
@@ -310,9 +309,12 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
     public ActionBox addBlankActionBox(int col, int row) throws SevereException
     {
-        int size = Config.getInstance().isUseSameActionSizeAsProfile() ? getClientProfile().getActionSize() : Config.getInstance().getActionGridActionSize();
+        double size = Config.getInstance().getActionGridUseSameActionSizeAsProfile() ? getClientProfile().getActionSize() : Config.getInstance().getActionGridActionSize();
         ActionBox actionBox = new ActionBox(size, actionDetailsPaneListener, this,
-                col, row);
+                col, row,
+                Config.getInstance().getActionGridActionDisplayTextFontSize(),
+                clientProfile.getActionDefaultDisplayTextFontSize(),
+                Config.getInstance().getActionGridUseSameActionDisplayTextFontSizeAsProfile());
 
         if(getClient().getOrientation() == null)
         {

@@ -106,21 +106,32 @@ public class ClientsSettings extends VBox
 
                             try 
                             {
-                                Integer.parseInt(clientProfileVBox.getActionSize());
+                                Double.parseDouble(clientProfileVBox.getActionSize());
                             }
                             catch (NumberFormatException e)
                             {
-                                errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.actionSizeMustBeInteger")).append("\n");
+                                errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.actionSizeMustBeNumeric")).append("\n");
                             }
 
 
                             try 
                             {
-                                Integer.parseInt(clientProfileVBox.getActionGap());
+                                Double.parseDouble(clientProfileVBox.getActionGap());
                             }
                             catch (NumberFormatException e)
                             {
-                                errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.actionGapMustBeInteger")).append("\n");
+                                errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.actionGapMustBeNumeric")).append("\n");
+                            }
+
+
+
+                            try
+                            {
+                                Double.parseDouble(clientProfileVBox.getActionDefaultDisplayTextFontSize());
+                            }
+                            catch (NumberFormatException e)
+                            {
+                                errors2.append("        ").append(I18N.getString("window.settings.ClientsSettings.actionDefaultDisplayTextFontSizeMustBeNumeric")).append("\n");
                             }
 
                             boolean checkForOutOfBoundsActions = true;
@@ -337,7 +348,8 @@ public class ClientsSettings extends VBox
             return connection;
         }
 
-        public void saveClientAndProfileDetails() throws SevereException, CloneNotSupportedException, MinorException {
+        public void saveClientAndProfileDetails() throws SevereException, CloneNotSupportedException, MinorException
+        {
 
             getConnection().saveClientDetails(
                     nameTextField.getText(),
@@ -530,7 +542,8 @@ public class ClientsSettings extends VBox
                     3,
                     3,
                     100,
-                    5
+                    5,
+                    20
             );
 
 
@@ -606,6 +619,13 @@ public class ClientsSettings extends VBox
             return actionGapTextField.getText();
         }
 
+        private TextField actionDefaultDisplayTextFontSizeTextField;
+
+        public String getActionDefaultDisplayTextFontSize()
+        {
+            return actionDefaultDisplayTextFontSizeTextField.getText();
+        }
+
         private Button removeButton;
 
         private ClientProfile clientProfile;
@@ -634,6 +654,7 @@ public class ClientsSettings extends VBox
             colsTextField = new TextField();
             actionSizeTextField = new TextField();
             actionGapTextField = new TextField();
+            actionDefaultDisplayTextFontSizeTextField = new TextField();
 
             removeButton = new Button(I18N.getString("window.settings.ClientsSettings.remove"));
 
@@ -647,6 +668,7 @@ public class ClientsSettings extends VBox
                     new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileColumns"), colsTextField),
                     new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileActionSize"), actionSizeTextField),
                     new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileActionGap"), actionGapTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileDefaultActionDisplayTextFontSize"), actionDefaultDisplayTextFontSizeTextField),
                     hBox
             );
         }
@@ -665,12 +687,14 @@ public class ClientsSettings extends VBox
 
             actionSizeTextField.setText(clientProfile.getActionSize()+"");
             actionGapTextField.setText(clientProfile.getActionGap()+"");
+            actionDefaultDisplayTextFontSizeTextField.setText(clientProfile.getActionDefaultDisplayTextFontSize()+"");
         }
 
         public ClientProfile getClientProfile()
         {
-            clientProfile.setActionGap(Integer.parseInt(actionGapTextField.getText()));
-            clientProfile.setActionSize(Integer.parseInt(actionSizeTextField.getText()));
+            clientProfile.setActionGap(Double.parseDouble(actionGapTextField.getText()));
+            clientProfile.setActionSize(Double.parseDouble(actionSizeTextField.getText()));
+            clientProfile.setActionDefaultDisplayTextFontSize(Double.parseDouble(actionDefaultDisplayTextFontSizeTextField.getText()));
             clientProfile.setRows(Integer.parseInt(rowsTextField.getText()));
             clientProfile.setCols(Integer.parseInt(colsTextField.getText()));
             clientProfile.setName(nameTextField.getText());

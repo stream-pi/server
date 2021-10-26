@@ -202,17 +202,21 @@ public class Config
         return (Element) document.getElementsByTagName("action-grid").item(0);
     }
 
-    public int getActionGridActionGap()
+    private Element getActionGridSizeElement()
     {
-        return XMLConfigHelper.getIntProperty(getActionGridElement(), "gap",
-                getDefaultActionGridActionGap(), false, true, document, configFile);
+        return (Element) getActionGridElement().getElementsByTagName("size").item(0);
     }
 
-    public int getActionGridActionSize()
+    private Element getActionGridGapElement()
     {
-        return XMLConfigHelper.getIntProperty(getActionGridElement(), "size",
-                getDefaultActionGridSize(), false, true, document, configFile);
+        return (Element) getActionGridElement().getElementsByTagName("gap").item(0);
     }
+
+    private Element getActionGridDisplayTextFontSizeElement()
+    {
+        return (Element) getActionGridElement().getElementsByTagName("display-text-font-size").item(0);
+    }
+
 
 
     public String getCurrentThemeFullName()
@@ -294,29 +298,6 @@ public class Config
         return (Element) document.getElementsByTagName("others").item(0);
     }
 
-    public boolean isUseSameActionGapAsProfile()
-    {
-        return XMLConfigHelper.getBooleanProperty(getOthersElement(), "use-default-action-box-gap",
-                getDefaultIsUseSameActionGapAsProfile(), false, true, document, configFile);
-    }
-
-    public boolean getDefaultIsUseSameActionGapAsProfile()
-    {
-        return true;
-    }
-
-    public boolean isUseSameActionSizeAsProfile()
-    {
-        return XMLConfigHelper.getBooleanProperty(getOthersElement(), "use-default-action-box-size",
-                getDefaultIsUseSameActionSizeAsProfile(), false, true, document, configFile);
-    }
-
-    public boolean getDefaultIsUseSameActionSizeAsProfile()
-    {
-        return true;
-    }
-
-
     public void setCurrentLanguageLocale(Locale locale)
     {
         getOthersElement().getElementsByTagName("language-locale").item(0).setTextContent(locale.toLanguageTag());
@@ -335,26 +316,7 @@ public class Config
 
 
 
-    public void setUseSameActionSizeAsProfile(boolean value)
-    {
-        getOthersElement().getElementsByTagName("use-default-action-box-size").item(0).setTextContent(value+"");
-    }
 
-    public void setUseSameActionGapAsProfile(boolean value)
-    {
-        getOthersElement().getElementsByTagName("use-default-action-box-gap").item(0).setTextContent(value+"");
-    }
-
-    public double getDefaultActionDisplayTextFontSize()
-    {
-        return XMLConfigHelper.getDoubleProperty(getOthersElement(), "default-action-display-text-font-size",
-                getDefaultDefaultActionDisplayTextFontSize(), false, true, document, configFile);
-    }
-
-    public double getDefaultDefaultActionDisplayTextFontSize()
-    {
-        return 20;
-    }
 
     public boolean getStartOnBoot()
     {
@@ -405,25 +367,130 @@ public class Config
 
     //server
 
-    public int getDefaultActionGridActionGap()
-    {
-        return 5;
-    }
 
     public int getDefaultActionGridSize()
     {
         return 100;
     }
 
-    public void setActionGridSize(int size)
+
+
+    // Action grid action size
+
+    // value
+    public void setActionGridActionSize(double value)
     {
-        getActionGridElement().getElementsByTagName("size").item(0).setTextContent(size+"");
+        getActionGridSizeElement().getElementsByTagName("value").item(0).setTextContent(value+"");
     }
 
-    public void setActionGridGap(int size)
+    public double getActionGridActionSize()
     {
-        getActionGridElement().getElementsByTagName("gap").item(0).setTextContent(size+"");
+        return XMLConfigHelper.getDoubleProperty(getActionGridSizeElement(), "value",
+                getDefaultActionGridActionSize(), false, true, document, configFile);
     }
+
+    public double getDefaultActionGridActionSize()
+    {
+        return 100;
+    }
+
+    // profile default
+    public void setActionGridUseSameActionSizeAsProfile(boolean value)
+    {
+        getActionGridSizeElement().getElementsByTagName("use-profile-default").item(0).setTextContent(value+"");
+    }
+
+    public boolean getActionGridUseSameActionSizeAsProfile()
+    {
+        return XMLConfigHelper.getBooleanProperty(getActionGridSizeElement(), "use-profile-default",
+                getDefaultActionGridUseSameActionSizeAsProfile(), false, true, document, configFile);
+    }
+
+    public boolean getDefaultActionGridUseSameActionSizeAsProfile()
+    {
+        return false;
+    }
+
+
+
+
+
+    // Action grid action gap
+
+    // value
+    public void setActionGridActionGap(double value)
+    {
+        getActionGridGapElement().getElementsByTagName("value").item(0).setTextContent(value+"");
+    }
+
+    public double getActionGridActionGap()
+    {
+        return XMLConfigHelper.getDoubleProperty(getActionGridGapElement(), "value",
+                getDefaultActionGridActionGap(), false, true, document, configFile);
+    }
+
+    public double getDefaultActionGridActionGap()
+    {
+        return 5;
+    }
+
+    // profile default
+    public void setActionGridUseSameActionGapAsProfile(boolean value)
+    {
+        getActionGridGapElement().getElementsByTagName("use-profile-default").item(0).setTextContent(value+"");
+    }
+
+    public boolean getActionGridUseSameActionGapAsProfile()
+    {
+        return XMLConfigHelper.getBooleanProperty(getActionGridGapElement(), "use-profile-default",
+                getDefaultActionGridUseSameActionGapAsProfile(), false, true, document, configFile);
+    }
+
+    public boolean getDefaultActionGridUseSameActionGapAsProfile()
+    {
+        return false;
+    }
+
+
+
+
+
+    // Action display text font size
+
+    // value
+    public void setActionGridActionDisplayTextFontSize(double value)
+    {
+        getActionGridDisplayTextFontSizeElement().getElementsByTagName("value").item(0).setTextContent(value+"");
+    }
+
+    public double getActionGridActionDisplayTextFontSize()
+    {
+        return XMLConfigHelper.getDoubleProperty(getActionGridDisplayTextFontSizeElement(), "value",
+                getDefaultActionGridActionDisplayTextFontSize(), false, true, document, configFile);
+    }
+
+    public double getDefaultActionGridActionDisplayTextFontSize()
+    {
+        return 20;
+    }
+
+    // profile default
+    public void setActionGridUseSameActionDisplayTextFontSizeAsProfile(boolean value)
+    {
+        getActionGridDisplayTextFontSizeElement().getElementsByTagName("use-profile-default").item(0).setTextContent(value+"");
+    }
+
+    public boolean getActionGridUseSameActionDisplayTextFontSizeAsProfile()
+    {
+        return XMLConfigHelper.getBooleanProperty(getActionGridDisplayTextFontSizeElement(), "use-profile-default",
+                getDefaultActionGridUseSameActionDisplayTextFontSizeAsProfile(), false, true, document, configFile);
+    }
+
+    public boolean getDefaultActionGridUseSameActionDisplayTextFontSizeAsProfile()
+    {
+        return true;
+    }
+
 
     public void setPluginsPath(String path)
     {
@@ -458,10 +525,6 @@ public class Config
     }
 
     //others
-    public void setDefaultActionDisplayTextFontSize(double value)
-    {
-        getOthersElement().getElementsByTagName("default-action-display-text-font-size").item(0).setTextContent(value+"");
-    }
 
     public void setStartupOnBoot(boolean value)
     {

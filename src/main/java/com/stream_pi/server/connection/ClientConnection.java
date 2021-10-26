@@ -483,11 +483,11 @@ public class ClientConnection extends Thread
         String name = (String) message.getValue("name");
         int rows = (int) message.getValue("rows");
         int cols = (int) message.getValue("cols");
-        int actionSize = (int) message.getValue("action_size");
-        int actionGap = (int) message.getValue("action_gap");
+        double actionSize = (double) message.getValue("action_size");
+        double actionGap = (double) message.getValue("action_gap");
+        double actionDefaultDisplayTextFontSize = (double) message.getValue("action_default_display_text_font_size");
 
-
-        ClientProfile clientProfile = new ClientProfile(name, ID, rows, cols, actionSize, actionGap);
+        ClientProfile clientProfile = new ClientProfile(name, ID, rows, cols, actionSize, actionGap, actionDefaultDisplayTextFontSize);
 
         logger.info("Added client profile "+clientProfile.getName());
         try
@@ -881,6 +881,7 @@ public class ClientConnection extends Thread
         message.setValue("cols", clientProfile.getCols());
         message.setValue("action_size", clientProfile.getActionSize());
         message.setValue("action_gap", clientProfile.getActionGap());
+        message.setValue("action_default_display_text_font_size", clientProfile.getActionDefaultDisplayTextFontSize());
 
         sendMessage(message);
     }
