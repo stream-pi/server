@@ -10,22 +10,22 @@ import javafx.util.Callback;
 
 import java.util.Locale;
 
-public class LanguageChooserComboBox extends ComboBox<Language>
+public class LanguageChooserComboBox extends ComboBox<Locale>
 {
     public LanguageChooserComboBox()
     {
-        Callback<ListView<Language>, ListCell<Language>> callbackFactory = new Callback<>() {
+        Callback<ListView<Locale>, ListCell<Locale>> callbackFactory = new Callback<>() {
             @Override
-            public ListCell<Language> call(ListView<Language> language) {
+            public ListCell<Locale> call(ListView<Locale> locale) {
                 return new ListCell<>() {
                     @Override
-                    protected void updateItem(Language language, boolean b)
+                    protected void updateItem(Locale locale, boolean b)
                     {
-                        super.updateItem(language, b);
+                        super.updateItem(locale, b);
 
-                        if (language != null)
+                        if (locale != null)
                         {
-                            setText(language.getFullName());
+                            setText(locale.getDisplayName());
                         }
                     }
                 };
@@ -40,6 +40,6 @@ public class LanguageChooserComboBox extends ComboBox<Language>
 
     public Locale getSelectedLocale()
     {
-        return getSelectionModel().getSelectedItem().getLocale();
+        return getSelectionModel().getSelectedItem();
     }
 }
