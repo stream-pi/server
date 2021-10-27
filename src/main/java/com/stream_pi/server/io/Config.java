@@ -54,7 +54,7 @@ public class Config
         catch (Exception e)
         {
             e.printStackTrace();
-            throw new SevereException(I18N.getString("io.config.unableToReadConfig", e.getMessage()));
+            throw new SevereException(I18N.getString("io.config.Config.unableToReadConfig", e.getMessage()));
         }
     }
 
@@ -88,7 +88,7 @@ public class Config
         catch (Exception e)
         {
             e.printStackTrace();
-            throw new SevereException(I18N.getString("io.config.unableToSaveConfig", e.getMessage()));
+            throw new SevereException(I18N.getString("io.config.Config.unableToSaveConfig", e.getMessage()));
         }
     }
 
