@@ -136,19 +136,19 @@ public class GeneralSettings extends VBox
         serverNameTextField.setPrefWidth(200);
 
 
-        saveButton = new Button(I18N.getString("window.settings.GeneralSettings.save"));
+        saveButton = new Button(I18N.getString("save"));
         VBox.setMargin(saveButton, new Insets(0,10, 0, 0));
 
         saveButton.setOnAction(event->save());
 
         VBox vbox = new VBox(
                 generateSubHeading(I18N.getString("window.settings.GeneralSettings.connection")),
-                new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.serverName"), serverNameTextField),
-                new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.port"), portTextField),
-                new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.ip"), ipChooserComboBox),
+                new HBoxInputBox(I18N.getString("serverName"), serverNameTextField),
+                new HBoxInputBox(I18N.getString("serverPort"), portTextField),
+                new HBoxWithSpaceBetween(I18N.getString("serverIPBinding"), ipChooserComboBox),
                 generateSubHeading(I18N.getString("window.settings.GeneralSettings.actionGrid")),
-                new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.actionBoxSize"), actionGridPaneActionBoxSize, actionGridPaneActionBoxSizeIsDefaultCheckBox),
-                new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.actionBoxGap"), actionGridPaneActionBoxGap, actionGridPaneActionBoxGapIsDefaultCheckBox),
+                new HBoxInputBox(I18N.getString("actionBoxSize"), actionGridPaneActionBoxSize, actionGridPaneActionBoxSizeIsDefaultCheckBox),
+                new HBoxInputBox(I18N.getString("actionBoxGap"), actionGridPaneActionBoxGap, actionGridPaneActionBoxGapIsDefaultCheckBox),
                 new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.actionBoxDisplayTextFontSize"), defaultActionLabelFontSizeTextField, actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox),
                 generateSubHeading(I18N.getString("window.settings.GeneralSettings.locations")),
                 new HBoxInputBoxWithDirectoryChooser(I18N.getString("window.settings.GeneralSettings.plugins"), pluginsPathTextField),
@@ -303,7 +303,7 @@ public class GeneralSettings extends VBox
                         defaultActionLabelFontSize = Double.parseDouble(defaultActionLabelFontSizeStr);
 
                         if (defaultActionLabelFontSize < 1)
-                            errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.actionLabelFontSizeTooSmall")).append("\n");
+                            errors.append("* ").append(I18N.getString("actionDisplayTextFontSizeTooSmall")).append("\n");
                     }
                     catch (NumberFormatException e)
                     {

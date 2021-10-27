@@ -77,7 +77,7 @@ public class ClientConnection extends Thread
         catch (IOException e)
         {
             e.printStackTrace();
-            exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("connection.ClientConnection.unableToStartSocketStreams", e)));
+            exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("connection.ClientConnection.failedToSetUpIOStreams", e)));
         }
 
         start();
@@ -133,7 +133,7 @@ public class ClientConnection extends Thread
                     }
                     catch (MinorException e)
                     {
-                        exceptionAndAlertHandler.handleMinorException(I18N.getString("connection.ClientConnection.onClientDisconnectedFailed", action.getModuleName(), e.getMessage()), e);
+                        exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onClientDisconnectedFailed()", action.getModuleName(), e.getMessage()), e);
                     }
                 }
             }
@@ -375,7 +375,7 @@ public class ClientConnection extends Thread
         catch (IOException e)
         {
             e.printStackTrace();
-            throw new SevereException(I18N.getString("connection.ClientConnection.unableToCloseSocket"));
+            throw new SevereException(I18N.getString("connection.ClientConnection.failedToCloseSocket", e.getLocalizedMessage()));
         }
     }
 
@@ -391,7 +391,7 @@ public class ClientConnection extends Thread
         catch (IOException e)
         {
             e.printStackTrace();
-            throw new SevereException(I18N.getString("connection.ClientConnection.unableToWriteToIOStream"));
+            throw new SevereException(I18N.getString("connection.ClientConnection.failedToWriteToIOStream", e.getLocalizedMessage()));
         }
     }
 
@@ -659,11 +659,11 @@ public class ClientConnection extends Thread
                                 }
                                 catch (MinorException e)
                                 {
-                                    exceptionAndAlertHandler.handleMinorException(I18N.getString("connection.ClientConnection.runOnClientConnectedFailed", moduleName, e.getMessage()), e);
+                                    exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "runOnClientConnectedFailed()", moduleName, e.getMessage()), e);
                                 }
                                 catch (SevereException e)
                                 {
-                                    exceptionAndAlertHandler.handleSevereException(I18N.getString("connection.ClientConnection.runOnClientConnectedFailed", moduleName, e.getMessage()), e);
+                                    exceptionAndAlertHandler.handleSevereException(I18N.getString("methodCallFailed", "runOnClientConnectedFailed()", moduleName, e.getMessage()), e);
                                 }
                                 return null;
                             }
@@ -673,7 +673,7 @@ public class ClientConnection extends Thread
                     }
                     catch (CloneNotSupportedException e)
                     {
-                        exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("connection.ClientConnection.unableToCloneAction", moduleName)));
+                        exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("connection.ClientConnection.failedToCloneAction", moduleName)));
                     }
 
                     checkIfReady();

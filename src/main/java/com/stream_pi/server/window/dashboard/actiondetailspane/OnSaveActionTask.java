@@ -227,7 +227,7 @@ public class OnSaveActionTask extends Task<Void>
                 }
                 catch (MinorException e)
                 {
-                    exceptionAndAlertHandler.handleMinorException(I18N.getString("window.dashboard.actiondetailspane.OnSaveActionTask.onActionSavedFromServerFailed", action.getModuleName(), e.getMessage()), e);
+                    exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onActionSavedFromServerFailed()", action.getModuleName(), e.getMessage()), e);
                 }
             }
 

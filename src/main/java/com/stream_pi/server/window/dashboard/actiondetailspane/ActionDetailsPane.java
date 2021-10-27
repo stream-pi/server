@@ -132,7 +132,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         openFolderButton.setGraphic(folderOpenIcon);
         openFolderButton.setOnAction(event -> onOpenFolderButtonClicked());
 
-        saveButton = new Button(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.save"));
+        saveButton = new Button(I18N.getString("save"));
         saveButton.getStyleClass().add("action_details_pane_save_button");
         FontIcon syncIcon = new FontIcon("far-save");
         syncIcon.getStyleClass().add("action_details_save_delete_button_icon");
@@ -343,7 +343,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         clearIconHBox.setAlignment(Pos.CENTER_RIGHT);
 
         HBox.setMargin(hideDisplayTextCheckBox, new Insets(0, 0, 0, 45));
-        HBoxInputBox s = new HBoxInputBox(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.name"), displayNameTextField);
+        HBoxInputBox s = new HBoxInputBox(I18N.getString("name"), displayNameTextField);
         HBox.setHgrow(s, Priority.ALWAYS);
         displayTextFieldHBox = new HBox(s, hideDisplayTextCheckBox);
 
@@ -477,7 +477,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     }
                     catch (MinorException e)
                     {
-                        exceptionAndAlertHandler.handleMinorException(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.onCreateFailed", getAction().getModuleName(), e.getMessage()), e);
+                        exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onCreateFailed()", getAction().getModuleName(), e.getMessage()), e);
                     }
 
                     combineActionPropertiesPane.getCombineAction().addChild(newAction.getID());
@@ -1086,16 +1086,12 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     double r = Double.parseDouble(displayNameFontSizeTextField.getText());
                     if(r < 1)
                     {
-                        finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.nameLabelFontSizeTooSmall")).append("\n");
-                    }
-                    else if(r > getClientProfile().getActionSize())
-                    {
-                        finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.nameLabelFontSizeTooLarge")).append("\n");
+                        finalErrors.append(" * ").append(I18N.getString("actionDisplayTextFontSizeTooSmall")).append("\n");
                     }
                 }
                 catch (NumberFormatException e)
                 {
-                    finalErrors.append(" * ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.nameLabelFontSizeMustBeInteger")).append("\n");
+                    finalErrors.append(" * ").append(I18N.getString("actionDisplayTextFontSizeMustBeNumeric")).append("\n");
                 }
             }
 
@@ -1195,14 +1191,14 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     }
                     catch (NumberFormatException e)
                     {
-                        finalErrors.append("        -> ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.clientPropertyMustBeInteger", clientProperty.getDisplayName())).append("\n");
+                        finalErrors.append("        -> ").append(I18N.getString("propertyMustBeInteger", clientProperty.getDisplayName())).append("\n");
                     }
                 }
                 else
                 {
                     if(value.isBlank() && !clientProperty.isCanBeBlank())
                     {
-                        finalErrors.append("        -> ").append(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.clientPropertyCannotBeBlank", clientProperty.getDisplayName())).append("\n");
+                        finalErrors.append("        -> ").append(I18N.getString("propertyCannotBeBlank", clientProperty.getDisplayName())).append("\n");
                     }
                 }
             }

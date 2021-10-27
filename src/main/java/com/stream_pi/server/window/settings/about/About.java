@@ -64,7 +64,7 @@ public class About extends VBox
         tabPane.getTabs().addAll(licenseTab, contributorsTab, contactTab);
 
 
-        Hyperlink donateButton = new Hyperlink(I18N.getString("window.settings.about.About.donate"));
+        Hyperlink donateButton = new Hyperlink(I18N.getString("donate"));
         donateButton.setOnAction(event -> openWebpage(Links.getDonateLink()));
         donateButton.getStyleClass().add("about_donate_hyperlink");
 

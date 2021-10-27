@@ -65,7 +65,7 @@ public class ClientsSettings extends VBox
         clientsSettingsVBox.prefWidthProperty().bind(scrollPane.widthProperty().subtract(25));
         scrollPane.setContent(clientsSettingsVBox);
 
-        saveButton = new Button(I18N.getString("window.settings.ClientsSettings.save"));
+        saveButton = new Button(I18N.getString("save"));
         HBox.setMargin(saveButton, new Insets(0,10, 0, 0));
         saveButton.setOnAction(event -> onSaveButtonClicked());
 
@@ -202,7 +202,7 @@ public class ClientsSettings extends VBox
                     }
 
                     if(!finalErrors.toString().isEmpty())
-                        throw new MinorException(I18N.getString("window.settings.ClientsSettings.validationError", finalErrors));
+                        throw new MinorException(I18N.getString("validationError", finalErrors));
 
 
 
@@ -471,7 +471,7 @@ public class ClientsSettings extends VBox
                     socketConnectionLabel,
                     platformLabel,
                     versionLabel,
-                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.name"), nameTextField),
+                    new HBoxInputBox(I18N.getString("name"), nameTextField),
                     new HBox(
                         new Label(I18N.getString("window.settings.ClientsSettings.theme")),
                         SpaceFiller.horizontal(),
@@ -663,12 +663,12 @@ public class ClientsSettings extends VBox
 
 
             getChildren().addAll(
-                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileName"), nameTextField),
+                    new HBoxInputBox(I18N.getString("name"), nameTextField),
                     new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileRows"), rowsTextField),
                     new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileColumns"), colsTextField),
-                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileActionSize"), actionSizeTextField),
-                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileActionGap"), actionGapTextField),
-                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileDefaultActionDisplayTextFontSize"), actionDefaultDisplayTextFontSizeTextField),
+                    new HBoxInputBox(I18N.getString("actionBoxSize"), actionSizeTextField),
+                    new HBoxInputBox(I18N.getString("actionBoxGap"), actionGapTextField),
+                    new HBoxInputBox(I18N.getString("window.settings.ClientsSettings.profileDefaultActionBoxDisplayTextFontSize"), actionDefaultDisplayTextFontSizeTextField),
                     hBox
             );
         }

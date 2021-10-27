@@ -47,9 +47,9 @@ public class FinalConfigPane extends VBox
         ipChooserComboBox = new IPChooserComboBox(exceptionAndAlertHandler);
         ipChooserComboBox.configureOptions();
 
-        HBoxInputBox serverNickNameInputBox = new HBoxInputBox(I18N.getString("window.firsttimeuse.FinalConfigPane.serverName"), serverNicknameTextField, 200);
-        HBoxInputBox serverPortInputBox = new HBoxInputBox(I18N.getString("window.firsttimeuse.FinalConfigPane.serverPort"), serverPortTextField);
-        HBoxWithSpaceBetween ipChooserHBox = new HBoxWithSpaceBetween(I18N.getString("window.firsttimeuse.FinalConfigPane.serverIPBinding"), ipChooserComboBox);
+        HBoxInputBox serverNickNameInputBox = new HBoxInputBox(I18N.getString("serverName"), serverNicknameTextField, 200);
+        HBoxInputBox serverPortInputBox = new HBoxInputBox(I18N.getString("serverPort"), serverPortTextField);
+        HBoxWithSpaceBetween ipChooserHBox = new HBoxWithSpaceBetween(I18N.getString("serverIPBinding"), ipChooserComboBox);
 
         Label securityWarningLabel = new Label(I18N.getString("window.firsttimeuse.FinalConfigPane.securityWarning"));
         securityWarningLabel.setWrapText(true);

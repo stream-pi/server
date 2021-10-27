@@ -151,7 +151,7 @@ public class ActionBox extends StackPane
                         catch (Exception e)
                         {
                             e.printStackTrace();
-                            exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("window.dashboard.actiongridpane.ActionBox.onCreateFailed", newAction.getModuleName(), e.getMessage())));
+                            exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("methodCallFailed", "onCreateFailed()", newAction.getModuleName(), e.getMessage())));
                         }
 
 

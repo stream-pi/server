@@ -335,11 +335,6 @@ public class Config
         return XMLConfigHelper.getBooleanProperty(getOthersElement(), "first-time-use", true, false, true, document, configFile);
     }
 
-    public boolean isAllowDonatePopup()
-    {
-        return XMLConfigHelper.getBooleanProperty(getOthersElement(), "allow-donate-popup", true, false, true, document, configFile);
-    }
-
     //default getters
     public boolean getDefaultStartOnBoot()
     {
@@ -539,11 +534,6 @@ public class Config
     public void setFirstTimeUse(boolean value)
     {
         getOthersElement().getElementsByTagName("first-time-use").item(0).setTextContent(value+"");
-    }
-
-    public void setAllowDonatePopup(boolean value)
-    {
-        getOthersElement().getElementsByTagName("allow-donate-popup").item(0).setTextContent(value+"");
     }
 
     public static void unzipToDefaultPrePath() throws Exception

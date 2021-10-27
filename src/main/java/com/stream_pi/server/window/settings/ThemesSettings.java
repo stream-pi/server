@@ -106,7 +106,7 @@ public class ThemesSettings extends VBox
             HBox topRowHBox = new HBox(shortNameLabel);
             topRowHBox.getStyleClass().add("themes_settings_each_theme_header");
 
-            Label versionLabel = new Label(I18N.getString("window.settings.ThemesSettings.version", theme.getVersion().getText()));
+            Label versionLabel = new Label(I18N.getString("version", theme.getVersion().getText()));
             versionLabel.getStyleClass().add("themes_settings_each_theme_version_label");
 
             if(theme.getWebsite() != null)

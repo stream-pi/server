@@ -69,7 +69,7 @@ public class PluginsSettings extends VBox
 
 
 
-        saveButton = new Button(I18N.getString("window.settings.PluginsSettings.save"));
+        saveButton = new Button(I18N.getString("save"));
         HBox.setMargin(saveButton, new Insets(0,10, 0, 0));
         saveButton.setOnAction(event -> onSaveButtonClicked());
 
@@ -108,13 +108,13 @@ public class PluginsSettings extends VBox
                             }
                             catch (NumberFormatException e)
                             {
-                                errors.append("        -> ").append(I18N.getString("window.settings.PluginsSettings.serverPropertyMustBeInteger", serverProperty.getDisplayName())).append(("\n"));
+                                errors.append("        -> ").append(I18N.getString("propertyMustBeInteger", serverProperty.getDisplayName())).append(("\n"));
                             }
                         }
                         else
                         {
                             if(value.isBlank() && !serverProperty.isCanBeBlank())
-                                errors.append("        -> ").append(I18N.getString("window.settings.PluginsSettings.serverPropertyCannotBeBlank", serverProperty.getDisplayName())).append(("\n"));
+                                errors.append("        -> ").append(I18N.getString("propertyCannotBeBlank", serverProperty.getDisplayName())).append(("\n"));
                         }
                     }
                     else if(serverProperty.getControlType() == ControlType.TEXT_FIELD_MASKED)
@@ -122,7 +122,7 @@ public class PluginsSettings extends VBox
                         String value = ((TextField) controlNode).getText();
 
                         if(value.isBlank() && !serverProperty.isCanBeBlank())
-                            errors.append("        -> ").append(I18N.getString("window.settings.PluginsSettings.serverPropertyCannotBeBlank", serverProperty.getDisplayName())).append(("\n"));
+                            errors.append("        -> ").append(I18N.getString("propertyCannotBeBlank", serverProperty.getDisplayName())).append(("\n"));
                     }
                 }
 
@@ -134,7 +134,7 @@ public class PluginsSettings extends VBox
 
             if(!finalErrors.toString().isEmpty())
             {
-                throw new MinorException(I18N.getString("window.settings.PluginsSettings.validationError", finalErrors));
+                throw new MinorException(I18N.getString("validationError", finalErrors));
             }
 
             //save
@@ -234,7 +234,7 @@ public class PluginsSettings extends VBox
             Label moduleLabel = new Label(action.getModuleName());
             moduleLabel.getStyleClass().add("plugins_settings_each_plugin_module_label");
 
-            Label versionLabel = new Label(I18N.getString("window.settings.PluginsSettings.version", action.getVersion().getText()));
+            Label versionLabel = new Label(I18N.getString("version", action.getVersion().getText()));
             versionLabel.getStyleClass().add("plugins_settings_each_plugin_version_label");
 
             VBox serverPropertiesVBox = new VBox();

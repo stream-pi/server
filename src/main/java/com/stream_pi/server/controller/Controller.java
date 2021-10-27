@@ -20,7 +20,6 @@ import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.info.StartupFlags;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.Base;
-import com.stream_pi.server.window.dashboard.DonatePopupContent;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.server.window.firsttimeuse.FirstTimeUse;
 import com.stream_pi.server.combobox.IPChooserComboBox;
@@ -123,12 +122,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             }
             else
             {
-                if(getConfig().isAllowDonatePopup())
-                {
-                    if(new Random().nextInt(50) == 3)
-                        new DonatePopupContent(getHostServices(), this).show();
-                }
-
                 othInit();
             }
         }

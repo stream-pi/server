@@ -1,6 +1,8 @@
 package com.stream_pi.server.window.dashboard;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
+import com.stream_pi.action_api.otheractions.CombineAction;
+import com.stream_pi.action_api.otheractions.FolderAction;
 import com.stream_pi.server.action.ExternalPlugins;
 
 import com.stream_pi.server.controller.ActionDataFormats;
@@ -186,7 +188,7 @@ public class PluginsPane extends VBox {
         VBox vBox = new VBox();
         vBox.getStyleClass().add("plugins_pane_each_plugin_box_parent");
 
-        Button folderActionButton = new Button(I18N.getString("window.dashboard.PluginsPane.folder"));
+        Button folderActionButton = new Button(FolderAction.getUIName());
         folderActionButton.getStyleClass().add("plugins_pane_each_plugin_button");
         folderActionButton.setMaxWidth(Double.MAX_VALUE);
         folderActionButton.setAlignment(Pos.CENTER_LEFT);
@@ -208,7 +210,7 @@ public class PluginsPane extends VBox {
 
 
 
-        Button combineActionButton = new Button(I18N.getString("window.dashboard.PluginsPane.combine"));
+        Button combineActionButton = new Button(CombineAction.getUIName());
         combineActionButton.getStyleClass().add("plugins_pane_each_plugin_button");
         combineActionButton.setMaxWidth(Double.MAX_VALUE);
         combineActionButton.setAlignment(Pos.CENTER_LEFT);
@@ -237,7 +239,7 @@ public class PluginsPane extends VBox {
 
         vBox.getChildren().addAll(h1, h2);
 
-        TitledPane pane = new TitledPane(I18N.getString("title"), vBox);
+        TitledPane pane = new TitledPane(I18N.getString("window.dashboard.PluginsPane.othersHeading"), vBox);
         pane.getStyleClass().add("plugins_pane_each_plugin_category_titled_pane");
 
         pluginsAccordion.getPanes().add(pane);
