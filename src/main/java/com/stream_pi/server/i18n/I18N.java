@@ -5,8 +5,6 @@ import com.stream_pi.util.i18n.Language;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 
 public class I18N
@@ -47,7 +45,6 @@ public class I18N
 
     public static void initAvailableLanguages() throws SevereException
     {
-
         try
         {
             languages = new ArrayList<>();
