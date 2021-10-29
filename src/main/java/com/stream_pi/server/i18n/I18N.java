@@ -90,17 +90,6 @@ public class I18N
 
                 languages.add(new Language(locale, displayName));
             }
-
-
-            /*bufferedReader.lines().forEachOrdered(line->
-            {
-                if(!line.startsWith("#") && !line.startsWith("!") && line.contains("="))
-                {
-
-                }
-
-
-            });*/
         }
         catch (Exception e)
         {
