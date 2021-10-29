@@ -1,7 +1,7 @@
 package com.stream_pi.server.combobox;
 
 import com.stream_pi.server.i18n.I18N;
-import com.stream_pi.util.i18n.language.Language;
+import com.stream_pi.util.i18n.Language;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
@@ -10,22 +10,22 @@ import javafx.util.Callback;
 
 import java.util.Locale;
 
-public class LanguageChooserComboBox extends ComboBox<Locale>
+public class LanguageChooserComboBox extends ComboBox<Language>
 {
     public LanguageChooserComboBox()
     {
-        Callback<ListView<Locale>, ListCell<Locale>> callbackFactory = new Callback<>() {
+        Callback<ListView<Language>, ListCell<Language>> callbackFactory = new Callback<>() {
             @Override
-            public ListCell<Locale> call(ListView<Locale> locale) {
+            public ListCell<Language> call(ListView<Language> locale) {
                 return new ListCell<>() {
                     @Override
-                    protected void updateItem(Locale locale, boolean b)
+                    protected void updateItem(Language language, boolean b)
                     {
-                        super.updateItem(locale, b);
+                        super.updateItem(language, b);
 
-                        if (locale != null)
+                        if (language != null)
                         {
-                            setText(locale.getDisplayName());
+                            setText(language.getDisplayName());
                         }
                     }
                 };
@@ -40,6 +40,6 @@ public class LanguageChooserComboBox extends ComboBox<Locale>
 
     public Locale getSelectedLocale()
     {
-        return getSelectionModel().getSelectedItem();
+        return getSelectionModel().getSelectedItem().getLocale();
     }
 }

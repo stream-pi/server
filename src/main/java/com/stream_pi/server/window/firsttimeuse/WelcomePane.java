@@ -59,7 +59,7 @@ public class WelcomePane extends VBox
             {
                 if(oldVal!=newVal && newVal!=null)
                 {
-                    Config.getInstance().setCurrentLanguageLocale(newVal);
+                    Config.getInstance().setCurrentLanguageLocale(newVal.getLocale());
                     Config.getInstance().save();
                     serverListener.restart();
                 }
