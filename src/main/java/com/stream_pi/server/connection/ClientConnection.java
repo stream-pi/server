@@ -347,6 +347,7 @@ public class ClientConnection extends Thread
 
         Message message = new Message("server_details");
         message.setValue("name", Config.getInstance().getServerName());
+        sendMessage(message);
     }
 
     public void disconnect() throws SevereException
