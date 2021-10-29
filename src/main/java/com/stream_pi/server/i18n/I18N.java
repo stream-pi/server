@@ -47,13 +47,7 @@ public class I18N
     {
         try
         {
-
-            System.out.println("AAAA");
             languages = new ArrayList<>();
-
-            System.out.println(
-                    "BBBBBBB"
-            );
 
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(I18N.class.getResourceAsStream("i18n.properties"))));
 
