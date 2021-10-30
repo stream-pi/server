@@ -1,4 +1,4 @@
-<div style="text-align: center">
+<div align="center">
 <img src="https://raw.githubusercontent.com/stream-pi/server/master/logo.png" height="150" alt="logo">
 
 # Stream-Pi Server
