@@ -12,7 +12,7 @@ Server Software for the Stream-Pi Platform
 [![Matrix](https://img.shields.io/matrix/stream-pi-general:matrix.org?label=Matrix)](https://matrix.to/#/!hTwUYZonUXThjkMhCD:matrix.org?via=matrix.org)
 [![Become a patron](https://img.shields.io/badge/dynamic/json?color=%23e85b46&label=Donate&query=data.attributes.patron_count&suffix=%20patrons&url=https%3A%2F%2Fwww.patreon.com%2Fapi%2Fcampaigns%2F5789155)](https://www.patreon.com/streampi)
 
-### [Website](https://www.stream-pi.com)
+### [Website](https://stream-pi.com)
 #### [Download latest release](https://github.com/stream-pi/server/releases/tag/1.0.0-EA%2B3) | [Download latest snapshot](https://github.com/stream-pi/server/releases/tag/1.0.0-EA%2B4-SNAPSHOT)
 #### [Help us Translate!](https://github.com/stream-pi/server/blob/master/i18n.md)
 </div>
