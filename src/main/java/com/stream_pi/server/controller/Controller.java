@@ -29,6 +29,8 @@ import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.*;
 import com.stream_pi.util.iohelper.IOHelper;
+import dorkbox.systemTray.MenuItem;
+import dorkbox.systemTray.SystemTray;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -45,18 +47,19 @@ import javafx.scene.media.AudioClip;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.Toolkit;
-import java.awt.TrayIcon;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.SocketAddress;
+import java.net.URL;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
+
 
 public class Controller extends Base implements PropertySaver, ServerConnection, ToggleExtras, GaugeExtras
 {
@@ -145,7 +148,10 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     {
         try
         {
-            if(StartupFlags.START_MINIMISED && SystemTray.isSupported())
+            //initSystemTray();
+
+            //if(StartupFlags.START_MINIMISED && SystemTray.isSupported())
+            if(StartupFlags.START_MINIMISED)
             {
                 minimiseApp();
             }
@@ -302,9 +308,11 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     {
         try
         {
-            if(getConfig().getMinimiseToSystemTrayOnClose() &&
-                    SystemTray.isSupported() && !disableTrayIcon &&
-                    !getConfig().isFirstTimeUse())
+           // if(getConfig().getMinimiseToSystemTrayOnClose() &&
+          //          SystemTray.isSupported() && !disableTrayIcon &&
+          //          !getConfig().isFirstTimeUse())
+            if(getConfig().getMinimiseToSystemTrayOnClose()  && !disableTrayIcon &&
+                    !getConfig().isFirstTimeUse() && !isSevereExceptionOccurred)
             {
                 minimiseApp();
                 event.consume();
@@ -368,20 +376,39 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         Platform.runLater(this::init);
     }
 
+
     public void minimiseApp() throws MinorException
     {
         try
         {
-            SystemTray systemTray = SystemTray.getSystemTray();
+            SystemTray systemTray = SystemTray.get(I18N.getString("windowTitle"));
 
-            if(getTrayIcon() == null)
-                initIconTray(systemTray);
+            Platform.setImplicitExit(false);
 
-            systemTray.add(getTrayIcon());
+            MenuItem exitItem = new MenuItem(I18N.getString("controller.Controller.systemTrayExit"), l->{
+                systemTray.shutdown();
+                onQuitApp();
+                exit();
+            });
+
+            MenuItem openItem = new MenuItem(I18N.getString("controller.Controller.systemTrayOpen"), l->{
+                unMinimizeApp();
+            });
+
+            systemTray.getMenu().add(openItem);
+            systemTray.getMenu().add(exitItem);
+
+            systemTray.getMenu().setCallback(l-> unMinimizeApp());
+
+
+            systemTray.setImage(Objects.requireNonNull(Main.class.getResource("icons/24x24.png")));
+
+            systemTray.setTooltip(I18N.getString("windowTitle"));
+
             getStage().hide();
 
             getStage().setOnShown(windowEvent -> {
-                systemTray.remove(getTrayIcon());
+                systemTray.shutdown();
             });
         }
         catch(Exception e)
@@ -390,38 +417,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         }
     }
 
-    public void initIconTray(SystemTray systemTray)
-    {
 
-        Platform.setImplicitExit(false);
-        
-        PopupMenu popup = new PopupMenu();
-
-        MenuItem exitItem = new MenuItem("Exit");
-        exitItem.addActionListener(l->{
-            systemTray.remove(getTrayIcon());
-            onQuitApp();
-            exit();
-        });
-
-        MenuItem openItem = new MenuItem("Open");
-        openItem.addActionListener(l-> unMinimizeApp());
-
-        popup.add(openItem);
-        popup.add(exitItem);
-
-        TrayIcon trayIcon = new TrayIcon(
-            Toolkit.getDefaultToolkit().getImage(Main.class.getResource("icons/24x24.png")),
-            I18N.getString("controller.Controller.stream-pi-server"),
-            popup
-        );
-
-        trayIcon.addActionListener(l-> unMinimizeApp());
-
-        trayIcon.setImageAutoSize(true);
-
-        this.trayIcon = trayIcon;
-    }
 
     private void unMinimizeApp()
     {
@@ -430,13 +426,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             getStage().setAlwaysOnTop(true);
             getStage().setAlwaysOnTop(false);
         });
-    }
-
-    private TrayIcon trayIcon = null;
-
-    public TrayIcon getTrayIcon()
-    {
-        return trayIcon;
     }
 
     @Override
@@ -460,9 +449,11 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         handleSevereException(e.getMessage(), e);
     }
 
+    private boolean isSevereExceptionOccurred = false;
     @Override
     public void handleSevereException(String message, SevereException e)
     {
+        isSevereExceptionOccurred = true;
         getLogger().log(Level.SEVERE, message, e);
         e.printStackTrace();
 

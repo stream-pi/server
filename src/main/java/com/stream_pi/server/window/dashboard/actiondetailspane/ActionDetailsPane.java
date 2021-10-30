@@ -1173,37 +1173,19 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             }
         }
 
-
-
-        for (UIPropertyBox clientProperty : actionClientProperties) {
-
+        for (UIPropertyBox clientProperty : actionClientProperties)
+        {
             Node controlNode = clientProperty.getControlNode();
 
-            if (clientProperty.getControlType() == ControlType.TEXT_FIELD ||
-            clientProperty.getControlType() == ControlType.FILE_PATH)
+            String value = ((TextField) controlNode).getText();
+
+            String error = Helper.validateProperty(value, clientProperty);
+
+            if (error != null)
             {
-                String value = ((TextField) controlNode).getText();
-                if(clientProperty.getType() == Type.INTEGER)
-                {
-                    try
-                    {
-                        Integer.parseInt(value);
-                    }
-                    catch (NumberFormatException e)
-                    {
-                        finalErrors.append("        -> ").append(I18N.getString("propertyMustBeInteger", clientProperty.getDisplayName())).append("\n");
-                    }
-                }
-                else
-                {
-                    if(value.isBlank() && !clientProperty.isCanBeBlank())
-                    {
-                        finalErrors.append("        -> ").append(I18N.getString("propertyCannotBeBlank", clientProperty.getDisplayName())).append("\n");
-                    }
-                }
+                finalErrors.append("        -> ").append(error).append(("\n"));
             }
         }
-
 
         if(!finalErrors.toString().isEmpty())
         {

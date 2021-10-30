@@ -1,12 +1,9 @@
 package com.stream_pi.server.window.settings;
 
-import com.stream_pi.action_api.actionproperty.property.ListValue;
+import com.stream_pi.action_api.actionproperty.property.*;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
-import com.stream_pi.action_api.actionproperty.property.ControlType;
-import com.stream_pi.action_api.actionproperty.property.Property;
-import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
@@ -97,32 +94,13 @@ public class PluginsSettings extends VBox
                     UIPropertyBox serverProperty = p.getServerPropertyUIBox().get(j);
                     Node controlNode = serverProperty.getControlNode();
 
-                    if (serverProperty.getControlType() == ControlType.TEXT_FIELD)
-                    {
-                        String value = ((TextField) controlNode).getText();
-                        if(serverProperty.getType() == Type.INTEGER)
-                        {
-                            try
-                            {
-                                Integer.parseInt(value);
-                            }
-                            catch (NumberFormatException e)
-                            {
-                                errors.append("        -> ").append(I18N.getString("propertyMustBeInteger", serverProperty.getDisplayName())).append(("\n"));
-                            }
-                        }
-                        else
-                        {
-                            if(value.isBlank() && !serverProperty.isCanBeBlank())
-                                errors.append("        -> ").append(I18N.getString("propertyCannotBeBlank", serverProperty.getDisplayName())).append(("\n"));
-                        }
-                    }
-                    else if(serverProperty.getControlType() == ControlType.TEXT_FIELD_MASKED)
-                    {
-                        String value = ((TextField) controlNode).getText();
 
-                        if(value.isBlank() && !serverProperty.isCanBeBlank())
-                            errors.append("        -> ").append(I18N.getString("propertyCannotBeBlank", serverProperty.getDisplayName())).append(("\n"));
+                    String value = ((TextField) controlNode).getText();
+                    String error = Helper.validateProperty(value, serverProperty);
+
+                    if (error != null)
+                    {
+                        errors.append("        -> ").append(error).append(("\n"));
                     }
                 }
 

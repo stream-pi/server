@@ -29,6 +29,8 @@ module com.stream_pi.server
 
     requires org.controlsfx.controls;
 
+    requires SystemTray;
+
     exports com.stream_pi.server;
     opens com.stream_pi.server.window.settings.about;
     opens com.stream_pi.server.combobox;

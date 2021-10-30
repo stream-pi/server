@@ -1,10 +1,8 @@
 package com.stream_pi.server.window.helper;
 
-import com.stream_pi.action_api.actionproperty.property.ControlType;
-import com.stream_pi.action_api.actionproperty.property.FileExtensionFilter;
-import com.stream_pi.action_api.actionproperty.property.ListValue;
-import com.stream_pi.action_api.actionproperty.property.Property;
+import com.stream_pi.action_api.actionproperty.property.*;
 import com.stream_pi.server.i18n.I18N;
+import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
@@ -140,5 +138,46 @@ public class Helper
         }
 
         return new ControlNodePair(controlNode, UINode);
+    }
+
+    public static String validateProperty(String value, UIPropertyBox property)
+    {
+        String error = null;
+
+        if (property.getControlType() == ControlType.TEXT_FIELD || property.getControlType() == ControlType.TEXT_FIELD_MASKED)
+        {
+            if(property.getType() == Type.INTEGER)
+            {
+                try
+                {
+                    Integer.parseInt(value);
+                }
+                catch (NumberFormatException e)
+                {
+                    error = PropertyValidation.integerValueRequired(property.getDisplayName());
+                }
+            }
+            else if(property.getType() == Type.DOUBLE)
+            {
+                try
+                {
+                    Double.parseDouble(value);
+                }
+                catch (NumberFormatException e)
+                {
+                    error = PropertyValidation.doubleValueRequired(property.getDisplayName());
+                }
+            }
+            else
+            {
+                if(value.isBlank() && !property.isCanBeBlank())
+                {
+
+                    error = PropertyValidation.cannotBeBlank(property.getDisplayName());
+                }
+            }
+        }
+
+        return error;
     }
 }
