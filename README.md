@@ -5,7 +5,6 @@
 
 *Free, Open-Source, Modular, Cross-Platform and Programmable Macropad*
 
----
 Server Software for the Stream-Pi Platform
 
 ![version](https://img.shields.io/badge/Version-1.0.0%20EA+3-green)
@@ -18,7 +17,6 @@ Server Software for the Stream-Pi Platform
 #### [Help us Translate!](https://github.com/stream-pi/server/blob/master/i18n.md)
 </div>
 
----
 ## Compile and Run from source
 ### Prerequisites
 
