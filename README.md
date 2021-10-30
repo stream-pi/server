@@ -40,7 +40,7 @@ You may also reach us to by any of the following platforms:
 
 ## License
 
-This program is licensed to [GPLv3](https://github.com/stream-pi/server/blob/master/LICENSE).
+This software is licensed to [GPLv3](https://github.com/stream-pi/server/blob/master/LICENSE).
 ```
 Stream-Pi - Free, Open-Source, Modular, Cross-Platform and Programmable Macropad
 Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
