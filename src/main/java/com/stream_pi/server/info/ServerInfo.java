@@ -19,7 +19,7 @@ public class ServerInfo {
 
     private String prePath;
 
-    private Version commStandardVersion;
+    private Version communicationProtocolVersion;
 
     private static ServerInfo instance = null;
 
@@ -27,7 +27,7 @@ public class ServerInfo {
     private ServerInfo()
     {
         version = new Version(1,0,0);
-        commStandardVersion = new Version(1,0,0);
+        communicationProtocolVersion = new Version(1,0,0);
 
         releaseStatus = ReleaseStatus.EA;
         prePath = System.getProperty("user.home")+"/Stream-Pi/Server/";
@@ -75,8 +75,8 @@ public class ServerInfo {
         return releaseStatus;
     }
 
-    public Version getCommStandardVersion()
+    public Version getCommunicationProtocolVersion()
     {
-        return commStandardVersion;
+        return communicationProtocolVersion;
     }
 }

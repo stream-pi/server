@@ -119,7 +119,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/24x24.png"))));
         getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/16x16.png"))));
         
-        getStage().setMinWidth(720);
+        getStage().setMinWidth(750);
         getStage().setMinHeight(530);
 
         serverInfo = ServerInfo.getInstance();

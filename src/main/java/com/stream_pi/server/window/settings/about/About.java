@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public class About extends VBox
 {
 
-    private HostServices hostServices;
+    private final HostServices hostServices;
 
     public About(HostServices hostServices)
     {
@@ -73,7 +73,7 @@ public class About extends VBox
         Label versionLabel = new Label(serverInfo.getVersion().getText() + " - "+ serverInfo.getPlatform().getUIName() + " - "+ serverInfo.getReleaseStatus().getUIName());
         versionLabel.getStyleClass().add("about_version_label");
 
-        Label commStandardLabel = new Label(I18N.getString("window.settings.about.About.commStandard", serverInfo.getCommStandardVersion().getText()));
+        Label commStandardLabel = new Label(I18N.getString("window.settings.about.About.serverCommunicationProtocolVersion", serverInfo.getCommunicationProtocolVersion().getText()));
         commStandardLabel.getStyleClass().add("about_comm_standard_label");
 
         Label minThemeAPILabel = new Label(I18N.getString("window.settings.about.About.minThemeAPI", ThemeAPI.MIN_VERSION_SUPPORTED.getText()));
@@ -88,8 +88,7 @@ public class About extends VBox
         Label currentUtilLabel = new Label(I18N.getString("window.settings.about.About.currentUtil", Util.VERSION.getText()));
         currentUtilLabel.getStyleClass().add("about_current_util_label");
 
-        HBox hBox1 = new HBox(versionLabel, getSep(),
-                commStandardLabel, getSep(),
+        HBox hBox1 = new HBox(commStandardLabel, getSep(),
                 minThemeAPILabel, getSep(),
                 minActionAPILabel, getSep(),
                 currentActionAPILabel, getSep(),
@@ -107,7 +106,8 @@ public class About extends VBox
         Label javaGCLabel = new Label(I18N.getString("window.settings.about.About.gc", ManagementFactory.getGarbageCollectorMXBeans().get(0).getName()));
         javaGCLabel.getStyleClass().add("about_java_gc");
 
-        HBox hBox2 = new HBox(javaVersionLabel, getSep(),
+        HBox hBox2 = new HBox(versionLabel, getSep(),
+                javaVersionLabel, getSep(),
                 javafxVersionLabel, getSep(),
                 javaGCLabel);
 

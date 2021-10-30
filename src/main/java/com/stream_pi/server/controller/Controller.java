@@ -39,6 +39,7 @@ import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioClip;
 import javafx.stage.WindowEvent;
@@ -151,6 +152,10 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             else
             {
                 getStage().show();
+
+                getStage().setOnShown(event->{
+                    getStage().setMinWidth(Region.USE_PREF_SIZE);
+                });
             }
 
 

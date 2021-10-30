@@ -182,15 +182,15 @@ public class ClientConnection extends Thread
 
         clientVersion = (Version) message.getValue("version");
         releaseStatus = (ReleaseStatus) message.getValue("release_status");
-        commsStandard = (Version) message.getValue("comms_standard");
+        commsStandard = (Version) message.getValue("communication_protocol_version");
         themesStandard = (Version) message.getValue("min_theme_standard");
 
-        if(!commsStandard.isEqual(ServerInfo.getInstance().getCommStandardVersion()))
+        if(!commsStandard.isEqual(ServerInfo.getInstance().getCommunicationProtocolVersion()))
         {
-            disconnect(DisconnectReason.COMM_STANDARD_MISMATCH);
-            throw new MinorException(DisconnectReason.COMM_STANDARD_MISMATCH.getMessage()+"\n"+
-                    I18N.getString("connection.ClientConnection.serverClientCommsStandard",
-                            ServerInfo.getInstance().getCommStandardVersion().getText(), commsStandard.getText()
+            disconnect(DisconnectReason.COMMUNICATION_PROTOCOL_MISMATCH);
+            throw new MinorException(DisconnectReason.COMMUNICATION_PROTOCOL_MISMATCH.getMessage()+"\n"+
+                    I18N.getString("connection.ClientConnection.serverClientCommunicationProtocolVersions",
+                            ServerInfo.getInstance().getCommunicationProtocolVersion().getText(), commsStandard.getText()
                     )
             );
         }
