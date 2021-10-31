@@ -47,6 +47,7 @@ public interface ServerListener
     void factoryReset();
 
     void initSoundOnActionClicked();
+    void setDisableTrayIcon(boolean value);
     void onServerStartFailure();
 
     void showUserChooseIPDialog();

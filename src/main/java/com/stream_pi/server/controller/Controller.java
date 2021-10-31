@@ -156,7 +156,13 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     {
         Platform.runLater(()-> getStage().setTitle(I18N.getString("windowTitle") + " - " + I18N.getString("controller.Controller.offline")));
 
-        disableTrayIcon = true;
+        setDisableTrayIcon(true);
+    }
+
+    @Override
+    public void setDisableTrayIcon(boolean disableTrayIcon)
+    {
+        this.disableTrayIcon = disableTrayIcon;
     }
 
     @Override

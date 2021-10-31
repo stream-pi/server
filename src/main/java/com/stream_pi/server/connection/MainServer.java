@@ -107,6 +107,7 @@ public class MainServer extends Thread
             }
 
             setupStageTitle();
+            serverListener.setDisableTrayIcon(false);
             while(!stop.get())
             {
                 Socket s = serverSocket.accept();
@@ -122,8 +123,6 @@ public class MainServer extends Thread
             {
                 logger.warning("Main Server stopped accepting calls ...");
                 serverListener.onServerStartFailure();
-
-
                 serverListener.showUserChooseIPDialog();
             }
         }
