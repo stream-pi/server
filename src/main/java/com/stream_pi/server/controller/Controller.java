@@ -417,19 +417,18 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
     public void initIconTray(SystemTray systemTray)
     {
-
         Platform.setImplicitExit(false);
 
         PopupMenu popup = new PopupMenu();
 
-        MenuItem exitItem = new MenuItem("Exit");
+        MenuItem exitItem = new MenuItem(I18N.getString("controller.Controller.systemTrayExit"));
         exitItem.addActionListener(l->{
             systemTray.remove(getTrayIcon());
             onQuitApp();
             exit();
         });
 
-        MenuItem openItem = new MenuItem("Open");
+        MenuItem openItem = new MenuItem(I18N.getString("controller.Controller.systemTrayOpen"));
         openItem.addActionListener(l-> unMinimizeApp());
 
         popup.add(openItem);
@@ -437,7 +436,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
         TrayIcon trayIcon = new TrayIcon(
                 Toolkit.getDefaultToolkit().getImage(Main.class.getResource("icons/24x24.png")),
-                I18N.getString("controller.Controller.stream-pi-server"),
+                I18N.getString("windowTitle"),
                 popup
         );
 

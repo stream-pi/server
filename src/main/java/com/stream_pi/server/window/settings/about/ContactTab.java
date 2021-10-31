@@ -33,19 +33,19 @@ public class ContactTab extends ScrollPane
 
         getStyleClass().add("about_contact_tab_scroll_pane");
 
-        Hyperlink github = new Hyperlink(I18N.getString("window.settings.about.ContactTab.github"));
+        Hyperlink github = new Hyperlink("GitHub");
         github.setOnAction(event -> openWebpage(Links.getGitHub()));
 
-        Hyperlink discord = new Hyperlink(I18N.getString("window.settings.about.ContactTab.discord"));
+        Hyperlink discord = new Hyperlink("Discord");
         discord.setOnAction(event -> openWebpage(Links.getDiscord()));
 
         Hyperlink website = new Hyperlink(I18N.getString("window.settings.about.ContactTab.website"));
         website.setOnAction(event -> openWebpage(Links.getWebsite()));
 
-        Hyperlink twitter = new Hyperlink(I18N.getString("window.settings.about.ContactTab.twitter"));
+        Hyperlink twitter = new Hyperlink("Twitter");
         twitter.setOnAction(event -> openWebpage(Links.getTwitter()));
 
-        Hyperlink matrix = new Hyperlink(I18N.getString("window.settings.about.ContactTab.matrix"));
+        Hyperlink matrix = new Hyperlink("Matrix");
         matrix.setOnAction(event -> openWebpage(Links.getMatrix()));
 
         VBox vBox = new VBox(github, discord, website, twitter, matrix);

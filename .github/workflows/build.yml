@@ -18,8 +18,8 @@ jobs:
       - name: Setup java
         uses: actions/setup-java@v2
         with:
-          java-version: 16
-          distribution: adopt
+          java-version: 17
+          distribution: temurin
           architecture: x64
       - name: Delete Default.zip
         run: |
@@ -117,8 +117,8 @@ jobs:
       - name: Setup java
         uses: actions/setup-java@v2
         with:
-          java-version: 16
-          distribution: adopt
+          java-version: 17
+          distribution: temurin
           architecture: x64
       - name: Delete Default.zip
         run: |
@@ -185,8 +185,8 @@ jobs:
       - name: Setup java
         uses: actions/setup-java@v2
         with:
-          java-version: 16
-          distribution: adopt
+          java-version: 17
+          distribution: temurin
           architecture: x64
       - name: Delete Default.zip
         run: |
@@ -282,8 +282,11 @@ jobs:
             unzip openjfx-17.0.0.1_linux-arm32_bin-sdk.zip -d javafx-sdk-arm32
             mv javafx-sdk-arm32/javafx-sdk-17.0.0.1/legal javafx-sdk-arm32/javafx-sdk-17.0.0.1/javafx-legal
 
+            # Remove libgluon to prevent running server in fb mode
+            rm -rf javafx-sdk-arm32/javafx-sdk-17.0.0.1/lib/libgluon_drm*.so
+
             # Use Debug libgluon
-            mv javafx-sdk-arm32/javafx-sdk-17.0.0.1/lib/libgluon_drm_debug-1.1.6.so javafx-sdk-arm32/javafx-sdk-17.0.0.1/lib/libgluon_drm.so
+            #mv javafx-sdk-arm32/javafx-sdk-17.0.0.1/lib/libgluon_drm_debug-1.1.6.so javafx-sdk-arm32/javafx-sdk-17.0.0.1/lib/libgluon_drm.so
             rm -rf javafx-sdk-arm32/javafx-sdk-17.0.0.1/lib/libgluon_drm-1.1.6.so
 
             # Use Non Debug libgluon
@@ -298,11 +301,11 @@ jobs:
             chmod +x $INSTALL_DIR/run_min
 
             #Download jdk
-            axel -n 8 https://cdn.azul.com/zulu-embedded/bin/zulu11.48.21-ca-jdk11.0.11-linux_aarch32hf.tar.gz
-            tar -xvzf zulu11.48.21-ca-jdk11.0.11-linux_aarch32hf.tar.gz
+            axel -n 8 https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17%2B35/OpenJDK17-jdk_arm_linux_hotspot_17_35.tar.gz
+            tar -xvzf OpenJDK17-jdk_arm_linux_hotspot_17_35.tar.gz
 
             #Run jpackage
-            zulu11.48.21-ca-jdk11.0.11-linux_aarch32hf/bin/jlink  --no-header-files --no-man-pages --add-modules java.base,java.logging,java.net.http,java.scripting,jdk.jsobject,jdk.unsupported,jdk.unsupported.desktop,jdk.xml.dom,java.xml,java.management,jdk.localedata,java.sql,jdk.crypto.ec --output $INSTALL_DIR/jre
+            jdk-17+35/bin/jlink --no-header-files --no-man-pages --add-modules java.base,java.logging,java.net.http,java.scripting,jdk.jsobject,jdk.unsupported,jdk.unsupported.desktop,jdk.xml.dom,java.xml,java.management,jdk.localedata,java.sql,jdk.crypto.ec --output $INSTALL_DIR/jre
 
             cd target/
             mv install stream-pi-server
@@ -359,19 +362,11 @@ jobs:
             mkdir -p $INSTALL_DIR
             mv target/lib/* $INSTALL_DIR
 
-            axel -n 8 https://download2.gluonhq.com/openjfx/17.0.0.1/openjfx-17.0.0.1_monocle-linux-aarch64_bin-sdk.zip
-            unzip openjfx-17.0.0.1_monocle-linux-aarch64_bin-sdk.zip -d javafx-sdk-aarch64
-            mv javafx-sdk-aarch64/javafx-sdk-17.0.0.1/legal javafx-sdk-aarch64/javafx-sdk-17.0.0.1/javafx-legal
+            axel -n 8 https://download2.gluonhq.com/openjfx/17.0.1/openjfx-17.0.1_linux-aarch64_bin-sdk.zip
+            unzip openjfx-17.0.1_linux-aarch64_bin-sdk.zip -d javafx-sdk-aarch64
+            mv javafx-sdk-aarch64/javafx-sdk-17.0.1/legal javafx-sdk-aarch64/javafx-sdk-17.0.1/javafx-legal
 
-            # Use Debug libgluon
-            mv javafx-sdk-aarch64/javafx-sdk-17.0.0.1/lib/libgluon_drm_debug-1.1.6.so javafx-sdk-aarch64/javafx-sdk-17.0.0.1/lib/libgluon_drm.so
-            rm -rf javafx-sdk-aarch64/javafx-sdk-17.0.0.1/lib/libgluon_drm-1.1.6.so
-
-            # Use Non Debug libgluon
-            # mv javafx-sdk-aarch64/javafx-sdk-17.0.0.1/lib/libgluon_drm-1.1.6.so javafx-sdk-aarch64/javafx-sdk-17.0.0.1/lib/libgluon_drm.so
-            # rm -rf javafx-sdk-aarch64/javafx-sdk-17.0.0.1/lib/libgluon_drm_debug-1.1.6.so
-
-            mv javafx-sdk-aarch64/javafx-sdk-17.0.0.1/lib/* $INSTALL_DIR/
+            mv javafx-sdk-aarch64/javafx-sdk-17.0.1/lib/* $INSTALL_DIR/
             cp assets/launchers/aarch64-jvm/run $INSTALL_DIR/run
             cp assets/launchers/aarch64-jvm/run_min $INSTALL_DIR/run_min
             cp assets/linux-icon.png $INSTALL_DIR/app-icon.png
@@ -380,11 +375,11 @@ jobs:
 
 
             #Download jdk
-            axel -k -n 8 https://cdn.azul.com/zulu/bin/zulu16.30.15-ca-jdk16.0.1-linux_aarch64.tar.gz
-            tar -xvzf zulu16.30.15-ca-jdk16.0.1-linux_aarch64.tar.gz
+            axel -k -n 8 https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_aarch64_linux_hotspot_17.0.1_12.tar.gz
+            tar -xvzf OpenJDK17U-jdk_aarch64_linux_hotspot_17.0.1_12.tar.gz
 
             #Run jpackage
-            zulu16.30.15-ca-jdk16.0.1-linux_aarch64/bin/jlink  --no-header-files --no-man-pages --add-modules java.base,java.logging,java.net.http,java.scripting,jdk.jsobject,jdk.unsupported,jdk.unsupported.desktop,jdk.xml.dom,java.xml,java.management,jdk.localedata,java.sql,jdk.crypto.ec --output $INSTALL_DIR/jre
+            jdk-17.0.1+12/bin/jlink --no-header-files --no-man-pages --add-modules java.base,java.logging,java.net.http,java.scripting,jdk.jsobject,jdk.unsupported,jdk.unsupported.desktop,jdk.xml.dom,java.xml,java.management,jdk.localedata,java.sql,jdk.crypto.ec --output $INSTALL_DIR/jre
 
             cd target/
             mv install stream-pi-server

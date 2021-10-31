@@ -87,49 +87,10 @@ public class About extends VBox
         Label versionLabel = new Label(serverInfo.getVersion().getText() + " - "+ serverInfo.getPlatform().getUIName() + " - "+ serverInfo.getReleaseStatus().getUIName());
         versionLabel.getStyleClass().add("about_version_label");
 
-        Label commStandardLabel = new Label(I18N.getString("window.settings.about.About.serverCommunicationProtocolVersion", serverInfo.getCommunicationProtocolVersion().getText()));
-        commStandardLabel.getStyleClass().add("about_comm_standard_label");
-
-        Label minThemeAPILabel = new Label(I18N.getString("window.settings.about.About.minThemeAPI", ThemeAPI.MIN_VERSION_SUPPORTED.getText()));
-        minThemeAPILabel.getStyleClass().add("about_min_theme_api_label");
-
-        Label minActionAPILabel = new Label(I18N.getString("window.settings.about.About.minActionAPI", ActionAPI.MIN_VERSION_SUPPORTED.getText()));
-        minActionAPILabel.getStyleClass().add("about_min_action_api_label");
-
-        Label currentActionAPILabel = new Label(I18N.getString("window.settings.about.About.currentActionAPI", ActionAPI.VERSION.getText()));
-        currentActionAPILabel.getStyleClass().add("about_current_action_api_label");
-
-        Label currentUtilLabel = new Label(I18N.getString("window.settings.about.About.currentUtil", Util.VERSION.getText()));
-        currentUtilLabel.getStyleClass().add("about_current_util_label");
-
-        HBox hBox1 = new HBox(commStandardLabel, getSep(),
-                minThemeAPILabel, getSep(),
-                minActionAPILabel, getSep(),
-                currentActionAPILabel, getSep(),
-                currentUtilLabel);
+        HBox hBox1 = new HBox(versionLabel, getSep());
 
         hBox1.setAlignment(Pos.CENTER);
         hBox1.setSpacing(10);
-
-        Label javaVersionLabel = new Label(I18N.getString("window.settings.about.About.java", System.getProperty("java.version")));
-        javaVersionLabel.getStyleClass().add("about_java_version");
-
-        Label javafxVersionLabel = new Label(I18N.getString("window.settings.about.About.javafx", System.getProperty("javafx.version")));
-        javafxVersionLabel.getStyleClass().add("about_javafx_version");
-
-        Label javaGCLabel = new Label(I18N.getString("window.settings.about.About.gc", ManagementFactory.getGarbageCollectorMXBeans().get(0).getName()));
-        javaGCLabel.getStyleClass().add("about_java_gc");
-
-        HBox hBox2 = new HBox(versionLabel, getSep(),
-                javaVersionLabel, getSep(),
-                javafxVersionLabel, getSep(),
-                javaGCLabel);
-
-        hBox2.setAlignment(Pos.CENTER);
-        hBox2.setSpacing(10);
-
-
-        getChildren().addAll(appIconImageView, tabPane, donateButton, hBox1, hBox2);
 
         try
         {
@@ -142,13 +103,58 @@ public class About extends VBox
 
                 Label buildDateLabel = new Label(I18N.getString("window.settings.about.About.buildDate", properties.getProperty("build.date")));
                 buildDateLabel.getStyleClass().add("about_build_date_label");
-                hBox2.getChildren().addAll(getSep(), buildDateLabel);
+                hBox1.getChildren().addAll(buildDateLabel);
             }
         }
         catch (IOException e)
         {
             Logger.getLogger(getClass().getName()).warning("build.properties not present");
         }
+
+
+
+        Label commStandardLabel = new Label(I18N.getString("window.settings.about.About.serverCommunicationProtocolVersion", serverInfo.getCommunicationProtocolVersion().getText()));
+        commStandardLabel.getStyleClass().add("about_comm_standard_label");
+
+        Label minThemeAPILabel = new Label("Min ThemeAPI " + ThemeAPI.MIN_VERSION_SUPPORTED.getText());
+        minThemeAPILabel.getStyleClass().add("about_min_theme_api_label");
+
+        Label minActionAPILabel = new Label("Min ActionAPI " + ActionAPI.MIN_VERSION_SUPPORTED.getText());
+        minActionAPILabel.getStyleClass().add("about_min_action_api_label");
+
+        Label currentActionAPILabel = new Label("Action API " + ActionAPI.VERSION.getText());
+        currentActionAPILabel.getStyleClass().add("about_current_action_api_label");
+
+        Label currentUtilLabel = new Label("Util " + Util.VERSION.getText());
+        currentUtilLabel.getStyleClass().add("about_current_util_label");
+
+        HBox hBox2 = new HBox(commStandardLabel, getSep(),
+                minThemeAPILabel, getSep(),
+                minActionAPILabel, getSep(),
+                currentActionAPILabel, getSep(),
+                currentUtilLabel);
+
+        hBox2.setAlignment(Pos.CENTER);
+        hBox2.setSpacing(10);
+
+        Label javaVersionLabel = new Label("Java " + System.getProperty("java.version") + ", " + System.getProperty("java.runtime.name"));
+        javaVersionLabel.getStyleClass().add("about_java_version");
+
+        Label javafxVersionLabel = new Label("JavaFX " + System.getProperty("javafx.version"));
+        javafxVersionLabel.getStyleClass().add("about_javafx_version");
+
+        Label javaGCLabel = new Label("GC: " + ManagementFactory.getGarbageCollectorMXBeans().get(0).getName());
+        javaGCLabel.getStyleClass().add("about_java_gc");
+
+        HBox hBox3 = new HBox(javaVersionLabel, getSep(),
+                javafxVersionLabel, getSep(),
+                javaGCLabel);
+
+        hBox3.setAlignment(Pos.CENTER);
+        hBox3.setSpacing(10);
+
+
+        getChildren().addAll(appIconImageView, tabPane, donateButton, hBox1, hBox2, hBox3);
     }
 
     public void openWebpage(String url)

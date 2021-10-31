@@ -38,13 +38,13 @@ public class ContributorsTab extends ScrollPane
         Hyperlink client = new Hyperlink(I18N.getString("window.settings.about.ContributorsTab.client"));
         client.setOnAction(event -> openWebpage(Links.getClientContributors()));
 
-        Hyperlink action_api = new Hyperlink(I18N.getString("window.settings.about.ContributorsTab.actionAPI"));
+        Hyperlink action_api = new Hyperlink("Action API");
         action_api.setOnAction(event -> openWebpage(Links.getActionAPIContributors()));
 
-        Hyperlink theme_api = new Hyperlink(I18N.getString("window.settings.about.ContributorsTab.themeAPI"));
+        Hyperlink theme_api = new Hyperlink("Theme API");
         theme_api.setOnAction(event -> openWebpage(Links.getThemeAPIContributors()));
 
-        Hyperlink util = new Hyperlink(I18N.getString("window.settings.about.ContributorsTab.util"));
+        Hyperlink util = new Hyperlink("Util");
         util.setOnAction(event -> openWebpage(Links.getUtilContributors()));
 
         VBox vBox = new VBox(team, server, client, action_api, theme_api, util);
