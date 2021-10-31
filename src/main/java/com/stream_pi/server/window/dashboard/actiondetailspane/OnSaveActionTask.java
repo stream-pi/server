@@ -1,19 +1,29 @@
-package com.stream_pi.server.window.dashboard.actiondetailpane;
+/*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+package com.stream_pi.server.window.dashboard.actiondetailspane;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
-import com.stream_pi.action_api.action.Animation;
-import com.stream_pi.action_api.actionproperty.ClientProperties;
-import com.stream_pi.action_api.actionproperty.property.Property;
-import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
@@ -32,10 +42,11 @@ public class OnSaveActionTask extends Task<Void>
 
     public OnSaveActionTask(ClientConnection connection, Action action, String delayBeforeRunningString, String displayNameText, String displayNameLabelSize, boolean isUseDefaultFontSizeForDisplayLabel, boolean isCombineChild,
                             boolean isShowDisplayText, boolean isDefaultDisplayTextColour, String displayTextFontColour, boolean isClearIcon,
-                            boolean isHideDefaultIcon, boolean isHideToggleOffIcon, boolean isHideToggleOnIcon, DisplayTextAlignment displayTextAlignment, Animation actionAnimation, boolean isTransparentBackground, String backgroundColour,
+                            boolean isHideDefaultIcon, boolean isHideToggleOffIcon, boolean isHideToggleOnIcon, DisplayTextAlignment displayTextAlignment, boolean isTransparentBackground, String backgroundColour,
                             CombineActionPropertiesPane combineActionPropertiesPane, ClientProfile clientProfile, boolean sendIcon, ActionBox actionBox,
                             ArrayList<UIPropertyBox> actionClientProperties, ExceptionAndAlertHandler exceptionAndAlertHandler, Button saveButton, Button deleteButton, Button resetButton,
-                            boolean runOnActionSavedFromServer, boolean runAsync, ActionDetailsPaneListener actionDetailsPaneListener)
+                            boolean runOnActionSavedFromServer, boolean runAsync, boolean isGaugeAnimated, ActionDetailsPaneListener actionDetailsPaneListener,
+                            String rowSpanStr, String colSpanStr)
     {
         this.saveButton = saveButton;
         this.deleteButton = deleteButton;
@@ -56,7 +67,6 @@ public class OnSaveActionTask extends Task<Void>
         this.isHideToggleOffIcon = isHideToggleOffIcon;
         this.isHideToggleOnIcon = isHideToggleOnIcon;
         this.displayTextAlignment = displayTextAlignment;
-        this.actionAnimation = actionAnimation;
         this.isTransparentBackground = isTransparentBackground;
         this.combineActionPropertiesPane = combineActionPropertiesPane;
         this.clientProfile = clientProfile;
@@ -66,7 +76,10 @@ public class OnSaveActionTask extends Task<Void>
         this.backgroundColour = backgroundColour;
         this.actionClientProperties = actionClientProperties;
         this.runOnActionSavedFromServer = runOnActionSavedFromServer;
+        this.isGaugeAnimated = isGaugeAnimated;
         this.actionDetailsPaneListener = actionDetailsPaneListener;
+        this.rowSpanStr = rowSpanStr;
+        this.colSpanStr = colSpanStr;
 
         logger = Logger.getLogger(getClass().getName());
 
@@ -98,7 +111,6 @@ public class OnSaveActionTask extends Task<Void>
     private boolean isHideToggleOffIcon;
     private boolean isHideToggleOnIcon;
     private DisplayTextAlignment displayTextAlignment;
-    private Animation actionAnimation;
     private boolean isTransparentBackground;
     private String backgroundColour;
     private CombineActionPropertiesPane combineActionPropertiesPane;
@@ -108,6 +120,9 @@ public class OnSaveActionTask extends Task<Void>
     private ExceptionAndAlertHandler exceptionAndAlertHandler;
     private Action action;
     private ClientConnection connection;
+    private boolean isGaugeAnimated;
+    private String rowSpanStr;
+    private String colSpanStr;
 
     private void setSaveDeleteResetButtonState(boolean state)
     {
@@ -125,11 +140,11 @@ public class OnSaveActionTask extends Task<Void>
 
         if(isUseDefaultFontSizeForDisplayLabel)
         {
-            action.setNameFontSize(-1);
+            action.setDisplayTextFontSize(-1);
         }
         else
         {
-            action.setNameFontSize(Double.parseDouble(displayNameLabelSize));
+            action.setDisplayTextFontSize(Double.parseDouble(displayNameLabelSize));
         }
 
         if(!isCombineChild)
@@ -143,8 +158,6 @@ public class OnSaveActionTask extends Task<Void>
             else
             {
                 action.setDisplayTextFontColourHex(displayTextFontColour);
-                //String fontColour = "#" + displayTextColourPicker.getValue().toString().substring(2);
-                //action.setDisplayTextFontColourHex(fontColour);
             }
 
 
@@ -157,7 +170,8 @@ public class OnSaveActionTask extends Task<Void>
 
             if(action.getActionType() == ActionType.NORMAL ||
             action.getActionType() == ActionType.FOLDER ||
-            action.getActionType() == ActionType.COMBINE)
+            action.getActionType() == ActionType.COMBINE ||
+            action.getActionType() == ActionType.GAUGE)
             {
                 if(isHideDefaultIcon)
                 {
@@ -166,7 +180,9 @@ public class OnSaveActionTask extends Task<Void>
                 else
                 {
                     if(action.getIcon("default") != null)
+                    {
                         action.setCurrentIconState("default");
+                    }
                 }
             }
             else if (action.getActionType() == ActionType.TOGGLE)
@@ -175,14 +191,25 @@ public class OnSaveActionTask extends Task<Void>
             }
 
             action.setDisplayTextAlignment(displayTextAlignment);
-            
-            action.setActionAnimation(actionAnimation);
+
 
             if(isTransparentBackground)
                 action.setBgColourHex("");
             else
             {
                 action.setBgColourHex(backgroundColour);
+            }
+
+            if(action.getActionType() == ActionType.GAUGE)
+            {
+                action.setGaugeAnimated(isGaugeAnimated);
+            }
+
+
+            if(action.getLocation() != null)
+            {
+                action.getLocation().setRowSpan(Integer.parseInt(rowSpanStr));
+                action.getLocation().setColSpan(Integer.parseInt(colSpanStr));
             }
         }
 
@@ -214,8 +241,7 @@ public class OnSaveActionTask extends Task<Void>
                 }
                 catch (MinorException e)
                 {
-                    e.setTitle("Error");
-                    exceptionAndAlertHandler.handleMinorException("onActionSavedFromServer() failed for "+action.getModuleName()+"\n\n"+e.getMessage(), e);
+                    exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onActionSavedFromServerFailed()", action.getModuleName(), e.getMessage()), e);
                 }
             }
 
@@ -229,10 +255,14 @@ public class OnSaveActionTask extends Task<Void>
             if(!isCombineChild)
             {
                 Platform.runLater(()->{
-                  //  actionBox.clear();
-                    actionBox.setAction(action);
-                    //actionBox.baseInit();
-                    actionBox.init();
+                    try
+                    {
+                        actionDetailsPaneListener.renderAction(action);
+                    }
+                    catch (MinorException e)
+                    {
+                        exceptionAndAlertHandler.handleMinorException(e);
+                    }
                 });
 
                 setSaveDeleteResetButtonState(false);

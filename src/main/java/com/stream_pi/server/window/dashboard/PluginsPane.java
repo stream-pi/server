@@ -1,9 +1,26 @@
+/*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 package com.stream_pi.server.window.dashboard;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
+import com.stream_pi.action_api.otheractions.CombineAction;
+import com.stream_pi.action_api.otheractions.FolderAction;
 import com.stream_pi.server.action.ExternalPlugins;
 
 import com.stream_pi.server.controller.ActionDataFormats;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.HostServices;
 import javafx.geometry.Insets;
@@ -55,7 +72,7 @@ public class PluginsPane extends VBox {
         settingsHBox.getStyleClass().add("plugins_pane_settings_button_parent");
         settingsHBox.setAlignment(Pos.CENTER_RIGHT);
 
-        Label pluginsLabel = new Label("Plugins");
+        Label pluginsLabel = new Label(I18N.getString("window.dashboard.PluginsPane.plugins"));
         pluginsLabel.getStyleClass().add("plugins_pane_top_label");
 
         getChildren().addAll(pluginsLabel, pluginsAccordion, SpaceFiller.vertical(), settingsHBox);
@@ -103,11 +120,17 @@ public class PluginsPane extends VBox {
                         toggleIcon.getStyleClass().add("plugins_pane_each_plugin_button_icon_toggle");
                         eachNormalActionPluginButton.setGraphic(toggleIcon);
                     }
-                    else
+                    else if(eachAction.getActionType() == ActionType.GAUGE)
                     {
-                        FontIcon cogs = new FontIcon("fas-cogs");
-                        cogs.getStyleClass().add("plugins_pane_each_plugin_button_icon_normal");
-                        eachNormalActionPluginButton.setGraphic(cogs);
+                        FontIcon dynamicIcon = new FontIcon("fas-magic");
+                        dynamicIcon.getStyleClass().add("plugins_pane_each_plugin_button_icon_dynamic");
+                        eachNormalActionPluginButton.setGraphic(dynamicIcon);
+                    }
+                    else if(eachAction.getActionType() == ActionType.NORMAL)
+                    {
+                        FontIcon normalIcon = new FontIcon("fas-cogs");
+                        normalIcon.getStyleClass().add("plugins_pane_each_plugin_button_icon_normal");
+                        eachNormalActionPluginButton.setGraphic(normalIcon);
                     }
                 }
                 else
@@ -179,7 +202,7 @@ public class PluginsPane extends VBox {
         VBox vBox = new VBox();
         vBox.getStyleClass().add("plugins_pane_each_plugin_box_parent");
 
-        Button folderActionButton = new Button("Folder");
+        Button folderActionButton = new Button(FolderAction.getUIName());
         folderActionButton.getStyleClass().add("plugins_pane_each_plugin_button");
         folderActionButton.setMaxWidth(Double.MAX_VALUE);
         folderActionButton.setAlignment(Pos.CENTER_LEFT);
@@ -201,7 +224,7 @@ public class PluginsPane extends VBox {
 
 
 
-        Button combineActionButton = new Button("Combine");
+        Button combineActionButton = new Button(CombineAction.getUIName());
         combineActionButton.getStyleClass().add("plugins_pane_each_plugin_button");
         combineActionButton.setMaxWidth(Double.MAX_VALUE);
         combineActionButton.setAlignment(Pos.CENTER_LEFT);
@@ -230,7 +253,7 @@ public class PluginsPane extends VBox {
 
         vBox.getChildren().addAll(h1, h2);
 
-        TitledPane pane = new TitledPane("Stream-Pi", vBox);
+        TitledPane pane = new TitledPane(I18N.getString("window.dashboard.PluginsPane.othersHeading"), vBox);
         pane.getStyleClass().add("plugins_pane_each_plugin_category_titled_pane");
 
         pluginsAccordion.getPanes().add(pane);

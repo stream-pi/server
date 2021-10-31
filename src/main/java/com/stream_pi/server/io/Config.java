@@ -1,4 +1,18 @@
 /*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/*
 Config.java
 
 Contributor(s) : Debayan Sutradhar (@rnayabed)
@@ -10,8 +24,8 @@ package com.stream_pi.server.io;
 
 import java.awt.*;
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -25,13 +39,13 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import com.stream_pi.server.Main;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.iohelper.IOHelper;
 import com.stream_pi.util.xmlconfighelper.XMLConfigHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 public class Config
 {
@@ -54,7 +68,7 @@ public class Config
         catch (Exception e)
         {
             e.printStackTrace();
-            throw new SevereException("Config", "Unable to read config.xml\n"+e.getMessage());
+            throw new SevereException(I18N.getString("io.config.Config.unableToReadConfig", e.getMessage()));
         }
     }
 
@@ -73,8 +87,10 @@ public class Config
 
     Logger logger = Logger.getLogger(Config.class.getName());
 
-    public void save() throws SevereException {
-        try {
+    public void save() throws SevereException
+    {
+        try
+        {
             logger.info("Saving config ...");
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             Result output = new StreamResult(configFile);
@@ -82,8 +98,11 @@ public class Config
 
             transformer.transform(input, output);
             logger.info("... Done!");
-        } catch (Exception e) {
-            throw new SevereException("Config", "unable to save config.xml");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            throw new SevereException(I18N.getString("io.config.Config.unableToSaveConfig", e.getMessage()));
         }
     }
 
@@ -106,6 +125,16 @@ public class Config
     {
         return XMLConfigHelper.getIntProperty(getCommsElement(), "port",
                 getDefaultPort(), false, true, document, configFile);
+    }
+
+    public String getIP()
+    {
+        return XMLConfigHelper.getStringProperty(getCommsElement(), "ip", null, false, true, document, configFile);
+    }
+
+    public void setIP(String ip)
+    {
+        getCommsElement().getElementsByTagName("ip").item(0).setTextContent(ip);
     }
 
     //default getters
@@ -187,17 +216,21 @@ public class Config
         return (Element) document.getElementsByTagName("action-grid").item(0);
     }
 
-    public int getActionGridActionGap()
+    private Element getActionGridSizeElement()
     {
-        return XMLConfigHelper.getIntProperty(getActionGridElement(), "gap",
-                getDefaultActionGridActionGap(), false, true, document, configFile);
+        return (Element) getActionGridElement().getElementsByTagName("size").item(0);
     }
 
-    public int getActionGridActionSize()
+    private Element getActionGridGapElement()
     {
-        return XMLConfigHelper.getIntProperty(getActionGridElement(), "size",
-                getDefaultActionGridSize(), false, true, document, configFile);
+        return (Element) getActionGridElement().getElementsByTagName("gap").item(0);
     }
+
+    private Element getActionGridDisplayTextFontSizeElement()
+    {
+        return (Element) getActionGridElement().getElementsByTagName("display-text-font-size").item(0);
+    }
+
 
 
     public String getCurrentThemeFullName()
@@ -279,48 +312,25 @@ public class Config
         return (Element) document.getElementsByTagName("others").item(0);
     }
 
-    public boolean isUseSameActionGapAsProfile()
+    public void setCurrentLanguageLocale(Locale locale)
     {
-        return XMLConfigHelper.getBooleanProperty(getOthersElement(), "use-default-action-box-gap",
-                getDefaultIsUseSameActionGapAsProfile(), false, true, document, configFile);
+        getOthersElement().getElementsByTagName("language-locale").item(0).setTextContent(locale.toLanguageTag());
     }
 
-    public boolean getDefaultIsUseSameActionGapAsProfile()
+    public Locale getCurrentLanguageLocale()
     {
-        return false;
+        return Locale.forLanguageTag(XMLConfigHelper.getStringProperty(getOthersElement(), "language-locale",
+                getDefaultLanguageLocale().toLanguageTag(), false, true, document, configFile));
     }
 
-    public boolean isUseSameActionSizeAsProfile()
+    public Locale getDefaultLanguageLocale()
     {
-        return XMLConfigHelper.getBooleanProperty(getOthersElement(), "use-default-action-box-size",
-                getDefaultIsUseSameActionSizeAsProfile(), false, true, document, configFile);
+        return Locale.getDefault();
     }
 
-    public boolean getDefaultIsUseSameActionSizeAsProfile()
-    {
-        return false;
-    }
 
-    public void setUseSameActionSizeAsProfile(boolean value)
-    {
-        getOthersElement().getElementsByTagName("use-default-action-box-size").item(0).setTextContent(value+"");
-    }
 
-    public void setUseSameActionGapAsProfile(boolean value)
-    {
-        getOthersElement().getElementsByTagName("use-default-action-box-gap").item(0).setTextContent(value+"");
-    }
 
-    public double getDefaultActionLabelFontSize()
-    {
-        return XMLConfigHelper.getDoubleProperty(getOthersElement(), "default-action-label-font-size",
-                getDefaultDefaultActionLabelFontSize(), false, true, document, configFile);
-    }
-
-    public double getDefaultDefaultActionLabelFontSize()
-    {
-        return 20;
-    }
 
     public boolean getStartOnBoot()
     {
@@ -337,11 +347,6 @@ public class Config
     public boolean isFirstTimeUse()
     {
         return XMLConfigHelper.getBooleanProperty(getOthersElement(), "first-time-use", true, false, true, document, configFile);
-    }
-
-    public boolean isAllowDonatePopup()
-    {
-        return XMLConfigHelper.getBooleanProperty(getOthersElement(), "allow-donate-popup", true, false, true, document, configFile);
     }
 
     //default getters
@@ -371,25 +376,130 @@ public class Config
 
     //server
 
-    public int getDefaultActionGridActionGap()
-    {
-        return 5;
-    }
 
     public int getDefaultActionGridSize()
     {
         return 100;
     }
 
-    public void setActionGridSize(int size)
+
+
+    // Action grid action size
+
+    // value
+    public void setActionGridActionSize(double value)
     {
-        getActionGridElement().getElementsByTagName("size").item(0).setTextContent(size+"");
+        getActionGridSizeElement().getElementsByTagName("value").item(0).setTextContent(value+"");
     }
 
-    public void setActionGridGap(int size)
+    public double getActionGridActionSize()
     {
-        getActionGridElement().getElementsByTagName("gap").item(0).setTextContent(size+"");
+        return XMLConfigHelper.getDoubleProperty(getActionGridSizeElement(), "value",
+                getDefaultActionGridActionSize(), false, true, document, configFile);
     }
+
+    public double getDefaultActionGridActionSize()
+    {
+        return 100;
+    }
+
+    // profile default
+    public void setActionGridUseSameActionSizeAsProfile(boolean value)
+    {
+        getActionGridSizeElement().getElementsByTagName("use-profile-default").item(0).setTextContent(value+"");
+    }
+
+    public boolean getActionGridUseSameActionSizeAsProfile()
+    {
+        return XMLConfigHelper.getBooleanProperty(getActionGridSizeElement(), "use-profile-default",
+                getDefaultActionGridUseSameActionSizeAsProfile(), false, true, document, configFile);
+    }
+
+    public boolean getDefaultActionGridUseSameActionSizeAsProfile()
+    {
+        return false;
+    }
+
+
+
+
+
+    // Action grid action gap
+
+    // value
+    public void setActionGridActionGap(double value)
+    {
+        getActionGridGapElement().getElementsByTagName("value").item(0).setTextContent(value+"");
+    }
+
+    public double getActionGridActionGap()
+    {
+        return XMLConfigHelper.getDoubleProperty(getActionGridGapElement(), "value",
+                getDefaultActionGridActionGap(), false, true, document, configFile);
+    }
+
+    public double getDefaultActionGridActionGap()
+    {
+        return 5;
+    }
+
+    // profile default
+    public void setActionGridUseSameActionGapAsProfile(boolean value)
+    {
+        getActionGridGapElement().getElementsByTagName("use-profile-default").item(0).setTextContent(value+"");
+    }
+
+    public boolean getActionGridUseSameActionGapAsProfile()
+    {
+        return XMLConfigHelper.getBooleanProperty(getActionGridGapElement(), "use-profile-default",
+                getDefaultActionGridUseSameActionGapAsProfile(), false, true, document, configFile);
+    }
+
+    public boolean getDefaultActionGridUseSameActionGapAsProfile()
+    {
+        return false;
+    }
+
+
+
+
+
+    // Action display text font size
+
+    // value
+    public void setActionGridActionDisplayTextFontSize(double value)
+    {
+        getActionGridDisplayTextFontSizeElement().getElementsByTagName("value").item(0).setTextContent(value+"");
+    }
+
+    public double getActionGridActionDisplayTextFontSize()
+    {
+        return XMLConfigHelper.getDoubleProperty(getActionGridDisplayTextFontSizeElement(), "value",
+                getDefaultActionGridActionDisplayTextFontSize(), false, true, document, configFile);
+    }
+
+    public double getDefaultActionGridActionDisplayTextFontSize()
+    {
+        return 20;
+    }
+
+    // profile default
+    public void setActionGridUseSameActionDisplayTextFontSizeAsProfile(boolean value)
+    {
+        getActionGridDisplayTextFontSizeElement().getElementsByTagName("use-profile-default").item(0).setTextContent(value+"");
+    }
+
+    public boolean getActionGridUseSameActionDisplayTextFontSizeAsProfile()
+    {
+        return XMLConfigHelper.getBooleanProperty(getActionGridDisplayTextFontSizeElement(), "use-profile-default",
+                getDefaultActionGridUseSameActionDisplayTextFontSizeAsProfile(), false, true, document, configFile);
+    }
+
+    public boolean getDefaultActionGridUseSameActionDisplayTextFontSizeAsProfile()
+    {
+        return true;
+    }
+
 
     public void setPluginsPath(String path)
     {
@@ -424,10 +534,6 @@ public class Config
     }
 
     //others
-    public void setDefaultActionLabelFontSize(double value)
-    {
-        getOthersElement().getElementsByTagName("default-action-label-font-size").item(0).setTextContent(value+"");
-    }
 
     public void setStartupOnBoot(boolean value)
     {
@@ -444,11 +550,6 @@ public class Config
         getOthersElement().getElementsByTagName("first-time-use").item(0).setTextContent(value+"");
     }
 
-    public void setAllowDonatePopup(boolean value)
-    {
-        getOthersElement().getElementsByTagName("allow-donate-popup").item(0).setTextContent(value+"");
-    }
-
     public static void unzipToDefaultPrePath() throws Exception
     {
         IOHelper.unzip(Objects.requireNonNull(Main.class.getResourceAsStream("Default.zip")), ServerInfo.getInstance().getPrePath());
@@ -457,6 +558,7 @@ public class Config
 
         config.setThemesPath(config.getDefaultThemesPath());
         config.setPluginsPath(config.getDefaultPluginsPath());
+        config.setCurrentLanguageLocale(config.getDefaultLanguageLocale());
 
         if(SystemTray.isSupported())
         {

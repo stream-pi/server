@@ -1,7 +1,22 @@
+/*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 package com.stream_pi.server.window.firsttimeuse;
 
 import com.stream_pi.server.Main;
 import com.stream_pi.server.controller.ServerListener;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.uihelper.SpaceFiller;
 
@@ -34,17 +49,17 @@ public class FirstTimeUse extends VBox{
 
         VBox.setVgrow(stackPane, Priority.ALWAYS);
 
-        nextButton = new Button("Next");
+        nextButton = new Button(I18N.getString("window.firsttimeuse.FirstTimeUse.next"));
         nextButton.setOnAction(event-> onNextButtonClicked());
 
-        previousButton = new Button("Previous");
+        previousButton = new Button(I18N.getString("window.firsttimeuse.FirstTimeUse.previous"));
         previousButton.setOnAction(event-> onPreviousButtonClicked());
 
 
         HBox buttonBar = new HBox(previousButton, SpaceFiller.horizontal(), nextButton);
         buttonBar.setSpacing(10.0);
 
-        welcomePane = new WelcomePane();
+        welcomePane = new WelcomePane(exceptionAndAlertHandler, serverListener);
         licensePane = new LicensePane();
         finalConfigPane = new FinalConfigPane(exceptionAndAlertHandler, serverListener, nextButton);
 
@@ -104,7 +119,7 @@ public class FirstTimeUse extends VBox{
 
             headingLabel.setText("");
 
-            nextButton.setText("Next");
+            nextButton.setText(I18N.getString("window.firsttimeuse.FirstTimeUse.next"));
             nextButton.setOnAction(event-> onNextButtonClicked());
             previousButton.setVisible(false);
         }
@@ -116,9 +131,9 @@ public class FirstTimeUse extends VBox{
             licensePane.setVisible(true);
             finalConfigPane.setVisible(false);
 
-            headingLabel.setText("License Agreement");
+            headingLabel.setText(I18N.getString("window.firsttimeuse.FirstTimeUse.licenseAgreement"));
 
-            nextButton.setText("Agree and Continue");
+            nextButton.setText(I18N.getString("window.firsttimeuse.FirstTimeUse.agreeAndContinue"));
             nextButton.setOnAction(event-> onNextButtonClicked());
             previousButton.setVisible(true);
         }
@@ -130,7 +145,7 @@ public class FirstTimeUse extends VBox{
             licensePane.setVisible(false);
             finalConfigPane.setVisible(true);
             
-            headingLabel.setText("Finishing up ...");
+            headingLabel.setText(I18N.getString("window.firsttimeuse.FirstTimeUse.finishingUp"));
 
             finalConfigPane.makeChangesToNextButton();
             previousButton.setVisible(true);

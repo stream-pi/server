@@ -1,4 +1,18 @@
-package com.stream_pi.server.window.dashboard.actiondetailpane;
+/*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+package com.stream_pi.server.window.dashboard.actiondetailspane;
 
 import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.actionproperty.property.Property;
@@ -15,9 +29,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.javafx.FontIcon;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CombineActionPropertiesPane extends VBox {
     private CombineAction combineAction;

@@ -1,12 +1,26 @@
+/*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 package com.stream_pi.server.window.settings;
 
 import com.stream_pi.server.controller.ServerListener;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
-import com.stream_pi.server.window.settings.About.About;
+import com.stream_pi.server.window.settings.about.About;
 import javafx.application.HostServices;
 import javafx.event.Event;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.CacheHint;
 import javafx.scene.control.*;
 import javafx.scene.input.SwipeEvent;
@@ -39,29 +53,29 @@ public class SettingsBase extends VBox
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         VBox.setVgrow(tabPane, Priority.ALWAYS);
 
-        Tab generalSettingsTab = new Tab("General");
+        Tab generalSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.general"));
         generalSettings = new GeneralSettings(exceptionAndAlertHandler, serverListener, hostServices);
         generalSettingsTab.setContent(generalSettings);
 
-        Tab pluginsSettingsTab = new Tab("Plugins");
+        Tab pluginsSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.plugins"));
         pluginsSettings = new PluginsSettings(exceptionAndAlertHandler, hostServices);
         pluginsSettingsTab.setContent(pluginsSettings);
 
-        Tab themesSettingsTab = new Tab("Themes");
+        Tab themesSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.themes"));
         themesSettings = new ThemesSettings(hostServices);
         themesSettingsTab.setContent(themesSettings);
 
-        Tab clientsSettingsTab = new Tab("Clients");
+        Tab clientsSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.clients"));
         clientsSettings = new ClientsSettings(exceptionAndAlertHandler, serverListener);
         clientsSettingsTab.setContent(clientsSettings);
 
-        Tab aboutTab = new Tab("About");
+        Tab aboutTab = new Tab(I18N.getString("window.settings.SettingsBase.about"));
         aboutTab.setContent(new About(hostServices));
 
         tabPane.getTabs().addAll(generalSettingsTab, pluginsSettingsTab, themesSettingsTab, clientsSettingsTab, aboutTab);
 
 
-        closeButton = new Button("Close");
+        closeButton = new Button(I18N.getString("window.settings.SettingsBase.close"));
         closeButton.getStyleClass().add("settings_close_button");
         VBox.setMargin(closeButton, new Insets(0,10, 10, 0));
 

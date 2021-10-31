@@ -1,6 +1,21 @@
+/*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 package com.stream_pi.server.window;
 
+import com.stream_pi.action_api.ActionAPI;
 import com.stream_pi.server.controller.ServerListener;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.Main;
@@ -8,7 +23,9 @@ import com.stream_pi.server.window.dashboard.DashboardBase;
 import com.stream_pi.server.window.firsttimeuse.FirstTimeUse;
 import com.stream_pi.server.window.settings.SettingsBase;
 import com.stream_pi.theme_api.Theme;
+import com.stream_pi.theme_api.ThemeAPI;
 import com.stream_pi.theme_api.Themes;
+import com.stream_pi.util.Util;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
@@ -17,12 +34,14 @@ import com.stream_pi.util.loggerhelper.StreamPiLogFileHandler;
 
 import com.stream_pi.util.platform.Platform;
 import javafx.application.HostServices;
+import javafx.scene.CacheHint;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -65,7 +84,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
                 return;
 
             closeLogger();
-            logger = Logger.getLogger("com.stream_pi");
+            logger = Logger.getLogger("");
 
             if(new File(ServerInfo.getInstance().getPrePath()).getAbsoluteFile().getParentFile().canWrite())
             {
@@ -97,36 +116,32 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         else if(logFallbackHandler != null)
             logFallbackHandler.close();
     }
-    
+
+    public boolean isOpenFirstTime = false;
+
     public void initBase() throws SevereException
     {
+        I18N.initAvailableLanguages();
+
         stage = (Stage) getScene().getWindow();
 
         getStage().getIcons().clear();
-        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icon256x256.png"))));
-        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icon48x48.png"))));
-        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icon32x32.png"))));
-        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icon24x24.png"))));
-        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icon16x16.png"))));
+        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/256x256.png"))));
+        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/48x48.png"))));
+        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/32x32.png"))));
+        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/24x24.png"))));
+        getStage().getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/16x16.png"))));
         
-        getStage().setMinWidth(720);
+        getStage().setMinWidth(750);
         getStage().setMinHeight(530);
 
         serverInfo = ServerInfo.getInstance();
 
 
-        settingsBase = new SettingsBase(getHostServices(), this, this);
-        settingsBase.prefWidthProperty().bind(widthProperty());
-        settingsBase.prefHeightProperty().bind(heightProperty());
-
-        dashboardBase = new DashboardBase(this, getHostServices());
-        dashboardBase.prefWidthProperty().bind(widthProperty());
-        dashboardBase.prefHeightProperty().bind(heightProperty());
-
         alertStackPane = new StackPane();
+        alertStackPane.setCache(true);
+        alertStackPane.setCacheHint(CacheHint.SPEED);
         alertStackPane.setOpacity(0);
-
-
 
         StreamPiAlert.setParent(alertStackPane);
 
@@ -137,19 +152,62 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
         checkPrePathDirectory();
 
-        getChildren().addAll(settingsBase, dashboardBase);
-
         config = Config.getInstance();
+
+        initI18n();
+
+        settingsBase = new SettingsBase(getHostServices(), this, this);
+        settingsBase.prefWidthProperty().bind(widthProperty());
+        settingsBase.prefHeightProperty().bind(heightProperty());
+
+        dashboardBase = new DashboardBase(this, getHostServices());
+        dashboardBase.prefWidthProperty().bind(widthProperty());
+        dashboardBase.prefHeightProperty().bind(heightProperty());
+
+        getChildren().addAll(settingsBase, dashboardBase);
 
         initThemes();
 
-        stage.setWidth(config.getStartupWindowWidth());
-        stage.setHeight(config.getStartupWindowHeight());
+        if (!isOpenFirstTime)
+        {
+            stage.setWidth(config.getStartupWindowWidth());
+            stage.setHeight(config.getStartupWindowHeight());
+
+            isOpenFirstTime = true;
+        }
 
         dashboardBase.setDividerPositions(config.getRightDividerPositions());
         dashboardBase.getLeftSplitPane().setDividerPositions(config.getLeftDividerPositions());
 
         dashboardBase.toFront();
+    }
+
+    private void initI18n() throws SevereException
+    {
+        if (I18N.isLanguageAvailable(config.getCurrentLanguageLocale()))
+        {
+            Locale defaultLocale = Locale.getDefault();
+            Locale.setDefault(I18N.BASE_LOCALE);
+            // This sets the local to Locale en (fallback locale)
+            // This is done because the proper way of removing fallback locales is not available on Java 9+
+            // As ResourceBundle.Control is not supported on modular projects.
+
+
+            Util.initI18n(config.getCurrentLanguageLocale());
+            ActionAPI.initI18n(config.getCurrentLanguageLocale());
+            ThemeAPI.initI18n(config.getCurrentLanguageLocale());
+            I18N.init(config.getCurrentLanguageLocale());
+
+            Locale.setDefault(defaultLocale); // Reset locale back to defaults ...
+        }
+        else
+        {
+            getLogger().warning("No translation available for locale : "+config.getCurrentLanguageLocale().toString());
+            getLogger().warning("Setting it to base ...");
+            getConfig().setCurrentLanguageLocale(I18N.BASE_LOCALE);
+            getConfig().save();
+            initI18n();
+        }
     }
 
     private void checkPrePathDirectory() throws SevereException
@@ -175,7 +233,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
                     applyDefaultIconsStylesheet();
                     applyGlobalDefaultStylesheet();
                     getStage().show();
-                    throw new SevereException("No storage permission. Give it!");
+                    throw new SevereException(I18N.getString("window.Base.noStoragePermission"));
                 }
             }
         }
@@ -217,16 +275,14 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     {
         logger.info("Applying default stylesheet ...");
 
-        Font.loadFont(Main.class.getResourceAsStream("Roboto.ttf"), 13);
-        getStylesheets().add(Main.class.getResource("style.css").toExternalForm());
+        getStylesheets().add(Objects.requireNonNull(Main.class.getResource("style.css")).toExternalForm());
 
         logger.info("... Done!");
     }
 
     public void applyDefaultIconsStylesheet()
     {
-        Font.loadFont(Main.class.getResourceAsStream("Roboto.ttf"), 13);
-        getStylesheets().add(Main.class.getResource("default_icons.css").toExternalForm());
+        getStylesheets().add(Objects.requireNonNull(Main.class.getResource("default_icons.css")).toExternalForm());
     }
 
     public DashboardBase getDashboardBase()
@@ -260,14 +316,6 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     {
         logger.info("Applying theme '"+t.getFullName()+"' ...");
 
-        if(t.getFonts() != null)
-        {
-            for(String fontFile : t.getFonts())
-            {
-                Font.loadFont(fontFile.replace("%20",""), 13);
-            }
-        }
-
         currentTheme = t;
         getStylesheets().addAll(t.getStylesheets());
 
@@ -284,7 +332,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     {
         logger.info("Loading themes ...");
 
-        themes = new Themes(getConfig().getDefaultThemesPath(), getConfig().getThemesPath(), getConfig().getCurrentThemeFullName(), serverInfo.getMinThemeSupportVersion());
+        themes = new Themes(getConfig().getDefaultThemesPath(), getConfig().getThemesPath(), getConfig().getCurrentThemeFullName());
         
         if(!themes.getErrors().isEmpty())
         {
@@ -299,17 +347,16 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
             {
                 if(getConfig().getCurrentThemeFullName().equals(getConfig().getDefaultCurrentThemeFullName()))
                 {
-                    throw new SevereException("Unable to get default theme ("+getConfig().getDefaultCurrentThemeFullName()+")\n" +
-                            "Please restore the theme or reinstall.");
+                    throw new SevereException(I18N.getString("window.Base.defaultThemeCorrupt", getConfig().getDefaultCurrentThemeFullName()));
                 }
 
-                themeErrors.append("\n\nReverted to default theme! (").append(getConfig().getDefaultCurrentThemeFullName()).append(")");
+                themeErrors.append("\n\n").append(I18N.getString("window.Base.revertedToDefaultTheme", getConfig().getDefaultCurrentThemeFullName()));
 
                 getConfig().setCurrentThemeFullName(getConfig().getDefaultCurrentThemeFullName());
                 getConfig().save();
             }
 
-            handleMinorException(new MinorException("Theme Loading issues", themeErrors.toString()));
+            handleMinorException(new MinorException(I18N.getString("window.Base.failedToLoadThemes"), themeErrors.toString()));
         }
         logger.info("...Themes loaded successfully !");
     }

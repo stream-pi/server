@@ -1,11 +1,23 @@
+/*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 package com.stream_pi.server.window.settings;
 
-import com.stream_pi.action_api.actionproperty.property.ListValue;
+import com.stream_pi.action_api.actionproperty.property.*;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
-import com.stream_pi.action_api.actionproperty.property.ControlType;
-import com.stream_pi.action_api.actionproperty.property.Property;
-import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
@@ -68,7 +80,7 @@ public class PluginsSettings extends VBox
 
 
 
-        saveButton = new Button("Save");
+        saveButton = new Button(I18N.getString("save"));
         HBox.setMargin(saveButton, new Insets(0,10, 0, 0));
         saveButton.setOnAction(event -> onSaveButtonClicked());
 
@@ -96,45 +108,25 @@ public class PluginsSettings extends VBox
                     UIPropertyBox serverProperty = p.getServerPropertyUIBox().get(j);
                     Node controlNode = serverProperty.getControlNode();
 
-                    if (serverProperty.getControlType() == ControlType.TEXT_FIELD)
-                    {
-                        String value = ((TextField) controlNode).getText();
-                        if(serverProperty.getType() == Type.INTEGER)
-                        {
-                            try
-                            {
-                                Integer.parseInt(value);
-                            }
-                            catch (NumberFormatException e)
-                            {
-                                errors.append("        -> ").append(serverProperty.getDisplayName()).append(" must be integer.\n");
-                            }
-                        }
-                        else
-                        {
-                            if(value.isBlank() && !serverProperty.isCanBeBlank())
-                                errors.append("        -> ").append(serverProperty.getDisplayName()).append(" cannot be blank.\n");
-                        }
-                    }
-                    else if(serverProperty.getControlType() == ControlType.TEXT_FIELD_MASKED)
-                    {
-                        String value = ((TextField) controlNode).getText();
 
-                        if(value.isBlank() && !serverProperty.isCanBeBlank())
-                            errors.append("        -> ").append(serverProperty.getDisplayName()).append(" cannot be blank.\n");
+                    String value = ((TextField) controlNode).getText();
+                    String error = Helper.validateProperty(value, serverProperty);
+
+                    if (error != null)
+                    {
+                        errors.append("        -> ").append(error).append(("\n"));
                     }
                 }
 
                 if(!errors.toString().isBlank())
                 {
-                    finalErrors.append("    * ").append(p.getName()).append("\n").append(errors.toString()).append("\n");
+                    finalErrors.append("    * ").append(p.getName()).append("\n").append(errors).append("\n");
                 }
             }
 
             if(!finalErrors.toString().isEmpty())
             {
-                throw new MinorException("Form Validation Errors",
-                        "Please rectify the following errors and try again \n"+finalErrors.toString());
+                throw new MinorException(I18N.getString("validationError", finalErrors));
             }
 
             //save
@@ -170,7 +162,7 @@ public class PluginsSettings extends VBox
     public void showPluginInitError()
     {
         Platform.runLater(()->{
-            pluginsSettingsVBox.getChildren().add(new Label("Plugin init error. Resolve issues and restart."));
+            pluginsSettingsVBox.getChildren().add(new Label(I18N.getString("window.settings.PluginsSettings.pluginInitError")));
             saveButton.setVisible(false);
         });
     }
@@ -186,7 +178,7 @@ public class PluginsSettings extends VBox
         if(actions.size() == 0)
         {
             Platform.runLater(()->{
-                Label l = new Label("No Plugins Installed.");
+                Label l = new Label(I18N.getString("window.settings.PluginsSettings.noPluginsInstalled"));
                 l.getStyleClass().add("plugins_pane_no_plugins_installed_label");
                 pluginsSettingsVBox.getChildren().add(l);
                 saveButton.setVisible(false);
@@ -234,7 +226,7 @@ public class PluginsSettings extends VBox
             Label moduleLabel = new Label(action.getModuleName());
             moduleLabel.getStyleClass().add("plugins_settings_each_plugin_module_label");
 
-            Label versionLabel = new Label("Version : "+action.getVersion().getText());
+            Label versionLabel = new Label(I18N.getString("version", action.getVersion().getText()));
             versionLabel.getStyleClass().add("plugins_settings_each_plugin_version_label");
 
             VBox serverPropertiesVBox = new VBox();

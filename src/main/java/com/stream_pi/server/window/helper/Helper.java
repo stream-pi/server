@@ -1,9 +1,22 @@
+/*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 package com.stream_pi.server.window.helper;
 
-import com.stream_pi.action_api.actionproperty.property.ControlType;
-import com.stream_pi.action_api.actionproperty.property.FileExtensionFilter;
-import com.stream_pi.action_api.actionproperty.property.ListValue;
-import com.stream_pi.action_api.actionproperty.property.Property;
+import com.stream_pi.action_api.actionproperty.property.*;
+import com.stream_pi.server.i18n.I18N;
+import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
@@ -57,7 +70,7 @@ public class Helper
 
                             if(listValue == null)
                             {
-                                setText("Choose value");
+                                setText(I18N.getString("window.helper.Helper.chooseValue"));
                             }
                             else
                             {
@@ -139,5 +152,46 @@ public class Helper
         }
 
         return new ControlNodePair(controlNode, UINode);
+    }
+
+    public static String validateProperty(String value, UIPropertyBox property)
+    {
+        String error = null;
+
+        if (property.getControlType() == ControlType.TEXT_FIELD || property.getControlType() == ControlType.TEXT_FIELD_MASKED)
+        {
+            if(property.getType() == Type.INTEGER)
+            {
+                try
+                {
+                    Integer.parseInt(value);
+                }
+                catch (NumberFormatException e)
+                {
+                    error = PropertyValidation.integerValueRequired(property.getDisplayName());
+                }
+            }
+            else if(property.getType() == Type.DOUBLE)
+            {
+                try
+                {
+                    Double.parseDouble(value);
+                }
+                catch (NumberFormatException e)
+                {
+                    error = PropertyValidation.doubleValueRequired(property.getDisplayName());
+                }
+            }
+            else
+            {
+                if(value.isBlank() && !property.isCanBeBlank())
+                {
+
+                    error = PropertyValidation.cannotBeBlank(property.getDisplayName());
+                }
+            }
+        }
+
+        return error;
     }
 }

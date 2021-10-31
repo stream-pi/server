@@ -1,18 +1,16 @@
 /*
-Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macropad
-Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-Written by : Debayan Sutradhar (rnayabed)
-*/
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 
 package com.stream_pi.server.client;
 
@@ -28,7 +26,7 @@ import java.util.List;
 
 public class Client
 {
-    private String nickName;
+    private String name;
     private final SocketAddress remoteSocketAddress;
     private final Platform platform;
     private final Version version;
@@ -48,14 +46,14 @@ public class Client
     private Orientation orientation;
 
     public Client(Version version, ReleaseStatus releaseStatus, Version commStandardVersion,
-                  Version themeAPIVersion, String nickName, Platform platform, SocketAddress remoteSocketAddress,
+                  Version themeAPIVersion, String name, Platform platform, SocketAddress remoteSocketAddress,
                   Orientation orientation)
     {
         this.version = version;
         this.releaseStatus = releaseStatus;
         this.commStandardVersion = commStandardVersion;
         this.themeAPIVersion = themeAPIVersion;
-        this.nickName = nickName;
+        this.name = name;
         this.remoteSocketAddress = remoteSocketAddress;
         this.platform = platform;
         this.profiles = new HashMap<>();
@@ -82,7 +80,7 @@ public class Client
 
     public void addTheme(ClientTheme clientTheme) throws CloneNotSupportedException
     {
-        themes.put(clientTheme.getThemeFullName(), (ClientTheme) clientTheme.clone());
+        themes.put(clientTheme.getFullName(), (ClientTheme) clientTheme.clone());
     }
 
     public ArrayList<ClientTheme> getThemes()
@@ -107,9 +105,9 @@ public class Client
 
     //client Profiles
 
-    public void setNickName(String nickName)
+    public void setName(String name)
     {
-        this.nickName = nickName;
+        this.name = name;
     }
 
     public List<ClientProfile> getAllClientProfiles()
@@ -143,9 +141,9 @@ public class Client
         return platform;
     }
 
-    public String getNickName()
+    public String getName()
     {
-        return nickName;
+        return name;
     }
 
     public Version getVersion()

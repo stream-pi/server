@@ -1,6 +1,18 @@
-.root {
-  -fx-font-family : 'Roboto';
-}
+/*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+
 
 .about_donate_hyperlink
 {
@@ -174,6 +186,13 @@
     -fx-padding: 0 0 30 0;
 }
 
+.first_time_use_pane_final_config_security_warning_label
+{
+    -fx-padding: 30 20 0 20;
+    -fx-font-weight: bold;
+    -fx-text-alignment: center;
+}
+
 .first_time_use_welcome_pane_welcome_label
 {
     -fx-font-size: 30;
@@ -182,6 +201,7 @@
 .first_time_use_welcome_pane_next_to_continue_label
 {
     -fx-font-size: 15;
+    -fx-padding: 0 0 15 0;
 }
 
 .plugins_settings_scroll_pane, .themes_settings_scroll_pane, .clients_settings_scroll_pane
@@ -314,4 +334,14 @@ ScrollPane
 {
     -fx-focus-color:transparent;
     -fx-faint-focus-color:transparent;
+}
+
+.invalid_ip_prompt_label
+{
+    -fx-padding: 0 0 30 0;
+}
+
+.settings_about_tab_app_icon
+{
+    -fx-padding: 50 50 50 50;
 }

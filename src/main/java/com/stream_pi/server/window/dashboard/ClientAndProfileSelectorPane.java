@@ -1,9 +1,24 @@
+/*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 package com.stream_pi.server.window.dashboard;
 
 import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.connection.ClientConnections;
+import com.stream_pi.server.i18n.I18N;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.CacheHint;
@@ -55,13 +70,13 @@ public class ClientAndProfileSelectorPane extends HBox {
 
     public void initUI()
     {
-        noClientsConnectedLabel = new Label("No Clients Connected");
+        noClientsConnectedLabel = new Label(I18N.getString("noClientsConnected"));
         noClientsConnectedLabel.getStyleClass().add("client_and_profile_selector_pane_no_clients_connected_label");
         noClientsConnectedLabel.managedProperty().bind(noClientsConnectedLabel.visibleProperty());
 
         clientsComboBox = new ComboBox<>();
         clientsComboBox.getStyleClass().add("client_and_profile_selector_pane_client_selector_combo_box");
-        clientsComboBox.setPromptText("Choose client");
+        clientsComboBox.setPromptText(I18N.getString("window.dashboard.ClientAndProfileSelectorPane.chooseClient"));
 
         clientsComboBox.valueProperty().addListener((observableValue, oldVal, newVal) -> {
             if(oldVal!=newVal && newVal!=null)
@@ -87,12 +102,12 @@ public class ClientAndProfileSelectorPane extends HBox {
 
                         if(clientConnection == null)
                         {
-                            setText("Choose client");
+                            setText(I18N.getString("window.dashboard.ClientAndProfileSelectorPane.chooseClient"));
                         }
                         else
                         {
                             Client client = clientConnection.getClient();
-                            setText(client.getNickName());
+                            setText(client.getName());
                         }
                     }
                 };
@@ -105,7 +120,7 @@ public class ClientAndProfileSelectorPane extends HBox {
 
         clientProfilesComboBox = new ComboBox<>();
         clientProfilesComboBox.getStyleClass().add("client_and_profile_selector_pane_profile_selector_combo_box");
-        clientProfilesComboBox.setPromptText("Choose Profile");
+        clientProfilesComboBox.setPromptText(I18N.getString("window.dashboard.ClientAndProfileSelectorPane.chooseProfile"));
         clientProfilesComboBox.valueProperty().addListener((observableValue, oldVal, newVal) -> {
             if(oldVal!=newVal && newVal!=null)
             {
@@ -116,7 +131,7 @@ public class ClientAndProfileSelectorPane extends HBox {
 
 
         clientProfilesComboBox.managedProperty().bind(clientProfilesComboBox.visibleProperty());
-        Callback<ListView<ClientProfile>, ListCell<ClientProfile>> clientProfilesComboBoxFactory = new Callback<ListView<ClientProfile>, ListCell<ClientProfile>>() {
+        Callback<ListView<ClientProfile>, ListCell<ClientProfile>> clientProfilesComboBoxFactory = new Callback<>() {
             @Override
             public ListCell<ClientProfile> call(ListView<ClientProfile> clientProfileListView) {
                 return new ListCell<>()
@@ -127,7 +142,7 @@ public class ClientAndProfileSelectorPane extends HBox {
 
                         if(profile == null)
                         {
-                            setText("Choose Profile");
+                            setText(I18N.getString("window.dashboard.ClientAndProfileSelectorPane.chooseProfile"));
                         }
                         else
                         {

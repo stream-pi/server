@@ -1,24 +1,40 @@
+/*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 package com.stream_pi.server.client;
+
+import com.stream_pi.util.version.Version;
 
 public class ClientTheme implements Cloneable
 {
-    public String themeFullName;
+    public String fullName;
     public String shortName;
     public String author;
-    public String version;
+    public Version version;
 
-    public ClientTheme(String themeFullName, String shortName,
-                       String author, String version)
+    public ClientTheme(String fullName, String shortName,
+                       String author, Version version)
     {
-        this.themeFullName = themeFullName;
+        this.fullName = fullName;
         this.shortName = shortName;
         this.author = author;
         this.version = version;
     }
 
-    public String getThemeFullName()
+    public String getFullName()
     {
-        return themeFullName;
+        return fullName;
     }
 
     public String getShortName()
@@ -31,7 +47,7 @@ public class ClientTheme implements Cloneable
         return author;
     }
 
-    public String getVersion() {
+    public Version getVersion() {
         return version;
     }
 

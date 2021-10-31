@@ -1,23 +1,39 @@
+/*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 package com.stream_pi.server.window.settings;
 
-import com.stream_pi.action_api.actionproperty.property.FileExtensionFilter;
 import com.stream_pi.server.Main;
+import com.stream_pi.server.combobox.IPChooserComboBox;
+import com.stream_pi.server.combobox.LanguageChooserComboBox;
 import com.stream_pi.server.controller.ServerListener;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.info.StartupFlags;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.info.ServerInfo;
-
 import com.stream_pi.util.alert.StreamPiAlert;
+import com.stream_pi.util.alert.StreamPiAlertButton;
 import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.checkforupdates.CheckForUpdates;
 import com.stream_pi.util.checkforupdates.UpdateHyperlinkOnClick;
+import com.stream_pi.util.restart.Restart;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
-import com.stream_pi.util.platform.Platform;
 import com.stream_pi.util.platform.PlatformType;
-import com.stream_pi.util.startatboot.StartAtBoot;
+import com.stream_pi.util.startonboot.StartOnBoot;
 import com.stream_pi.util.uihelper.HBoxInputBox;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithDirectoryChooser;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
@@ -26,18 +42,13 @@ import javafx.application.HostServices;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.controlsfx.control.ToggleSwitch;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.w3c.dom.Text;
 
 import java.awt.SystemTray;
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.logging.Logger;
 
 public class GeneralSettings extends VBox
@@ -45,12 +56,14 @@ public class GeneralSettings extends VBox
     private final TextField serverNameTextField;
     private final TextField defaultActionLabelFontSizeTextField;
     private final TextField portTextField;
+    private final IPChooserComboBox ipChooserComboBox;
     private final TextField pluginsPathTextField;
     private final TextField themesPathTextField;
     private final TextField actionGridPaneActionBoxSize;
     private final CheckBox actionGridPaneActionBoxSizeIsDefaultCheckBox;
     private final TextField actionGridPaneActionBoxGap;
     private final CheckBox actionGridPaneActionBoxGapIsDefaultCheckBox;
+    private final CheckBox actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox;
     private final ToggleSwitch startOnBootToggleSwitch;
     private final HBoxWithSpaceBetween startOnBootHBox;
     private final TextField soundOnActionClickedFilePathTextField;
@@ -63,6 +76,8 @@ public class GeneralSettings extends VBox
     private final Button saveButton;
     private final Button checkForUpdatesButton;
     private final Button factoryResetButton;
+    private final Button restartButton;
+    private final LanguageChooserComboBox languageChooserComboBox;
 
     private Logger logger;
 
@@ -84,31 +99,37 @@ public class GeneralSettings extends VBox
 
         serverNameTextField = new TextField();
 
-        defaultActionLabelFontSizeTextField = new TextField();
 
         portTextField = new TextField();
+
+        ipChooserComboBox = new IPChooserComboBox(exceptionAndAlertHandler);
+
+        languageChooserComboBox = new LanguageChooserComboBox();
 
         pluginsPathTextField = new TextField();
 
         themesPathTextField = new TextField();
 
         actionGridPaneActionBoxSize = new TextField();
-        actionGridPaneActionBoxSizeIsDefaultCheckBox = new CheckBox("Same as Profile");
+        actionGridPaneActionBoxSizeIsDefaultCheckBox = new CheckBox(I18N.getString("window.settings.GeneralSettings.followProfileDefaults"));
 
         actionGridPaneActionBoxGap = new TextField();
-        actionGridPaneActionBoxGapIsDefaultCheckBox = new CheckBox("Same as Profile");
+        actionGridPaneActionBoxGapIsDefaultCheckBox = new CheckBox(I18N.getString("window.settings.GeneralSettings.followProfileDefaults"));
+
+        defaultActionLabelFontSizeTextField = new TextField();
+        actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox = new CheckBox(I18N.getString("window.settings.GeneralSettings.followProfileDefaults"));
 
         startOnBootToggleSwitch = new ToggleSwitch();
-        startOnBootHBox = new HBoxWithSpaceBetween("Start on Boot", startOnBootToggleSwitch);
+        startOnBootHBox = new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.startOnBoot"), startOnBootToggleSwitch);
         startOnBootHBox.managedProperty().bind(startOnBootHBox.visibleProperty());
 
         soundOnActionClickedToggleSwitch = new ToggleSwitch();
-        soundOnActionClickedToggleSwitchHBox = new HBoxWithSpaceBetween("Sound on Action Clicked", soundOnActionClickedToggleSwitch);
+        soundOnActionClickedToggleSwitchHBox = new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.soundOnActionClicked"), soundOnActionClickedToggleSwitch);
 
 
         soundOnActionClickedFilePathTextField = new TextField();
 
-        HBoxInputBoxWithFileChooser soundHBoxInputBoxWithFileChooser =  new HBoxInputBoxWithFileChooser("Sound File Path", soundOnActionClickedFilePathTextField,
+        HBoxInputBoxWithFileChooser soundHBoxInputBoxWithFileChooser =  new HBoxInputBoxWithFileChooser(I18N.getString("window.settings.GeneralSettings.soundOnActionClicked"), soundOnActionClickedFilePathTextField,
                 new FileChooser.ExtensionFilter("Sounds","*.mp3","*.mp4", "*.m4a", "*.m4v","*.wav","*.aif", "*.aiff","*.fxm","*.flv","*.m3u8"));
 
         soundHBoxInputBoxWithFileChooser.setUseLast(false);
@@ -117,43 +138,50 @@ public class GeneralSettings extends VBox
         soundHBoxInputBoxWithFileChooser.getFileChooseButton().disableProperty().bind(soundOnActionClickedToggleSwitch.selectedProperty().not());
 
         minimizeToSystemTrayOnCloseToggleSwitch = new ToggleSwitch();
-        minimizeToSystemTrayOnCloseHBox = new HBoxWithSpaceBetween("Minimise To Tray On Close", minimizeToSystemTrayOnCloseToggleSwitch);
+        minimizeToSystemTrayOnCloseHBox = new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.minimiseToTrayOnClose"), minimizeToSystemTrayOnCloseToggleSwitch);
 
         showAlertsPopupToggleSwitch = new ToggleSwitch();
-        showAlertsPopupHBox = new HBoxWithSpaceBetween("Show Popup On Alert", showAlertsPopupToggleSwitch);
+        showAlertsPopupHBox = new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.showPopupOnAlert"), showAlertsPopupToggleSwitch);
 
-        checkForUpdatesButton = new Button("Check for updates");
+        checkForUpdatesButton = new Button(I18N.getString("window.settings.GeneralSettings.checkForUpdates"));
         checkForUpdatesButton.setOnAction(event->checkForUpdates());
 
-        factoryResetButton = new Button("Factory Reset");
+        factoryResetButton = new Button(I18N.getString("window.settings.GeneralSettings.factoryReset"));
         factoryResetButton.setOnAction(actionEvent -> onFactoryResetButtonClicked());
+        
+        restartButton = new Button(I18N.getString("window.settings.GeneralSettings.restart"));
+        restartButton.setOnAction(event->restart());
 
         serverNameTextField.setPrefWidth(200);
 
 
-        saveButton = new Button("Save");
+        saveButton = new Button(I18N.getString("save"));
         VBox.setMargin(saveButton, new Insets(0,10, 0, 0));
 
         saveButton.setOnAction(event->save());
 
         VBox vbox = new VBox(
-                generateSubHeading("Connection"),
-                new HBoxInputBox("Server Name", serverNameTextField),
-                new HBoxInputBox("Port", portTextField),
-                generateSubHeading("Action Grid"),
-                new HBoxInputBox("Action Box Size", actionGridPaneActionBoxSize, actionGridPaneActionBoxSizeIsDefaultCheckBox),
-                new HBoxInputBox("Action Box Gap", actionGridPaneActionBoxGap, actionGridPaneActionBoxGapIsDefaultCheckBox),
-                new HBoxInputBox("Default New Action Label Font Size", defaultActionLabelFontSizeTextField),
-                generateSubHeading("Others"),
-                new HBoxInputBoxWithDirectoryChooser("Plugins Path", pluginsPathTextField),
-                new HBoxInputBoxWithDirectoryChooser("Themes Path", themesPathTextField),
+                generateSubHeading(I18N.getString("window.settings.GeneralSettings.connection")),
+                new HBoxInputBox(I18N.getString("serverName"), serverNameTextField),
+                new HBoxInputBox(I18N.getString("serverPort"), portTextField),
+                new HBoxWithSpaceBetween(I18N.getString("serverIPBinding"), ipChooserComboBox),
+                generateSubHeading(I18N.getString("window.settings.GeneralSettings.actionGrid")),
+                new HBoxInputBox(I18N.getString("actionBoxSize"), actionGridPaneActionBoxSize, actionGridPaneActionBoxSizeIsDefaultCheckBox),
+                new HBoxInputBox(I18N.getString("actionBoxGap"), actionGridPaneActionBoxGap, actionGridPaneActionBoxGapIsDefaultCheckBox),
+                new HBoxInputBox(I18N.getString("window.settings.GeneralSettings.actionBoxDisplayTextFontSize"), defaultActionLabelFontSizeTextField, actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox),
+                generateSubHeading(I18N.getString("window.settings.GeneralSettings.locations")),
+                new HBoxInputBoxWithDirectoryChooser(I18N.getString("window.settings.GeneralSettings.plugins"), pluginsPathTextField),
+                new HBoxInputBoxWithDirectoryChooser(I18N.getString("window.settings.GeneralSettings.themes"), themesPathTextField),
                 soundHBoxInputBoxWithFileChooser,
+                generateSubHeading(I18N.getString("window.settings.GeneralSettings.others")),
+                new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.language"), languageChooserComboBox),
                 soundOnActionClickedToggleSwitchHBox,
                 minimizeToSystemTrayOnCloseHBox,
                 startOnBootHBox,
                 showAlertsPopupHBox,
                 factoryResetButton,
-                checkForUpdatesButton
+                checkForUpdatesButton,
+                restartButton
         );
 
         vbox.prefWidthProperty().bind(widthProperty().subtract(25));
@@ -173,6 +201,8 @@ public class GeneralSettings extends VBox
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
     }
 
+
+
     private Label generateSubHeading(String text)
     {
         Label label = new Label(text);
@@ -190,20 +220,27 @@ public class GeneralSettings extends VBox
             }
         });
     }
+    
+    private void restart()
+    {
+        serverListener.restart();
+    }
 
-    public void loadDataFromConfig() throws SevereException {
+    public void loadData() throws SevereException
+    {
         Config config = Config.getInstance();
 
         javafx.application.Platform.runLater(()->
         {
             serverNameTextField.setText(config.getServerName());
             portTextField.setText(config.getPort()+"");
-            defaultActionLabelFontSizeTextField.setText(config.getDefaultActionLabelFontSize()+"");
+            defaultActionLabelFontSizeTextField.setText(config.getActionGridActionDisplayTextFontSize()+"");
             pluginsPathTextField.setText(config.getPluginsPath());
             themesPathTextField.setText(config.getThemesPath());
             actionGridPaneActionBoxSize.setText(config.getActionGridActionSize()+"");
-            actionGridPaneActionBoxSizeIsDefaultCheckBox.setSelected(config.isUseSameActionSizeAsProfile());
-            actionGridPaneActionBoxGapIsDefaultCheckBox.setSelected(config.isUseSameActionGapAsProfile());
+            actionGridPaneActionBoxSizeIsDefaultCheckBox.setSelected(config.getActionGridUseSameActionSizeAsProfile());
+            actionGridPaneActionBoxGapIsDefaultCheckBox.setSelected(config.getActionGridUseSameActionGapAsProfile());
+            actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox.setSelected(config.getActionGridUseSameActionDisplayTextFontSizeAsProfile());
             actionGridPaneActionBoxGap.setText(config.getActionGridActionGap()+"");
 
             minimizeToSystemTrayOnCloseToggleSwitch.setSelected(config.getMinimiseToSystemTrayOnClose());
@@ -212,6 +249,10 @@ public class GeneralSettings extends VBox
 
             soundOnActionClickedToggleSwitch.setSelected(config.getSoundOnActionClickedStatus());
             soundOnActionClickedFilePathTextField.setText(config.getSoundOnActionClickedFilePath());
+
+            ipChooserComboBox.configureOptions(config.getIP());
+
+            languageChooserComboBox.getSelectionModel().select(I18N.getLanguage(config.getCurrentLanguageLocale()));
         });
     }
 
@@ -251,7 +292,7 @@ public class GeneralSettings extends VBox
 
                     if(serverNameStr.isBlank())
                     {
-                        errors.append("* Server Name cannot be blank.\n");
+                        errors.append("* ").append(I18N.getString("serverNameCannotBeBlank")).append("\n");
                     }
                     else
                     {
@@ -267,9 +308,9 @@ public class GeneralSettings extends VBox
                         serverPort = Integer.parseInt(serverPortStr);
 
                         if (serverPort < 1024)
-                            errors.append("* Server Port must be more than 1024\n");
+                            errors.append("* ").append(I18N.getString("serverPortMustBeGreaterThan1024")).append("\n");
                         else if(serverPort > 65535)
-                            errors.append("* Server Port must be lesser than 65535\n");
+                            errors.append("* ").append(I18N.getString("serverPortMustBeLesserThan65535")).append("\n");
 
                         if(config.getPort()!=serverPort)
                         {
@@ -278,7 +319,7 @@ public class GeneralSettings extends VBox
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* Server Port must be integer.\n");
+                        errors.append("* ").append(I18N.getString("serverPortMustBeInteger")).append("\n");
                     }
 
                     double defaultActionLabelFontSize=-1;
@@ -287,18 +328,18 @@ public class GeneralSettings extends VBox
                         defaultActionLabelFontSize = Double.parseDouble(defaultActionLabelFontSizeStr);
 
                         if (defaultActionLabelFontSize < 1)
-                            errors.append("* Action Label Font Size too small.\n");
+                            errors.append("* ").append(I18N.getString("actionDisplayTextFontSizeTooSmall")).append("\n");
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* Action Label Font must be integer.\n");
+                        errors.append("* ").append(I18N.getString("actionDisplayTextFontSizeMustBeNumeric")).append("\n");
                     }
 
 
-                    int actionSize=-1;
+                    double actionSize=-1;
                     try
                     {
-                        actionSize = Integer.parseInt(actionGridActionBoxSize);
+                        actionSize = Double.parseDouble(actionGridActionBoxSize);
 
                         if(config.getActionGridActionSize() != actionSize)
                         {
@@ -307,19 +348,19 @@ public class GeneralSettings extends VBox
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* action Size must be integer.\n");
+                        errors.append("* ").append(I18N.getString("actionSizeMustBeNumeric")).append("\n");
                     }
 
-                    if(actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected() != config.isUseSameActionSizeAsProfile())
+                    if(actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected() != config.getActionGridUseSameActionSizeAsProfile())
                     {
                         dashToBeReRendered = true;
                     }
 
 
-                    int actionGap=-1;
+                    double actionGap=-1;
                     try
                     {
-                        actionGap = Integer.parseInt(actionGridActionBoxGap);
+                        actionGap = Double.parseDouble(actionGridActionBoxGap);
 
                         if(config.getActionGridActionGap() != actionGap)
                         {
@@ -328,17 +369,22 @@ public class GeneralSettings extends VBox
                     }
                     catch (NumberFormatException e)
                     {
-                        errors.append("* action Gap must be integer.\n");
+                        errors.append("* ").append(I18N.getString("actionGapMustBeNumeric")).append("\n");
                     }
 
-                    if(actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected() != config.isUseSameActionGapAsProfile())
+                    if(actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected() != config.getActionGridUseSameActionGapAsProfile())
+                    {
+                        dashToBeReRendered = true;
+                    }
+
+                    if (actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox.isSelected() != config.getActionGridUseSameActionDisplayTextFontSizeAsProfile())
                     {
                         dashToBeReRendered = true;
                     }
 
                     if(pluginsPathStr.isBlank())
                     {
-                        errors.append("* Plugins Path must not be blank.\n");
+                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.pluginsPathMustNotBeBlank")).append("\n");
                     }
                     else
                     {
@@ -350,7 +396,7 @@ public class GeneralSettings extends VBox
 
                     if(themesPathStr.isBlank())
                     {
-                        errors.append("* Themes Path must not be blank.\n");
+                        errors.append("* ").append(I18N.getString("window.settings.GeneralSettings.themesPathMustNotBeBlank")).append("\n");
                     }
                     else
                     {
@@ -362,12 +408,29 @@ public class GeneralSettings extends VBox
 
                     if(!errors.toString().isEmpty())
                     {
-                        throw new MinorException("Uh Oh!", "Please rectify the following errors and try again :\n"+ errors);
+                        throw new MinorException(I18N.getString("validationError", errors));
                     }
+
+
+
+                    if (!ipChooserComboBox.getSelectedIP().equals(config.getIP()))
+                    {
+                        config.setIP(ipChooserComboBox.getSelectedIP());
+
+                        toBeReloaded = true;
+                    }
+
+                    if (!languageChooserComboBox.getSelectedLocale().equals(config.getCurrentLanguageLocale()))
+                    {
+                        config.setCurrentLanguageLocale(languageChooserComboBox.getSelectedLocale());
+
+                        toBeReloaded = true;
+                    }
+
 
                     if(config.getStartOnBoot() != startOnBoot)
                     {
-                        StartAtBoot startAtBoot = new StartAtBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform(),
+                        StartOnBoot startAtBoot = new StartOnBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform(),
                                 Main.class.getProtectionDomain().getCodeSource().getLocation(),
                                 StartupFlags.APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION);
 
@@ -387,7 +450,7 @@ public class GeneralSettings extends VBox
                         {
                             boolean result = startAtBoot.delete();
                             if(!result)
-                                new StreamPiAlert("Uh Oh!", "Unable to delete starter file", StreamPiAlertType.ERROR).show();
+                                new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.unableToDeleteStarterFile"), StreamPiAlertType.ERROR).show();
                         }
                     }
 
@@ -395,7 +458,7 @@ public class GeneralSettings extends VBox
                     {
                         if(!SystemTray.isSupported()) 
                         {
-                            StreamPiAlert alert = new StreamPiAlert("Not Supported", "Tray System not supported on this platform ", StreamPiAlertType.ERROR);
+                            StreamPiAlert alert = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.traySystemNotSupported"), StreamPiAlertType.ERROR);
                             alert.show();
 
                             minimizeToSystemTrayOnClose = false;
@@ -406,8 +469,7 @@ public class GeneralSettings extends VBox
                     {
                         if(soundOnActionClickedFilePath.isBlank())
                         {
-                            StreamPiAlert alert = new StreamPiAlert("No sound file specified",
-                                    "Sound File cannot be empty", StreamPiAlertType.ERROR);
+                            StreamPiAlert alert = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.soundFileCannotBeEmpty"), StreamPiAlertType.ERROR);
                             alert.show();
 
                             soundOnActionClicked = false;
@@ -418,9 +480,7 @@ public class GeneralSettings extends VBox
                             if(!soundFile.exists() || !soundFile.isFile())
                             {
 
-                                StreamPiAlert alert = new StreamPiAlert("File not found",
-                                        "No sound file at \n"+soundOnActionClickedFilePath+"\n" +
-                                                "Unable to set sound on action clicked.", StreamPiAlertType.ERROR);
+                                StreamPiAlert alert = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.soundFileNotFound"), StreamPiAlertType.ERROR);
                                 alert.show();
 
                                 soundOnActionClicked = false;
@@ -430,15 +490,16 @@ public class GeneralSettings extends VBox
 
                     config.setServerName(serverNameStr);
                     config.setServerPort(serverPort);
-                    config.setActionGridGap(actionGap);
-                    config.setActionGridSize(actionSize);
+                    config.setActionGridActionGap(actionGap);
+                    config.setActionGridActionSize(actionSize);
+                    config.setActionGridActionDisplayTextFontSize(defaultActionLabelFontSize);
                     config.setPluginsPath(pluginsPathStr);
                     config.setThemesPath(themesPathStr);
 
-                    config.setUseSameActionGapAsProfile(actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected());
-                    config.setUseSameActionSizeAsProfile(actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected());
+                    config.setActionGridUseSameActionGapAsProfile(actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected());
+                    config.setActionGridUseSameActionSizeAsProfile(actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected());
+                    config.setActionGridUseSameActionDisplayTextFontSizeAsProfile(actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox.isSelected());
 
-                    config.setDefaultActionLabelFontSize(defaultActionLabelFontSize);
 
                     config.setMinimiseToSystemTrayOnClose(minimizeToSystemTrayOnClose);
                     StreamPiAlert.setIsShowPopup(showAlertsPopup);
@@ -458,27 +519,18 @@ public class GeneralSettings extends VBox
 
                     config.save();
 
-
-                    loadDataFromConfig();
+                    loadData();
 
                     if(toBeReloaded)
                     {
-                        StreamPiAlert restartPrompt = new StreamPiAlert(
-                                "Warning",
-                                "Stream-Pi Server needs to be restarted for these changes to take effect. Restart?\n" +
-                                        "All your current connections will be disconnected.",
-                                StreamPiAlertType.WARNING
+                        StreamPiAlert restartPrompt = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.restartPromptWarning"),
+                                StreamPiAlertType.WARNING, StreamPiAlertButton.YES, StreamPiAlertButton.NO
                         );
-
-                        String yesOption = "Yes";
-                        String noOption = "No";
-
-                        restartPrompt.setButtons(yesOption, noOption);
 
                         restartPrompt.setOnClicked(new StreamPiAlertListener() {
                             @Override
-                            public void onClick(String s) {
-                                if(s.equals(yesOption))
+                            public void onClick(StreamPiAlertButton s) {
+                                if(s.equals(StreamPiAlertButton.YES))
                                 {
                                     serverListener.restart();
                                 }
@@ -512,19 +564,14 @@ public class GeneralSettings extends VBox
 
     private void onFactoryResetButtonClicked()
     {
-        StreamPiAlert confirmation = new StreamPiAlert("Warning","Are you sure?\n" +
-                "This will erase everything.",StreamPiAlertType.WARNING);
-
-        String yesButton = "Yes";
-        String noButton = "No";
-
-        confirmation.setButtons(yesButton, noButton);
+        StreamPiAlert confirmation = new StreamPiAlert( I18N.getString("window.settings.GeneralSettings.resetAreYouSure"),
+                StreamPiAlertType.WARNING, StreamPiAlertButton.YES, StreamPiAlertButton.NO
+        );
 
         confirmation.setOnClicked(new StreamPiAlertListener() {
             @Override
-            public void onClick(String s) {
-                if(s.equals(yesButton))
-                {
+            public void onClick(StreamPiAlertButton s) {
+                if (s.equals(StreamPiAlertButton.YES)) {
                     serverListener.factoryReset();
                 }
             }

@@ -1,18 +1,16 @@
 /*
-Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macropad
-Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-Written by : Debayan Sutradhar (rnayabed)
-*/
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 
 package com.stream_pi.server.action;
 
@@ -23,9 +21,8 @@ import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.actionproperty.ServerProperties;
 import com.stream_pi.action_api.actionproperty.property.Property;
 import com.stream_pi.action_api.actionproperty.property.Type;
-import com.stream_pi.action_api.externalplugin.ExternalPlugin;
-import com.stream_pi.action_api.externalplugin.ToggleAction;
-import com.stream_pi.action_api.externalplugin.ToggleExtras;
+import com.stream_pi.action_api.externalplugin.*;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.exception.StreamPiException;
@@ -49,6 +46,7 @@ import java.lang.module.Configuration;
 import java.lang.module.ModuleDescriptor;
 import java.lang.module.ModuleFinder;
 import java.lang.module.ModuleReference;
+import java.lang.reflect.Array;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -126,7 +124,7 @@ public class ExternalPlugins
     /**
      * Returns a plugin by its module name
      *
-     * @param name Module Name
+     * @param name Module Namerefact
      * @return The plugin. If not found, then null is returned
      */
     public ExternalPlugin getPluginByModuleName(String name)
@@ -161,7 +159,7 @@ public class ExternalPlugins
         catch (Exception e)
         {
             e.printStackTrace();
-            throw new SevereException("Plugins","Error reading plugins config.xml. Cannot continue.");
+            throw new SevereException(I18N.getString("action.ExternalPlugins.configXMLParseFailed", configFile.getAbsolutePath()));
         }
 
         ArrayList<ExternalPlugin> errorModules = new ArrayList<>();
@@ -272,7 +270,10 @@ public class ExternalPlugins
         catch (Exception e)
         {
             e.printStackTrace();
-            throw new MinorException("Error", "Error loading modules\n"+e.getMessage()+"\nPlease fix the errors. Other plugins wont be loaded.");
+            throw new MinorException(
+                    I18N.getString("action.ExternalPlugins.errorLoadingModulesHeading"),
+                    I18N.getString("action.ExternalPlugins.errorLoadingModulesBody", e.getLocalizedMessage())
+            );
         }
 
 
@@ -287,8 +288,8 @@ public class ExternalPlugins
 
                 if(eachPlugin instanceof ToggleAction)
                     ((ToggleAction) eachPlugin).setToggleExtras(getToggleExtras());
-
-
+                else if(eachPlugin instanceof GaugeAction)
+                    ((GaugeAction) eachPlugin).setGaugeExtras(getGaugeExtras());
 
                 eachPlugin.initProperties();
 
@@ -357,9 +358,11 @@ public class ExternalPlugins
             }
         }
 
-        try {
+        try
+        {
             saveServerSettings();
-        } catch (MinorException e) {
+        } catch (MinorException e)
+        {
             e.printStackTrace();
         }
 
@@ -367,14 +370,14 @@ public class ExternalPlugins
 
         if(errorModules.size() > 0)
         {
-            StringBuilder errors = new StringBuilder("The following action modules could not be loaded:");
+            StringBuilder errors = new StringBuilder();
             for(int i = 0; i<errorModules.size(); i++)
             {
                 externalPlugins.remove(errorModules.get(i));
                 errors.append("\n * ").append(errorModules.get(i).getModuleName()).append("\n(")
                     .append(errorModuleError.get(i)).append(")");
             }
-            throw new MinorException("Plugins", errors.toString());
+            throw new MinorException(I18N.getString("action.ExternalPlugins.theFollowingPluginsCouldNotBeLoaded", errors));
         }
 
         for(int i=0; i<externalPlugins.size(); i++)
@@ -388,8 +391,10 @@ public class ExternalPlugins
      */
     public void initPlugins() throws MinorException
     {
-        StringBuilder errors = new StringBuilder("There were errors registering the following plugins. As a result, they have been omitted : ");
+        StringBuilder errors = new StringBuilder();
         boolean isError = false;
+
+        ArrayList<ExternalPlugin> pluginsToBeRemoved = new ArrayList<>();
 
         for(ExternalPlugin eachPlugin : externalPlugins)
         {
@@ -399,6 +404,7 @@ public class ExternalPlugins
             }
             catch (MinorException e)
             {
+                pluginsToBeRemoved.add(eachPlugin);
                 e.printStackTrace();
                 isError = true;
                 errors.append("\n* ")
@@ -413,9 +419,14 @@ public class ExternalPlugins
             }
         }
 
+        for (ExternalPlugin plugin : pluginsToBeRemoved)
+        {
+            externalPlugins.remove(plugin);
+        }
+
         if(isError)
         {
-            throw new MinorException("Plugin init error", errors.toString());
+            throw new MinorException(I18N.getString("action.ExternalPlugins.initActionPluginsFailed", errors));
         }
     }
 
@@ -517,8 +528,22 @@ public class ExternalPlugins
         this.toggleExtras = toggleExtras;
     }
 
-    public ToggleExtras getToggleExtras() {
+    public ToggleExtras getToggleExtras()
+    {
         return toggleExtras;
+    }
+
+
+    private GaugeExtras gaugeExtras = null;
+
+    public void setGaugeExtras(GaugeExtras gaugeExtras)
+    {
+        this.gaugeExtras = gaugeExtras;
+    }
+
+    public GaugeExtras getGaugeExtras()
+    {
+        return gaugeExtras;
     }
 
     private ServerConnection serverConnection = null;
@@ -581,7 +606,8 @@ public class ExternalPlugins
         }
         catch (Exception e)
         {
-            throw new MinorException("Config", "unable to save server plugins settings");
+            e.printStackTrace();
+            throw new MinorException(I18N.getString("action.ExternalPlugins.savePluginSettingsFailed", e.getLocalizedMessage()));
         }
     }
 }

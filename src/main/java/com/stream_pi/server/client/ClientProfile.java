@@ -1,36 +1,38 @@
 /*
-Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macropad
-Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-Written by : Debayan Sutradhar (rnayabed)
-*/
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 
 package com.stream_pi.server.client;
 
 import com.stream_pi.action_api.action.Action;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
-public class ClientProfile implements Cloneable {
+public class ClientProfile implements Cloneable
+{
 
     private String name, ID;
 
-    private int rows, cols, actionSize, actionGap;
+    private int rows, cols;
+
+    private double actionDefaultDisplayTextFontSize, actionSize, actionGap;
 
     private final HashMap<String, Action> actions;
 
-    public ClientProfile(String name, String ID, int rows, int cols, int actionSize, int actionGap)
+    public ClientProfile(String name, String ID, int rows, int cols, double actionSize, double actionGap, double actionDefaultDisplayTextFontSize)
     {
         this.actions = new HashMap<>();
         this.ID = ID;
@@ -39,11 +41,21 @@ public class ClientProfile implements Cloneable {
         this.cols = cols;
         this.actionGap = actionGap;
         this.actionSize = actionSize;
+        this.actionDefaultDisplayTextFontSize = actionDefaultDisplayTextFontSize;
     }
 
-    public ClientProfile(String name, int rows, int cols, int actionSize, int actionGap)
+    public ArrayList<Action> getActions()
     {
-        this(name, UUID.randomUUID().toString(), rows, cols, actionSize, actionGap);
+        ArrayList<Action> p = new ArrayList<>();
+        for(String profile : actions.keySet())
+            p.add(actions.get(profile));
+        return p;
+    }
+
+
+    public ClientProfile(String name, int rows, int cols, double actionSize, double actionGap, double actionDefaultDisplayTextFontSize)
+    {
+        this(name, UUID.randomUUID().toString(), rows, cols, actionSize, actionGap, actionDefaultDisplayTextFontSize);
     }
 
     public Action getActionByID(String ID)
@@ -85,12 +97,12 @@ public class ClientProfile implements Cloneable {
         return cols;
     }
 
-    public int getActionSize()
+    public double getActionSize()
     {
         return actionSize;
     }
 
-    public int getActionGap()
+    public double getActionGap()
     {
         return actionGap;
     }
@@ -110,12 +122,12 @@ public class ClientProfile implements Cloneable {
         this.ID = ID;
     }
 
-    public void setActionSize(int actionSize)
+    public void setActionSize(double actionSize)
     {
         this.actionSize = actionSize;
     }
 
-    public void setActionGap(int actionGap)
+    public void setActionGap(double actionGap)
     {
         this.actionGap = actionGap;
     }
@@ -125,6 +137,15 @@ public class ClientProfile implements Cloneable {
         this.name = name;
     }
 
+    public double getActionDefaultDisplayTextFontSize()
+    {
+        return actionDefaultDisplayTextFontSize;
+    }
+
+    public void setActionDefaultDisplayTextFontSize(double actionDefaultDisplayTextFontSize)
+    {
+        this.actionDefaultDisplayTextFontSize = actionDefaultDisplayTextFontSize;
+    }
 
     public Object clone() throws CloneNotSupportedException
     {

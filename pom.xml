@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+  ~ Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -14,7 +28,7 @@
         <maven.compiler.target>11</maven.compiler.target>
 
         <gluonfx.plugin.version>1.0.5</gluonfx.plugin.version>
-        <javafx.version>18-ea+2</javafx.version>
+        <javafx.version>17.0.0.1</javafx.version>
         <javafx.maven.plugin.version>0.0.6</javafx.maven.plugin.version>
 
         <action.api.version>1.0.0-SNAPSHOT</action.api.version>
@@ -27,7 +41,8 @@
         <commons.configuration.version>2.7</commons.configuration.version>
 
         <log4j.version>2.14.0</log4j.version>
-        <ikonli.version>11.5.0</ikonli.version>
+        <ikonli.version>12.2.0</ikonli.version>
+        <medusa.version>11.7</medusa.version>
         <main.class.name>com.stream_pi.server.Main</main.class.name>
 
         <maven.test.skip>true</maven.test.skip>
@@ -39,6 +54,8 @@
         <compiler.plugin.version>3.8.1</compiler.plugin.version>
 
         <jar.plugin.version>3.2.0</jar.plugin.version>
+
+        <build.helper.plugin.version>1.10</build.helper.plugin.version>
     </properties>
 
 
@@ -90,6 +107,18 @@
             <artifactId>controlsfx</artifactId>
             <version>${controlsfx.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>eu.hansolo</groupId>
+            <artifactId>Medusa</artifactId>
+            <version>${medusa.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
 
@@ -105,6 +134,13 @@
     </repositories>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -145,9 +181,9 @@
                 <configuration>
                     <commandlineArgs>Stream-Pi.startupRunnerFileName=run_min Stream-Pi.startupMode=maximise</commandlineArgs>
                     <options>
-                        <option>-XX:+UseZGC</option>
                         <option>-Dprism.verbose=true</option>
                         <option>-Djavafx.verbose=true</option>
+                        <option>-Dprism.lcdtext=false</option>
                         <option>-Dprism.forceGPU=true</option>
                     </options>
                     <mainClass>${main.class.name}</mainClass>
@@ -174,12 +210,36 @@
 
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.1.0</version>
                 <configuration>
-                    <includeEmptyDirs>true</includeEmptyDirs>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>png</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>zip</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>css</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>ttf</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>${build.helper.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>timestamp-property</id>
+                        <goals>
+                            <goal>timestamp-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>build.date</name>
+                            <pattern>dd/MM/yyyy HH:mm z</pattern>
+                            <locale>en_IN</locale>
+                            <timeZone>Asia/Kolkata</timeZone>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

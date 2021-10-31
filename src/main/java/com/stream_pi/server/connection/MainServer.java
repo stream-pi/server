@@ -1,6 +1,21 @@
+/*
+ * Stream-Pi - Free & Open-Source Modular Cross-Platform Programmable Macro Pad
+ * Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 package com.stream_pi.server.connection;
 
 import com.stream_pi.server.controller.ServerListener;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
@@ -18,6 +33,7 @@ public class MainServer extends Thread
 
     private Logger logger = Logger.getLogger(MainServer.class.getName());
     private int port;
+    private String ip = null;
     private ServerSocket serverSocket = null;
 
     private AtomicBoolean stop = new AtomicBoolean(false);
@@ -30,8 +46,14 @@ public class MainServer extends Thread
     }
 
 
-    public void setPort(int port) {
+    public void setPort(int port)
+    {
         this.port = port;
+    }
+
+    public void setIP(String ip)
+    {
+        this.ip = ip;
     }
 
     @Override
@@ -66,13 +88,26 @@ public class MainServer extends Thread
     @Override
     public void run()
     {
-        logger.warning("Starting main server on port "+port+" ...");
+        Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - Starting Server ... "));
 
         try
         {
             logger.info("Starting server on port "+port+" ...");
-            serverSocket = new ServerSocket(port);
+
+            if (ip.isBlank())
+            {
+                logger.info("No preferred IP to bind to! Binding on all IPs ...");
+                serverSocket = new ServerSocket(port);
+            }
+            else
+            {
+                InetAddress address = InetAddress.getByName(ip);
+                logger.info("Binding to '"+ip+"' ...");
+                serverSocket = new ServerSocket(port, 0, address);
+            }
+
             setupStageTitle();
+            serverListener.setDisableTrayIcon(false);
             while(!stop.get())
             {
                 Socket s = serverSocket.accept();
@@ -83,23 +118,18 @@ public class MainServer extends Thread
         }
         catch (SocketException e)
         {
+            e.printStackTrace();
             if(!e.getMessage().contains("Socket closed") && !e.getMessage().contains("Interrupted function call: accept failed"))
             {
-                logger.info("Main Server stopped accepting calls ...");
-
+                logger.warning("Main Server stopped accepting calls ...");
                 serverListener.onServerStartFailure();
-
-                exceptionAndAlertHandler.handleMinorException(new MinorException("Sorry!","Server could not be started at "+port+".\n" +
-                        "This could be due to another process or another instance of Stream-Pi Server using the same port. \n\n" +
-                        "If another Server Instance probably running, close it. If not, try changing the port in settings and restart Stream-Pi Server." +
-                        "If the problem still persists, consider contacting us. \n\nFull Message : "+e.getMessage()));
-                e.printStackTrace();
+                serverListener.showUserChooseIPDialog();
             }
         }
         catch (IOException e)
         {
-            exceptionAndAlertHandler.handleSevereException(new SevereException("MainServer io Exception occurred!"));
             e.printStackTrace();
+            exceptionAndAlertHandler.handleSevereException(new SevereException(I18N.getString("connection.MainServer.IOExceptionOccurred", e.getMessage())));
         }
     }
 
@@ -107,32 +137,38 @@ public class MainServer extends Thread
     {
         try
         {
-            StringBuilder ips = new StringBuilder();
-
-            Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
-            while(e.hasMoreElements())
+            if (ip.isBlank())
             {
-                NetworkInterface n = e.nextElement();
-                Enumeration<InetAddress> ee = n.getInetAddresses();
-                while (ee.hasMoreElements())
+                StringBuilder ips = new StringBuilder();
+                Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
+                while(e.hasMoreElements())
                 {
-                    InetAddress i = ee.nextElement();
-                    String hostAddress = i.getHostAddress();
-                    if(i instanceof Inet4Address)
+                    NetworkInterface n = e.nextElement();
+                    Enumeration<InetAddress> ee = n.getInetAddresses();
+                    while (ee.hasMoreElements())
                     {
-                        ips.append(hostAddress);
-                        if(e.hasMoreElements())
-                            ips.append(" / ");
+                        InetAddress i = ee.nextElement();
+                        String hostAddress = i.getHostAddress();
+                        if(i instanceof Inet4Address)
+                        {
+                            ips.append(hostAddress);
+                            if(e.hasMoreElements())
+                                ips.append(" / ");
+                        }
                     }
                 }
-            }
 
-            Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - IP(s): "+ips+" | Port: "+ port));
+                Platform.runLater(()-> serverListener.getStage().setTitle(I18N.getString("windowTitle") + " - " + I18N.getString("connection.MainServer.streamPiIPPlural", ips, port)));
+            }
+            else
+            {
+                Platform.runLater(()-> serverListener.getStage().setTitle(I18N.getString("windowTitle") + " - " + I18N.getString("connection.MainServer.streamPIIPSingular", ip, port)));
+            }
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            exceptionAndAlertHandler.handleMinorException(new MinorException("Error",e.getMessage()));
+            exceptionAndAlertHandler.handleMinorException(new MinorException(e.getMessage()));
         }
     }
 }
