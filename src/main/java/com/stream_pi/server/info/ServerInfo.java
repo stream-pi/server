@@ -45,7 +45,6 @@ public class ServerInfo
     private final Platform platform;
     private String prePath;
     private Version communicationProtocolVersion;
-
     private String buildDate;
     private String license;
 
@@ -63,13 +62,21 @@ public class ServerInfo
         String osName = System.getProperty("os.name").toLowerCase();
 
         if(osName.contains("windows"))
+        {
             platform = Platform.WINDOWS;
+        }
         else if (osName.contains("linux"))
+        {
             platform = Platform.LINUX;
+        }
         else if (osName.contains("mac"))
+        {
             platform = Platform.MAC;
+        }
         else
+        {
             platform = Platform.UNKNOWN;
+        }
 
         try
         {
@@ -91,25 +98,22 @@ public class ServerInfo
 
         try
         {
-            if(license == null)
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(ServerInfo.class.getResourceAsStream("LICENSE"))));
+
+            StringBuilder licenseTxt = new StringBuilder();
+            while(true)
             {
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(ServerInfo.class.getResourceAsStream("LICENSE"))));
+                String line = bufferedReader.readLine();
 
-                StringBuilder licenseTxt = new StringBuilder();
-                while(true)
+                if(line == null)
                 {
-                    String line = bufferedReader.readLine();
-
-                    if(line == null)
-                    {
-                        break;
-                    }
-
-                    licenseTxt.append(line).append("\n");
+                    break;
                 }
 
-                license = licenseTxt.toString();
+                licenseTxt.append(line).append("\n");
             }
+
+            license = licenseTxt.toString();
         }
         catch (IOException e)
         {
