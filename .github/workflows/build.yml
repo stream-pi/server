@@ -64,7 +64,6 @@ jobs:
           --icon assets/linux-icon.png \
           --app-version ${{ env.VERSION }} \
           --linux-menu-group "Stream-Pi" \
-          --license-file LICENSE.txt \
           --type deb
 
           # Create App Image
@@ -79,7 +78,6 @@ jobs:
           # Create RPM
           .github/scripts/jpackage.sh \
           --icon assets/linux-icon.png \
-          --license-file LICENSE.txt \
           --app-version $NEW_V \
           --type rpm
 
@@ -161,7 +159,6 @@ jobs:
           # Create PKG
           .github/scripts/jpackage.sh \
           --icon assets/macos-icon.icns \
-          --license-file LICENSE.txt \
           --mac-package-identifier stream-pi-server \
           --type pkg
 
