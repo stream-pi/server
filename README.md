@@ -53,6 +53,27 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
+
+
+Opensource Libraries used:
+
+1. JavaFX - GNU General Public License with Classpath Exception
+http://openjdk.java.net/legal/gplv2+ce.html
+
+2. JSON - The JSON License
+https://www.json.org/license.html
+
+3. Ikonli - Apache License
+https://github.com/kordamp/ikonli/blob/master/LICENSE
+
+4. Roboto Font - Apache License 2.0
+http://www.apache.org/licenses/LICENSE-2.0
+
+5. ControlsFX - BSD 3-Clause License
+https://github.com/controlsfx/controlsfx/blob/jfx-13/license.txt
+
+6. Medusa - Apache License 2.0
+https://github.com/HanSolo/medusa/blob/master/LICENSE
 ```
 
 

@@ -92,25 +92,12 @@ public class About extends VBox
         hBox1.setAlignment(Pos.CENTER);
         hBox1.setSpacing(10);
 
-        try
+        if(serverInfo.getBuildDate() != null)
         {
-            InputStream inputStream = Main.class.getResourceAsStream("build.properties");
-            if (inputStream != null)
-            {
-                Properties properties = new Properties();
-                properties.load(inputStream);
-                inputStream.close();
-
-                Label buildDateLabel = new Label(I18N.getString("window.settings.about.About.buildDate", properties.getProperty("build.date")));
-                buildDateLabel.getStyleClass().add("about_build_date_label");
-                hBox1.getChildren().addAll(buildDateLabel);
-            }
+            Label buildDateLabel = new Label(I18N.getString("window.settings.about.About.buildDate", serverInfo.getBuildDate()));
+            buildDateLabel.getStyleClass().add("about_build_date_label");
+            hBox1.getChildren().addAll(buildDateLabel);
         }
-        catch (IOException e)
-        {
-            Logger.getLogger(getClass().getName()).warning("build.properties not present");
-        }
-
 
 
         Label commStandardLabel = new Label(I18N.getString("window.settings.about.About.serverCommunicationProtocolVersion", serverInfo.getCommunicationProtocolVersion().getText()));

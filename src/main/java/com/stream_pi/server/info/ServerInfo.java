@@ -22,18 +22,32 @@ Contributors: Debayan Sutradhar (@dubbadhar)
 
 package com.stream_pi.server.info;
 
+import com.stream_pi.server.Main;
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.util.platform.Platform;
 import com.stream_pi.util.platform.ReleaseStatus;
 import com.stream_pi.util.version.Version;
+import javafx.scene.control.Label;
 
-public class ServerInfo {
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+public class ServerInfo
+{
     private Version version;
     private final ReleaseStatus releaseStatus;
     private final Platform platform;
-
     private String prePath;
-
     private Version communicationProtocolVersion;
+
+    private String buildDate;
+    private String license;
 
     private static ServerInfo instance = null;
 
@@ -56,6 +70,52 @@ public class ServerInfo {
             platform = Platform.MAC;
         else
             platform = Platform.UNKNOWN;
+
+        try
+        {
+            InputStream inputStream = ServerInfo.class.getResourceAsStream("build.properties");
+            if (inputStream != null)
+            {
+                Properties properties = new Properties();
+                properties.load(inputStream);
+                inputStream.close();
+
+                buildDate = properties.getProperty("build.date");
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Unable to fetch build.properties!", e);
+        }
+
+        try
+        {
+            if(license == null)
+            {
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(ServerInfo.class.getResourceAsStream("LICENSE"))));
+
+                StringBuilder licenseTxt = new StringBuilder();
+                while(true)
+                {
+                    String line = bufferedReader.readLine();
+
+                    if(line == null)
+                    {
+                        break;
+                    }
+
+                    licenseTxt.append(line).append("\n");
+                }
+
+                license = licenseTxt.toString();
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Unable to fetch LICENSE!", e);
+        }
 
     }
 
@@ -92,5 +152,15 @@ public class ServerInfo {
     public Version getCommunicationProtocolVersion()
     {
         return communicationProtocolVersion;
+    }
+
+    public String getBuildDate()
+    {
+        return buildDate;
+    }
+
+    public String getLicense()
+    {
+        return license;
     }
 }
