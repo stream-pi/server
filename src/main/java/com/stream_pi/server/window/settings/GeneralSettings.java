@@ -29,7 +29,6 @@ import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.checkforupdates.CheckForUpdates;
 import com.stream_pi.util.checkforupdates.UpdateHyperlinkOnClick;
-import com.stream_pi.util.restart.Restart;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.platform.PlatformType;
