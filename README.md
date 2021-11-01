@@ -3,7 +3,7 @@
 
 # Stream-Pi Server
 
-*Free, Open-Source, Modular, Cross-Platform and Programmable Macropad*
+*Free, Open-Source, Modular, Cross-Platform and Programmable Macro Pad*
 
 Server Software for the Stream-Pi Platform
 
