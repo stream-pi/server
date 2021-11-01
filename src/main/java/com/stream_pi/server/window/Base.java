@@ -33,6 +33,7 @@ import com.stream_pi.util.loggerhelper.StreamPiLogFallbackHandler;
 import com.stream_pi.util.loggerhelper.StreamPiLogFileHandler;
 
 import com.stream_pi.util.platform.Platform;
+import com.stream_pi.util.rootchecker.RootChecker;
 import javafx.application.HostServices;
 import javafx.scene.CacheHint;
 import javafx.scene.image.Image;
@@ -180,6 +181,12 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         dashboardBase.getLeftSplitPane().setDividerPositions(config.getLeftDividerPositions());
 
         dashboardBase.toFront();
+
+
+        if (RootChecker.isRoot(getServerInfo().getPlatform()))
+        {
+            throw new SevereException("Stream-Pi cannot be run as root !");
+        }
     }
 
     private void initI18n() throws SevereException
