@@ -124,7 +124,7 @@ public class About extends VBox
         hBox2.setAlignment(Pos.CENTER);
         hBox2.setSpacing(10);
 
-        Label javaVersionLabel = new Label("Java " + System.getProperty("java.version") + ", " + System.getProperty("java.runtime.name"));
+        Label javaVersionLabel = new Label("Java " + System.getProperty("java.version") + ", " + System.getProperty("java.vm.name"));
         javaVersionLabel.getStyleClass().add("about_java_version");
 
         Label javafxVersionLabel = new Label("JavaFX " + System.getProperty("javafx.version"));
