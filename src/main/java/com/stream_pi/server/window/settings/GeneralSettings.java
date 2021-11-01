@@ -149,7 +149,7 @@ public class GeneralSettings extends VBox
         factoryResetButton.setOnAction(actionEvent -> onFactoryResetButtonClicked());
         
         restartButton = new Button(I18N.getString("window.settings.GeneralSettings.restart"));
-        restartButton.setOnAction(event->restart());
+        restartButton.setOnAction(event->showRestartPrompt(I18N.getString("window.settings.GeneralSettings.restartPromptWarning")));
 
         serverNameTextField.setPrefWidth(200);
 
@@ -218,11 +218,6 @@ public class GeneralSettings extends VBox
                 hostServices.showDocument(getURL());
             }
         });
-    }
-    
-    private void restart()
-    {
-        serverListener.restart();
     }
 
     public void loadData() throws SevereException
@@ -522,21 +517,7 @@ public class GeneralSettings extends VBox
 
                     if(toBeReloaded)
                     {
-                        StreamPiAlert restartPrompt = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.restartPromptWarning"),
-                                StreamPiAlertType.WARNING, StreamPiAlertButton.YES, StreamPiAlertButton.NO
-                        );
-
-                        restartPrompt.setOnClicked(new StreamPiAlertListener() {
-                            @Override
-                            public void onClick(StreamPiAlertButton s) {
-                                if(s.equals(StreamPiAlertButton.YES))
-                                {
-                                    serverListener.restart();
-                                }
-                            }
-                        });
-
-                        restartPrompt.show();
+                        showRestartPrompt(I18N.getString("window.settings.GeneralSettings.needsToBeRestartedToApplySettings") + "\n" + I18N.getString("window.settings.GeneralSettings.restartPromptWarning"));
                     }
 
                     if(dashToBeReRendered)
@@ -559,6 +540,25 @@ public class GeneralSettings extends VBox
                 return null;
             }
         }).start();
+    }
+
+    private void showRestartPrompt(String promptText)
+    {
+        StreamPiAlert restartPrompt = new StreamPiAlert(promptText,
+                StreamPiAlertType.WARNING, StreamPiAlertButton.YES, StreamPiAlertButton.NO
+        );
+
+        restartPrompt.setOnClicked(new StreamPiAlertListener() {
+            @Override
+            public void onClick(StreamPiAlertButton s) {
+                if(s.equals(StreamPiAlertButton.YES))
+                {
+                    serverListener.restart();
+                }
+            }
+        });
+
+        restartPrompt.show();
     }
 
     private void onFactoryResetButtonClicked()
