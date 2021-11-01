@@ -43,6 +43,7 @@ import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.*;
 import com.stream_pi.util.iohelper.IOHelper;
+import com.stream_pi.util.rootchecker.RootChecker;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -129,6 +130,18 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             getSettingsBase().getThemesSettings().setController(this);
 
             mainServer = new MainServer(this, this);
+
+            if (RootChecker.isRoot(getServerInfo().getPlatform()))
+            {
+                if(StartupFlags.ALLOW_ROOT)
+                {
+                    getLogger().warning("Stream-Pi has been started as root due to allowRoot flag. This may be unsafe and is strictly not recommended!");
+                }
+                else
+                {
+                    throw new SevereException(RootChecker.getRootNotAllowedI18NString());
+                }
+            }
 
             if(getConfig().isFirstTimeUse())
             {

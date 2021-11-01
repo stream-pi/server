@@ -182,19 +182,6 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         dashboardBase.getLeftSplitPane().setDividerPositions(config.getLeftDividerPositions());
 
         dashboardBase.toFront();
-
-
-        if (RootChecker.isRoot(getServerInfo().getPlatform()))
-        {
-            if(StartupFlags.ALLOW_ROOT)
-            {
-                getLogger().warning("Stream-Pi has been started as root due to allowRoot flag. This may be unsafe and is strictly not recommended!");
-            }
-            else
-            {
-                throw new SevereException(RootChecker.getRootNotAllowedI18NString());
-            }
-        }
     }
 
     private void initI18n() throws SevereException
