@@ -16,6 +16,7 @@ package com.stream_pi.server.window;
 import com.stream_pi.action_api.ActionAPI;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.i18n.I18N;
+import com.stream_pi.server.info.StartupFlags;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.Main;
@@ -185,7 +186,14 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
         if (RootChecker.isRoot(getServerInfo().getPlatform()))
         {
-            throw new SevereException("Stream-Pi cannot be run as root !");
+            if(StartupFlags.ALLOW_ROOT)
+            {
+                getLogger().warning("Stream-Pi has been started as root due to allowRoot flag. This may be unsafe and is strictly not recommended!");
+            }
+            else
+            {
+                throw new SevereException(RootChecker.getRootNotAllowedI18NString());
+            }
         }
     }
 
