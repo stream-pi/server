@@ -20,7 +20,7 @@ public class ActionDataFormats
 {
     public static final DataFormat IS_NEW = new DataFormat("Is New");
     public static final DataFormat ACTION_TYPE = new DataFormat("Action Type");
-    public static final DataFormat MODULE_NAME = new DataFormat("Module Name");
+    public static final DataFormat UNIQUE_ID = new DataFormat("Unique ID");
     public static final DataFormat CLIENT_PROPERTIES = new DataFormat("Client Properties");
     public static final DataFormat ICONS = new DataFormat("Icons");
     public static final DataFormat CURRENT_ICON_STATE = new DataFormat("Current Icon State");

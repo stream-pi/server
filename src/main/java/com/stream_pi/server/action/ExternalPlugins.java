@@ -165,7 +165,7 @@ public class ExternalPlugins
         ArrayList<ExternalPlugin> errorModules = new ArrayList<>();
         ArrayList<String> errorModuleError = new ArrayList<>();
 
-        ArrayList<Action> pluginsConfigs = new ArrayList<>();
+        HashMap<String, PluginConfig> pluginsConfigs = new HashMap<>();
 
         NodeList actionsNode = document.getElementsByTagName("actions").item(0).getChildNodes();
 
@@ -179,12 +179,12 @@ public class ExternalPlugins
 
             Element eachActionElement = (Element) eachActionNode;
 
-            String name;
+            String uniqueID;
             Version version;
             ActionType actionType;
             try
             {
-                name = XMLConfigHelper.getStringProperty(eachActionElement, "module-name");
+                uniqueID = XMLConfigHelper.getStringProperty(eachActionElement, "unique-ID");
                 actionType = ActionType.valueOf(XMLConfigHelper.getStringProperty(eachActionElement, "type"));
                 version = new Version(XMLConfigHelper.getStringProperty(eachActionElement, "version"));
             }
@@ -226,13 +226,7 @@ public class ExternalPlugins
                 }
             }
 
-            Action action = new Action(actionType);
-
-            action.setModuleName(name);
-            action.setVersion(version);
-            action.getServerProperties().set(serverProperties);
-
-            pluginsConfigs.add(action);
+            pluginsConfigs.put(uniqueID, new PluginConfig(version, serverProperties));
         }
 
         logger.info("Size : "+pluginsConfigs.size());
@@ -293,19 +287,24 @@ public class ExternalPlugins
 
                 eachPlugin.initProperties();
 
-                logger.info("MODULE : "+eachPlugin.getModuleName());
+                logger.info("Unique ID : "+eachPlugin.getUniqueID());
 
+                PluginConfig pluginConfig = pluginsConfigs.getOrDefault(eachPlugin.getUniqueID(), null);
 
-                Action foundAction = null;
-                for (Action action : pluginsConfigs)
+                if(pluginConfig == null)
                 {
-                    if (action.getModuleName().equals(eachPlugin.getModuleName())
-                            && action.getVersion().isEqual(eachPlugin.getVersion()))
+                    List<Property> eachPluginStoredProperties = eachPlugin.getServerProperties().get();
+                    for(Property property :eachPluginStoredProperties)
                     {
-
-                        foundAction = action;
-
-                        List<Property> eachPluginStoredProperties = action.getServerProperties().get();
+                        if(property.getType() == Type.STRING || property.getType() == Type.INTEGER || property.getType() == Type.DOUBLE)
+                            property.setRawValue(property.getDefaultRawValue());
+                    }
+                }
+                else
+                {
+                    if (pluginConfig.getVersion().isEqual(eachPlugin.getVersion()))
+                    {
+                        List<Property> eachPluginStoredProperties = pluginConfig.getServerProperties().get();
                         List<Property> eachPluginCodeProperties = eachPlugin.getServerProperties().get();
 
                         for (int i =0;i< eachPluginCodeProperties.size(); i++)
@@ -329,19 +328,6 @@ public class ExternalPlugins
                         }
 
                         eachPlugin.getServerProperties().set(eachPluginCodeProperties);
-                        break;
-                    }
-                }
-
-                if (foundAction != null)
-                    pluginsConfigs.remove(foundAction);
-                else
-                {
-                    List<Property> eachPluginStoredProperties = eachPlugin.getServerProperties().get();
-                    for(Property property :eachPluginStoredProperties)
-                    {
-                        if(property.getType() == Type.STRING || property.getType() == Type.INTEGER || property.getType() == Type.DOUBLE)
-                            property.setRawValue(property.getDefaultRawValue());
                     }
                 }
 
@@ -374,7 +360,7 @@ public class ExternalPlugins
             for(int i = 0; i<errorModules.size(); i++)
             {
                 externalPlugins.remove(errorModules.get(i));
-                errors.append("\n * ").append(errorModules.get(i).getModuleName()).append("\n(")
+                errors.append("\n * ").append(errorModules.get(i).getUniqueID()).append("\n(")
                     .append(errorModuleError.get(i)).append(")");
             }
             throw new MinorException(I18N.getString("action.ExternalPlugins.theFollowingPluginsCouldNotBeLoaded", errors));
@@ -382,7 +368,29 @@ public class ExternalPlugins
 
         for(int i=0; i<externalPlugins.size(); i++)
         {
-            externalPluginsHashmap.put(externalPlugins.get(i).getModuleName(), i);
+            externalPluginsHashmap.put(externalPlugins.get(i).getUniqueID(), i);
+        }
+    }
+
+    private class PluginConfig
+    {
+        private final Version version;
+        private final ServerProperties serverProperties;
+
+        public PluginConfig(Version version, ServerProperties serverProperties)
+        {
+            this.version = version;
+            this.serverProperties = serverProperties;
+        }
+
+        public Version getVersion()
+        {
+            return version;
+        }
+
+        public ServerProperties getServerProperties()
+        {
+            return serverProperties;
         }
     }
 
@@ -410,7 +418,7 @@ public class ExternalPlugins
                 errors.append("\n* ")
                         .append(eachPlugin.getName())
                         .append(" - ")
-                        .append(eachPlugin.getModuleName())
+                        .append(eachPlugin.getUniqueID())
                         .append("\n");
 
                 errors.append(e.getMessage());
@@ -464,9 +472,9 @@ public class ExternalPlugins
             Element actionElement = document.createElement("action");
             getActionsElement().appendChild(actionElement);
 
-            Element moduleNameElement = document.createElement("module-name");
-            moduleNameElement.setTextContent(externalPlugin.getModuleName());
-            actionElement.appendChild(moduleNameElement);
+            Element uniqueIDElement = document.createElement("unique-ID");
+            uniqueIDElement.setTextContent(externalPlugin.getUniqueID());
+            actionElement.appendChild(uniqueIDElement);
 
             
             Element versionElement = document.createElement("version");

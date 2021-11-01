@@ -147,7 +147,7 @@ public class ClientConnection extends Thread
                     }
                     catch (MinorException e)
                     {
-                        exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onClientDisconnectedFailed()", action.getModuleName(), e.getMessage()), e);
+                        exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onClientDisconnectedFailed()", action.getUniqueID(), e.getMessage()), e);
                     }
                 }
             }
@@ -586,7 +586,7 @@ public class ClientConnection extends Thread
 
         if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE || actionType == ActionType.GAUGE)
         {
-            String moduleName = (String) message.getValue("module_name");
+            String moduleName = (String) message.getValue("unique_ID");
             Version version = (Version) message.getValue("version");
 
             ExternalPlugin originalAction = ExternalPlugins.getInstance().getPluginByModuleName(moduleName);
@@ -702,13 +702,11 @@ public class ClientConnection extends Thread
 
         if(isInvalidAction)
         {
-            String moduleName = (String) message.getValue("module_name");
             Version version = (Version) message.getValue("version");
 
             action = new Action();
             action.setInvalid(true);
             action.setVersion(version);
-            action.setModuleName(moduleName);
         }
         else
         {
@@ -783,7 +781,7 @@ public class ClientConnection extends Thread
 
         if(action.getActionType() == ActionType.NORMAL || action.getActionType() == ActionType.TOGGLE || action.getActionType() == ActionType.GAUGE)
         {
-            message.setValue("module_name", action.getModuleName());
+            message.setValue("unique_ID", action.getUniqueID());
             message.setValue("version", action.getVersion());
         }
 

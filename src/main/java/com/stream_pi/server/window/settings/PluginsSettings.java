@@ -223,8 +223,8 @@ public class PluginsSettings extends VBox
             Label authorLabel = new Label(action.getAuthor());
             authorLabel.getStyleClass().add("plugins_settings_each_plugin_author_label");
 
-            Label moduleLabel = new Label(action.getModuleName());
-            moduleLabel.getStyleClass().add("plugins_settings_each_plugin_module_label");
+            Label moduleLabel = new Label(action.getUniqueID());
+            moduleLabel.getStyleClass().add("plugins_settings_each_plugin_unique_ID_label");
 
             Label versionLabel = new Label(I18N.getString("version", action.getVersion().getText()));
             versionLabel.getStyleClass().add("plugins_settings_each_plugin_version_label");

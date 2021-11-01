@@ -453,7 +453,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                 if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE)
                 {
                     ExternalPlugin newAction = actionGridPaneListener.createNewActionFromExternalPlugin(
-                            (String) db.getContent(ActionDataFormats.MODULE_NAME)
+                            (String) db.getContent(ActionDataFormats.UNIQUE_ID)
                     );
 
                     boolean isNew = (boolean) db.getContent(ActionDataFormats.IS_NEW);
@@ -491,7 +491,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     }
                     catch (MinorException e)
                     {
-                        exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onCreateFailed()", getAction().getModuleName(), e.getMessage()), e);
+                        exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onCreateFailed()", getAction().getUniqueID(), e.getMessage()), e);
                     }
 
                     combineActionPropertiesPane.getCombineAction().addChild(newAction.getID());
@@ -779,7 +779,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         if(getAction().isInvalid())
         {
-            setActionHeadingLabelText(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.invalidAction", getAction().getModuleName()));
+            setActionHeadingLabelText(I18N.getString("window.dashboard.actiondetailspane.ActionDetailsPane.invalidAction", getAction().getUniqueID()));
             return;
         }
 

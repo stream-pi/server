@@ -76,7 +76,7 @@ public class OnDeleteActionTask extends Task<Void>
                 }
                 catch (MinorException e)
                 {
-                    e.setTitle("Unable to run onActionDeleted for "+action.getModuleName());
+                    e.setTitle("Unable to run onActionDeleted for "+action.getUniqueID());
                     exceptionAndAlertHandler.handleMinorException("Display Text: "+action.getDisplayText()+"\nDetailed message : \n\n"+e.getMessage(), e);
                 }
             }
@@ -92,7 +92,7 @@ public class OnDeleteActionTask extends Task<Void>
                 {
                     e.printStackTrace();
                     exceptionAndAlertHandler.handleMinorException(
-                            new MinorException("failed at onActionDeleted for "+a.getModuleName(),
+                            new MinorException("failed at onActionDeleted for "+a.getUniqueID(),
                                     "Detailed Message : "+e.getMessage())
                     );
                 }

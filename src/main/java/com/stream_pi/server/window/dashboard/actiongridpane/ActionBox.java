@@ -109,7 +109,7 @@ public class ActionBox extends StackPane
 
                     if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE || actionType == ActionType.GAUGE)
                     {
-                        String moduleName = (String) dragEvent.getDragboard().getContent(ActionDataFormats.MODULE_NAME);
+                        String moduleName = (String) dragEvent.getDragboard().getContent(ActionDataFormats.UNIQUE_ID);
 
 
                         ExternalPlugin newAction = actionGridPaneListener.createNewActionFromExternalPlugin(moduleName);
@@ -165,7 +165,7 @@ public class ActionBox extends StackPane
                         catch (Exception e)
                         {
                             e.printStackTrace();
-                            exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("methodCallFailed", "onCreateFailed()", newAction.getModuleName(), e.getMessage())));
+                            exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("methodCallFailed", "onCreateFailed()", newAction.getUniqueID(), e.getMessage())));
                         }
 
 
@@ -247,7 +247,7 @@ public class ActionBox extends StackPane
 
                     content.put(ActionDataFormats.IS_NEW, false);
                     content.put(ActionDataFormats.ACTION_TYPE, getAction().getActionType());
-                    content.put(ActionDataFormats.MODULE_NAME, getAction().getModuleName());
+                    content.put(ActionDataFormats.UNIQUE_ID, getAction().getUniqueID());
 
                     db.setContent(content);
 

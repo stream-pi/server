@@ -158,7 +158,7 @@ public class PluginsPane extends VBox {
                     ClipboardContent content = new ClipboardContent();
 
                     content.put(ActionDataFormats.ACTION_TYPE, eachAction.getActionType());
-                    content.put(ActionDataFormats.MODULE_NAME, eachAction.getModuleName());
+                    content.put(ActionDataFormats.UNIQUE_ID, eachAction.getUniqueID());
                     content.put(ActionDataFormats.IS_NEW, true);
 
                     db.setContent(content);

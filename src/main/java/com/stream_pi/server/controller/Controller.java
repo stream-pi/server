@@ -568,7 +568,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
             if(action.isInvalid())
             {
-                throw new MinorException(I18N.getString("controller.Controller.pluginNotInstalledOnServer", action.getModuleName()));
+                throw new MinorException(I18N.getString("controller.Controller.pluginNotInstalledOnServer", action.getUniqueID()));
             }
 
             executor.execute(new Task<Void>() {
