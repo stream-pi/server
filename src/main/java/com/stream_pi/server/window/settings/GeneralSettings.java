@@ -75,6 +75,7 @@ public class GeneralSettings extends VBox
     private final Button saveButton;
     private final Button checkForUpdatesButton;
     private final Button factoryResetButton;
+    private final Button restartButton;
     private final LanguageChooserComboBox languageChooserComboBox;
 
     private Logger logger;
@@ -146,6 +147,9 @@ public class GeneralSettings extends VBox
 
         factoryResetButton = new Button(I18N.getString("window.settings.GeneralSettings.factoryReset"));
         factoryResetButton.setOnAction(actionEvent -> onFactoryResetButtonClicked());
+        
+        restartButton = new Button(I18N.getString("window.settings.GeneralSettings.restart"));
+        restartButton.setOnAction(event->restart());
 
         serverNameTextField.setPrefWidth(200);
 
@@ -175,7 +179,8 @@ public class GeneralSettings extends VBox
                 startOnBootHBox,
                 showAlertsPopupHBox,
                 factoryResetButton,
-                checkForUpdatesButton
+                checkForUpdatesButton,
+                restartButton
         );
 
         vbox.prefWidthProperty().bind(widthProperty().subtract(25));
@@ -213,6 +218,11 @@ public class GeneralSettings extends VBox
                 hostServices.showDocument(getURL());
             }
         });
+    }
+    
+    private void restart()
+    {
+        serverListener.restart();
     }
 
     public void loadData() throws SevereException
