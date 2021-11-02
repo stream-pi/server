@@ -76,7 +76,6 @@ public class ActionBox extends StackPane
     {
         setStyle(null);
         setAction(null);
-        getStyleClass().clear();
         setBackground(Background.EMPTY);
         removeFontIcon();
         getChildren().clear();
@@ -107,12 +106,14 @@ public class ActionBox extends StackPane
 
                     ActionType actionType = (ActionType) db.getContent(ActionDataFormats.ACTION_TYPE);
 
+                    Action newAction;
+
                     if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE || actionType == ActionType.GAUGE)
                     {
                         String moduleName = (String) dragEvent.getDragboard().getContent(ActionDataFormats.UNIQUE_ID);
 
 
-                        ExternalPlugin newAction = actionGridPaneListener.createNewActionFromExternalPlugin(moduleName);
+                        newAction = actionGridPaneListener.createNewActionFromExternalPlugin(moduleName);
 
                         boolean isNew = (boolean) db.getContent(ActionDataFormats.IS_NEW);
 
@@ -160,58 +161,41 @@ public class ActionBox extends StackPane
 
                         try
                         {
-                            newAction.onActionCreate();
+                            ((ExternalPlugin) newAction).onActionCreate();
                         }
                         catch (Exception e)
                         {
                             e.printStackTrace();
                             exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("methodCallFailed", "onCreateFailed()", newAction.getUniqueID(), e.getMessage())));
                         }
-
-
-
-                        newAction.setProfileID(actionGridPaneListener.getCurrentProfile().getID());
-                        newAction.setSocketAddressForClient(actionGridPaneListener.getClientConnection().getRemoteSocketAddress());
-
-                        actionGridPaneListener.addActionToCurrentClientProfile(newAction);
-
-                        setAction(newAction);
-                        init();
-
-                        actionDetailsPaneListener.onActionClicked(newAction, this);
-
-                        if(newAction.isHasIcon())
-                            actionDetailsPaneListener.setSendIcon(true);
-
-
-                        actionDetailsPaneListener.saveAction(true, false);
-
                     }
                     else
                     {
-                        Action newAction = actionGridPaneListener.createNewOtherAction(actionType);
+                        newAction = actionGridPaneListener.createNewOtherAction(actionType);
 
                         newAction.setLocation(new Location(getRow(),
                                 getCol()));
 
                         newAction.setParent(actionGridPaneListener.getCurrentParent());
 
-                        newAction.setProfileID(actionGridPaneListener.getCurrentProfile().getID());
-                        newAction.setSocketAddressForClient(actionGridPaneListener.getClientConnection().getRemoteSocketAddress());
 
-                        actionGridPaneListener.addActionToCurrentClientProfile(newAction);
-
-                        setAction(newAction);
-                        init();
-
-
-                        actionDetailsPaneListener.onActionClicked(newAction, this);
-
-                        if(newAction.isHasIcon())
-                            actionDetailsPaneListener.setSendIcon(true);
-
-                        actionDetailsPaneListener.saveAction(true, false);
                     }
+
+                    newAction.setProfileID(actionGridPaneListener.getCurrentProfile().getID());
+                    newAction.setSocketAddressForClient(actionGridPaneListener.getClientConnection().getRemoteSocketAddress());
+
+                    actionGridPaneListener.addActionToCurrentClientProfile(newAction);
+
+                    setAction(newAction);
+                    init();
+
+
+                    actionDetailsPaneListener.onActionClicked(newAction, this);
+
+                    if(newAction.isHasIcon())
+                        actionDetailsPaneListener.setSendIcon(true);
+
+                    actionDetailsPaneListener.saveAction(true, false);
                 }
             }
             catch (MinorException e)
@@ -371,7 +355,8 @@ public class ActionBox extends StackPane
     private boolean isUseProfileDefaultForDisplayTextFontSize;
 
     public ActionBox(double size, ActionDetailsPaneListener actionDetailsPaneListener, ActionGridPaneListener actionGridPaneListener,
-                     int col, int row, double actionGridDisplayTextFontSize, double profileDisplayTextFontSize, boolean isUseProfileDefaultForDisplayTextFontSize)
+                     int col, int row, double actionGridDisplayTextFontSize, double profileDisplayTextFontSize, boolean isUseProfileDefaultForDisplayTextFontSize,
+                     ExceptionAndAlertHandler exceptionAndAlertHandler)
     {
         this.actionGridPaneListener = actionGridPaneListener;
         this.actionDetailsPaneListener = actionDetailsPaneListener;
@@ -383,6 +368,7 @@ public class ActionBox extends StackPane
         this.actionGridDisplayTextFontSize = actionGridDisplayTextFontSize;
         this.profileDisplayTextFontSize = profileDisplayTextFontSize;
         this.isUseProfileDefaultForDisplayTextFontSize = isUseProfileDefaultForDisplayTextFontSize;
+        this.exceptionAndAlertHandler = exceptionAndAlertHandler;
 
 
         this.managedProperty().bind(visibleProperty());
@@ -471,36 +457,6 @@ public class ActionBox extends StackPane
     private Action action = null;
     private ExceptionAndAlertHandler exceptionAndAlertHandler;
 
-    public void configureSize()
-    {
-        int rowSpan = getAction().getLocation().getRowSpan(), colSpan = getAction().getLocation().getColSpan();
-
-
-        GridPane.setRowSpan(this, rowSpan);
-        GridPane.setColumnSpan(this, colSpan);
-
-        double actionWidth = (size*colSpan) + (actionGridPaneListener.getCurrentProfile().getActionGap()*(colSpan-1));
-        double actionHeight = (size*rowSpan) + (actionGridPaneListener.getCurrentProfile().getActionGap()*(rowSpan-1));
-
-        setMinSize(actionWidth, actionHeight);
-        setMaxSize(actionWidth, actionHeight);
-
-        for (int i = getCol(); i< getCol()+colSpan; i++)
-        {
-            for (int j = getRow(); j<getRow()+rowSpan; j++)
-            {
-                if (i == getAction().getLocation().getCol() && j == getAction().getLocation().getRow())
-                {
-                    continue;
-                }
-
-                actionGridPaneListener.getActionBox(i, j).setVisible(false);
-            }
-        }
-
-    }
-
-
     public Action getAction() {
         return action;
     }
@@ -521,8 +477,6 @@ public class ActionBox extends StackPane
     {
         setBackground(null);
         setStyle(null);
-
-        configureSize();
 
         showToggleOffMenuItem.setVisible(getAction().getActionType() == ActionType.TOGGLE);
         showToggleOnMenuItem.setVisible(getAction().getActionType() == ActionType.TOGGLE);
@@ -788,6 +742,8 @@ public class ActionBox extends StackPane
 
     public void setSelected(boolean status)
     {
+        System.out.println("SELECTED STATUS : "+status);
+        System.out.println("COL: "+col+", ROW: "+row);
         if(status)
         {
             getStyleClass().add("action_box_selected");

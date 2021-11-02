@@ -214,20 +214,21 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         return clientProfile;
     }
 
-    public StackPane getFolderBackButton() throws SevereException
+    public StackPane getFolderBackButton()
     {
         StackPane stackPane = new StackPane();
         stackPane.getStyleClass().add("action_box");
         stackPane.getStyleClass().add("action_box_valid");
 
+
         stackPane.setPrefSize(
-                Config.getInstance().getActionGridActionSize(),
-                Config.getInstance().getActionGridActionSize()
+                actionSize,
+                actionSize
         );
 
         FontIcon fontIcon = new FontIcon("fas-chevron-left");
         fontIcon.getStyleClass().add("folder_action_back_button_icon");
-        fontIcon.setIconSize((int) (Config.getInstance().getActionGridActionSize() * 0.8));
+        fontIcon.setIconSize((int) (actionSize * 0.8));
 
         stackPane.setAlignment(Pos.CENTER);
         stackPane.getChildren().add(fontIcon);
@@ -240,8 +241,23 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     private ActionBox[][] actionBoxes;
     private boolean isFreshRender = true;
     private Node folderBackButton = null;
+
+    private double actionSize;
+    private double actionGap;
+
     public void renderGrid() throws SevereException
     {
+        if (Config.getInstance().getActionGridUseSameActionSizeAsProfile())
+        {
+            actionSize = getClientProfile().getActionSize();
+            actionGap = getClientProfile().getActionGap();
+        }
+        else
+        {
+            actionSize = Config.getInstance().getActionGridActionSize();
+            actionGap = Config.getInstance().getActionGridActionGap();
+        }
+
 
         if(Config.getInstance().getActionGridUseSameActionGapAsProfile())
         {
@@ -323,12 +339,11 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
     public ActionBox addBlankActionBox(int col, int row) throws SevereException
     {
-        double size = Config.getInstance().getActionGridUseSameActionSizeAsProfile() ? getClientProfile().getActionSize() : Config.getInstance().getActionGridActionSize();
-        ActionBox actionBox = new ActionBox(size, actionDetailsPaneListener, this,
+        ActionBox actionBox = new ActionBox(actionSize, actionDetailsPaneListener, this,
                 col, row,
                 Config.getInstance().getActionGridActionDisplayTextFontSize(),
                 clientProfile.getActionDefaultDisplayTextFontSize(),
-                Config.getInstance().getActionGridUseSameActionDisplayTextFontSizeAsProfile());
+                Config.getInstance().getActionGridUseSameActionDisplayTextFontSizeAsProfile(), exceptionAndAlertHandler);
 
         if(getClient().getOrientation() == null)
         {
@@ -407,39 +422,65 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
         ActionBox actionBox = actionBoxes[location.getCol()][location.getRow()];
 
-        boolean makeNonUsedBoxesVisible = false;
-
         if(actionBox.getAction() != null)
         {
-            makeNonUsedBoxesVisible = (GridPane.getColumnSpan(actionBox) != action.getLocation().getColSpan()) || (GridPane.getRowSpan(actionBox) != action.getLocation().getRowSpan());
+            actionBox.clear();
+            if((GridPane.getColumnSpan(actionBox) != action.getLocation().getColSpan()) || (GridPane.getRowSpan(actionBox) != action.getLocation().getRowSpan()))
+            {
+                showNonUsedBoxes(action.getLocation().getCol(), action.getLocation().getRow(), GridPane.getColumnSpan(actionBox),  GridPane.getRowSpan(actionBox));
+            }
         }
 
-        if (makeNonUsedBoxesVisible)
-        {
-            showNonUsedBoxes(action.getLocation().getCol(), action.getLocation().getRow(), GridPane.getColumnSpan(actionBox),  GridPane.getRowSpan(actionBox));
-        }
-
-        actionBox.clear();
         actionBox.setAction(action);
         actionBox.init();
 
         actionBoxHashMap.put(action.getID(), actionBox);
+
+
+        GridPane.setRowSpan(actionBox, location.getRowSpan());
+        GridPane.setColumnSpan(actionBox, location.getColSpan());
+
+        hideOverlappingBoxes(location.getCol(), location.getRow(), location.getColSpan(), location.getRowSpan());
+
+
+
+        double actionWidth = (actionSize * location.getColSpan()) + (actionGap * (location.getColSpan()-1));
+        double actionHeight = (actionSize * location.getRowSpan()) + (actionGap * (location.getRowSpan()-1));
+
+        actionBox.setMinSize(actionWidth, actionHeight);
+        actionBox.setMaxSize(actionWidth, actionHeight);
     }
 
-    public void showNonUsedBoxes(int col, int row, int colSpan, int rowSpan)
+    private void showNonUsedBoxes(int col, int row, int colSpan, int rowSpan)
+    {
+        showHideOverlappingBoxes(col, row, colSpan, rowSpan, true);
+    }
+
+    private void hideOverlappingBoxes(int col, int row, int colSpan, int rowSpan)
+    {
+        showHideOverlappingBoxes(col, row, colSpan, rowSpan, false);
+    }
+
+    private void showHideOverlappingBoxes(int col, int row, int colSpan, int rowSpan, boolean visibility)
     {
         for (int i = row; i< (row+rowSpan); i++)
         {
-            actionBoxes[col][i].setVisible(true);
-            GridPane.setColumnSpan(actionBoxes[col][i], 1);
-            GridPane.setRowSpan(actionBoxes[col][i], 1);
-        }
-
-        for (int j = col; j< (col+colSpan); j++)
-        {
-            actionBoxes[j][row].setVisible(true);
-            GridPane.setColumnSpan(actionBoxes[j][row], 1);
-            GridPane.setRowSpan(actionBoxes[j][row], 1);
+            for (int j = col; j < (col+colSpan);j++)
+            {
+                if (! (i==row && j==col))
+                {
+                    if (visibility)
+                    {
+                        actionBoxes[j][i].setVisible(true);
+                        GridPane.setColumnSpan(actionBoxes[j][i], 1);
+                        GridPane.setRowSpan(actionBoxes[j][i], 1);
+                    }
+                    else
+                    {
+                        actionBoxes[j][i].setVisible(false);
+                    }
+                }
+            }
         }
     }
 
