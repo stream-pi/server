@@ -621,9 +621,9 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         catch (Exception e)
         {
             if(e instanceof MinorException)
-                sendActionFailed((MinorException) e, socketAddress, profileID, action.getID());
+                sendActionFailed((MinorException) e, socketAddress, profileID, action);
             else
-                sendActionFailed(new MinorException(e.getMessage()), socketAddress, profileID, action.getID());
+                sendActionFailed(new MinorException(e.getMessage()), socketAddress, profileID, action);
         }
     }
 
@@ -643,9 +643,9 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         catch (Exception e)
         {
             if(e instanceof MinorException)
-                sendActionFailed((MinorException) e, socketAddress, profileID, action.getID());
+                sendActionFailed((MinorException) e, socketAddress, profileID, action);
             else
-                sendActionFailed(new MinorException(e.getMessage()), socketAddress, profileID, action.getID());
+                sendActionFailed(new MinorException(e.getMessage()), socketAddress, profileID, action);
         }
     }
 
@@ -821,20 +821,13 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
     }
 
     @Override
-    public void sendActionFailed(MinorException exception, SocketAddress socketAddress, String profileID, String actionID)
+    public void sendActionFailed(MinorException exception, SocketAddress socketAddress, String profileID, Action action)
     {
-        exception.setTitle(I18N.getString("controller.Controller.errorWhileRunningAction"));
+        exception.setTitle(I18N.getString("controller.Controller.errorWhileRunningAction", action.getDisplayText()));
 
-        if(exception.getTitle() != null)
-        {
-            handleMinorException(exception.getTitle()+"\n"+exception.getMessage(), exception);
-        }
-        else
-        {
-            handleMinorException(exception);
-        }
+        handleMinorException(exception);
 
-        if(profileID==null || actionID == null)
+        if(profileID==null || action.getID() == null)
             return;
 
         executor.execute(new Task<Void>() {
@@ -843,7 +836,7 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             {
                 try {
                     ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress)
-                            .sendActionFailed(profileID, actionID);
+                            .sendActionFailed(profileID, action.getID());
                 }
                 catch (SevereException e)
                 {
