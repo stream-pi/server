@@ -165,19 +165,19 @@
 
 .first_time_use_pane_final_config
 {
-
 }
 
 .first_time_use_pane_final_config_label
 {
-    -fx-padding: 0 0 30 0;
+    -fx-padding: 0 0 15 0;
 }
 
 .first_time_use_pane_final_config_security_warning_label
 {
-    -fx-padding: 30 20 0 20;
-    -fx-font-weight: bold;
+    -fx-padding: 15 20 0 20;
+    -fx-alignment: center;
     -fx-text-alignment: center;
+    -fx-font-weight: bold;
 }
 
 .first_time_use_welcome_pane_welcome_label

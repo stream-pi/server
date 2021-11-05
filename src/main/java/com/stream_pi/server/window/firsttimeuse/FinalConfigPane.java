@@ -67,11 +67,9 @@ public class FinalConfigPane extends VBox
 
         Label securityWarningLabel = new Label(I18N.getString("window.firsttimeuse.FinalConfigPane.securityWarning"));
         securityWarningLabel.setWrapText(true);
+        securityWarningLabel.prefWidthProperty().bind(widthProperty());
         securityWarningLabel.getStyleClass().add("first_time_use_pane_final_config_security_warning_label");
 
-
-
-        setAlignment(Pos.TOP_CENTER);
         getChildren().addAll(label, serverNickNameInputBox, serverPortInputBox, ipChooserHBox, securityWarningLabel);
 
         setSpacing(10.0);
