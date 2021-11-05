@@ -136,6 +136,7 @@
 .plugins_pane
 {
     -fx-spacing: 5;
+    -fx-padding: 10;
 }
 
 .plugins_pane_each_plugin_button_imageview
@@ -153,7 +154,8 @@
 
 .first_time_use_pane
 {
-    -fx-padding : 5;   
+    -fx-spacing: 10;
+    -fx-padding : 10;
 }
 
 .first_time_use_pane_heading_label
