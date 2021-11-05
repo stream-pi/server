@@ -425,10 +425,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
 
         vbox.getChildren().addAll(displayTextFieldHBox, displayNameLabelFontSizeTextFieldHBox,
-                normalToggleActionCommonPropsVBox,
+                normalToggleActionCommonPropsVBox,clearIconHBox,
                 normalActionsPropsVBox, toggleActionsPropsVBox, gaugeActionsPropsVBox,
-                clearIconHBox, clientPropertiesVBox,
-                pluginExtraButtonBar);
+                clientPropertiesVBox, pluginExtraButtonBar);
 
         vbox.setVisible(false);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
