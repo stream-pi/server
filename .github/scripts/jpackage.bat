@@ -10,9 +10,8 @@ set /p VERSION=<version.txt
 --input target/lib ^
 --main-jar server-%VERSION%.jar ^
 --type msi ^
---java-options "-Dprism.verbose=true -Djavafx.verbose=true -Dprism.dirtyopts=false" ^
+--java-options "-Dprism.verbose=true -Djavafx.verbose=true -Dprism.dirtyopts=false -DStream-Pi.startupRunnerFileName=run_min.exe" ^
 --main-class %MAIN_CLASS% ^
---arguments Stream-Pi.startupRunnerFileName=run_min.exe ^
 --add-launcher run_min=assets/run_min_win.properties ^
 --icon assets/windows-icon.ico ^
 --dest %INSTALL_DIR% ^

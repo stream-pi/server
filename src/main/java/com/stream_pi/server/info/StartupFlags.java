@@ -20,4 +20,19 @@ public class StartupFlags
     public static boolean START_MINIMISED = false;
     public static boolean APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION = false;
     public static boolean ALLOW_ROOT = false;
+
+    public static void init()
+    {
+        String startupRunnerFileName = System.getProperty("Stream-Pi.startupRunnerFileName");
+        RUNNER_FILE_NAME = (startupRunnerFileName == null) ? RUNNER_FILE_NAME : startupRunnerFileName;
+
+        String startMinimised = System.getProperty("Stream-Pi.startMinimised");
+        START_MINIMISED = (startMinimised == null) ? START_MINIMISED : startMinimised.equals("true");
+
+        String appendPathBeforeRunnerFileToOvercomeJPackageLimitation = System.getProperty("Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation");
+        APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION = (appendPathBeforeRunnerFileToOvercomeJPackageLimitation == null) ? APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION : appendPathBeforeRunnerFileToOvercomeJPackageLimitation.equals("true");
+
+        String allowRoot = System.getProperty("Stream-Pi.allowRoot");
+        ALLOW_ROOT = (allowRoot == null) ? ALLOW_ROOT : allowRoot.equals("true");
+    }
 }
