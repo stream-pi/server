@@ -424,11 +424,11 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
         if(actionBox.getAction() != null)
         {
-            actionBox.clear();
             if((GridPane.getColumnSpan(actionBox) != action.getLocation().getColSpan()) || (GridPane.getRowSpan(actionBox) != action.getLocation().getRowSpan()))
             {
                 showNonUsedBoxes(action.getLocation().getCol(), action.getLocation().getRow(), GridPane.getColumnSpan(actionBox),  GridPane.getRowSpan(actionBox));
             }
+            actionBox.clear();
         }
 
         actionBox.setAction(action);

@@ -66,7 +66,8 @@ public class OnDeleteActionTask extends Task<Void>
 
     private void runTask()
     {
-        try {
+        try
+        {
 
             if(action instanceof ExternalPlugin)
             {
@@ -137,13 +138,6 @@ public class OnDeleteActionTask extends Task<Void>
                     actionDetailsPane.clear();
                 });
             }
-
-
-            // Platform.runLater(()->{  
-            //     saveButton.setDisable(false);
-            //     deleteButton.setDisable(false);
-            // });
-
         }
         catch (SevereException e)
         {
