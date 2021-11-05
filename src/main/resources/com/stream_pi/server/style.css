@@ -32,7 +32,7 @@
     -fx-border-color : grey;
 }
 
-.plugins_settings_each_plugin_heading_label, .themes_settings_each_theme_heading, .client_settings_each_client_nick_name_label, .client_settings_each_client_socket_connection_label
+.plugins_settings_each_plugin_heading_label, .themes_settings_each_theme_heading, .client_settings_each_client_nick_name_label
 {
     -fx-font-size : 1.5em;
 }
