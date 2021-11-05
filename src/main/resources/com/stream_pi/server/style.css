@@ -16,18 +16,14 @@
 
 .about_donate_hyperlink
 {
-    -fx-font-size : 19;
-    -fx-font-weight : bold;
+    -fx-padding : 10 0 0 0;
+    -fx-font-size : 2em;
+    -fx-border-color: transparent;
 }
 
 .plugins_settings_each_plugin_button_bar
 {
 	-fx-alignment:CENTER_RIGHT;
-}
-
-.about_license_label
-{
-    -fx-font-size : 16;
 }
 
 .theme_settings_each_theme_box, .plugins_settings_each_plugin_box, .clients_settings_each_client_box
@@ -36,9 +32,9 @@
     -fx-border-color : grey;
 }
 
-.plugins_settings_each_plugin_heading_label, .themes_settings_each_theme_heading, .client_settings_each_client_nick_name_label
+.plugins_settings_each_plugin_heading_label, .themes_settings_each_theme_heading, .client_settings_each_client_nick_name_label, .client_settings_each_client_socket_connection_label
 {
-    -fx-font-size : 19;
+    -fx-font-size : 1.5em;
 }
 
 .plugins_settings
@@ -80,12 +76,7 @@
 
 .action_details_pane_heading_label
 {
-    -fx-font-size : 16;
-}
-
-.client_settings_each_client_socket_connection_label
-{
-    -fx-font-size : 16;
+    -fx-font-size : 1.5em;
 }
 
 .alert_header
@@ -119,7 +110,7 @@
 
 .alert_pane_header_text
 {
-    -fx-font-size: 18;
+    -fx-font-size: 1.5em;
 }
 
 .alert_button_bar
@@ -145,12 +136,6 @@
     -fx-height:20;
 }
 
-.about_donate_hyperlink
-{
-    -fx-padding : 10 0 0 0;
-    -fx-font-size : 25;
-}
-
 
 .first_time_use_pane
 {
@@ -160,7 +145,7 @@
 
 .first_time_use_pane_heading_label
 {
-    -fx-font-size: 20;
+    -fx-font-size: 2em;
 }
 
 .first_time_use_pane_stackpane
@@ -197,12 +182,11 @@
 
 .first_time_use_welcome_pane_welcome_label
 {
-    -fx-font-size: 30;
+    -fx-font-size: 2.5em;
 }
 
 .first_time_use_welcome_pane_next_to_continue_label
 {
-    -fx-font-size: 15;
     -fx-padding: 0 0 15 0;
 }
 
@@ -305,7 +289,7 @@
 
 .general_settings_sub_heading
 {
-    -fx-font-size: 18;
+    -fx-font-size: 1.5em;
     -fx-padding: 10 0 5 0;
 }
 
