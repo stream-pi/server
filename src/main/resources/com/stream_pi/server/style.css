@@ -332,3 +332,8 @@ ScrollPane
 {
     -fx-padding: 50 50 50 50;
 }
+
+.action_grid_pane
+{
+    -fx-background-color: transparent;
+}
