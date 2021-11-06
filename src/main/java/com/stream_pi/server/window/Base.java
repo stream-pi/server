@@ -49,7 +49,6 @@ import java.util.logging.Logger;
 
 public abstract class Base extends StackPane implements ExceptionAndAlertHandler, ServerListener
 {
-
     private Config config;
     private ServerInfo serverInfo;
     private Stage stage;

@@ -82,7 +82,7 @@ public class SettingsBase extends VBox
         getChildren().addAll(tabPane, closeButton);
 
         setCache(true);
-        setCacheHint(CacheHint.SPEED);
+        setCacheHint(CacheHint.SCALE);
 
         getStyleClass().add("settings_base");
     }

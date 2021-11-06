@@ -111,21 +111,14 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             setupDashWindow();
 
             setupSettingsWindowsAnimations();
+            getDashboardBase().getPluginsPane().getSettingsButton().setOnAction(event -> openSettingsAnimation.play());
+            getSettingsBase().getCloseButton().setOnAction(event -> closeSettingsAnimation.play());
 
             ExternalPlugins.getInstance().setPropertySaver(this);
             ExternalPlugins.getInstance().setToggleExtras(this);
             ExternalPlugins.getInstance().setGaugeExtras(this);
 
             ExternalPlugins.getInstance().setServerConnection(this);
-
-
-            getDashboardBase().getPluginsPane().getSettingsButton().setOnAction(event -> {
-                openSettingsAnimation.play();
-            });
-
-            getSettingsBase().getCloseButton().setOnAction(event -> {
-                closeSettingsAnimation.play();
-            });
 
             getSettingsBase().getThemesSettings().setController(this);
 
@@ -854,7 +847,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         return getConfig().getCurrentLanguageLocale();
     }
 
-    private Animation createOpenSettingsAnimation(Node settingsNode, Node dashboardNode) {
+    private Animation createOpenSettingsAnimation(Node settingsNode, Node dashboardNode)
+    {
         Timeline openSettingsTimeline = new Timeline();
         openSettingsTimeline.setCycleCount(1);
 
