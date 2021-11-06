@@ -272,10 +272,7 @@ public class ActionBox extends StackPane
 
     public void baseInit()
     {
-
-        setMinSize(size, size);
-        setMaxSize(size, size);
-
+        configureSize(profileDefaultSize, profileDefaultSize);
 
         GridPane.setRowSpan(this, 1);
         GridPane.setColumnSpan(this, 1);
@@ -347,7 +344,7 @@ public class ActionBox extends StackPane
         return actionGridPaneListener;
     }
 
-    private double size;
+    private double height, width, profileDefaultSize;
     private ActionGridPaneListener actionGridPaneListener;
 
     private double actionGridDisplayTextFontSize;
@@ -360,7 +357,9 @@ public class ActionBox extends StackPane
     {
         this.actionGridPaneListener = actionGridPaneListener;
         this.actionDetailsPaneListener = actionDetailsPaneListener;
-        this.size = size;
+        this.height = size;
+        this.width = size;
+        this.profileDefaultSize = size;
 
         this.col = col;
         this.row = row;
@@ -382,6 +381,20 @@ public class ActionBox extends StackPane
         initMouseAndTouchListeners();
 
     }
+
+    private int iconSize;
+    public void configureSize(double width, double height)
+    {
+        this.height = height;
+        this.width = width;
+
+        setMinSize(width, height);
+        setMaxSize(width, height);
+        setPrefSize(width, height);
+
+
+        iconSize = (int) Math.min(height, width);
+    }
     
     public void setIcon(byte[] iconByteArray)
     {
@@ -401,7 +414,7 @@ public class ActionBox extends StackPane
             setBackground(
                     new Background(
                             new BackgroundImage(new Image(
-                                    new ByteArrayInputStream(iconByteArray), size, size, false, true
+                                    new ByteArrayInputStream(iconByteArray), width, height, true, true
                             ), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
                                     new BackgroundSize(100, 100, true, true, true, false))
                     )
@@ -433,7 +446,7 @@ public class ActionBox extends StackPane
         else
         {
             fontIcon = new FontIcon();
-            fontIcon.setIconSize((int) (size * 0.8));
+            fontIcon.setIconSize((int) (iconSize * 0.8));
             getChildren().add(fontIcon);
         }
 

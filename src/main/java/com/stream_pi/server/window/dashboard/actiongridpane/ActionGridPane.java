@@ -432,7 +432,6 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         }
 
         actionBox.setAction(action);
-        actionBox.init();
 
         actionBoxHashMap.put(action.getID(), actionBox);
 
@@ -443,12 +442,12 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         hideOverlappingBoxes(location.getCol(), location.getRow(), location.getColSpan(), location.getRowSpan());
 
 
-
         double actionWidth = (actionSize * location.getColSpan()) + (actionGap * (location.getColSpan()-1));
         double actionHeight = (actionSize * location.getRowSpan()) + (actionGap * (location.getRowSpan()-1));
 
-        actionBox.setMinSize(actionWidth, actionHeight);
-        actionBox.setMaxSize(actionWidth, actionHeight);
+        actionBox.configureSize(actionWidth, actionHeight);
+        actionBox.init();
+        actionBox.setVisible(true);
     }
 
     private void showNonUsedBoxes(int col, int row, int colSpan, int rowSpan)
