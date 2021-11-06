@@ -402,7 +402,7 @@ public class ActionBox extends StackPane
                     new Background(
                             new BackgroundImage(new Image(
                                     new ByteArrayInputStream(iconByteArray), size, size, false, true
-                            ), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)
+                            ), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)
                     )
             );
         }
@@ -740,8 +740,6 @@ public class ActionBox extends StackPane
 
     public void setSelected(boolean status)
     {
-        System.out.println("SELECTED STATUS : "+status);
-        System.out.println("COL: "+col+", ROW: "+row);
         if(status)
         {
             getStyleClass().add("action_box_selected");
