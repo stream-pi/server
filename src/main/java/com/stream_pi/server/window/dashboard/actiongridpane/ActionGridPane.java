@@ -245,6 +245,11 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     private double actionSize;
     private double actionGap;
 
+    private enum RenderSelector
+    {
+        ROW, COLUMN
+    }
+
     public void renderGrid() throws SevereException
     {
         if (Config.getInstance().getActionGridUseSameActionSizeAsProfile())
@@ -270,10 +275,21 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
             actionsGridPane.setVgap(Config.getInstance().getActionGridActionGap());
         }
 
+        RenderSelector renderSelector = null;
+
         if(isFreshRender)
         {
             clear();
             actionBoxes = new ActionBox[cols][rows];
+
+            if (rows>cols)
+            {
+                renderSelector = RenderSelector.COLUMN;
+            }
+            else
+            {
+                renderSelector = RenderSelector.ROW;
+            }
         }
 
         boolean isFolder = false;
@@ -285,7 +301,8 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
                 actionsGridPane.getChildren().remove(folderBackButton);
                 folderBackButton = null;
 
-                actionBoxes[0][0] = addBlankActionBox(0,0);
+                actionBoxes[0][0] = generateBlankActionBox(0,0);
+                actionsGridPane.add(actionBoxes[0][0], 0, 0);
             }
         }
         else
@@ -306,6 +323,13 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
             actionsGridPane.add(folderBackButton, 0,0);
         }
 
+        ActionBox[][] actionBoxesToBeAdded = null;
+
+        if(isFreshRender)
+        {
+            actionBoxesToBeAdded = new ActionBox[(renderSelector == RenderSelector.ROW ? rows : cols)][(renderSelector != RenderSelector.ROW ? rows : cols)];
+        }
+
         for(int row = 0; row<rows; row++)
         {
             for(int col = 0; col<cols; col++)
@@ -315,7 +339,9 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
                 if(isFreshRender)
                 {
-                    actionBoxes[col][row] = addBlankActionBox(col, row);
+                    actionBoxes[col][row] = generateBlankActionBox(col, row);
+
+                    actionBoxesToBeAdded[renderSelector == RenderSelector.ROW ? row : col][renderSelector != RenderSelector.ROW ? row : col] = actionBoxes[col][row];
                 }
                 else
                 {
@@ -329,6 +355,32 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
             }
         }
 
+        if (isFreshRender)
+        {
+            boolean finalSelector = (renderSelector == RenderSelector.ROW);
+
+            if(getClient().getOrientation() == Orientation.VERTICAL)
+            {
+                finalSelector = !finalSelector;
+            }
+
+
+            if (finalSelector)
+            {
+                for(int i = 0; i<rows; i++)
+                {
+                    actionsGridPane.addRow(i, actionBoxesToBeAdded[i]);
+                }
+            }
+            else
+            {
+                for(int i = 0; i<cols; i++)
+                {
+                    actionsGridPane.addColumn(i, actionBoxesToBeAdded[i]);
+                }
+            }
+        }
+
         isFreshRender = false;
     }
 
@@ -337,31 +389,13 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
         isFreshRender = freshRender;
     }
 
-    public ActionBox addBlankActionBox(int col, int row) throws SevereException
+    public ActionBox generateBlankActionBox(int col, int row) throws SevereException
     {
-        ActionBox actionBox = new ActionBox(actionSize, actionDetailsPaneListener, this,
+        return new ActionBox(actionSize, actionDetailsPaneListener, this,
                 col, row,
                 Config.getInstance().getActionGridActionDisplayTextFontSize(),
                 clientProfile.getActionDefaultDisplayTextFontSize(),
                 Config.getInstance().getActionGridUseSameActionDisplayTextFontSizeAsProfile(), exceptionAndAlertHandler);
-
-        if(getClient().getOrientation() == null)
-        {
-            actionsGridPane.add(actionBox, col, row);
-        }
-        else
-        {
-            if(getClient().getOrientation() == Orientation.HORIZONTAL)
-            {
-                actionsGridPane.add(actionBox, col, row);
-            }
-            else
-            {
-                actionsGridPane.add(actionBox, row, col);
-            }
-        }
-
-        return actionBox;
     }
 
     public void renderActions()
@@ -505,7 +539,8 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
 
     @Override
-    public void addActionToCurrentClientProfile(Action newAction)  {
+    public void addActionToCurrentClientProfile(Action newAction)
+    {
         try {
             getClientProfile().addAction(newAction);
         } catch (CloneNotSupportedException e) {

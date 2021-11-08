@@ -403,13 +403,11 @@ public class ActionBox extends StackPane
         if(iconByteArray == null)
         { 
             getStyleClass().remove("action_box_icon_present");
-            getStyleClass().add("action_box_icon_not_present");
             setBackground(null);
         }
         else
         {
             getStyleClass().add("action_box_icon_present");
-            getStyleClass().remove("action_box_icon_not_present");
 
             setBackground(
                     new Background(

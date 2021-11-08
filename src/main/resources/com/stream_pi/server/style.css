@@ -48,12 +48,12 @@
     -fx-border-color : grey;
 }
 
-.action_box_icon_present
+.action_box_display_text_label
 {
 
 }
 
-.action_box_icon_not_present
+.action_box_icon_present
 {
 
 }
@@ -66,12 +66,6 @@
 .action_box_invalid
 {
     -fx-border-color: red;
-}
-
-.action_box_display_text_label
-{
-    -fx-background-color : transparent;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.5, 0.0, 0.0);
 }
 
 .action_details_pane_heading_label
@@ -283,8 +277,9 @@
 
 .action_box_selected
 {
-    -fx-border-width: 3;
-    -fx-border-color:orange;
+    -fx-border-width: 2px;
+    -fx-border-insets: -2px;
+    -fx-border-color: orange;
 }
 
 .general_settings_sub_heading
