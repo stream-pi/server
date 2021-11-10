@@ -25,6 +25,7 @@ import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
+import com.stream_pi.util.uihelper.ActionGridRowsAndColsCalculator;
 import com.stream_pi.util.uihelper.HBoxInputBox;
 import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.Platform;
@@ -551,12 +552,18 @@ public class ClientsSettings extends VBox
 
         public void onNewProfileButtonClicked()
         {
+            int actionSize = 100;
+            int actionGap = 5;
+
+            ActionGridRowsAndColsCalculator actionGridRowsAndColsCalculator = new ActionGridRowsAndColsCalculator(client.getOrientation(),
+                    actionSize, actionGap, client.getDisplayWidth(), client.getDisplayHeight());
+
             ClientProfile clientProfile = new ClientProfile(
                     I18N.getString("window.settings.ClientsSettings.untitledProfile"),
-                    3,
-                    3,
-                    100,
-                    5,
+                    actionGridRowsAndColsCalculator.getRows(),
+                    actionGridRowsAndColsCalculator.getCols(),
+                    actionSize,
+                    actionGap,
                     20
             );
 
