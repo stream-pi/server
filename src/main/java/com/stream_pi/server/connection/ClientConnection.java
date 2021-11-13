@@ -810,7 +810,14 @@ public class ClientConnection extends Thread
 
         //location
 
-        message.setValue("location", new Location(action.getLocation().getRow(), action.getLocation().getCol(), action.getLocation().getRowSpan(), action.getLocation().getColSpan()));
+        if (action.getLocation() == null)
+        {
+            message.setValue("location", null);
+        }
+        else
+        {
+            message.setValue("location", new Location(action.getLocation().getRow(), action.getLocation().getCol(), action.getLocation().getRowSpan(), action.getLocation().getColSpan()));
+        }
 
         message.setValue("parent", action.getParent());
 
