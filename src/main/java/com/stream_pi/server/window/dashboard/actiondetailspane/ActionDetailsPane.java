@@ -608,7 +608,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     @Override
     public void onActionClicked(Action action, ActionBox actionBox) throws MinorException
     {
-        if (this.actionBox != null && actionBox == this.actionBox && !isCombineChild)
+        if (this.action != null && this.action.getID().equals(action.getID()))
         {
             return;
         }
