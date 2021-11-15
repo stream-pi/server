@@ -311,7 +311,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
         {
             IOHelper.deleteFile(getServerInfo().getPrePath());
 
-            System.gc();
             init();
         }
         catch (SevereException e)

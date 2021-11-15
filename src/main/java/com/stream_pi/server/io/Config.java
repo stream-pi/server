@@ -260,12 +260,12 @@ public class Config
 
     public String getDefaultThemesPath()
     {
-        return ServerInfo.getInstance().getPrePath()+"Themes/";
+        return ServerInfo.getInstance().getPrePath()+"Themes" + File.separator;
     }
 
     public String getDefaultPluginsPath()
     {
-        return ServerInfo.getInstance().getPrePath()+"Plugins/";
+        return ServerInfo.getInstance().getPrePath()+"Plugins" + File.separator;
     }
 
 
