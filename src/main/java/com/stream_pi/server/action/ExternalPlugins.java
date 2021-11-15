@@ -145,6 +145,8 @@ public class ExternalPlugins
     /**
      * Used to register plugins from plugin location
      */
+
+    private ModuleLayer moduleLayer;
     public void registerPlugins() throws SevereException, MinorException
     {
         logger.info("Registering external plugins from "+pluginsLocation+" ...");
@@ -181,11 +183,9 @@ public class ExternalPlugins
 
             String uniqueID;
             Version version;
-            ActionType actionType;
             try
             {
                 uniqueID = XMLConfigHelper.getStringProperty(eachActionElement, "unique-ID");
-                actionType = ActionType.valueOf(XMLConfigHelper.getStringProperty(eachActionElement, "type"));
                 version = new Version(XMLConfigHelper.getStringProperty(eachActionElement, "version"));
             }
             catch (Exception e)
@@ -243,18 +243,18 @@ public class ExternalPlugins
                     .map(ModuleDescriptor::name)
                     .collect(Collectors.toList());
 
-            Configuration pluginsConfiguration = ModuleLayer
+            moduleLayer = ModuleLayer
                     .boot()
-                    .configuration()
-                    .resolve(pluginsFinder, ModuleFinder.of(), p);
+                    .defineModulesWithOneLoader(ModuleLayer
+                            .boot()
+                            .configuration()
+                            .resolve(pluginsFinder, ModuleFinder.of(), p),
 
-            ModuleLayer layer = ModuleLayer
-                    .boot()
-                    .defineModulesWithOneLoader(pluginsConfiguration, ClassLoader.getSystemClassLoader());
+                            ClassLoader.getSystemClassLoader());
 
             logger.info("Loading plugins from jar ...");
             externalPlugins = ServiceLoader
-                    .load(layer, ExternalPlugin.class).stream()
+                    .load(moduleLayer, ExternalPlugin.class).stream()
                     .map(ServiceLoader.Provider::get)
                     .collect(Collectors.toList());
 
@@ -481,10 +481,6 @@ public class ExternalPlugins
             versionElement.setTextContent(externalPlugin.getVersion().getText());
             actionElement.appendChild(versionElement);
 
-            Element actionTypeElement = document.createElement("type");
-            actionTypeElement.setTextContent(externalPlugin.getActionType().toString());
-            actionElement.appendChild(actionTypeElement);
-
             Element propertiesElement = document.createElement("properties");
             actionElement.appendChild(propertiesElement);
 
@@ -595,6 +591,8 @@ public class ExternalPlugins
                 }
             }
             externalPlugins.clear();
+            externalPlugins = null;
+            moduleLayer = null;
         }
     }
 
