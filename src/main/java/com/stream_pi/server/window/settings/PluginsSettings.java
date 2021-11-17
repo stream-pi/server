@@ -39,6 +39,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,13 +109,15 @@ public class PluginsSettings extends VBox
                     UIPropertyBox serverProperty = p.getServerPropertyUIBox().get(j);
                     Node controlNode = serverProperty.getControlNode();
 
-
-                    String value = ((TextField) controlNode).getText();
-                    String error = Helper.validateProperty(value, serverProperty);
-
-                    if (error != null)
+                    if (controlNode instanceof TextField)
                     {
-                        errors.append("        -> ").append(error).append(("\n"));
+                        String value = ((TextField) controlNode).getText();
+                        String error = Helper.validateProperty(value, serverProperty);
+
+                        if (error != null)
+                        {
+                            errors.append("        -> ").append(error).append(("\n"));
+                        }
                     }
                 }
 

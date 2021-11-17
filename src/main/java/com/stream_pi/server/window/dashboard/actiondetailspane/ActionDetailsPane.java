@@ -1195,13 +1195,15 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         {
             Node controlNode = clientProperty.getControlNode();
 
-            String value = ((TextField) controlNode).getText();
-
-            String error = Helper.validateProperty(value, clientProperty);
-
-            if (error != null)
+            if (controlNode instanceof TextField)
             {
-                finalErrors.append("        -> ").append(error).append(("\n"));
+                String value = ((TextField) controlNode).getText();
+                String error = Helper.validateProperty(value, clientProperty);
+
+                if (error != null)
+                {
+                    finalErrors.append("        -> ").append(error).append(("\n"));
+                }
             }
         }
 
