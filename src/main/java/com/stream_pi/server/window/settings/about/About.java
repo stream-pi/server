@@ -97,6 +97,13 @@ public class About extends VBox
             Label buildDateLabel = new Label(I18N.getString("window.settings.about.About.buildDate", serverInfo.getBuildDate()));
             buildDateLabel.getStyleClass().add("about_build_date_label");
             hBox1.getChildren().addAll(buildDateLabel);
+
+            if (serverInfo.getBuildNumber() > -1)
+            {
+                Label buildNumberLabel = new Label(I18N.getString("window.settings.about.About.buildNumber", serverInfo.getBuildNumber()));
+                buildNumberLabel.getStyleClass().add("about_build_number_label");
+                hBox1.getChildren().addAll(getSep(), buildNumberLabel);
+            }
         }
 
 

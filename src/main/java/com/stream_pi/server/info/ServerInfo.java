@@ -43,6 +43,7 @@ public class ServerInfo
     private String prePath;
     private Version communicationProtocolVersion;
     private String buildDate;
+    private int buildNumber = -1;
     private String license;
 
     private static ServerInfo instance = null;
@@ -85,6 +86,7 @@ public class ServerInfo
                 inputStream.close();
 
                 buildDate = properties.getProperty("build.date");
+                buildNumber = Integer.parseInt(properties.getProperty("build.number"));
             }
         }
         catch (IOException e)
@@ -159,6 +161,11 @@ public class ServerInfo
     public String getBuildDate()
     {
         return buildDate;
+    }
+
+    public int getBuildNumber()
+    {
+        return buildNumber;
     }
 
     public String getLicense()
