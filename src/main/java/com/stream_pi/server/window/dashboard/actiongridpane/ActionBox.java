@@ -499,6 +499,7 @@ public class ActionBox extends StackPane
             {
                 if(getAction().getActionType() == ActionType.GAUGE)
                 {
+                    System.out.println("ASDSKJASNDKJSN");
                     if (gauge == null)
                     {
                         gauge = new Gauge();
@@ -508,14 +509,10 @@ public class ActionBox extends StackPane
                         getChildren().add(gauge);
                     }
 
-                    setDisplayTextAlignment(getAction().getDisplayTextAlignment());
-                    setDisplayTextFontColourAndSize(getAction().getDisplayTextFontColourHex());
-                    updateDisplayTextLabel();
+                    updateGauge(getAction().getGaugeProperties());
 
 
                     setGaugeTitle(getAction().getDisplayText());
-
-                    updateGauge(getAction().getGaugeProperties());
 
 
                 }
@@ -581,6 +578,7 @@ public class ActionBox extends StackPane
     public void updateGauge(GaugeProperties gaugeProperties)
     {
         gauge.setSkinType(gaugeProperties.getSkinType());
+        System.out.println("SKIN TYPEEE : "+gaugeProperties.getSkinType());
         gauge.setMinValue(gaugeProperties.getMinValue());
         gauge.setMaxValue(gaugeProperties.getMaxValue());
         gauge.setSections(gaugeProperties.getSections());

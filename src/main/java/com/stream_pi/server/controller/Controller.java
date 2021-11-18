@@ -74,17 +74,20 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 
 
 public class Controller extends Base implements ServerConnection, ToggleExtras, GaugeExtras
 {
-    private final ExecutorService executor = Executors.newCachedThreadPool();
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
     private MainServer mainServer;
     private Animation openSettingsAnimation;
     private Animation closeSettingsAnimation;
 
-    public Controller(){
+    public Controller()
+    {
         mainServer = null;
     }
 
@@ -201,8 +204,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             initSoundOnActionClicked();
         }
 
-
-        executor.execute(new Task<Void>() {
+        executorService.execute(new Task<Void>() {
             @Override
             protected Void call()
             {
@@ -376,7 +378,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
 
     public void exit()
     {
-        executor.shutdown();
+        executorService.shutdown();
         Platform.exit();
     }
 
@@ -562,7 +564,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
                 throw new MinorException(I18N.getString("controller.Controller.pluginNotInstalledOnServer", action.getUniqueID()));
             }
 
-            executor.execute(new Task<Void>() {
+            executorService.execute(new Task<Void>() {
                 @Override
                 protected Void call()
                 {
@@ -723,7 +725,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     {
         if(runAsync)
         {
-            executor.execute(new Task<Void>() {
+            executorService.execute(new Task<Void>() {
                 @Override
                 protected Void call()
                 {
@@ -749,7 +751,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     {
         if(async)
         {
-            executor.execute(new Task<Void>() {
+            executorService.execute(new Task<Void>() {
                 @Override
                 protected Void call()
                 {
@@ -785,8 +787,9 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     }
 
     @Override
-    public void saveIcon(String state, String profileID, String actionID, SocketAddress socketAddress) {
-        executor.execute(new Task<Void>() {
+    public void saveIcon(String state, String profileID, String actionID, SocketAddress socketAddress)
+    {
+        executorService.execute(new Task<Void>() {
             @Override
             protected Void call()
             {
@@ -842,7 +845,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         if(profileID==null || action.getID() == null)
             return;
 
-        executor.execute(new Task<Void>() {
+        executorService.execute(new Task<Void>() {
             @Override
             protected Void call()
             {
@@ -964,7 +967,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
 
         closeSettingsTimeline.setOnFinished(event1 -> {
             dashboardNode.toFront();
-            executor.execute(new Task<Void>() {
+            executorService.execute(new Task<Void>() {
                 @Override
                 protected Void call()  {
                     try {

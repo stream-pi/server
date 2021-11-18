@@ -73,29 +73,14 @@ public class OnDeleteActionTask extends Task<Void>
             {
                 try
                 {
-                    ((ExternalPlugin) action).onActionDeleted();
+                    ExternalPlugin externalPlugin = (ExternalPlugin) action;
+                    externalPlugin.onActionDeleted();
+                    externalPlugin.shutdownExecutor();
                 }
                 catch (MinorException e)
                 {
                     e.setTitle("Unable to run onActionDeleted for "+action.getUniqueID());
                     exceptionAndAlertHandler.handleMinorException("Display Text: "+action.getDisplayText()+"\nDetailed message : \n\n"+e.getMessage(), e);
-                }
-            }
-
-            Action a = clientProfile.getActionByID(action.getID());
-            if(a instanceof ExternalPlugin)
-            {
-                try
-                {
-                    ((ExternalPlugin) a).onActionDeleted();
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                    exceptionAndAlertHandler.handleMinorException(
-                            new MinorException("failed at onActionDeleted for "+a.getUniqueID(),
-                                    "Detailed Message : "+e.getMessage())
-                    );
                 }
             }
 

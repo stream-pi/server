@@ -55,6 +55,8 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -143,7 +145,9 @@ public class ClientConnection extends Thread
                 {
                     try
                     {
-                        ((ExternalPlugin) action).onClientDisconnected();
+                        ExternalPlugin externalPlugin = (ExternalPlugin) action;
+                        externalPlugin.onClientConnected();
+                        externalPlugin.shutdownExecutor();
                     }
                     catch (MinorException e)
                     {
