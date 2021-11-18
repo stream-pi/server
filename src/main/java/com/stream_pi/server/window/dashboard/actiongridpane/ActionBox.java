@@ -508,10 +508,16 @@ public class ActionBox extends StackPane
                         getChildren().add(gauge);
                     }
 
-                    updateGauge(getAction().getGaugeProperties());
+                    setDisplayTextAlignment(getAction().getDisplayTextAlignment());
+                    setDisplayTextFontColourAndSize(getAction().getDisplayTextFontColourHex());
+                    updateDisplayTextLabel();
 
 
                     setGaugeTitle(getAction().getDisplayText());
+
+                    updateGauge(getAction().getGaugeProperties());
+
+
                 }
                 else
                 {
@@ -530,14 +536,12 @@ public class ActionBox extends StackPane
                     {
                         setDisplayTextAlignment(action.getDisplayTextAlignment());
                         setDisplayTextFontColourAndSize(action.getDisplayTextFontColourHex());
-                        setDisplayTextLabel(getAction().getDisplayText());
+                        updateDisplayTextLabel();
                     }
                     else
                     {
-                        setDisplayTextLabel("");
+                        clearDisplayTextLabel();
                     }
-
-
                 }
 
 
@@ -664,9 +668,14 @@ public class ActionBox extends StackPane
         }
     }
 
-    public void setDisplayTextLabel(String text)
+    public void updateDisplayTextLabel()
     {
-        displayTextLabel.setText(text);
+        displayTextLabel.setText((getAction().getTemporaryDisplayText() == null) ? getAction().getDisplayText() : getAction().getTemporaryDisplayText());
+    }
+
+    public void clearDisplayTextLabel()
+    {
+        displayTextLabel.setText("");
     }
 
     public void setDisplayTextAlignment(DisplayTextAlignment displayTextAlignment)
@@ -760,5 +769,11 @@ public class ActionBox extends StackPane
         {
             getStyleClass().remove("action_box_selected");
         }
+    }
+
+    public void updateTemporaryDisplayText(String displayText)
+    {
+        getAction().setTemporaryDisplayText(displayText);
+        updateDisplayTextLabel();
     }
 }

@@ -15,7 +15,6 @@
 package com.stream_pi.server.controller;
 
 import com.stream_pi.action_api.action.Action;
-import com.stream_pi.action_api.action.PropertySaver;
 import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.actionproperty.gaugeproperties.GaugeProperties;
 import com.stream_pi.action_api.externalplugin.GaugeExtras;
@@ -78,7 +77,7 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 
-public class Controller extends Base implements PropertySaver, ServerConnection, ToggleExtras, GaugeExtras
+public class Controller extends Base implements ServerConnection, ToggleExtras, GaugeExtras
 {
     private final ExecutorService executor = Executors.newCachedThreadPool();
     private MainServer mainServer;
@@ -114,7 +113,6 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
             getDashboardBase().getPluginsPane().getSettingsButton().setOnAction(event -> openSettingsAnimation.play());
             getSettingsBase().getCloseButton().setOnAction(event -> closeSettingsAnimation.play());
 
-            ExternalPlugins.getInstance().setPropertySaver(this);
             ExternalPlugins.getInstance().setToggleExtras(this);
             ExternalPlugins.getInstance().setGaugeExtras(this);
 
@@ -668,7 +666,8 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
 
     private void saveClientActionMain(String profileID, String actionID, SocketAddress socketAddress, boolean sendIcons)
     {
-        try {
+        try
+        {
             ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress);
 
             ClientProfile clientProfile = clientConnection.getClient().getProfileByID(profileID);
@@ -806,6 +805,26 @@ public class Controller extends Base implements PropertySaver, ServerConnection,
                 return null;
             }
         });
+    }
+
+    @Override
+    public void updateTemporaryDisplayText(String profileID, String actionID, SocketAddress socketAddress, String displayText)
+    {
+        try
+        {
+            ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress);
+
+            ClientProfile clientProfile = clientConnection.getClient().getProfileByID(profileID);
+
+            Action action = clientProfile.getActionByID(actionID);
+            clientConnection.updateActionTemporaryDisplayText(profileID, action, displayText);
+
+            Platform.runLater(()-> getDashboardBase().getActionGridPane().getActionBoxByIDAndProfileID(actionID, profileID).updateTemporaryDisplayText(displayText));
+        }
+        catch (SevereException e)
+        {
+            handleSevereException(e);
+        }
     }
 
     @Override

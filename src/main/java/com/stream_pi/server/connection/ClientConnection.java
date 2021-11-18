@@ -771,6 +771,17 @@ public class ClientConnection extends Thread
         }
     }
 
+    public synchronized void updateActionTemporaryDisplayText(String profileID, Action action, String displayText) throws SevereException
+    {
+        Message message = new Message("update_action_temporary_display_text");
+
+        message.setValue("profile_ID", profileID);
+        message.setValue("ID", action.getID());
+        message.setValue("display_text", displayText);
+
+        sendMessage(message);
+    }
+
     public synchronized void saveActionDetails(String profileID, Action action) throws SevereException
     {
         Message message = new Message("save_action_details");

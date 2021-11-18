@@ -14,9 +14,6 @@
 
 package com.stream_pi.server.action;
 
-import com.stream_pi.action_api.action.Action;
-import com.stream_pi.action_api.action.ActionType;
-import com.stream_pi.action_api.action.PropertySaver;
 import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.actionproperty.ServerProperties;
 import com.stream_pi.action_api.actionproperty.property.Property;
@@ -25,7 +22,6 @@ import com.stream_pi.action_api.externalplugin.*;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
-import com.stream_pi.util.exception.StreamPiException;
 import com.stream_pi.util.version.Version;
 import com.stream_pi.util.xmlconfighelper.XMLConfigHelper;
 import org.w3c.dom.Document;
@@ -42,11 +38,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.lang.module.Configuration;
 import java.lang.module.ModuleDescriptor;
 import java.lang.module.ModuleFinder;
 import java.lang.module.ModuleReference;
-import java.lang.reflect.Array;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -277,7 +271,6 @@ public class ExternalPlugins
         {
             try
             {
-                eachPlugin.setPropertySaver(getPropertySaver());
                 eachPlugin.setServerConnection(serverConnection);
 
                 if(eachPlugin instanceof ToggleAction)
@@ -503,22 +496,6 @@ public class ExternalPlugins
         }
 
         save();
-    }
-
-    private PropertySaver propertySaver = null;
-
-    /**
-     * Set PropertySaver class
-     * @param propertySaver instance of PropertySaver
-     */
-    public void setPropertySaver(PropertySaver propertySaver)
-    {
-        this.propertySaver = propertySaver;
-    }
-
-    public PropertySaver getPropertySaver()
-    {
-        return propertySaver;
     }
 
     private ToggleExtras toggleExtras = null;
