@@ -49,6 +49,7 @@ import com.stream_pi.util.version.Version;
 import eu.hansolo.medusa.Gauge;
 import javafx.concurrent.Task;
 import javafx.geometry.Orientation;
+import javafx.scene.control.Toggle;
 
 import java.io.*;
 import java.net.Socket;
@@ -146,7 +147,7 @@ public class ClientConnection extends Thread
                     try
                     {
                         ExternalPlugin externalPlugin = (ExternalPlugin) action;
-                        externalPlugin.onClientConnected();
+                        externalPlugin.onClientDisconnected();
                         externalPlugin.shutdownExecutor();
                     }
                     catch (MinorException e)
@@ -669,20 +670,30 @@ public class ClientConnection extends Thread
                                 try
                                 {
                                     newPlugin.onClientConnected();
+                                }
+                                catch (MinorException e)
+                                {
+                                    exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onClientConnected()", moduleName, e.getMessage()), e);
+                                }
 
+                                try
+                                {
                                     if (newPlugin instanceof GaugeAction)
                                     {
-                                        System.out.println(newPlugin.getGaugeProperties().getSkinType());
                                         updateActionGaugeProperties(newPlugin.getGaugeProperties(), newPlugin.getProfileID(), newPlugin.getID());
+
+                                        GaugeAction gaugeAction = (GaugeAction) newPlugin;
+                                        gaugeAction.cancelGaugeUpdaterFuture();
+                                        gaugeAction.onGaugeInit();
                                     }
                                 }
                                 catch (MinorException e)
                                 {
-                                    exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "runOnClientConnectedFailed()", moduleName, e.getMessage()), e);
+                                    exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onGaugeInit()", moduleName, e.getMessage()), e);
                                 }
                                 catch (SevereException e)
                                 {
-                                    exceptionAndAlertHandler.handleSevereException(I18N.getString("methodCallFailed", "runOnClientConnectedFailed()", moduleName, e.getMessage()), e);
+                                    exceptionAndAlertHandler.handleSevereException(I18N.getString("methodCallFailed", "updateActionGaugeProperties", moduleName, e.getMessage()), e);
                                 }
                                 return null;
                             }

@@ -22,7 +22,9 @@ import com.stream_pi.action_api.actionproperty.ClientProperties;
 import com.stream_pi.action_api.actionproperty.gaugeproperties.GaugeProperties;
 import com.stream_pi.action_api.actionproperty.gaugeproperties.SerializableColor;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
+import com.stream_pi.action_api.externalplugin.GaugeAction;
 import com.stream_pi.server.controller.ActionDataFormats;
+import com.stream_pi.server.controller.ServerExecutorService;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiondetailspane.ActionDetailsPaneListener;
@@ -158,16 +160,6 @@ public class ActionBox extends StackPane
 
                         newAction.setParent(actionGridPaneListener.getCurrentParent());
                         newAction.setSocketAddressForClient(actionGridPaneListener.getClientConnection().getRemoteSocketAddress());
-
-                        try
-                        {
-                            ((ExternalPlugin) newAction).onActionCreate();
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                            exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("methodCallFailed", "onCreateFailed()", newAction.getUniqueID(), e.getMessage())));
-                        }
                     }
                     else
                     {
@@ -195,7 +187,37 @@ public class ActionBox extends StackPane
                     if(newAction.isHasIcon())
                         actionDetailsPaneListener.setSendIcon(true);
 
-                    actionDetailsPaneListener.saveAction(true, false);
+                    ServerExecutorService.getExecutorService().execute(()->{
+
+                        if (newAction instanceof ExternalPlugin)
+                        {
+                            try
+                            {
+                                ((ExternalPlugin) newAction).onActionCreate();
+                            }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                                exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("methodCallFailed", "onCreateFailed()", newAction.getUniqueID(), e.getMessage())));
+                            }
+
+                            try
+                            {
+                                if (newAction.getActionType() == ActionType.GAUGE)
+                                {
+                                    GaugeAction gaugeAction = (GaugeAction) action;
+                                    gaugeAction.cancelGaugeUpdaterFuture();
+                                    gaugeAction.onGaugeInit();
+                                }
+                            }
+                            catch (MinorException e)
+                            {
+                                exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onGaugeInit()", getAction().getUniqueID(), e.getMessage()), e);
+                            }
+                        }
+
+                        actionDetailsPaneListener.saveAction(false, false);
+                    });
                 }
             }
             catch (MinorException e)
@@ -499,7 +521,6 @@ public class ActionBox extends StackPane
             {
                 if(getAction().getActionType() == ActionType.GAUGE)
                 {
-                    System.out.println("ASDSKJASNDKJSN");
                     if (gauge == null)
                     {
                         gauge = new Gauge();
@@ -578,7 +599,6 @@ public class ActionBox extends StackPane
     public void updateGauge(GaugeProperties gaugeProperties)
     {
         gauge.setSkinType(gaugeProperties.getSkinType());
-        System.out.println("SKIN TYPEEE : "+gaugeProperties.getSkinType());
         gauge.setMinValue(gaugeProperties.getMinValue());
         gauge.setMaxValue(gaugeProperties.getMaxValue());
         gauge.setSections(gaugeProperties.getSections());

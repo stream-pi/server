@@ -73,15 +73,15 @@ public class OnDeleteActionTask extends Task<Void>
             {
                 try
                 {
-                    ExternalPlugin externalPlugin = (ExternalPlugin) action;
-                    externalPlugin.onActionDeleted();
-                    externalPlugin.shutdownExecutor();
+                    ((ExternalPlugin) action).onActionDeleted();
                 }
                 catch (MinorException e)
                 {
                     e.setTitle("Unable to run onActionDeleted for "+action.getUniqueID());
                     exceptionAndAlertHandler.handleMinorException("Display Text: "+action.getDisplayText()+"\nDetailed message : \n\n"+e.getMessage(), e);
                 }
+
+                ((ExternalPlugin) action).shutdownExecutor();
             }
 
 
@@ -90,10 +90,7 @@ public class OnDeleteActionTask extends Task<Void>
 
             if(isCombineChild)
             {
-                System.out.println("ACTION ID TO BE REMOVED : "+action.getID());
                 combineActionPropertiesPane.getCombineAction().removeChild(action.getID());
-
-                System.out.println("222155  "+combineActionPropertiesPane.getCombineAction().getClientProperties().getSize());
 
                 combineActionPropertiesPane.renderProps();
 

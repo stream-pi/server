@@ -21,8 +21,10 @@ import com.stream_pi.action_api.action.Location;
 import com.stream_pi.action_api.actionproperty.ClientProperties;
 import com.stream_pi.action_api.actionproperty.property.*;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
+import com.stream_pi.action_api.externalplugin.GaugeAction;
 import com.stream_pi.action_api.otheractions.CombineAction;
 import com.stream_pi.action_api.otheractions.FolderAction;
+import com.stream_pi.server.controller.ServerExecutorService;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.server.client.Client;
@@ -46,6 +48,7 @@ import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.HostServices;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -443,8 +446,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         });
 
         setOnDragDropped(dragEvent -> {
-            try {
-
+            try
+            {
                 Dragboard db = dragEvent.getDragboard();
 
                 ActionType actionType = (ActionType) db.getContent(ActionDataFormats.ACTION_TYPE);
@@ -484,14 +487,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     newAction.setProfileID(actionGridPaneListener.getCurrentProfile().getID());
                     newAction.setSocketAddressForClient(actionGridPaneListener.getClientConnection().getRemoteSocketAddress());
 
-                    try
-                    {
-                        newAction.onActionCreate();
-                    }
-                    catch (MinorException e)
-                    {
-                        exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onCreateFailed()", getAction().getUniqueID(), e.getMessage()), e);
-                    }
 
                     combineActionPropertiesPane.getCombineAction().addChild(newAction.getID());
 
@@ -506,9 +501,19 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
                     combineActionPropertiesPane.renderProps();
 
-                    saveAction(true, false);
 
+                    ServerExecutorService.getExecutorService().execute(()->{
+                        try
+                        {
+                            newAction.onActionCreate();
+                        }
+                        catch (MinorException e)
+                        {
+                            exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onCreateFailed()", getAction().getUniqueID(), e.getMessage()), e);
+                        }
 
+                        saveAction(false, false);
+                    });
 
                 }
 

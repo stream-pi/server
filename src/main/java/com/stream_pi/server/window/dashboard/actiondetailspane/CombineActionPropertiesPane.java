@@ -52,8 +52,8 @@ public class CombineActionPropertiesPane extends VBox {
     }
 
 
-    public void renderProps() throws MinorException {
-
+    public void renderProps() throws MinorException
+    {
         getChildren().clear();
 
         int i = 0;

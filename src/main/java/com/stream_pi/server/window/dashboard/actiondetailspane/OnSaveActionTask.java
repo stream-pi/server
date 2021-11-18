@@ -21,6 +21,7 @@ import com.stream_pi.action_api.action.Action;
 import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.DisplayTextAlignment;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
+import com.stream_pi.action_api.externalplugin.GaugeAction;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.i18n.I18N;
@@ -241,7 +242,21 @@ public class OnSaveActionTask extends Task<Void>
                 }
                 catch (MinorException e)
                 {
-                    exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onActionSavedFromServerFailed()", action.getUniqueID(), e.getMessage()), e);
+                    exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onActionSavedFromServer()", action.getUniqueID(), e.getMessage()), e);
+                }
+
+                try
+                {
+                    if (action instanceof GaugeAction)
+                    {
+                        GaugeAction gaugeAction = (GaugeAction) action;
+                        gaugeAction.cancelGaugeUpdaterFuture();
+                        gaugeAction.onGaugeInit();
+                    }
+                }
+                catch (MinorException e)
+                {
+                    exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onGaugeInit()", action.getUniqueID(), e.getMessage()), e);
                 }
             }
 
@@ -270,10 +285,6 @@ public class OnSaveActionTask extends Task<Void>
 
             clientProfile.removeActionByID(action.getID());
             clientProfile.addAction(action);
-
-            Platform.runLater(actionDetailsPaneListener::refresh);
-
-
         }
         catch (SevereException e)
         {
