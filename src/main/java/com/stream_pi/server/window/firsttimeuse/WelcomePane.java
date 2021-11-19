@@ -36,7 +36,7 @@ public class WelcomePane extends VBox
 {
     public WelcomePane(ExceptionAndAlertHandler exceptionAndAlertHandler, ServerListener serverListener)
     {
-        getStyleClass().add("first_time_use_pane_welcome");
+        getStyleClass().add("first_time_use_welcome_pane");
 
         Image appIcon = new Image(Objects.requireNonNull(Main.class.getResourceAsStream("icons/256x256.png")));
         ImageView appIconImageView = new ImageView(appIcon);

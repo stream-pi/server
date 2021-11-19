@@ -42,8 +42,7 @@ public class ServerInfo
     private final Platform platform;
     private String prePath;
     private Version communicationProtocolVersion;
-    private String buildDate;
-    private int buildNumber = -1;
+    private String buildNumber;
     private String license;
 
     private static ServerInfo instance = null;
@@ -85,8 +84,7 @@ public class ServerInfo
                 properties.load(inputStream);
                 inputStream.close();
 
-                buildDate = properties.getProperty("build.date");
-                buildNumber = Integer.parseInt(properties.getProperty("build.number"));
+                buildNumber = properties.getProperty("build.number");
             }
         }
         catch (IOException e)
@@ -158,12 +156,7 @@ public class ServerInfo
         return communicationProtocolVersion;
     }
 
-    public String getBuildDate()
-    {
-        return buildDate;
-    }
-
-    public int getBuildNumber()
+    public String getBuildNumber()
     {
         return buildNumber;
     }

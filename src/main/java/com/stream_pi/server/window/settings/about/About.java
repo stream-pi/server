@@ -87,25 +87,17 @@ public class About extends VBox
         Label versionLabel = new Label(serverInfo.getVersion().getText() + " - "+ serverInfo.getPlatform().getUIName() + " - "+ serverInfo.getReleaseStatus().getUIName());
         versionLabel.getStyleClass().add("about_version_label");
 
-        HBox hBox1 = new HBox(versionLabel, getSep());
+        HBox hBox1 = new HBox(versionLabel);
 
         hBox1.setAlignment(Pos.CENTER);
         hBox1.setSpacing(10);
 
-        if(serverInfo.getBuildDate() != null)
+        if (serverInfo.getBuildNumber() != null)
         {
-            Label buildDateLabel = new Label(I18N.getString("window.settings.about.About.buildDate", serverInfo.getBuildDate()));
-            buildDateLabel.getStyleClass().add("about_build_date_label");
-            hBox1.getChildren().addAll(buildDateLabel);
-
-            if (serverInfo.getBuildNumber() > -1)
-            {
-                Label buildNumberLabel = new Label(I18N.getString("window.settings.about.About.buildNumber", serverInfo.getBuildNumber()));
-                buildNumberLabel.getStyleClass().add("about_build_number_label");
-                hBox1.getChildren().addAll(getSep(), buildNumberLabel);
-            }
+            Label buildNumberLabel = new Label(I18N.getString("window.settings.about.About.buildNumber", serverInfo.getBuildNumber()));
+            buildNumberLabel.getStyleClass().add("about_build_number_label");
+            hBox1.getChildren().addAll(getSep(), buildNumberLabel);
         }
-
 
         Label commStandardLabel = new Label(I18N.getString("window.settings.about.About.serverCommunicationProtocolVersion", serverInfo.getCommunicationProtocolVersion().getText()));
         commStandardLabel.getStyleClass().add("about_comm_standard_label");
