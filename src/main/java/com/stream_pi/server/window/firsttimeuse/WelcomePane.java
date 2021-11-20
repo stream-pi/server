@@ -80,9 +80,6 @@ public class WelcomePane extends VBox
         });
 
 
-
-        setAlignment(Pos.CENTER);
-        setSpacing(5.0);
         getChildren().addAll(appIconImageView, welcomeLabel, languageChooserComboBox);
     
         setVisible(false);
