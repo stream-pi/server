@@ -148,7 +148,84 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             }
             else
             {
-                othInit();
+                try
+                {
+                    if(StartupFlags.START_MINIMISED && SystemTray.isSupported())
+                    {
+                        minimiseApp();
+                    }
+                    else
+                    {
+                        getStage().show();
+
+                        getStage().setOnShown(event->{
+                            getStage().setMinWidth(Region.USE_PREF_SIZE);
+                        });
+                    }
+
+
+
+                    StreamPiAlert.setIsShowPopup(getConfig().isShowAlertsPopup());
+                }
+                catch(MinorException e)
+                {
+                    handleMinorException(e);
+                }
+
+                if(getConfig().getSoundOnActionClickedStatus())
+                {
+                    initSoundOnActionClicked();
+                }
+
+                ServerExecutorService.getExecutorService().execute(new Task<Void>() {
+                    @Override
+                    protected Void call()
+                    {
+                        try
+                        {
+                            getSettingsBase().getGeneralSettings().loadData();
+
+                            //themes
+                            getSettingsBase().getThemesSettings().setThemes(getThemes());
+                            getSettingsBase().getThemesSettings().setCurrentThemeFullName(getCurrentTheme().getFullName());
+                            getSettingsBase().getThemesSettings().loadThemes();
+
+                            //clients
+                            getSettingsBase().getClientsSettings().loadData();
+
+                            try
+                            {
+                                //Plugins
+                                Platform.runLater(()->{
+                                    getDashboardBase().getPluginsPane().clearData();
+                                    getDashboardBase().getPluginsPane().loadOtherActions();
+                                });
+
+                                ExternalPlugins.setPluginsLocation(getConfig().getPluginsPath());
+                                ExternalPlugins.getInstance().init();
+
+                                Platform.runLater(()->getDashboardBase().getPluginsPane().loadData());
+
+                                getSettingsBase().getPluginsSettings().loadPlugins();
+                            }
+                            catch (MinorException e)
+                            {
+                                getSettingsBase().getPluginsSettings().showPluginInitError();
+                                handleMinorException(e);
+                            }
+
+                            //Server
+                            mainServer.setPort(getConfig().getPort());
+                            mainServer.setIP(getConfig().getIP());
+                            mainServer.start();
+                        }
+                        catch (SevereException e)
+                        {
+                            handleSevereException(e);
+                        }
+                        return null;
+                    }
+                });
             }
         }
         catch (SevereException e)
@@ -169,89 +246,6 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     public void setDisableTrayIcon(boolean disableTrayIcon)
     {
         this.disableTrayIcon = disableTrayIcon;
-    }
-
-    @Override
-    public void othInit()
-    {
-        try
-        {
-            if(StartupFlags.START_MINIMISED && SystemTray.isSupported())
-            {
-                minimiseApp();
-            }
-            else
-            {
-                getStage().show();
-
-                getStage().setOnShown(event->{
-                    getStage().setMinWidth(Region.USE_PREF_SIZE);
-                });
-            }
-
-
-
-            StreamPiAlert.setIsShowPopup(getConfig().isShowAlertsPopup());
-        }
-        catch(MinorException e)
-        {
-            handleMinorException(e);
-        }
-
-        if(getConfig().getSoundOnActionClickedStatus())
-        {
-            initSoundOnActionClicked();
-        }
-
-        ServerExecutorService.getExecutorService().execute(new Task<Void>() {
-            @Override
-            protected Void call()
-            {
-                try
-                {
-                    getSettingsBase().getGeneralSettings().loadData();
-
-                    //themes
-                    getSettingsBase().getThemesSettings().setThemes(getThemes());
-                    getSettingsBase().getThemesSettings().setCurrentThemeFullName(getCurrentTheme().getFullName());
-                    getSettingsBase().getThemesSettings().loadThemes();
-
-                    //clients
-                    getSettingsBase().getClientsSettings().loadData();
-
-                    try
-                    {
-                        //Plugins 
-                        Platform.runLater(()->{
-                            getDashboardBase().getPluginsPane().clearData();
-                            getDashboardBase().getPluginsPane().loadOtherActions();
-                        });
-
-                        ExternalPlugins.setPluginsLocation(getConfig().getPluginsPath());
-                        ExternalPlugins.getInstance().init();
-
-                        Platform.runLater(()->getDashboardBase().getPluginsPane().loadData());
-
-                        getSettingsBase().getPluginsSettings().loadPlugins();
-                    }
-                    catch (MinorException e)
-                    {
-                        getSettingsBase().getPluginsSettings().showPluginInitError();
-                        handleMinorException(e);
-                    }
-
-                    //Server
-                    mainServer.setPort(getConfig().getPort());
-                    mainServer.setIP(getConfig().getIP());
-                    mainServer.start();
-                }
-                catch (SevereException e)
-                {
-                    handleSevereException(e);
-                }
-                return null;
-            }
-        });
     }
 
     @Override

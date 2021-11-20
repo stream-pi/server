@@ -35,8 +35,6 @@ public interface ServerListener
 
     void restart();
 
-    void othInit();
-
     Stage getStage();
 
     DashboardBase getDashboardBase();

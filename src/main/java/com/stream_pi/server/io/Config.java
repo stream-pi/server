@@ -332,7 +332,7 @@ public class Config
 
 
 
-    public boolean getStartOnBoot()
+    public boolean isStartOnBoot()
     {
         return XMLConfigHelper.getBooleanProperty(getOthersElement(), "start-on-boot",
                 getDefaultStartOnBoot(), false, true, document, configFile);

@@ -239,7 +239,7 @@ public class GeneralSettings extends VBox
 
             minimizeToSystemTrayOnCloseToggleSwitch.setSelected(config.getMinimiseToSystemTrayOnClose());
             showAlertsPopupToggleSwitch.setSelected(config.isShowAlertsPopup());
-            startOnBootToggleSwitch.setSelected(config.getStartOnBoot());
+            startOnBootToggleSwitch.setSelected(config.isStartOnBoot());
 
             soundOnActionClickedToggleSwitch.setSelected(config.getSoundOnActionClickedStatus());
             soundOnActionClickedFilePathTextField.setText(config.getSoundOnActionClickedFilePath());
@@ -422,7 +422,7 @@ public class GeneralSettings extends VBox
                     }
 
 
-                    if(config.getStartOnBoot() != startOnBoot)
+                    if(config.isStartOnBoot() != startOnBoot)
                     {
                         StartOnBoot startAtBoot = new StartOnBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform(),
                                 Main.class.getProtectionDomain().getCodeSource().getLocation(),
