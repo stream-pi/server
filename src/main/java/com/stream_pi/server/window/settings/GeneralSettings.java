@@ -32,6 +32,7 @@ import com.stream_pi.util.checkforupdates.UpdateHyperlinkOnClick;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.platform.PlatformType;
+import com.stream_pi.util.rootchecker.RootChecker;
 import com.stream_pi.util.startonboot.StartOnBoot;
 import com.stream_pi.util.uihelper.HBoxInputBox;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithDirectoryChooser;
@@ -301,7 +302,7 @@ public class GeneralSettings extends VBox
                     try {
                         serverPort = Integer.parseInt(serverPortStr);
 
-                        if (serverPort < 1024)
+                        if (serverPort < 1024 && RootChecker.isRoot(ServerInfo.getInstance().getPlatform()))
                             errors.append("* ").append(I18N.getString("serverPortMustBeGreaterThan1024")).append("\n");
                         else if(serverPort > 65535)
                             errors.append("* ").append(I18N.getString("serverPortMustBeLesserThan65535")).append("\n");

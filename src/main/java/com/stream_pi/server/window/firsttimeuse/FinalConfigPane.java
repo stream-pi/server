@@ -16,12 +16,14 @@ package com.stream_pi.server.window.firsttimeuse;
 
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.i18n.I18N;
+import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.combobox.IPChooserComboBox;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.SevereException;
+import com.stream_pi.util.rootchecker.RootChecker;
 import com.stream_pi.util.uihelper.HBoxInputBox;
 
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
@@ -108,7 +110,7 @@ public class FinalConfigPane extends VBox
         try {
             serverPort = Integer.parseInt(serverPortStr);
 
-            if (serverPort < 1024)
+            if (serverPort < 1024 && RootChecker.isRoot(ServerInfo.getInstance().getPlatform()))
             {
                 errors.append("* ").append(I18N.getString("serverPortMustBeGreaterThan1024")).append("\n");
             }
