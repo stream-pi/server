@@ -340,14 +340,27 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         
         try 
         {
-            IOHelper.deleteFile(getServerInfo().getPrePath());
+            IOHelper.deleteFile(getServerInfo().getPrePath(), true);
 
-            init();
+            StreamPiAlert streamPiAlert = new StreamPiAlert("Stream-Pi Server has been successfully reset. The application shall now quit.", StreamPiAlertType.INFORMATION, StreamPiAlertButton.OK);
+            streamPiAlert.setOnClicked(new StreamPiAlertListener() {
+                @Override
+                public void onClick(StreamPiAlertButton streamPiAlertButton) {
+                    exit();
+                }
+            });
+            streamPiAlert.show();
         }
         catch (SevereException e)
         {
             handleSevereException(I18N.getString("controller.Controller.factoryResetUnsuccessful", getServerInfo().getPrePath(), e.getMessage()),e);
         }
+    }
+
+    private void fullExit()
+    {
+        onQuitApp();
+        exit();
     }
 
     private void setupSettingsWindowsAnimations()
@@ -373,8 +386,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
                 return;
             }
 
-            onQuitApp();
-            exit();
+            fullExit();
         }
         catch (MinorException e)
         {
@@ -461,8 +473,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         MenuItem exitItem = new MenuItem(I18N.getString("controller.Controller.systemTrayExit"));
         exitItem.addActionListener(l->{
             systemTray.remove(getTrayIcon());
-            onQuitApp();
-            exit();
+            fullExit();
         });
 
         MenuItem openItem = new MenuItem(I18N.getString("controller.Controller.systemTrayOpen"));
@@ -522,11 +533,9 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         handleSevereException(e.getMessage(), e);
     }
 
-    private boolean isSevereExceptionOccurred = false;
     @Override
     public void handleSevereException(String message, SevereException e)
     {
-        isSevereExceptionOccurred = true;
         getLogger().log(Level.SEVERE, message, e);
         e.printStackTrace();
 
@@ -537,8 +546,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             @Override
             public void onClick(StreamPiAlertButton s)
             {
-                onQuitApp();
-                exit();
+                fullExit();
             }
         });
 
@@ -799,7 +807,8 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
 
     private void saveAllIconsMain(String profileID, String actionID, SocketAddress socketAddress)
     {
-        try {
+        try
+        {
             ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress);
 
             ClientProfile clientProfile = clientConnection.getClient().getProfileByID(profileID);
