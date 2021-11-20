@@ -369,7 +369,7 @@ public class Config
         getCommsElement().getElementsByTagName("name").item(0).setTextContent(name);
     }
 
-    public void setServerPort(int port)
+    public void setPort(int port)
     {
         getCommsElement().getElementsByTagName("port").item(0).setTextContent(port+"");
     }

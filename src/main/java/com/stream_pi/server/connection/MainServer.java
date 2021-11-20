@@ -123,7 +123,7 @@ public class MainServer extends Thread
             {
                 logger.warning("Main Server stopped accepting calls ...");
                 serverListener.onServerStartFailure();
-                serverListener.showUserChooseIPDialog();
+                serverListener.showUserChooseIPAndPortDialog();
             }
         }
         catch (IOException e)

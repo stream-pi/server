@@ -302,7 +302,7 @@ public class GeneralSettings extends VBox
                     try {
                         serverPort = Integer.parseInt(serverPortStr);
 
-                        if (serverPort < 1024 && RootChecker.isRoot(ServerInfo.getInstance().getPlatform()))
+                        if (serverPort < 1024 && !RootChecker.isRoot(ServerInfo.getInstance().getPlatform()))
                             errors.append("* ").append(I18N.getString("serverPortMustBeGreaterThan1024")).append("\n");
                         else if(serverPort > 65535)
                             errors.append("* ").append(I18N.getString("serverPortMustBeLesserThan65535")).append("\n");
@@ -484,7 +484,7 @@ public class GeneralSettings extends VBox
                     }
 
                     config.setServerName(serverNameStr);
-                    config.setServerPort(serverPort);
+                    config.setPort(serverPort);
                     config.setActionGridActionGap(actionGap);
                     config.setActionGridActionSize(actionSize);
                     config.setActionGridActionDisplayTextFontSize(defaultActionLabelFontSize);

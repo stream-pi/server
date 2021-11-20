@@ -43,6 +43,8 @@ import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.*;
 import com.stream_pi.util.iohelper.IOHelper;
 import com.stream_pi.util.rootchecker.RootChecker;
+import com.stream_pi.util.uihelper.HBoxInputBox;
+import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -53,6 +55,7 @@ import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioClip;
@@ -249,13 +252,16 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     }
 
     @Override
-    public void showUserChooseIPDialog()
+    public void showUserChooseIPAndPortDialog()
     {
         VBox vBox = new VBox();
+        vBox.getStyleClass().add("user_choose_ip_and_port_dialog");
         vBox.setAlignment(Pos.CENTER);
 
         IPChooserComboBox ipChooserComboBox = new IPChooserComboBox(this);
         ipChooserComboBox.configureOptions();
+
+        TextField portTextField = new TextField(getConfig().getPort()+"");
 
         String ip = getConfig().getIP();
         if (ip.isBlank())
@@ -263,14 +269,16 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             ip = I18N.getString("combobox.IPChooserComboBox.allAddresses");
         }
 
-        Label headLabel = new Label(I18N.getString("controller.Controller.IPnotAvailable", ip));
+        Label headLabel = new Label(I18N.getString("controller.Controller.IPAndPortNotAvailable", ip));
         headLabel.getStyleClass().add("invalid_ip_prompt_label");
         headLabel.setWrapText(true);
 
-        vBox.getChildren().addAll(headLabel, ipChooserComboBox);
+        vBox.getChildren().addAll(headLabel,
+                new HBoxWithSpaceBetween(I18N.getString("serverIPBinding"), ipChooserComboBox),
+                new HBoxInputBox(I18N.getString("serverPort"), portTextField));
 
         StreamPiAlert streamPiAlert = new StreamPiAlert(StreamPiAlertType.WARNING, vBox, new StreamPiAlertButton(I18N.getString("controller.Controller.proceed")));
-
+        streamPiAlert.setDestroyAfterButtonClick(false);
         streamPiAlert.setOnClicked(new StreamPiAlertListener()
         {
             @Override
@@ -278,9 +286,39 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             {
                 try
                 {
-                    getConfig().setIP(ipChooserComboBox.getSelectedIP());
-                    getConfig().save();
-                    restart();
+                    String error = null;
+                    int serverPort=-1;
+                    try
+                    {
+                        serverPort = Integer.parseInt(portTextField.getText());
+
+                        if (serverPort < 1024 && !RootChecker.isRoot(ServerInfo.getInstance().getPlatform()))
+                        {
+                            error = I18N.getString("serverPortMustBeGreaterThan1024");
+                        }
+                        else if(serverPort > 65535)
+                        {
+                            error = I18N.getString("serverPortMustBeLesserThan65535");
+                        }
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        error = I18N.getString("serverPortMustBeInteger");
+                    }
+
+                    if (error!=null)
+                    {
+                        new StreamPiAlert(error).show();
+                        //handleMinorException(new MinorException(error));
+                    }
+                    else
+                    {
+                        streamPiAlert.destroy();
+                        getConfig().setIP(ipChooserComboBox.getSelectedIP());
+                        getConfig().setPort(serverPort);
+                        getConfig().save();
+                        restart();
+                    }
                 }
                 catch (SevereException e)
                 {

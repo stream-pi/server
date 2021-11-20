@@ -75,7 +75,7 @@
 
 .alert_header
 {
-    -fx-padding: 5;
+    -fx-padding: 10;
 }
 
 .alert_pane
@@ -97,9 +97,10 @@
     -fx-padding: 5;
 }
 
-.alert_pane_parent
+.alert_pane_popup_node_parent
 {
     -fx-background-color : rgba(0,0,0,0.5);
+    -fx-padding: 10;
 }
 
 .alert_pane_header_text
@@ -314,7 +315,12 @@ ScrollPane
 
 .invalid_ip_prompt_label
 {
-    -fx-padding: 0 0 30 0;
+    -fx-padding: 0 0 15 0;
+}
+
+.user_choose_ip_and_port_dialog
+{
+    -fx-spacing: 10;
 }
 
 .settings_about_tab_app_icon

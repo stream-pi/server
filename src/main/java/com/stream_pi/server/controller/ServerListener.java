@@ -48,5 +48,5 @@ public interface ServerListener
     void setDisableTrayIcon(boolean value);
     void onServerStartFailure();
 
-    void showUserChooseIPDialog();
+    void showUserChooseIPAndPortDialog();
 }

@@ -110,7 +110,7 @@ public class FinalConfigPane extends VBox
         try {
             serverPort = Integer.parseInt(serverPortStr);
 
-            if (serverPort < 1024 && RootChecker.isRoot(ServerInfo.getInstance().getPlatform()))
+            if (serverPort < 1024 && !RootChecker.isRoot(ServerInfo.getInstance().getPlatform()))
             {
                 errors.append("* ").append(I18N.getString("serverPortMustBeGreaterThan1024")).append("\n");
             }
@@ -129,7 +129,7 @@ public class FinalConfigPane extends VBox
             try
             {
                 Config.getInstance().setServerName(serverNameStr);
-                Config.getInstance().setServerPort(serverPort);
+                Config.getInstance().setPort(serverPort);
                 Config.getInstance().setIP(ipChooserComboBox.getSelectedIP());
                 Config.getInstance().setFirstTimeUse(false);
                 Config.getInstance().save();
