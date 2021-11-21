@@ -215,27 +215,26 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
     {
         try
         {
-            File filex = new File(ServerInfo.getInstance().getPrePath()+"config.xml");
+            File configFile = new File(ServerInfo.getInstance().getPrePath()+"config.xml");
 
-            if(!filex.exists())
+            if(!configFile.exists())
             {
-                boolean result = filex.getParentFile().mkdirs();
-                if(result)
+                if(!configFile.getParentFile().exists())
                 {
-                    Config.unzipToDefaultPrePath();
+                    if(!configFile.getParentFile().mkdirs())
+                    {
+                        setPrefSize(300,300);
+                        clearStylesheets();
+                        applyDefaultStylesheet();
+                        applyDefaultIconsStylesheet();
+                        applyGlobalDefaultStylesheet();
+                        getStage().show();
+                        throw new SevereException(I18N.getString("window.Base.noStoragePermission"));
+                    }
+                }
 
-                    initLogger();
-                }
-                else
-                {
-                    setPrefSize(300,300);
-                    clearStylesheets();
-                    applyDefaultStylesheet();
-                    applyDefaultIconsStylesheet();
-                    applyGlobalDefaultStylesheet();
-                    getStage().show();
-                    throw new SevereException(I18N.getString("window.Base.noStoragePermission"));
-                }
+                Config.unzipToDefaultPrePath();
+                initLogger();
             }
         }
         catch (Exception e)
