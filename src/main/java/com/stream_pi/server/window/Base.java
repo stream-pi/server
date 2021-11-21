@@ -219,7 +219,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
             if(!filex.exists())
             {
-                boolean result = filex.mkdirs();
+                boolean result = filex.getParentFile().mkdirs();
                 if(result)
                 {
                     Config.unzipToDefaultPrePath();
