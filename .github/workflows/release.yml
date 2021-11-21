@@ -18,31 +18,37 @@ jobs:
       - name: Add Version to environment
         run: |
           echo "VERSION=$(<version.txt)" >> $GITHUB_ENV
-      - name: Download windows x64 msi
+      - name: Download Windows x64 msi
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
           name: windows-msi-x64
           path: target/install
-      - name: Download linux x64 deb
+      - name: Download Windows x86 msi
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build.yml
+          name: windows-msi-x86
+          path: target/install
+      - name: Download Linux x64 deb
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
           name: linux-deb-x64
           path: target/install
-      - name: Download linux x64 rpm
+      - name: Download Linux x64 rpm
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
           name: linux-rpm-x64
           path: target/install
-      - name: Download linux x64 zip
+      - name: Download Linux x64 zip
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml
           name: linux-zip-x64
           path: target/install
-      - name: Download linux aarch64 zip
+      - name: Download Linux aarch64 zip
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: build.yml

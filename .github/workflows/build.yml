@@ -232,6 +232,62 @@ jobs:
           name: windows-msi-x64
           path: target/install/*.msi
 
+  windows-x86:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: temurin
+          architecture: x86
+      - name: Delete Default.zip
+        run: |
+          del src/main/resources/com/stream_pi/server/Default.zip
+      - name: Downloading Default.zip ...
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: default-zip
+          path: src/main/resources/com/stream_pi/server
+      - name: Download REQ_MODULES
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: req_modules
+      - name: Download VERSION
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: version
+      - name: Setup JavaFX
+        run: |
+          curl.exe -o D:\openjfx-18-ea+7_windows-x86_bin-jmods.zip https://download2.gluonhq.com/openjfx/18/openjfx-18-ea+7_windows-x86_bin-jmods.zip
+          Expand-Archive -Force D:\openjfx-18-ea+7_windows-x86_bin-jmods.zip D:\
+      - name: Download built jars
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: built-jars
+          path: target/lib/
+      - name: Create Bundle using JPackage
+        id: project
+        shell: cmd
+        run: |
+          call .github\scripts\jpackage.bat
+        env:
+          MAIN_CLASS: com.stream_pi.server.Main
+          JAVAFX_JMODS: D:\javafx-jmods-18\
+          JPACKAGE_HOME: ${{ env.JAVA_HOME }}
+          INSTALL_DIR: target/install
+          ARCH: x86
+      - name: Saving Windows x86 MSI
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-msi-x86
+          path: target/install/*.msi
+
   linux-arm32:
     runs-on: ubuntu-18.04
     steps:
