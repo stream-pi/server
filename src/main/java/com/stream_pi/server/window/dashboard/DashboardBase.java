@@ -26,6 +26,7 @@ import com.stream_pi.util.exception.SevereException;
 import javafx.application.HostServices;
 import javafx.geometry.Orientation;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class DashboardBase extends VBox implements DashboardInterface
@@ -58,6 +59,7 @@ public class DashboardBase extends VBox implements DashboardInterface
         leftSplitPane.setOrientation(Orientation.VERTICAL);
 
         splitPane.getStyleClass().add("dashboard_right_split_pane");
+        VBox.setVgrow(splitPane, Priority.ALWAYS);
 
         splitPane.getItems().add(leftSplitPane);
 
