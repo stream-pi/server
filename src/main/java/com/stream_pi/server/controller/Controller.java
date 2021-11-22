@@ -125,7 +125,6 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
 
             setupSettingsWindowsAnimations();
 
-
             getSettingsBase().getCloseButton().setOnAction(event -> closeSettingsAnimation.play());
 
             ExternalPlugins.getInstance().setToggleExtras(this);
@@ -285,20 +284,14 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         });
 
 
-        windowMenuBar.getHelpMenu().getWebsiteMenuItem().setOnAction(actionEvent -> {
-            getHostServices().showDocument(Links.getWebsite());
-        });
+        windowMenuBar.getHelpMenu().getWebsiteMenuItem().setOnAction(actionEvent -> getHostServices().showDocument(Links.getWebsite()));
 
-        windowMenuBar.getHelpMenu().getDonateMenuItem().setOnAction(actionEvent -> {
-            getHostServices().showDocument(Links.getDonateLink());
-        });
+        windowMenuBar.getHelpMenu().getDonateMenuItem().setOnAction(actionEvent -> getHostServices().showDocument(Links.getDonateLink()));
 
         windowMenuBar.getHelpMenu().getAboutMenuItem().setOnAction(actionEvent -> {
             getSettingsBase().getTabPane().getSelectionModel().select(getSettingsBase().getAboutTab());
             openSettingsAnimation.play();
         });
-
-
     }
 
     private void showIPPortConfiguration()
