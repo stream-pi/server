@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
+import com.stream_pi.server.window.windowmenubar.WindowMenuBar;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionGridPane;
 import com.stream_pi.server.window.dashboard.actiondetailspane.ActionDetailsPane;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
@@ -25,8 +26,9 @@ import com.stream_pi.util.exception.SevereException;
 import javafx.application.HostServices;
 import javafx.geometry.Orientation;
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.VBox;
 
-public class DashboardBase extends SplitPane implements DashboardInterface
+public class DashboardBase extends VBox implements DashboardInterface
 {
 
     private final SplitPane leftSplitPane;
@@ -37,19 +39,27 @@ public class DashboardBase extends SplitPane implements DashboardInterface
 
     private ExceptionAndAlertHandler exceptionAndAlertHandler;
 
+    private SplitPane splitPane;
+    private WindowMenuBar windowMenuBar;
 
     public DashboardBase(ExceptionAndAlertHandler exceptionAndAlertHandler, HostServices hostServices)
     {
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
         logger = Logger.getLogger(DashboardBase.class.getName());
 
+        getStyleClass().add("dashboard_base");
+
+        windowMenuBar = new WindowMenuBar();
+
+        splitPane = new SplitPane();
+
         leftSplitPane = new SplitPane();
         leftSplitPane.getStyleClass().add("dashboard_left_split_pane");
         leftSplitPane.setOrientation(Orientation.VERTICAL);
 
-        getStyleClass().add("dashboard_right_split_pane");
+        splitPane.getStyleClass().add("dashboard_right_split_pane");
 
-        getItems().add(leftSplitPane);
+        splitPane.getItems().add(leftSplitPane);
 
         setPluginsPane(new PluginsPane(hostServices));
 
@@ -60,15 +70,28 @@ public class DashboardBase extends SplitPane implements DashboardInterface
         setActionDetailsPane(new ActionDetailsPane(exceptionAndAlertHandler, hostServices, getActionGridPane()));
 
         getActionGridPane().setActionDetailsPaneListener(getActionDetailsPane());
+
+        getChildren().addAll(
+                windowMenuBar,
+                splitPane
+        );
     }
 
+    public SplitPane getSplitPane()
+    {
+        return splitPane;
+    }
 
+    public WindowMenuBar getWindowMenuBar()
+    {
+        return windowMenuBar;
+    }
 
     private PluginsPane pluginsPane;
     private void setPluginsPane(PluginsPane pluginsPane)
     {
         this.pluginsPane = pluginsPane;
-        getItems().add(this.pluginsPane);
+        splitPane.getItems().add(this.pluginsPane);
     }
     public PluginsPane getPluginsPane()
     {

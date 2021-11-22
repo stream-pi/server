@@ -90,7 +90,7 @@ public class ClientsSettings extends VBox
         getChildren().addAll(scrollPane, hBox);
 
         setCache(true);
-        setCacheHint(CacheHint.SPEED);
+        setCacheHint(CacheHint.QUALITY);
     }
 
     public void onSaveButtonClicked()

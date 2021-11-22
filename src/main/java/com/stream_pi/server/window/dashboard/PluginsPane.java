@@ -38,9 +38,8 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PluginsPane extends VBox {
-
-    private Button settingsButton;
+public class PluginsPane extends VBox
+{
 
     public PluginsPane(HostServices hostServices)
     {
@@ -60,26 +59,11 @@ public class PluginsPane extends VBox {
         pluginsAccordion = new Accordion();
         pluginsAccordion.getStyleClass().add("plugins_pane_accordion");
         pluginsAccordion.setCache(true);
-        settingsButton = new Button();
-        settingsButton.getStyleClass().add("plugins_pane_settings_button");
-
-        FontIcon cog = new FontIcon("fas-cog");
-
-        settingsButton.setGraphic(cog);
-
-        HBox settingsHBox = new HBox(settingsButton);
-        settingsHBox.getStyleClass().add("plugins_pane_settings_button_parent");
-        settingsHBox.setAlignment(Pos.CENTER_RIGHT);
 
         Label pluginsLabel = new Label(I18N.getString("window.dashboard.PluginsPane.plugins"));
         pluginsLabel.getStyleClass().add("plugins_pane_top_label");
 
-        getChildren().addAll(pluginsLabel, pluginsAccordion, SpaceFiller.vertical(), settingsHBox);
-    }
-
-    public Button getSettingsButton()
-    {
-        return settingsButton;
+        getChildren().addAll(pluginsLabel, pluginsAccordion);
     }
 
     public void clearData()

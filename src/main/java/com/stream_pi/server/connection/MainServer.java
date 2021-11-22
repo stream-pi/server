@@ -20,10 +20,13 @@ import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 import java.io.IOException;
 import java.net.*;
 import java.util.Enumeration;
+import java.util.SimpleTimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
@@ -88,8 +91,6 @@ public class MainServer extends Thread
     @Override
     public void run()
     {
-        Platform.runLater(()-> serverListener.getStage().setTitle("Stream-Pi Server - Starting Server ... "));
-
         try
         {
             logger.info("Starting server on port "+port+" ...");
@@ -106,8 +107,7 @@ public class MainServer extends Thread
                 serverSocket = new ServerSocket(port, 0, address);
             }
 
-            setupStageTitle();
-            serverListener.setDisableTrayIcon(false);
+            isFailedToStart.set(false);
             while(!stop.get())
             {
                 Socket s = serverSocket.accept();
@@ -122,7 +122,7 @@ public class MainServer extends Thread
             if(!e.getMessage().contains("Socket closed") && !e.getMessage().contains("Interrupted function call: accept failed"))
             {
                 logger.warning("Main Server stopped accepting calls ...");
-                serverListener.onServerStartFailure();
+                isFailedToStart.set(true);
                 serverListener.showUserChooseIPAndPortDialog();
             }
         }
@@ -133,42 +133,10 @@ public class MainServer extends Thread
         }
     }
 
-    private void setupStageTitle()
-    {
-        try
-        {
-            if (ip.isBlank())
-            {
-                StringBuilder ips = new StringBuilder();
-                Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
-                while(e.hasMoreElements())
-                {
-                    NetworkInterface n = e.nextElement();
-                    Enumeration<InetAddress> ee = n.getInetAddresses();
-                    while (ee.hasMoreElements())
-                    {
-                        InetAddress i = ee.nextElement();
-                        String hostAddress = i.getHostAddress();
-                        if(i instanceof Inet4Address)
-                        {
-                            ips.append(hostAddress);
-                            if(e.hasMoreElements())
-                                ips.append(" / ");
-                        }
-                    }
-                }
+    private BooleanProperty isFailedToStart = new SimpleBooleanProperty(false);
 
-                Platform.runLater(()-> serverListener.getStage().setTitle(I18N.getString("windowTitle") + " - " + I18N.getString("connection.MainServer.streamPiIPPlural", ips, port)));
-            }
-            else
-            {
-                Platform.runLater(()-> serverListener.getStage().setTitle(I18N.getString("windowTitle") + " - " + I18N.getString("connection.MainServer.streamPIIPSingular", ip, port)));
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            exceptionAndAlertHandler.handleMinorException(new MinorException(e.getMessage()));
-        }
+    public BooleanProperty isFailedToStart()
+    {
+        return isFailedToStart;
     }
 }

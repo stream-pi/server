@@ -32,6 +32,8 @@ public class SettingsBase extends VBox
 
     private TabPane tabPane;
 
+    private Tab generalSettingsTab, pluginsSettingsTab, themesSettingsTab, clientsSettingsTab, aboutTab;
+
     private GeneralSettings generalSettings;
     private PluginsSettings pluginsSettings;
     private ThemesSettings themesSettings;
@@ -53,23 +55,23 @@ public class SettingsBase extends VBox
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         VBox.setVgrow(tabPane, Priority.ALWAYS);
 
-        Tab generalSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.general"));
+        generalSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.general"));
         generalSettings = new GeneralSettings(exceptionAndAlertHandler, serverListener, hostServices);
         generalSettingsTab.setContent(generalSettings);
 
-        Tab pluginsSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.plugins"));
+        pluginsSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.plugins"));
         pluginsSettings = new PluginsSettings(exceptionAndAlertHandler, hostServices);
         pluginsSettingsTab.setContent(pluginsSettings);
 
-        Tab themesSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.themes"));
+        themesSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.themes"));
         themesSettings = new ThemesSettings(hostServices);
         themesSettingsTab.setContent(themesSettings);
 
-        Tab clientsSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.clients"));
+        clientsSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.clients"));
         clientsSettings = new ClientsSettings(exceptionAndAlertHandler, serverListener);
         clientsSettingsTab.setContent(clientsSettings);
 
-        Tab aboutTab = new Tab(I18N.getString("window.settings.SettingsBase.about"));
+        aboutTab = new Tab(I18N.getString("window.settings.SettingsBase.about"));
         aboutTab.setContent(new About(hostServices));
 
         tabPane.getTabs().addAll(generalSettingsTab, pluginsSettingsTab, themesSettingsTab, clientsSettingsTab, aboutTab);
@@ -85,6 +87,11 @@ public class SettingsBase extends VBox
         setCacheHint(CacheHint.SCALE);
 
         getStyleClass().add("settings_base");
+    }
+
+    public TabPane getTabPane()
+    {
+        return tabPane;
     }
 
     public void setDefaultTabToGeneral()
@@ -117,4 +124,28 @@ public class SettingsBase extends VBox
         return clientsSettings;
     }
 
+    public Tab getGeneralSettingsTab()
+    {
+        return generalSettingsTab;
+    }
+
+    public Tab getThemesSettingsTab()
+    {
+        return themesSettingsTab;
+    }
+
+    public Tab getClientsSettingsTab()
+    {
+        return clientsSettingsTab;
+    }
+
+    public Tab getPluginsSettingsTab()
+    {
+        return pluginsSettingsTab;
+    }
+
+    public Tab getAboutTab()
+    {
+        return aboutTab;
+    }
 }

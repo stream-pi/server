@@ -36,12 +36,15 @@ import com.stream_pi.server.window.Base;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.server.window.firsttimeuse.FirstTimeUse;
 import com.stream_pi.server.combobox.IPChooserComboBox;
+import com.stream_pi.server.window.windowmenubar.WindowMenuBar;
+import com.stream_pi.server.window.windowmenubar.filemenu.FileMenu;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertButton;
 import com.stream_pi.util.alert.StreamPiAlertListener;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.*;
 import com.stream_pi.util.iohelper.IOHelper;
+import com.stream_pi.util.links.Links;
 import com.stream_pi.util.rootchecker.RootChecker;
 import com.stream_pi.util.uihelper.HBoxInputBox;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
@@ -70,8 +73,8 @@ import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.io.File;
-import java.net.SocketAddress;
-import java.net.URL;
+import java.net.*;
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
@@ -97,6 +100,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     {
         try
         {
+            getStage().setTitle(I18N.getString("windowTitle"));
             getStage().setOnCloseRequest(this::onCloseRequest);
         }
         catch (Exception e)
@@ -104,6 +108,11 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             e.printStackTrace();
             throw new SevereException(e.getMessage());
         }
+    }
+
+    public MainServer getMainServer()
+    {
+        return mainServer;
     }
 
     @Override
@@ -115,7 +124,8 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             setupDashWindow();
 
             setupSettingsWindowsAnimations();
-            getDashboardBase().getPluginsPane().getSettingsButton().setOnAction(event -> openSettingsAnimation.play());
+
+
             getSettingsBase().getCloseButton().setOnAction(event -> closeSettingsAnimation.play());
 
             ExternalPlugins.getInstance().setToggleExtras(this);
@@ -125,7 +135,10 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
 
             getSettingsBase().getThemesSettings().setController(this);
 
+
             mainServer = new MainServer(this, this);
+
+            registerMenuBarButtons();
 
             if (RootChecker.isRoot(getServerInfo().getPlatform()))
             {
@@ -237,19 +250,96 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         }
     }
 
-    @Override
-    public void onServerStartFailure()
+    private void registerMenuBarButtons()
     {
-        Platform.runLater(()-> getStage().setTitle(I18N.getString("windowTitle") + " - " + I18N.getString("controller.Controller.offline")));
+        WindowMenuBar windowMenuBar = getDashboardBase().getWindowMenuBar();
 
-        setDisableTrayIcon(true);
+        windowMenuBar.getFileMenu().getSettingsMenu().setOnAction(event -> {
+            windowMenuBar.getFileMenu().hide();
+            openSettingsAnimation.play();
+        });
+
+
+        windowMenuBar.getFileMenu().getSettingsMenu().getGeneralSettingsMenuItem().setOnAction(actionEvent -> {
+            getSettingsBase().getTabPane().getSelectionModel().select(getSettingsBase().getGeneralSettingsTab());
+            openSettingsAnimation.play();
+        });
+
+        windowMenuBar.getFileMenu().getSettingsMenu().getPluginsSettingsMenuItem().setOnAction(actionEvent -> {
+            getSettingsBase().getTabPane().getSelectionModel().select(getSettingsBase().getPluginsSettingsTab());
+            openSettingsAnimation.play();
+        });
+
+        windowMenuBar.getFileMenu().getSettingsMenu().getThemesSettingsMenuItem().setOnAction(actionEvent -> {
+            getSettingsBase().getTabPane().getSelectionModel().select(getSettingsBase().getThemesSettingsTab());
+            openSettingsAnimation.play();
+        });
+
+        windowMenuBar.getFileMenu().getSettingsMenu().getClientSettingsMenuItem().setOnAction(actionEvent -> {
+            getSettingsBase().getTabPane().getSelectionModel().select(getSettingsBase().getClientsSettingsTab());
+            openSettingsAnimation.play();
+        });
+
+        windowMenuBar.getFileMenu().getShowIPPortConfigurationMenuItem().setOnAction(event->{
+            showIPPortConfiguration();
+        });
+
+
+        windowMenuBar.getHelpMenu().getWebsiteMenuItem().setOnAction(actionEvent -> {
+            getHostServices().showDocument(Links.getWebsite());
+        });
+
+        windowMenuBar.getHelpMenu().getDonateMenuItem().setOnAction(actionEvent -> {
+            getHostServices().showDocument(Links.getDonateLink());
+        });
+
+        windowMenuBar.getHelpMenu().getAboutMenuItem().setOnAction(actionEvent -> {
+            getSettingsBase().getTabPane().getSelectionModel().select(getSettingsBase().getAboutTab());
+            openSettingsAnimation.play();
+        });
+
+
     }
 
-    @Override
-    public void setDisableTrayIcon(boolean disableTrayIcon)
+    private void showIPPortConfiguration()
     {
-        this.disableTrayIcon = disableTrayIcon;
+        StringBuilder content = new StringBuilder("The Server is running on port "+getConfig().getPort()+".\nFollowing IPs are bind:\n");
+        try
+        {
+            if (getConfig().getIP().isBlank())
+            {
+                Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
+                while(e.hasMoreElements())
+                {
+                    NetworkInterface n = e.nextElement();
+                    Enumeration<InetAddress> ee = n.getInetAddresses();
+                    while (ee.hasMoreElements())
+                    {
+                        InetAddress i = ee.nextElement();
+                        String hostAddress = i.getHostAddress();
+                        if(i instanceof Inet4Address)
+                        {
+                            content.append("•").append(hostAddress);
+                            if(e.hasMoreElements())
+                                content.append("\n");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                content.append("•").append(getConfig().getIP());
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            handleMinorException(new MinorException(e.getMessage()));
+        }
+
+        new StreamPiAlert("Network Information", content.toString(), StreamPiAlertType.INFORMATION).show();
     }
+
 
     @Override
     public void showUserChooseIPAndPortDialog()
@@ -372,21 +462,21 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         closeSettingsAnimation = createCloseSettingsAnimation(settingsNode, dashboardNode);
     }
 
-    private boolean disableTrayIcon = false;
     public void onCloseRequest(WindowEvent event)
     {
         try
         {
             if(getConfig().getMinimiseToSystemTrayOnClose() &&
-                    SystemTray.isSupported() && !disableTrayIcon &&
+                    SystemTray.isSupported() && !getMainServer().isFailedToStart().get() &&
                     !getConfig().isFirstTimeUse())
             {
                 minimiseApp();
                 event.consume();
-                return;
             }
-
-            fullExit();
+            else
+            {
+                fullExit();
+            }
         }
         catch (MinorException e)
         {
@@ -403,7 +493,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             if(getConfig() != null)
             {
                 getConfig().setStartupWindowSize(getWidth(), getHeight());
-                getConfig().setRightDividerPositions(getDashboardBase().getDividerPositions());
+                getConfig().setRightDividerPositions(getDashboardBase().getSplitPane().getDividerPositions());
                 getConfig().setLeftDividerPositions(getDashboardBase().getLeftSplitPane().getDividerPositions());
                 getConfig().save();
             }

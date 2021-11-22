@@ -177,7 +177,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
             isOpenFirstTime = true;
         }
 
-        dashboardBase.setDividerPositions(config.getRightDividerPositions());
+        dashboardBase.getSplitPane().setDividerPositions(config.getRightDividerPositions());
         dashboardBase.getLeftSplitPane().setDividerPositions(config.getLeftDividerPositions());
 
         dashboardBase.toFront();
