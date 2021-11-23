@@ -14,6 +14,7 @@
 
 package com.stream_pi.server.window.windowmenubar.filemenu;
 
+import com.stream_pi.server.i18n.I18N;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 
@@ -24,10 +25,10 @@ public class FileMenu extends Menu
 
     public FileMenu()
     {
-        setText("File");
+        setText(I18N.getString("window.windowmenubar.filemenu.FileMenu.file"));
 
         settingsMenu = new SettingsMenu();
-        showIPPortConfigurationMenuItem = new MenuItem("Show IP/Port combination");
+        showIPPortConfigurationMenuItem = new MenuItem(I18N.getString("window.windowmenubar.filemenu.FileMenu.showIPPortCombination"));
 
 
         getItems().addAll(settingsMenu, showIPPortConfigurationMenuItem);

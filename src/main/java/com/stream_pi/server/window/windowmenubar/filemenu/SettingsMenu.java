@@ -14,6 +14,7 @@
 
 package com.stream_pi.server.window.windowmenubar.filemenu;
 
+import com.stream_pi.server.i18n.I18N;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 
@@ -23,12 +24,12 @@ public class SettingsMenu extends Menu
 
     public SettingsMenu()
     {
-        setText("Settings");
+        setText(I18N.getString("window.windowmenubar.filemenu.SettingsMenu.settings"));
 
-        generalSettingsMenuItem = new MenuItem("General");
-        pluginsSettingsMenuItem = new MenuItem("Plugins");
-        themesSettingsMenuItem = new MenuItem("Themes");
-        clientSettingsMenuItem = new MenuItem("Clients");
+        generalSettingsMenuItem = new MenuItem(I18N.getString("general"));
+        pluginsSettingsMenuItem = new MenuItem(I18N.getString("plugins"));
+        themesSettingsMenuItem = new MenuItem(I18N.getString("themes"));
+        clientSettingsMenuItem = new MenuItem(I18N.getString("clients"));
 
         getItems().addAll(generalSettingsMenuItem, pluginsSettingsMenuItem, themesSettingsMenuItem, clientSettingsMenuItem);
     }

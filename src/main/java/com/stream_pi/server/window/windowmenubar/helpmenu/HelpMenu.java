@@ -14,6 +14,7 @@
 
 package com.stream_pi.server.window.windowmenubar.helpmenu;
 
+import com.stream_pi.server.i18n.I18N;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
@@ -24,11 +25,11 @@ public class HelpMenu extends Menu
 
     public HelpMenu()
     {
-        setText("Help");
+        setText(I18N.getString("window.windowmenubar.helpmenu.HelpMenu.help"));
 
-        websiteMenuItem = new MenuItem("Visit Our Website");
-        donateMenuItem = new MenuItem("Donate");
-        aboutMenuItem = new MenuItem("About");
+        websiteMenuItem = new MenuItem(I18N.getString("website"));
+        donateMenuItem = new MenuItem(I18N.getString("donate"));
+        aboutMenuItem = new MenuItem(I18N.getString("about"));
 
         getItems().addAll(websiteMenuItem, new SeparatorMenuItem(), donateMenuItem, aboutMenuItem);
     }

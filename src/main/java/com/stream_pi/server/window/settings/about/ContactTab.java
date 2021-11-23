@@ -39,7 +39,7 @@ public class ContactTab extends ScrollPane
         Hyperlink discord = new Hyperlink("Discord");
         discord.setOnAction(event -> openWebpage(Links.getDiscord()));
 
-        Hyperlink website = new Hyperlink(I18N.getString("window.settings.about.ContactTab.website"));
+        Hyperlink website = new Hyperlink(I18N.getString("website"));
         website.setOnAction(event -> openWebpage(Links.getWebsite()));
 
         Hyperlink twitter = new Hyperlink("Twitter");

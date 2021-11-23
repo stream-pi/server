@@ -55,23 +55,23 @@ public class SettingsBase extends VBox
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         VBox.setVgrow(tabPane, Priority.ALWAYS);
 
-        generalSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.general"));
+        generalSettingsTab = new Tab(I18N.getString("general"));
         generalSettings = new GeneralSettings(exceptionAndAlertHandler, serverListener, hostServices);
         generalSettingsTab.setContent(generalSettings);
 
-        pluginsSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.plugins"));
+        pluginsSettingsTab = new Tab(I18N.getString("plugins"));
         pluginsSettings = new PluginsSettings(exceptionAndAlertHandler, hostServices);
         pluginsSettingsTab.setContent(pluginsSettings);
 
-        themesSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.themes"));
+        themesSettingsTab = new Tab(I18N.getString("themes"));
         themesSettings = new ThemesSettings(hostServices);
         themesSettingsTab.setContent(themesSettings);
 
-        clientsSettingsTab = new Tab(I18N.getString("window.settings.SettingsBase.clients"));
+        clientsSettingsTab = new Tab(I18N.getString("clients"));
         clientsSettings = new ClientsSettings(exceptionAndAlertHandler, serverListener);
         clientsSettingsTab.setContent(clientsSettings);
 
-        aboutTab = new Tab(I18N.getString("window.settings.SettingsBase.about"));
+        aboutTab = new Tab(I18N.getString("about"));
         aboutTab.setContent(new About(hostServices));
 
         tabPane.getTabs().addAll(generalSettingsTab, pluginsSettingsTab, themesSettingsTab, clientsSettingsTab, aboutTab);
