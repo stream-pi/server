@@ -232,6 +232,20 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
                         throw new SevereException(I18N.getString("window.Base.noStoragePermission"));
                     }
                 }
+                else
+                {
+                    File pluginsFolder = new File(configFile.getParentFile().getAbsolutePath()+File.separator+"Plugins");
+
+                    if (pluginsFolder.exists())
+                    {
+                        logger.info("Found old Plugins folder. Deleting it ...");
+
+                        if(!pluginsFolder.delete())
+                        {
+                            logger.severe("Unable to delete old Plugins folder!");
+                        }
+                    }
+                }
 
                 Config.unzipToDefaultPrePath();
                 initLogger();
