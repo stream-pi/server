@@ -420,24 +420,19 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         getLogger().info("Reset to factory ...");
 
         onQuitApp();
-        
-        try 
-        {
-            IOHelper.deleteFile(getServerInfo().getPrePath(), true);
 
-            StreamPiAlert streamPiAlert = new StreamPiAlert("Stream-Pi Server has been successfully reset. The application shall now quit.", StreamPiAlertType.INFORMATION, StreamPiAlertButton.OK);
-            streamPiAlert.setOnClicked(new StreamPiAlertListener() {
-                @Override
-                public void onClick(StreamPiAlertButton streamPiAlertButton) {
-                    exit();
-                }
-            });
-            streamPiAlert.show();
-        }
-        catch (SevereException e)
-        {
-            handleSevereException(I18N.getString("controller.Controller.factoryResetUnsuccessful", getServerInfo().getPrePath(), e.getMessage()),e);
-        }
+        IOHelper.deleteFile(getServerInfo().getPrePath(), true);
+
+        StreamPiAlert streamPiAlert = new StreamPiAlert("Stream-Pi Server has been successfully reset. The application shall now quit.", StreamPiAlertType.INFORMATION, StreamPiAlertButton.OK);
+
+        streamPiAlert.setOnClicked(new StreamPiAlertListener() {
+            @Override
+            public void onClick(StreamPiAlertButton streamPiAlertButton) {
+                exit();
+            }
+        });
+
+        streamPiAlert.show();
     }
 
     private void fullExit()

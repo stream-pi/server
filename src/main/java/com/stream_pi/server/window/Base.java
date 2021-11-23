@@ -30,6 +30,7 @@ import com.stream_pi.util.Util;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
+import com.stream_pi.util.iohelper.IOHelper;
 import com.stream_pi.util.loggerhelper.StreamPiLogFallbackHandler;
 import com.stream_pi.util.loggerhelper.StreamPiLogFileHandler;
 
@@ -227,7 +228,7 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
                     {
                         logger.info("Found old Plugins folder. Deleting it ...");
 
-                        if(!pluginsFolder.delete())
+                        if(!IOHelper.deleteFile(pluginsFolder, false))
                         {
                             logger.severe("Unable to delete old Plugins folder!");
                         }
