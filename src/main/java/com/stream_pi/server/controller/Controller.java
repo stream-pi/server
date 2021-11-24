@@ -58,7 +58,9 @@ import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioClip;
@@ -259,39 +261,50 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         });
 
 
-        windowMenuBar.getFileMenu().getSettingsMenu().getGeneralSettingsMenuItem().setOnAction(actionEvent -> {
+        windowMenuBar.getFileMenu().getSettingsMenu().getGeneralSettingsMenuItem().setOnAction(event -> {
             getSettingsBase().getTabPane().getSelectionModel().select(getSettingsBase().getGeneralSettingsTab());
             openSettingsAnimation.play();
         });
 
-        windowMenuBar.getFileMenu().getSettingsMenu().getPluginsSettingsMenuItem().setOnAction(actionEvent -> {
+        windowMenuBar.getFileMenu().getSettingsMenu().getPluginsSettingsMenuItem().setOnAction(event -> {
             getSettingsBase().getTabPane().getSelectionModel().select(getSettingsBase().getPluginsSettingsTab());
             openSettingsAnimation.play();
         });
 
-        windowMenuBar.getFileMenu().getSettingsMenu().getThemesSettingsMenuItem().setOnAction(actionEvent -> {
+        windowMenuBar.getFileMenu().getSettingsMenu().getThemesSettingsMenuItem().setOnAction(event -> {
             getSettingsBase().getTabPane().getSelectionModel().select(getSettingsBase().getThemesSettingsTab());
             openSettingsAnimation.play();
         });
 
-        windowMenuBar.getFileMenu().getSettingsMenu().getClientSettingsMenuItem().setOnAction(actionEvent -> {
+        windowMenuBar.getFileMenu().getSettingsMenu().getClientSettingsMenuItem().setOnAction(event -> {
             getSettingsBase().getTabPane().getSelectionModel().select(getSettingsBase().getClientsSettingsTab());
             openSettingsAnimation.play();
         });
 
-        windowMenuBar.getFileMenu().getShowIPPortConfigurationMenuItem().setOnAction(event->{
-            showIPPortConfiguration();
+        windowMenuBar.getFileMenu().getDisconnectFromAllClients().disableProperty().bind(ClientConnections.getInstance().getSizeProperty().isEqualTo(0));
+        windowMenuBar.getFileMenu().getDisconnectFromAllClients().setOnAction(event -> ClientConnections.getInstance().disconnectAll());
+
+        windowMenuBar.getFileMenu().getExitMenuItem().setOnAction(event -> {
+            onCloseRequest(null);
+            exit();
         });
 
 
-        windowMenuBar.getHelpMenu().getWebsiteMenuItem().setOnAction(actionEvent -> getHostServices().showDocument(Links.getWebsite()));
 
-        windowMenuBar.getHelpMenu().getDonateMenuItem().setOnAction(actionEvent -> getHostServices().showDocument(Links.getDonateLink()));
 
-        windowMenuBar.getHelpMenu().getAboutMenuItem().setOnAction(actionEvent -> {
+        windowMenuBar.getShowIPPortConfigurationMenuLabel().addEventHandler(MouseEvent.MOUSE_CLICKED, event -> showIPPortConfiguration());
+
+
+        windowMenuBar.getHelpMenu().getWebsiteMenuItem().setOnAction(event -> getHostServices().showDocument(Links.getWebsite()));
+
+        windowMenuBar.getHelpMenu().getDonateMenuItem().setOnAction(event -> getHostServices().showDocument(Links.getDonateLink()));
+
+        windowMenuBar.getHelpMenu().getAboutMenuItem().setOnAction(event -> {
             getSettingsBase().getTabPane().getSelectionModel().select(getSettingsBase().getAboutTab());
             openSettingsAnimation.play();
         });
+
+
     }
 
     private void showIPPortConfiguration()
@@ -459,7 +472,11 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
                     !getConfig().isFirstTimeUse())
             {
                 minimiseApp();
-                event.consume();
+
+                if(event != null)
+                {
+                    event.consume();
+                }
             }
             else
             {
@@ -632,7 +649,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     }
 
     private AudioClip audioClip = null;
-    private String audioFilePath = null;
+
     private void playSound()
     {
         if(audioClip.isPlaying())
@@ -647,7 +664,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     @Override
     public void initSoundOnActionClicked()
     {
-        audioFilePath = getConfig().getSoundOnActionClickedFilePath();
+        String audioFilePath = getConfig().getSoundOnActionClickedFilePath();
 
         File file = new File(audioFilePath);
 

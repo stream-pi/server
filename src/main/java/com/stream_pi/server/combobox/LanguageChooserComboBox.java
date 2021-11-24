@@ -15,7 +15,7 @@
 package com.stream_pi.server.combobox;
 
 import com.stream_pi.server.i18n.I18N;
-import com.stream_pi.util.i18n.Language;
+import com.stream_pi.util.i18n.language.Language;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;

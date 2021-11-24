@@ -21,17 +21,19 @@ import javafx.scene.control.MenuItem;
 public class FileMenu extends Menu
 {
     private SettingsMenu settingsMenu;
-    private MenuItem showIPPortConfigurationMenuItem;
+    private MenuItem exitMenuItem;
+    private MenuItem disconnectFromAllClients;
 
     public FileMenu()
     {
         setText(I18N.getString("window.windowmenubar.filemenu.FileMenu.file"));
 
         settingsMenu = new SettingsMenu();
-        showIPPortConfigurationMenuItem = new MenuItem(I18N.getString("window.windowmenubar.filemenu.FileMenu.showIPPortCombination"));
 
+        disconnectFromAllClients = new MenuItem(I18N.getString("window.windowmenubar.filemenu.FileMenu.disconnectFromAllClients"));
+        exitMenuItem = new MenuItem(I18N.getString("window.windowmenubar.filemenu.FileMenu.exit"));
 
-        getItems().addAll(settingsMenu, showIPPortConfigurationMenuItem);
+        getItems().addAll(settingsMenu, disconnectFromAllClients, exitMenuItem);
     }
 
     public SettingsMenu getSettingsMenu()
@@ -39,8 +41,13 @@ public class FileMenu extends Menu
         return settingsMenu;
     }
 
-    public MenuItem getShowIPPortConfigurationMenuItem()
+    public MenuItem getDisconnectFromAllClients()
     {
-        return showIPPortConfigurationMenuItem;
+        return disconnectFromAllClients;
+    }
+
+    public MenuItem getExitMenuItem()
+    {
+        return exitMenuItem;
     }
 }

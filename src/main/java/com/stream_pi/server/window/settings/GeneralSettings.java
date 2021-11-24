@@ -184,14 +184,13 @@ public class GeneralSettings extends VBox
                 restartButton
         );
 
-        vbox.prefWidthProperty().bind(widthProperty().subtract(25));
 
 
         vbox.getStyleClass().add("general_settings_vbox");
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.getStyleClass().add("general_settings_scroll_pane");
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setFitToWidth(true);
         scrollPane.setContent(vbox);
 
         getStyleClass().add("general_settings");

@@ -76,8 +76,8 @@ public class ClientsSettings extends VBox
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
         scrollPane.maxWidthProperty().bind(widthProperty().multiply(0.8));
+        scrollPane.setFitToWidth(true);
 
-        clientsSettingsVBox.prefWidthProperty().bind(scrollPane.widthProperty().subtract(25));
         scrollPane.setContent(clientsSettingsVBox);
 
         saveButton = new Button(I18N.getString("save"));

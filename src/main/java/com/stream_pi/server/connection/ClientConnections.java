@@ -15,18 +15,25 @@
 package com.stream_pi.server.connection;
 
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 import java.net.SocketAddress;
 import java.util.ArrayList;
 
-public class ClientConnections {
-
+public class ClientConnections
+{
     private ArrayList<ClientConnection> connections;
 
     private static ClientConnections instance = null;
 
+    private IntegerProperty sizeProperty;
+
+
     private ClientConnections()
     {
         connections = new ArrayList<>();
+        sizeProperty = new SimpleIntegerProperty(0);
     }
 
     public static synchronized ClientConnections getInstance()
@@ -44,18 +51,15 @@ public class ClientConnections {
         return connections;
     }
 
-    public void clearAllConnections()
-    {
-        connections.clear(); // NOT RECOMMENDED TO USE CARELESSLY
-    }
-
     public void addConnection(ClientConnection connection)
     {
+        sizeProperty.set(sizeProperty.get()+1);
         connections.add(connection);
     }
 
     public void removeConnection(ClientConnection clientConnection)
     {
+        sizeProperty.set(sizeProperty.get()-1);
         connections.remove(clientConnection);
     }
 
@@ -64,10 +68,11 @@ public class ClientConnections {
         new Thread(()->{
             for(ClientConnection clientConnection : connections)
             {
-                clientConnection.exit();
+                clientConnection.exit(false);
             }
 
-            clearAllConnections();
+            sizeProperty.set(0);
+            connections.clear();
         }).start();
     }
 
@@ -80,5 +85,10 @@ public class ClientConnections {
         }
 
         return null;
+    }
+
+    public IntegerProperty getSizeProperty()
+    {
+        return sizeProperty;
     }
 }

@@ -299,7 +299,12 @@
 .general_settings_vbox
 {
     -fx-spacing: 5;
-    -fx-padding: 0 0 0 10;
+    -fx-padding: 0 10 0 10;
+}
+
+.themes_settings_vbox, .plugins_settings_vbox, .clients_settings_vbox
+{
+    -fx-padding: 0 5 0 0;
 }
 
 .general_settings
@@ -337,4 +342,19 @@ ScrollPane
 .action_grid_pane
 {
     -fx-background-color: transparent;
+}
+
+.menu-item
+{
+    -fx-padding: 2 5 2 5;
+}
+
+.menu
+{
+    -fx-padding: 2 5 2 5;
+}
+
+.menu_bar_show_ip_port_configuration_menu_label:hover
+{
+    -fx-text-fill: white;
 }

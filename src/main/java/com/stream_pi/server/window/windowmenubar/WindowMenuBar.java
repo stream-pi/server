@@ -15,30 +15,30 @@
 package com.stream_pi.server.window.windowmenubar;
 
 
+import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.windowmenubar.filemenu.FileMenu;
 import com.stream_pi.server.window.windowmenubar.helpmenu.HelpMenu;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.*;
 
 public class WindowMenuBar extends MenuBar
 {
-    private FileMenu fileMenu;
-    private HelpMenu helpMenu;
-
+    private final FileMenu fileMenu;
+    private final HelpMenu helpMenu;
+    private final Label showIPPortConfigurationMenuLabel;
 
     public WindowMenuBar()
     {
-        getStyleClass().add("base_menu_bar");
-
+        getStyleClass().add("menu_bar");
 
         fileMenu = new FileMenu();
-
         helpMenu = new HelpMenu();
 
+        Menu showIPPortConfigurationMenu = new Menu();
+        showIPPortConfigurationMenuLabel = new Label(I18N.getString("window.windowmenubar.WindowMenuBar.showIPPortConfiguration"));
+        showIPPortConfigurationMenuLabel.getStyleClass().add("menu_bar_show_ip_port_configuration_menu_label");
+        showIPPortConfigurationMenu.setGraphic(showIPPortConfigurationMenuLabel);
 
-        getMenus().addAll(fileMenu, helpMenu);
+        getMenus().addAll(fileMenu, helpMenu, showIPPortConfigurationMenu);
     }
 
 
@@ -50,5 +50,10 @@ public class WindowMenuBar extends MenuBar
     public HelpMenu getHelpMenu()
     {
         return helpMenu;
+    }
+
+    public Label getShowIPPortConfigurationMenuLabel()
+    {
+        return showIPPortConfigurationMenuLabel;
     }
 }

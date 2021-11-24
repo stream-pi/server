@@ -102,8 +102,17 @@ public class ClientConnection extends Thread
 
     public synchronized void exit()
     {
+        exit(true);
+    }
+
+    private boolean isAutoRemove = true;
+    public synchronized void exit(boolean isAutoRemove)
+    {
         if(stop.get())
             return;
+
+        this.isAutoRemove = isAutoRemove;
+        callOnClientDisconnectOnAllActions();
 
         logger.info("Stopping ...");
 
@@ -130,9 +139,11 @@ public class ClientConnection extends Thread
     public synchronized void exitAndRemove()
     {
         exit();
-        callOnClientDisconnectOnAllActions();
-        removeConnection();
-        serverListener.clearTemp();
+
+        if(isAutoRemove)
+        {
+            removeConnection();
+        }
     }
 
     public void callOnClientDisconnectOnAllActions()
@@ -870,12 +881,6 @@ public class ClientConnection extends Thread
         {
             updateActionGaugeProperties(action.getGaugeProperties(), profileID, action.getID());
         }
-    }
-
-    public void getClientScreenDetails() throws SevereException
-    {
-        Message message = new Message("get_client_screen_details");
-        sendMessage(message);
     }
 
     public void onClientScreenDetailsReceived(Message message)

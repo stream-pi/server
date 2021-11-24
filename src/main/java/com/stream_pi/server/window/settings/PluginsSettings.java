@@ -71,10 +71,9 @@ public class PluginsSettings extends VBox
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.getStyleClass().add("plugins_settings_scroll_pane");
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setFitToWidth(true);
         scrollPane.maxWidthProperty().bind(widthProperty().multiply(0.8));
 
-        pluginsSettingsVBox.prefWidthProperty().bind(scrollPane.widthProperty().subtract(25));
         scrollPane.setContent(pluginsSettingsVBox);
 
         VBox.setVgrow(scrollPane, Priority.ALWAYS);

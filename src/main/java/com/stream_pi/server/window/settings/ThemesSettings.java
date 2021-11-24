@@ -61,10 +61,9 @@ public class ThemesSettings extends VBox
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.getStyleClass().add("themes_settings_scroll_pane");
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setFitToWidth(true);
         scrollPane.maxWidthProperty().bind(widthProperty().multiply(0.8));
 
-        themesSettingsVBox.prefWidthProperty().bind(scrollPane.widthProperty().subtract(10));
         scrollPane.setContent(themesSettingsVBox);
 
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
