@@ -26,6 +26,7 @@ public class HelpMenu extends Menu
     public HelpMenu()
     {
         setText(I18N.getString("window.windowmenubar.helpmenu.HelpMenu.help"));
+        getStyleClass().add("menu_bar_help_menu");
 
         websiteMenuItem = new MenuItem(I18N.getString("website"));
         donateMenuItem = new MenuItem(I18N.getString("donate"));

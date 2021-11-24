@@ -27,6 +27,7 @@ public class FileMenu extends Menu
     public FileMenu()
     {
         setText(I18N.getString("window.windowmenubar.filemenu.FileMenu.file"));
+        getStyleClass().add("menu_bar_file_menu");
 
         settingsMenu = new SettingsMenu();
 

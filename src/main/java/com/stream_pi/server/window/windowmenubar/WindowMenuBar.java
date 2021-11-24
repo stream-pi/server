@@ -34,6 +34,7 @@ public class WindowMenuBar extends MenuBar
         helpMenu = new HelpMenu();
 
         Menu showIPPortConfigurationMenu = new Menu();
+        showIPPortConfigurationMenu.getStyleClass().add("menu_bar_show_ip_port_configuration_menu");
         showIPPortConfigurationMenuLabel = new Label(I18N.getString("window.windowmenubar.WindowMenuBar.showIPPortConfiguration"));
         showIPPortConfigurationMenuLabel.getStyleClass().add("menu_bar_show_ip_port_configuration_menu_label");
         showIPPortConfigurationMenu.setGraphic(showIPPortConfigurationMenuLabel);
