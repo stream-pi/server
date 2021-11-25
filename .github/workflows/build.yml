@@ -86,7 +86,7 @@ jobs:
           cp assets/AppImage/* "${INSTALL_DIR}/Stream-Pi Server/"
 
           mv "${INSTALL_DIR}/Stream-Pi Server" "${INSTALL_DIR}/Stream-Pi Server.AppDir"
-          /tmp/appimagetool-x86_64.AppImage "{INSTALL_DIR}/Stream-Pi Server.AppDir" "stream-pi-server-${{ env.VERSION }}.AppImage"
+          /tmp/appimagetool-x86_64.AppImage "${INSTALL_DIR}/Stream-Pi Server.AppDir" "stream-pi-server-${{ env.VERSION }}.AppImage"
 
 
           NEW_V=${{ env.VERSION }}
