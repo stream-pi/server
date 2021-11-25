@@ -57,7 +57,7 @@ public class StartupFlags
 
         if (runnerFileName!=null)
         {
-            args+=" Stream-Pi.startupRunnerFileName="+runnerFileName;
+            args+=" Stream-Pi.startupRunnerFileName='"+runnerFileName+"'";
         }
 
         return args;
