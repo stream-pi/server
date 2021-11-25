@@ -46,4 +46,20 @@ public class StartupFlags
         System.out.println("ALLOW_ROOT: '"+ALLOW_ROOT+"'");
         System.out.println("----------------------");
     }
+
+    public static String generateRuntimeArguments(boolean startMinimised,
+                                                  boolean appendPathBeforeRunnerFileToOverrideJPackageLimitation,
+                                                  boolean allowRoot, String runnerFileName)
+    {
+        String args = "Stream-Pi.startMinimised="+startMinimised+
+                " Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation="+appendPathBeforeRunnerFileToOverrideJPackageLimitation+
+                " Stream-Pi.allowRoot="+allowRoot;
+
+        if (runnerFileName!=null)
+        {
+            args+=" Stream-Pi.startupRunnerFileName="+runnerFileName;
+        }
+
+        return args;
+    }
 }
