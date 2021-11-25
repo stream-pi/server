@@ -309,9 +309,12 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
 
     private void showIPPortConfiguration()
     {
-        StringBuilder content = new StringBuilder("The Server is running on port "+getConfig().getPort()+".\nFollowing IPs are bind:\n");
         try
         {
+            StringBuilder content = new StringBuilder(I18N.getString("controller.Controller.port", getConfig().getPort()));
+
+            content.append("\n").append(I18N.getString("controller.Controller.IPs"));
+
             if (getConfig().getIP().isBlank())
             {
                 Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
@@ -325,17 +328,19 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
                         String hostAddress = i.getHostAddress();
                         if(i instanceof Inet4Address)
                         {
-                            content.append("•").append(hostAddress);
-                            if(e.hasMoreElements())
-                                content.append("\n");
+                            content.append("\n").append("•").append(hostAddress);
                         }
                     }
                 }
             }
             else
             {
-                content.append("•").append(getConfig().getIP());
+                content.append("\n").append("•").append(getConfig().getIP());
             }
+
+            new StreamPiAlert(I18N.getString("controller.Controller.IPPortConfiguration"),
+                    content.toString(),
+                    StreamPiAlertType.INFORMATION).show();
         }
         catch (Exception e)
         {
@@ -343,7 +348,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             handleMinorException(new MinorException(e.getMessage()));
         }
 
-        new StreamPiAlert("Network Information", content.toString(), StreamPiAlertType.INFORMATION).show();
+
     }
 
 
@@ -565,7 +570,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
 
         PopupMenu popup = new PopupMenu();
 
-        MenuItem exitItem = new MenuItem(I18N.getString("controller.Controller.systemTrayExit"));
+        MenuItem exitItem = new MenuItem(I18N.getString("exit"));
         exitItem.addActionListener(l->{
             systemTray.remove(getTrayIcon());
             fullExit();

@@ -32,7 +32,7 @@ public class FileMenu extends Menu
         settingsMenu = new SettingsMenu();
 
         disconnectFromAllClients = new MenuItem(I18N.getString("window.windowmenubar.filemenu.FileMenu.disconnectFromAllClients"));
-        exitMenuItem = new MenuItem(I18N.getString("window.windowmenubar.filemenu.FileMenu.exit"));
+        exitMenuItem = new MenuItem(I18N.getString("exit"));
 
         getItems().addAll(settingsMenu, disconnectFromAllClients, exitMenuItem);
     }

@@ -358,3 +358,9 @@ ScrollPane
 {
     -fx-text-fill: white;
 }
+
+.menu_bar_show_ip_port_configuration_menu_label
+{
+    -fx-background-insets: -5;
+    -fx-background-color: transparent;
+}
