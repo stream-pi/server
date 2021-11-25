@@ -21,18 +21,27 @@ public class StartupFlags
     public static boolean APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION = false;
     public static boolean ALLOW_ROOT = false;
 
-    public static void init()
+    public static void init(String[] args)
     {
-        String startupRunnerFileName = System.getProperty("Stream-Pi.startupRunnerFileName");
-        RUNNER_FILE_NAME = (startupRunnerFileName == null) ? RUNNER_FILE_NAME : startupRunnerFileName;
+        for (String arg : args)
+        {
+            switch(arg)
+            {
+                case "Stream-Pi.startupRunnerFileName": RUNNER_FILE_NAME = parseStringArg(arg); break;
+                case "Stream-Pi.startMinimised": START_MINIMISED = parseBooleanArg(arg); break;
+                case "Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation": APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION = parseBooleanArg(arg); break;
+                case "Stream-Pi.allowRoot": ALLOW_ROOT = parseBooleanArg(arg); break;
+            }
+        }
+    }
 
-        String startMinimised = System.getProperty("Stream-Pi.startMinimised");
-        START_MINIMISED = (startMinimised == null) ? START_MINIMISED : startMinimised.equals("true");
+    private static String parseStringArg(String arg)
+    {
+        return arg.substring(arg.indexOf("=")).strip();
+    }
 
-        String appendPathBeforeRunnerFileToOvercomeJPackageLimitation = System.getProperty("Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation");
-        APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION = (appendPathBeforeRunnerFileToOvercomeJPackageLimitation == null) ? APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION : appendPathBeforeRunnerFileToOvercomeJPackageLimitation.equals("true");
-
-        String allowRoot = System.getProperty("Stream-Pi.allowRoot");
-        ALLOW_ROOT = (allowRoot == null) ? ALLOW_ROOT : allowRoot.equals("true");
+    private static boolean parseBooleanArg(String arg)
+    {
+        return arg.substring(arg.indexOf("=")).trim().equals("true");
     }
 }

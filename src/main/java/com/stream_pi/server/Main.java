@@ -35,7 +35,7 @@ public class Main extends Application
      */
     public void start(Stage stage)
     {
-        StartupFlags.init();
+
 
         Controller d = new Controller();
         Scene s = new Scene(d);
@@ -50,6 +50,9 @@ public class Main extends Application
      */
     public static void main(String[] args) 
     {
+        System.out.println("WORKING DIRECTORY : "+System.getProperty("user.dir"));
+
+        StartupFlags.init(args);
         launch(args);
     }
 }
