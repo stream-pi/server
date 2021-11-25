@@ -50,8 +50,6 @@ public class Main extends Application
      */
     public static void main(String[] args) 
     {
-        System.out.println("WORKING DIRECTORY : "+System.getProperty("user.dir"));
-
         StartupFlags.init(args);
         launch(args);
     }
