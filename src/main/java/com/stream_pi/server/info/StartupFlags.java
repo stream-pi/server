@@ -23,32 +23,18 @@ public class StartupFlags
 
     public static void init(String[] args)
     {
-        for (int i = 0;i <args.length; i++)
+        for (String arg : args)
         {
-            System.out.println(i+". '"+args[i]+"'");
-        }
+            System.out.println("ARG. '"+arg+"'");
+            String[] arr = arg.split("=");
 
-        System.out.println("\n========\n");
-
-        for (int i = 0; i<args.length; i++)
-        {
-            StringBuilder arg = new StringBuilder(args[i]);
-
-            /*if (arg.toString().startsWith("'"))
+            String val = arr[1].strip();
+            switch(arr[0])
             {
-                while(!arg.toString().endsWith("'"))
-                {
-                    i++;
-                    arg.append(args[i]);
-                }
-            }*/
-
-            switch(arg.toString())
-            {
-                case "Stream-Pi.startupRunnerFileName": RUNNER_FILE_NAME = parseStringArg(arg.toString()); break;
-                case "Stream-Pi.startMinimised": START_MINIMISED = parseBooleanArg(arg.toString()); break;
-                case "Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation": APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION = parseBooleanArg(arg.toString()); break;
-                case "Stream-Pi.allowRoot": ALLOW_ROOT = parseBooleanArg(arg.toString()); break;
+                case "Stream-Pi.startupRunnerFileName": RUNNER_FILE_NAME = val; break;
+                case "Stream-Pi.startMinimised": START_MINIMISED = val.equals("true"); break;
+                case "Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation": APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION = val.equals("true"); break;
+                case "Stream-Pi.allowRoot": ALLOW_ROOT = val.equals("true"); break;
             }
         }
 
@@ -59,15 +45,5 @@ public class StartupFlags
         System.out.println("APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION: '"+APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION+"'");
         System.out.println("ALLOW_ROOT: '"+ALLOW_ROOT+"'");
         System.out.println("----------------------");
-    }
-
-    private static String parseStringArg(String arg)
-    {
-        return arg.substring(arg.indexOf("=")).strip();
-    }
-
-    private static boolean parseBooleanArg(String arg)
-    {
-        return arg.substring(arg.indexOf("=")).trim().equals("true");
     }
 }
