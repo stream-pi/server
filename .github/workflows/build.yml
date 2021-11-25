@@ -35,7 +35,7 @@ jobs:
           cd /tmp
           axel -n 8 https://download2.gluonhq.com/openjfx/18/openjfx-18-ea+7_linux-x64_bin-jmods.zip
           unzip /tmp/openjfx-18-ea+7_linux-x64_bin-jmods.zip -d /tmp
-      - name: Setup AppImaeg
+      - name: Setup AppImage
         run: |
           cd /tmp
           axel -n 8 https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
@@ -98,14 +98,8 @@ jobs:
           --app-version $NEW_V \
           --type rpm
 
-          ls -l
-
           mv ${INSTALL_DIR}/*.deb stream-pi-server-linux-x64-${{ env.VERSION }}.deb
           mv ${INSTALL_DIR}/*.rpm stream-pi-server-linux-x64-${{ env.VERSION }}.rpm
-
-          echo xyz
-
-          ls -l
         env:
           MAIN_CLASS: com.stream_pi.server.Main
           JAVAFX_JMODS: /tmp/javafx-jmods-18/
