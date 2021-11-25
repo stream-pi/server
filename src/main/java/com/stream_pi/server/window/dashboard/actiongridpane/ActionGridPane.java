@@ -357,26 +357,35 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
         if (isFreshRender)
         {
-            boolean finalSelector = (renderSelector == RenderSelector.ROW);
-
-            if(getClient().getOrientation() == Orientation.VERTICAL)
-            {
-                finalSelector = !finalSelector;
-            }
+            boolean inverse = getClient().getOrientation() == Orientation.VERTICAL;
 
 
-            if (finalSelector)
+            if (renderSelector == RenderSelector.ROW)
             {
                 for(int i = 0; i<rows; i++)
                 {
-                    actionsGridPane.addRow(i, actionBoxesToBeAdded[i]);
+                    if (inverse)
+                    {
+                        actionsGridPane.addColumn(i, actionBoxesToBeAdded[i]);
+                    }
+                    else
+                    {
+                        actionsGridPane.addRow(i, actionBoxesToBeAdded[i]);
+                    }
                 }
             }
             else
             {
                 for(int i = 0; i<cols; i++)
                 {
-                    actionsGridPane.addColumn(i, actionBoxesToBeAdded[i]);
+                    if (inverse)
+                    {
+                        actionsGridPane.addRow(i, actionBoxesToBeAdded[i]);
+                    }
+                    else
+                    {
+                        actionsGridPane.addColumn(i, actionBoxesToBeAdded[i]);
+                    }
                 }
             }
         }

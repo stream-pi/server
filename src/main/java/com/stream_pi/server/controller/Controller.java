@@ -160,7 +160,6 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
                 getChildren().add(firstTimeUse);
 
                 firstTimeUse.toFront();
-                getStage().setTitle(I18N.getString("windowTitle"));
                 getStage().show();
             }
             else

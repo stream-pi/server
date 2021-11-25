@@ -346,12 +346,12 @@ ScrollPane
 
 .menu-item
 {
-    -fx-padding: 2 5 2 5;
+    -fx-padding: 3 5 3 5;
 }
 
 .menu
 {
-    -fx-padding: 2 5 2 5;
+    -fx-padding: 3 5 3 5;
 }
 
 .menu_bar_show_ip_port_configuration_menu_label:hover
