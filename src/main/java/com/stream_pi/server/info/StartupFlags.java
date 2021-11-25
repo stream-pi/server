@@ -23,16 +23,35 @@ public class StartupFlags
 
     public static void init(String[] args)
     {
-        for (String arg : args)
+        for (int i = 0; i<args.length; i++)
         {
-            switch(arg)
+            StringBuilder arg = new StringBuilder(args[i]);
+
+            if (arg.toString().startsWith("'"))
             {
-                case "Stream-Pi.startupRunnerFileName": RUNNER_FILE_NAME = parseStringArg(arg); break;
-                case "Stream-Pi.startMinimised": START_MINIMISED = parseBooleanArg(arg); break;
-                case "Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation": APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION = parseBooleanArg(arg); break;
-                case "Stream-Pi.allowRoot": ALLOW_ROOT = parseBooleanArg(arg); break;
+                while(!arg.toString().endsWith("'"))
+                {
+                    i++;
+                    arg.append(args[i]);
+                }
+            }
+
+            switch(arg.toString())
+            {
+                case "Stream-Pi.startupRunnerFileName": RUNNER_FILE_NAME = parseStringArg(arg.toString()); break;
+                case "Stream-Pi.startMinimised": START_MINIMISED = parseBooleanArg(arg.toString()); break;
+                case "Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation": APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION = parseBooleanArg(arg.toString()); break;
+                case "Stream-Pi.allowRoot": ALLOW_ROOT = parseBooleanArg(arg.toString()); break;
             }
         }
+
+
+        System.out.println("------PROPERTIES------");
+        System.out.println("RUNNER_FILE_NAME: '"+RUNNER_FILE_NAME+"'");
+        System.out.println("START_MINIMISED: '"+START_MINIMISED+"'");
+        System.out.println("APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION: '"+APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION+"'");
+        System.out.println("ALLOW_ROOT: '"+ALLOW_ROOT+"'");
+        System.out.println("----------------------");
     }
 
     private static String parseStringArg(String arg)
