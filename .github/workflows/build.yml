@@ -78,15 +78,15 @@ jobs:
           --app-version ${{ env.VERSION }} \
           --type app-image
 
-          ls -l '${{ env.INSTALL_DIR}}'
+          ls -l "${INSTALL_DIR}"
 
-          ls -l '${{ env.INSTALL_DIR}}/Stream-Pi Server'
+          ls -l "${INSTALL_DIR}/Stream-Pi Server"
 
-          cp assets/linux-icon.png '$INSTALL_DIR/Stream-Pi Server/Stream-Pi Server.png'
-          cp assets/AppImage/* '$INSTALL_DIR/Stream-Pi Server/'
+          cp assets/linux-icon.png "${INSTALL_DIR}/Stream-Pi Server/Stream-Pi Server.png"'"
+          cp assets/AppImage/* "${INSTALL_DIR}/Stream-Pi Server/"'"
 
-          mv '$INSTALL_DIR/Stream-Pi Server' '$INSTALL_DIR/Stream-Pi Server.AppDir'
-          /tmp/appimagetool-x86_64.AppImage '$INSTALL_DIR/Stream-Pi Server.AppDir' 'stream-pi-server-${{ env.VERSION }}.AppImage'
+          mv '${INSTALL_DIR}/Stream-Pi Server' '${INSTALL_DIR}/Stream-Pi Server.AppDir'
+          /tmp/appimagetool-x86_64.AppImage '${INSTALL_DIR}/Stream-Pi Server.AppDir' 'stream-pi-server-${{ env.VERSION }}.AppImage'
 
 
           NEW_V=${{ env.VERSION }}
@@ -98,8 +98,8 @@ jobs:
           --app-version $NEW_V \
           --type rpm
 
-          mv $INSTALL_DIR/*.deb stream-pi-server-linux-x64-${{ env.VERSION }}.deb
-          mv $INSTALL_DIR/*.rpm stream-pi-server-linux-x64-${{ env.VERSION }}.rpm
+          mv ${INSTALL_DIR}/*.deb stream-pi-server-linux-x64-${{ env.VERSION }}.deb
+          mv ${INSTALL_DIR}/*.rpm stream-pi-server-linux-x64-${{ env.VERSION }}.rpm
         env:
           MAIN_CLASS: com.stream_pi.server.Main
           JAVAFX_JMODS: /tmp/javafx-jmods-18/
