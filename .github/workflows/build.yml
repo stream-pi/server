@@ -78,6 +78,10 @@ jobs:
           --app-version ${{ env.VERSION }} \
           --type app-image
 
+          ls -l '$INSTALL_DIR'
+
+          ls -l '$INSTALL_DIR/Stream-Pi Server'
+
           cp assets/linux-icon.png '$INSTALL_DIR/Stream-Pi Server/Stream-Pi Server.png'
           cp assets/AppImage/* '$INSTALL_DIR/Stream-Pi Server/'
 
