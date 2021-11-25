@@ -78,15 +78,15 @@ jobs:
           --app-version ${{ env.VERSION }} \
           --type app-image
 
-          ls -l '${INSTALL_DIR}'
+          ls -l "${INSTALL_DIR}"
 
-          ls -l '${INSTALL_DIR}/Stream-Pi Server'
+          ls -l "${INSTALL_DIR}/Stream-Pi Server"
 
-          cp assets/linux-icon.png '${INSTALL_DIR}/Stream-Pi Server/Stream-Pi Server.png'
-          cp assets/AppImage/* '${INSTALL_DIR}/Stream-Pi Server/'
+          cp assets/linux-icon.png "${INSTALL_DIR}/Stream-Pi Server/Stream-Pi Server.png"
+          cp assets/AppImage/* "${INSTALL_DIR}/Stream-Pi Server/"
 
-          mv '${INSTALL_DIR}/Stream-Pi Server' '${INSTALL_DIR}/Stream-Pi Server.AppDir'
-          /tmp/appimagetool-x86_64.AppImage '${INSTALL_DIR}/Stream-Pi Server.AppDir' 'stream-pi-server-${{ env.VERSION }}.AppImage'
+          mv "${INSTALL_DIR}/Stream-Pi Server" "${INSTALL_DIR}/Stream-Pi Server.AppDir"
+          /tmp/appimagetool-x86_64.AppImage "{INSTALL_DIR}/Stream-Pi Server.AppDir" "stream-pi-server-${{ env.VERSION }}.AppImage"
 
 
           NEW_V=${{ env.VERSION }}
