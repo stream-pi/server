@@ -98,8 +98,14 @@ jobs:
           --app-version $NEW_V \
           --type rpm
 
+          ls -l
+
           mv ${INSTALL_DIR}/*.deb stream-pi-server-linux-x64-${{ env.VERSION }}.deb
           mv ${INSTALL_DIR}/*.rpm stream-pi-server-linux-x64-${{ env.VERSION }}.rpm
+
+          echo xyz
+
+          ls -l
         env:
           MAIN_CLASS: com.stream_pi.server.Main
           JAVAFX_JMODS: /tmp/javafx-jmods-18/
