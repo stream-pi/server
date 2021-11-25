@@ -25,5 +25,5 @@ $JPACKAGE_HOME/bin/jpackage \
 --dest $INSTALL_DIR \
 --name 'Stream-Pi Server' \
 --java-options '-Dprism.lcdtext=false -Dprism.verbose=true -Djavafx.verbose=true -Dprism.dirtyopts=false' \
---arguments "-DStream-Pi.startupRunnerFileName='Stream-Pi Server' -DStream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation=true" \
+--arguments "Stream-Pi.startupRunnerFileName='Stream-Pi Server' Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation=true" \
 "$@"

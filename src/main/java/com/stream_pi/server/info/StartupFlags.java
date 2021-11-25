@@ -23,18 +23,25 @@ public class StartupFlags
 
     public static void init(String[] args)
     {
+        for (int i = 0;i <args.length; i++)
+        {
+            System.out.println(i+". '"+args[i]+"'");
+        }
+
+        System.out.println("\n========\n");
+
         for (int i = 0; i<args.length; i++)
         {
             StringBuilder arg = new StringBuilder(args[i]);
 
-            if (arg.toString().startsWith("'"))
+            /*if (arg.toString().startsWith("'"))
             {
                 while(!arg.toString().endsWith("'"))
                 {
                     i++;
                     arg.append(args[i]);
                 }
-            }
+            }*/
 
             switch(arg.toString())
             {
