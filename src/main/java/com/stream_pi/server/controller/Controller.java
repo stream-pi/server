@@ -173,10 +173,6 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
                     else
                     {
                         getStage().show();
-
-                        getStage().setOnShown(event->{
-                            getStage().setMinWidth(Region.USE_PREF_SIZE);
-                        });
                     }
 
 
@@ -406,7 +402,6 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
                     if (error!=null)
                     {
                         new StreamPiAlert(error).show();
-                        //handleMinorException(new MinorException(error));
                     }
                     else
                     {

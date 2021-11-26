@@ -14,6 +14,9 @@
 
 package com.stream_pi.server.info;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StartupFlags
 {
     public static String RUNNER_FILE_NAME = null;
@@ -47,19 +50,21 @@ public class StartupFlags
         System.out.println("----------------------");
     }
 
-    public static String generateRuntimeArguments(boolean startMinimised,
+    public static String[] generateRuntimeArguments(boolean startMinimised,
                                                   boolean appendPathBeforeRunnerFileToOverrideJPackageLimitation,
                                                   boolean allowRoot, String runnerFileName)
     {
-        String args = "Stream-Pi.startMinimised="+startMinimised+
-                " Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation="+appendPathBeforeRunnerFileToOverrideJPackageLimitation+
-                " Stream-Pi.allowRoot="+allowRoot;
+        List<String> arrayList = new ArrayList<>();
+
+        arrayList.add("Stream-Pi.startMinimised="+startMinimised);
+        arrayList.add("Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation="+appendPathBeforeRunnerFileToOverrideJPackageLimitation);
+        arrayList.add("Stream-Pi.allowRoot="+allowRoot);
 
         if (runnerFileName!=null)
         {
-            args+=" Stream-Pi.startupRunnerFileName='"+runnerFileName+"'";
+            arrayList.add("Stream-Pi.startupRunnerFileName='"+runnerFileName+"'");
         }
 
-        return args;
+        return arrayList.toArray(new String[0]);
     }
 }
