@@ -28,7 +28,6 @@ public class StartupFlags
     {
         for (String arg : args)
         {
-            System.out.println("ARG. '"+arg+"'");
             String[] arr = arg.split("=");
 
             String val = arr[1].strip();
@@ -40,30 +39,23 @@ public class StartupFlags
                 case "Stream-Pi.allowRoot": ALLOW_ROOT = val.equals("true"); break;
             }
         }
-
-
-        System.out.println("------PROPERTIES------");
-        System.out.println("RUNNER_FILE_NAME: '"+RUNNER_FILE_NAME+"'");
-        System.out.println("START_MINIMISED: '"+START_MINIMISED+"'");
-        System.out.println("APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION: '"+APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION+"'");
-        System.out.println("ALLOW_ROOT: '"+ALLOW_ROOT+"'");
-        System.out.println("----------------------");
     }
 
-    public static String[] generateRuntimeArguments(boolean startMinimised,
-                                                  boolean appendPathBeforeRunnerFileToOverrideJPackageLimitation,
-                                                  boolean allowRoot, String runnerFileName)
+    public static String[] generateRuntimeArguments(String runnerFileName,
+                                                    boolean startMinimised,
+                                                    boolean appendPathBeforeRunnerFileToOverrideJPackageLimitation,
+                                                    boolean allowRoot)
     {
         List<String> arrayList = new ArrayList<>();
-
-        arrayList.add("Stream-Pi.startMinimised="+startMinimised);
-        arrayList.add("Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation="+appendPathBeforeRunnerFileToOverrideJPackageLimitation);
-        arrayList.add("Stream-Pi.allowRoot="+allowRoot);
 
         if (runnerFileName!=null)
         {
             arrayList.add("Stream-Pi.startupRunnerFileName='"+runnerFileName+"'");
         }
+
+        arrayList.add("Stream-Pi.startMinimised="+startMinimised);
+        arrayList.add("Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation="+appendPathBeforeRunnerFileToOverrideJPackageLimitation);
+        arrayList.add("Stream-Pi.allowRoot="+allowRoot);
 
         return arrayList.toArray(new String[0]);
     }
