@@ -432,10 +432,7 @@ public class GeneralSettings extends VBox
                         {
                             try
                             {
-                                startAtBoot.create(StartupFlags.RUNNER_FILE_NAME, StartupFlags.generateRuntimeArguments(StartupFlags.RUNNER_FILE_NAME,
-                                        true,
-                                        StartupFlags.APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION,
-                                        StartupFlags.ALLOW_ROOT));
+                                startAtBoot.create(StartupFlags.RUNNER_FILE_NAME, StartupFlags.generateRuntimeArgumentsForStartOnBoot());
                             }
                             catch (MinorException e)
                             {

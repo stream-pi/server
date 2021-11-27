@@ -41,21 +41,18 @@ public class StartupFlags
         }
     }
 
-    public static String[] generateRuntimeArguments(String runnerFileName,
-                                                    boolean startMinimised,
-                                                    boolean appendPathBeforeRunnerFileToOverrideJPackageLimitation,
-                                                    boolean allowRoot)
+    public static String[] generateRuntimeArgumentsForStartOnBoot()
     {
         List<String> arrayList = new ArrayList<>();
 
-        if (runnerFileName!=null)
+        if (StartupFlags.RUNNER_FILE_NAME!=null)
         {
-            arrayList.add("Stream-Pi.startupRunnerFileName='"+runnerFileName+"'");
+            arrayList.add("Stream-Pi.startupRunnerFileName='"+StartupFlags.RUNNER_FILE_NAME+"'");
         }
 
-        arrayList.add("Stream-Pi.startMinimised="+startMinimised);
-        arrayList.add("Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation="+appendPathBeforeRunnerFileToOverrideJPackageLimitation);
-        arrayList.add("Stream-Pi.allowRoot="+allowRoot);
+        arrayList.add("Stream-Pi.startMinimised=true");
+        arrayList.add("Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation="+StartupFlags.APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION);
+        arrayList.add("Stream-Pi.allowRoot="+StartupFlags.ALLOW_ROOT);
 
         return arrayList.toArray(new String[0]);
     }
