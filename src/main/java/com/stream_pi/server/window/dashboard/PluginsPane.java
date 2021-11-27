@@ -59,11 +59,18 @@ public class PluginsPane extends VBox
         pluginsAccordion = new Accordion();
         pluginsAccordion.getStyleClass().add("plugins_pane_accordion");
         pluginsAccordion.setCache(true);
+        pluginsAccordion.setCacheHint(CacheHint.SPEED);
 
         Label pluginsLabel = new Label(I18N.getString("window.dashboard.PluginsPane.plugins"));
         pluginsLabel.getStyleClass().add("plugins_pane_top_label");
 
-        getChildren().addAll(pluginsLabel, pluginsAccordion);
+        ScrollPane scrollPane = new ScrollPane(pluginsAccordion);
+        scrollPane.getStyleClass().add("plugins_pane_accordion_scroll_pane");
+        scrollPane.setFitToWidth(true);
+
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
+
+        getChildren().addAll(pluginsLabel, scrollPane);
     }
 
     public void clearData()
@@ -240,8 +247,6 @@ public class PluginsPane extends VBox
         pane.getStyleClass().add("plugins_pane_each_plugin_category_titled_pane");
 
         pluginsAccordion.getPanes().add(pane);
-        pluginsAccordion.setCache(true);
-        pluginsAccordion.setCacheHint(CacheHint.SPEED);
     }
 
 }

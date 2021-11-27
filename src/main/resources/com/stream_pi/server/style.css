@@ -258,6 +258,16 @@
     -fx-border-color:white;
 }
 
+.plugins_pane_accordion_scroll_pane
+{
+    -fx-background-color: transparent;
+}
+
+.plugins_pane_accordion_scroll_pane .viewport
+{
+    -fx-background-color: transparent;
+}
+
 .alert_button_bar
 {
     -fx-background-color:white;
