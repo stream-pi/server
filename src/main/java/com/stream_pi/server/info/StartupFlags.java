@@ -35,13 +35,16 @@ public class StartupFlags
         {
             String[] arr = arg.split("=");
 
-            String val = arr[1].strip();
-            switch(arr[0])
+            if (arr.length == 2)
             {
-                case RUNNER_FILE_NAME_ARG: RUNNER_FILE_NAME = val; break;
-                case START_MINIMISED_ARG: START_MINIMISED = val.equals("true"); break;
-                case APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION_ARG: APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION = val.equals("true"); break;
-                case ALLOW_ROOT_ARG: ALLOW_ROOT = val.equals("true"); break;
+                String val = arr[1].strip();
+                switch(arr[0])
+                {
+                    case RUNNER_FILE_NAME_ARG: RUNNER_FILE_NAME = val; break;
+                    case START_MINIMISED_ARG: START_MINIMISED = val.equals("true"); break;
+                    case APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION_ARG: APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION = val.equals("true"); break;
+                    case ALLOW_ROOT_ARG: ALLOW_ROOT = val.equals("true"); break;
+                }
             }
         }
     }
