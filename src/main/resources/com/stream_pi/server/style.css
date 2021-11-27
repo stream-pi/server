@@ -328,10 +328,11 @@
     -fx-alignment: TOP_RIGHT;
 }
 
-ScrollPane
+.scroll-pane:focused
 {
-    -fx-focus-color:transparent;
-    -fx-faint-focus-color:transparent;
+    -fx-background-color: transparent, transparent, transparent;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 5, 4, 3;
 }
 
 .invalid_ip_prompt_label
