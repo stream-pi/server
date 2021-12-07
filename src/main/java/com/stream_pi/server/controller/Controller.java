@@ -15,12 +15,11 @@
 package com.stream_pi.server.controller;
 
 import com.stream_pi.action_api.action.Action;
+import com.stream_pi.action_api.action.ActionType;
 import com.stream_pi.action_api.action.ServerConnection;
 import com.stream_pi.action_api.actionproperty.gaugeproperties.GaugeProperties;
-import com.stream_pi.action_api.externalplugin.GaugeExtras;
-import com.stream_pi.action_api.externalplugin.NormalAction;
-import com.stream_pi.action_api.externalplugin.ToggleAction;
-import com.stream_pi.action_api.externalplugin.ToggleExtras;
+import com.stream_pi.action_api.externalplugin.*;
+import com.stream_pi.action_api.externalplugin.inputevent.StreamPiInputEvent;
 import com.stream_pi.server.Main;
 import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.client.Client;
@@ -55,12 +54,13 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioClip;
@@ -612,9 +612,9 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     @Override
     public void handleMinorException(String message, MinorException e)
     {
+
         getLogger().log(Level.SEVERE, message, e);
         e.printStackTrace();
-
         new StreamPiAlert(e.getTitle(), message, StreamPiAlertType.WARNING).show();
     }
 
@@ -660,13 +660,10 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     @Override
     public void initSoundOnActionClicked()
     {
-        String audioFilePath = getConfig().getSoundOnActionClickedFilePath();
-
-        File file = new File(audioFilePath);
+        File file = new File(getConfig().getSoundOnActionClickedFilePath());
 
         if(!file.exists())
         {
-            audioFilePath = null;
             audioClip = null;
             getConfig().setSoundOnActionClickedStatus(false);
             getConfig().setSoundOnActionClickedFilePath("");
@@ -678,83 +675,71 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     }
 
     @Override
-    public void onActionClicked(Client client, String profileID, String actionID, boolean toggle)
+    public synchronized void onSetToggleStatus(Client client, String profileID, String actionID, boolean toggleStatus)
     {
-        try
+        Action action = client.getProfileByID(profileID).getActionByID(actionID);
+
+        if(action.isInvalid())
         {
-            Action action =  client.getProfileByID(profileID).getActionByID(actionID);
+            handleMinorException(new MinorException(I18N.getString("controller.Controller.pluginNotInstalledOnServer", action.getUniqueID())));
+        }
 
-            if(getConfig().getSoundOnActionClickedStatus())
+        ToggleAction toggleAction = (ToggleAction) action;
+
+        ServerExecutorService.getExecutorService().submit(()->{
+            try
             {
-                playSound();
-            }
+                toggleAction.setCurrentStatus(toggleStatus);
 
-            if(action.isInvalid())
-            {
-                throw new MinorException(I18N.getString("controller.Controller.pluginNotInstalledOnServer", action.getUniqueID()));
-            }
-
-            ServerExecutorService.getExecutorService().execute(new Task<Void>() {
-                @Override
-                protected Void call()
+                if(toggleStatus)
                 {
-                    try
-                    {
-                        startAction(client.getProfileByID(profileID).getActionByID(actionID),
-                                toggle, profileID, client);
-                    }
-                    catch (InterruptedException e)
-                    {
-                        e.printStackTrace();
-                        getLogger().info("onActionClicked scheduled task was interrupted ...");
-                    }
-                    return null;
+                    toggleAction.onToggleOn();
                 }
-            });
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            handleMinorException(new MinorException(e.getMessage()));
-        }
+                else
+                {
+                    toggleAction.onToggleOff();
+                }
+            }
+            catch (MinorException e)
+            {
+                sendActionFailed(e, client.getRemoteSocketAddress(), profileID, action);
+            }
+        });
     }
 
-    private void startAction(Action action, boolean toggle, String profileID, Client client) throws InterruptedException
-    {
-        getLogger().info("action "+action.getID()+" clicked!");
-
-        if(action instanceof ToggleAction)
-        {
-            onToggleActionClicked((ToggleAction) action, toggle, profileID,
-                    client.getRemoteSocketAddress());
-        }
-        else if (action instanceof NormalAction)
-        {
-            onNormalActionClicked((NormalAction) action, profileID,
-                    client.getRemoteSocketAddress());
-        }
-    }
-
-    public synchronized void onNormalActionClicked(NormalAction action, String profileID, SocketAddress socketAddress)
-    {
-        try
-        {
-            action.onActionClicked();
-        }
-        catch (Exception e)
-        {
-            if(e instanceof MinorException)
-                sendActionFailed((MinorException) e, socketAddress, profileID, action);
-            else
-                sendActionFailed(new MinorException(e.getMessage()), socketAddress, profileID, action);
-        }
-    }
 
     @Override
-    public synchronized void onToggleActionClicked(ToggleAction action, boolean toggle, String profileID, SocketAddress socketAddress)
+    public synchronized void onInputEventInAction(Client client, String profileID, String actionID, StreamPiInputEvent streamPiInputEvent)
     {
+        Action action = client.getProfileByID(profileID).getActionByID(actionID);
 
+        if(action.isInvalid())
+        {
+            handleMinorException(new MinorException(I18N.getString("controller.Controller.pluginNotInstalledOnServer", action.getUniqueID())));
+        }
+
+        ServerExecutorService.getExecutorService().submit(()->{
+            try
+            {
+                if(streamPiInputEvent.getEventType() == MouseEvent.MOUSE_CLICKED)
+                {
+                    if(action.getActionType() == ActionType.NORMAL)
+                    {
+                        ((NormalAction) action).onActionClicked();
+                    }
+
+                    playSound();
+                }
+
+                ((ExternalPlugin) action).onInputEventReceived(streamPiInputEvent);
+            }
+            catch (MinorException e)
+            {
+                sendActionFailed(e, client.getRemoteSocketAddress(), profileID, action);
+            }
+        });
     }
+
 
     @Override
     public void clearTemp() {
@@ -937,7 +922,12 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             Action action = clientProfile.getActionByID(actionID);
             clientConnection.updateActionTemporaryDisplayText(profileID, action, displayText);
 
-            Platform.runLater(()-> getDashboardBase().getActionGridPane().getActionBoxByProfileAndID(profileID, actionID).updateTemporaryDisplayText(displayText));
+            ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByProfileAndID(profileID, actionID);
+
+            if (actionBox != null)
+            {
+                Platform.runLater(()-> actionBox.updateTemporaryDisplayText(displayText));
+            }
         }
         catch (SevereException e)
         {

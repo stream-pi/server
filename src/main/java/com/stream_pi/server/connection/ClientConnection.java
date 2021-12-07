@@ -26,6 +26,7 @@ import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.action_api.externalplugin.GaugeAction;
 import com.stream_pi.action_api.externalplugin.ToggleAction;
+import com.stream_pi.action_api.externalplugin.inputevent.StreamPiInputEvent;
 import com.stream_pi.action_api.otheractions.CombineAction;
 import com.stream_pi.action_api.otheractions.FolderAction;
 import com.stream_pi.server.action.ExternalPlugins;
@@ -50,8 +51,11 @@ import com.stream_pi.util.platform.ReleaseStatus;
 import com.stream_pi.util.version.Version;
 import eu.hansolo.medusa.Gauge;
 import javafx.concurrent.Task;
+import javafx.event.EventType;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Toggle;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TouchEvent;
 
 import java.io.*;
 import java.net.Socket;
@@ -289,45 +293,42 @@ public class ClientConnection extends Thread
 
                     switch (header)
                     {
-                        case "disconnect" :         clientDisconnected(message);
+                        case "disconnect" :                 clientDisconnected(message);
                             break;
 
-                        case "register_client_details" :     initAfterConnectionQueryReceive(message);
+                        case "register_client_details" :    initAfterConnectionQueryReceive(message);
                             getProfilesFromClient();
                             getThemesFromClient();
                             break;
 
-                        case "update_client_details" : updateClientDetails(message);
+                        case "update_client_details" :      updateClientDetails(message);
                             break;
 
-                        case "client_screen_details" : onClientScreenDetailsReceived(message);
+                        case "client_screen_details" :      onClientScreenDetailsReceived(message);
                             break;
 
-                        case "profiles" :           registerProfilesFromClient(message);
+                        case "profiles" :                   registerProfilesFromClient(message);
                             break;
 
-                        case "profile_details" :    registerProfileDetailsFromClient(message);
+                        case "profile_details" :            registerProfileDetailsFromClient(message);
                             break;
 
-                        case "action_details" :     registerActionToProfile(message);
+                        case "action_details" :             registerActionToProfile(message);
                             break;
 
-                        case "themes":              registerThemes(message);
+                        case "themes":                      registerThemes(message);
                             break;
 
-                        case "client_orientation":  updateClientOrientation(message);
+                        case "client_orientation":          updateClientOrientation(message);
                             break;
 
-                        case "refresh_all_gauges": refreshAllGauges();
+                        case "refresh_all_gauges":          refreshAllGauges();
                             break;
 
-                        case "mouse_event_in_action":      onActionClicked(message);
+                        case "input_event_in_action":       onInputEventInAction(message);
                             break;
 
-                        case "touch_event_in_action":      onActionClicked(message);
-                            break;
-
-                        case "set_toggle_status":      onSetToggleStatus(message);
+                        case "set_toggle_status":           onSetToggleStatus(message);
                             break;
 
                         default:                    logger.warning("Command '"+header+"' does not match records. Make sure client and server versions are equal.");
@@ -376,35 +377,7 @@ public class ClientConnection extends Thread
         String actionID = (String) message.getValue("ID");
         boolean newStatus = (boolean) message.getValue("toggle_status");
 
-
-        ToggleAction action = (ToggleAction) getClient().getProfileByID(profileID).getActionByID(actionID);
-
-        try
-        {
-            if(newStatus)
-            {
-                action.onToggleOn();
-            }
-            else
-            {
-                action.onToggleOff();
-            }
-        }
-        catch (Exception e)
-        {
-            if(e instanceof MinorException)
-                sendActionFailed((MinorException) e, getRemoteSocketAddress(), profileID, action);
-            else
-                sendActionFailed(new MinorException(e.getMessage()), socketAddress, profileID, action);
-        }
-
-        ActionBox actionBox = serverListener.getDashboardBase().getActionGridPane().getActionBoxByProfileAndID(profileID, actionID);
-
-        if(actionBox!=null)
-        {
-            actionBox.fakeToggle(newStatus);
-            javafx.application.Platform.runLater(()-> actionBox.toggle(newStatus));
-        }
+        serverListener.onSetToggleStatus(getClient(), profileID, actionID, newStatus);
     }
 
     private void updateClientOrientation(Message message) throws MinorException
@@ -482,7 +455,7 @@ public class ClientConnection extends Thread
         }
         else
         {
-            new StreamPiAlert(I18N.getString("connection.ClientConnection.disconnectedFromClient", getClient().getName()), ((DisconnectReason) message.getValue("reason")).getMessage(), StreamPiAlertType.WARNING).show();;
+            new StreamPiAlert(I18N.getString("connection.ClientConnection.disconnectedFromClient", getClient().getName()), ((DisconnectReason) message.getValue("reason")).getMessage(), StreamPiAlertType.WARNING).show();
         }
 
         exitAndRemove();
@@ -990,13 +963,13 @@ public class ClientConnection extends Thread
         sendMessage(message);
     }
 
-    public void onActionClicked(Message message)
+    public void onInputEventInAction(Message message)
     {
         String profileID = (String) message.getValue("profile_ID");
         String actionID = (String) message.getValue("ID");
-        boolean toggle = (boolean) message.getValue("toggle_status");
+        StreamPiInputEvent streamPiInputEvent = (StreamPiInputEvent) message.getValue("event");
 
-        serverListener.onActionClicked(getClient(), profileID, actionID, toggle);
+        serverListener.onInputEventInAction(getClient(), profileID, actionID, streamPiInputEvent);
     }
 
     public void setToggleStatus(boolean status, String profileID, String actionID) throws SevereException
