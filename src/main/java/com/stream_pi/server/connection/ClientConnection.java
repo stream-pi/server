@@ -617,11 +617,11 @@ public class ClientConnection extends Thread
 
         //action toBeAdded = null;
 
+        String moduleName = (String) message.getValue("unique_ID");
         boolean isInvalidAction = false;
 
         if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE || actionType == ActionType.GAUGE)
         {
-            String moduleName = (String) message.getValue("unique_ID");
             Version version = (Version) message.getValue("version");
 
             ExternalPlugin originalAction = ExternalPlugins.getInstance().getPluginByModuleName(moduleName);
@@ -749,7 +749,7 @@ public class ClientConnection extends Thread
         {
             Version version = (Version) message.getValue("version");
 
-            action = new Action();
+            action = new Action(moduleName);
             action.setInvalid(true);
             action.setVersion(version);
         }

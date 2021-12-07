@@ -708,6 +708,8 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     }
 
 
+    private String invalidActionUniqueID = null;
+
     @Override
     public synchronized void onInputEventInAction(Client client, String profileID, String actionID, StreamPiInputEvent streamPiInputEvent)
     {
@@ -715,8 +717,16 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
 
         if(action.isInvalid())
         {
-            handleMinorException(new MinorException(I18N.getString("controller.Controller.pluginNotInstalledOnServer", action.getUniqueID())));
+            if (!action.getUniqueID().equals(invalidActionUniqueID))
+            {
+                invalidActionUniqueID = action.getUniqueID();
+                handleMinorException(new MinorException(I18N.getString("controller.Controller.pluginNotInstalledOnServer", action.getUniqueID())));
+            }
+
+            return;
         }
+
+        invalidActionUniqueID = null;
 
         ServerExecutorService.getExecutorService().submit(()->{
             try

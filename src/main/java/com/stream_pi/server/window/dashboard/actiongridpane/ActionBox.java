@@ -299,12 +299,10 @@ public class ActionBox extends StackPane
         GridPane.setRowSpan(this, 1);
         GridPane.setColumnSpan(this, 1);
 
+        getStyleClass().clear();
         getStyleClass().add("action_box");
+
         setIcon(null);
-        getStyleClass().add("action_box_valid");
-
-
-
 
         actionContextMenu = new ContextMenu();
 
@@ -354,7 +352,6 @@ public class ActionBox extends StackPane
             getStyleClass().remove("action_box_invalid");
             getStyleClass().add("action_box_valid");
         }
-
     }
 
     public ActionDetailsPaneListener getActionDetailsPaneListener() {
