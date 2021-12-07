@@ -750,26 +750,10 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         }
     }
 
+    @Override
     public synchronized void onToggleActionClicked(ToggleAction action, boolean toggle, String profileID, SocketAddress socketAddress)
     {
-        try
-        {
-            if(toggle)
-            {
-                action.onToggleOn();
-            }
-            else
-            {
-                action.onToggleOff();
-            }
-        }
-        catch (Exception e)
-        {
-            if(e instanceof MinorException)
-                sendActionFailed((MinorException) e, socketAddress, profileID, action);
-            else
-                sendActionFailed(new MinorException(e.getMessage()), socketAddress, profileID, action);
-        }
+
     }
 
     @Override
@@ -816,9 +800,9 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             Platform.runLater(()->{
                 try {
 
-                    ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByIDAndProfileID(
-                            action.getID(),
-                            profileID
+                    ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByProfileAndID(
+                            profileID,
+                            action.getID()
                     );
 
                     if(actionBox != null)
@@ -953,7 +937,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             Action action = clientProfile.getActionByID(actionID);
             clientConnection.updateActionTemporaryDisplayText(profileID, action, displayText);
 
-            Platform.runLater(()-> getDashboardBase().getActionGridPane().getActionBoxByIDAndProfileID(actionID, profileID).updateTemporaryDisplayText(displayText));
+            Platform.runLater(()-> getDashboardBase().getActionGridPane().getActionBoxByProfileAndID(profileID, actionID).updateTemporaryDisplayText(displayText));
         }
         catch (SevereException e)
         {
@@ -1173,7 +1157,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         }
 
 
-        ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByIDAndProfileID(actionID, profileID);
+        ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByProfileAndID(profileID, actionID);
 
         if (actionBox != null)
         {
@@ -1213,7 +1197,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         }
 
 
-        ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByIDAndProfileID(actionID, profileID);
+        ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByProfileAndID(profileID, actionID);
 
         if (actionBox != null && actionBox.getAction() != null)
         {

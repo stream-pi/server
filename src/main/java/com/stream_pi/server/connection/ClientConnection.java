@@ -25,6 +25,7 @@ import com.stream_pi.action_api.actionproperty.property.StringProperty;
 import com.stream_pi.action_api.actionproperty.property.Type;
 import com.stream_pi.action_api.externalplugin.ExternalPlugin;
 import com.stream_pi.action_api.externalplugin.GaugeAction;
+import com.stream_pi.action_api.externalplugin.ToggleAction;
 import com.stream_pi.action_api.otheractions.CombineAction;
 import com.stream_pi.action_api.otheractions.FolderAction;
 import com.stream_pi.server.action.ExternalPlugins;
@@ -36,6 +37,7 @@ import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
+import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.comms.DisconnectReason;
@@ -313,13 +315,19 @@ public class ClientConnection extends Thread
                         case "themes":              registerThemes(message);
                             break;
 
-                        case "action_clicked":      onActionClicked(message);
-                            break;
-
                         case "client_orientation":  updateClientOrientation(message);
                             break;
 
                         case "refresh_all_gauges": refreshAllGauges();
+                            break;
+
+                        case "mouse_event_in_action":      onActionClicked(message);
+                            break;
+
+                        case "touch_event_in_action":      onActionClicked(message);
+                            break;
+
+                        case "set_toggle_status":      onSetToggleStatus(message);
                             break;
 
                         default:                    logger.warning("Command '"+header+"' does not match records. Make sure client and server versions are equal.");
@@ -360,6 +368,44 @@ public class ClientConnection extends Thread
     }
 
     // commands
+
+
+    private void onSetToggleStatus(Message message) throws MinorException
+    {
+        String profileID = (String) message.getValue("profile_ID");
+        String actionID = (String) message.getValue("ID");
+        boolean newStatus = (boolean) message.getValue("toggle_status");
+
+
+        ToggleAction action = (ToggleAction) getClient().getProfileByID(profileID).getActionByID(actionID);
+
+        try
+        {
+            if(newStatus)
+            {
+                action.onToggleOn();
+            }
+            else
+            {
+                action.onToggleOff();
+            }
+        }
+        catch (Exception e)
+        {
+            if(e instanceof MinorException)
+                sendActionFailed((MinorException) e, getRemoteSocketAddress(), profileID, action);
+            else
+                sendActionFailed(new MinorException(e.getMessage()), socketAddress, profileID, action);
+        }
+
+        ActionBox actionBox = serverListener.getDashboardBase().getActionGridPane().getActionBoxByProfileAndID(profileID, actionID);
+
+        if(actionBox!=null)
+        {
+            actionBox.fakeToggle(newStatus);
+            javafx.application.Platform.runLater(()-> actionBox.toggle(newStatus));
+        }
+    }
 
     private void updateClientOrientation(Message message) throws MinorException
     {

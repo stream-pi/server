@@ -72,7 +72,7 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
 
     private HashMap<String, ActionBox> actionBoxHashMap;
 
-    public ActionBox getActionBoxByIDAndProfileID(String actionID, String profileID)
+    public ActionBox getActionBoxByProfileAndID(String profileID, String actionID)
     {
         // Returns null when there is no such action available
 

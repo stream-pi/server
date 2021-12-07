@@ -27,7 +27,7 @@ public interface ActionGridPaneListener
 {
     void addActionToCurrentClientProfile(Action newAction);
 
-    ActionBox getActionBoxByIDAndProfileID(String actionID, String profileID);
+    ActionBox getActionBoxByProfileAndID(String profileID, String actionID);
 
     void renderFolder(FolderAction action);
     void renderAction(Action action) throws MinorException;

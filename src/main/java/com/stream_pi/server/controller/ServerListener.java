@@ -29,6 +29,8 @@ public interface ServerListener
 {
     void onActionClicked(Client client, String profileID, String actionID, boolean toggle);
 
+    void onToggleActionClicked(ToggleAction action, boolean toggle, String profileID, SocketAddress socketAddress);
+
     void clearTemp();
 
     void init();
