@@ -921,17 +921,23 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     }
 
     @Override
-    public void updateTemporaryDisplayText(String profileID, String actionID, SocketAddress socketAddress, String displayText)
+    public void updateTemporaryDisplayText(String profileID, String actionID, SocketAddress socketAddress, String displayText) throws MinorException
     {
         try
         {
             ClientConnection clientConnection = ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress);
+
+            if (clientConnection == null)
+            {
+                throw new MinorException("Client does not exist");
+            }
 
             ClientProfile clientProfile = clientConnection.getClient().getProfileByID(profileID);
 
             Action action = clientProfile.getActionByID(actionID);
             clientConnection.updateActionTemporaryDisplayText(profileID, action, displayText);
 
+            action.setTemporaryDisplayText(displayText);
             ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByProfileAndID(profileID, actionID);
 
             if (actionBox != null)

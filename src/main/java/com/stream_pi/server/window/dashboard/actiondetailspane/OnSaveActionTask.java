@@ -231,6 +231,8 @@ public class OnSaveActionTask extends Task<Void>
         {
             logger.info("Saving action ... "+action.isHasIcon()+"+"+sendIcon);
 
+            connection.saveActionDetails(clientProfile.getID(), action);
+
             if(runOnActionSavedFromServer)
             {
                 try
@@ -260,7 +262,6 @@ public class OnSaveActionTask extends Task<Void>
                 }
             }
 
-            connection.saveActionDetails(clientProfile.getID(), action);
 
             if(sendIcon)
             {

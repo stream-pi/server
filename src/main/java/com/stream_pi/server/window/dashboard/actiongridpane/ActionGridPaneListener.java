@@ -42,7 +42,7 @@ public interface ActionGridPaneListener
 
     ActionBox getActionBox(int col, int row);
 
-    ExternalPlugin createNewActionFromExternalPlugin(String module) throws CloneNotSupportedException, SevereException;
+    ExternalPlugin createNewActionFromExternalPlugin(String module) throws CloneNotSupportedException;
     Action createNewOtherAction(ActionType actionType) throws Exception;
     void clearActionBox(int col, int row, int colSpan, int rowSpan);
 }

@@ -503,6 +503,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
 
                     ServerExecutorService.getExecutorService().execute(()->{
+                        saveAction(false, false);
+
                         try
                         {
                             newAction.onActionCreate();
@@ -512,7 +514,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                             exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onCreateFailed()", getAction().getUniqueID(), e.getMessage()), e);
                         }
 
-                        saveAction(false, false);
                     });
 
                 }
