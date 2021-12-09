@@ -518,13 +518,19 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
                 }
 
-            } catch (MinorException e) {
+            }
+            catch (MinorException e)
+            {
                 exceptionAndAlertHandler.handleMinorException(e);
                 e.printStackTrace();
-            } catch (SevereException e) {
+            }
+            catch (SevereException e)
+            {
                 exceptionAndAlertHandler.handleSevereException(e);
                 e.printStackTrace();
-            } catch (CloneNotSupportedException e) {
+            }
+            catch (CloneNotSupportedException e)
+            {
                 e.printStackTrace();
             }
         });
