@@ -301,6 +301,7 @@ public class ActionBox extends StackPane
         GridPane.setColumnSpan(this, 1);
 
         getStyleClass().add("action_box");
+        getStyleClass().add("action_box_"+row+"_"+col);
 
         setIcon(null);
 
@@ -506,6 +507,9 @@ public class ActionBox extends StackPane
     {
         setBackground(null);
         setStyle(null);
+
+        getStyleClass().add("action_box_"+getAction().getID());
+        getStyleClass().add("action_box_"+getAction().getUniqueID().replace(".","-"));
 
         showToggleOffMenuItem.setVisible(getAction().getActionType() == ActionType.TOGGLE);
         showToggleOnMenuItem.setVisible(getAction().getActionType() == ActionType.TOGGLE);
