@@ -165,6 +165,7 @@ public class ClientConnection extends Thread
                     {
                         ExternalPlugin externalPlugin = (ExternalPlugin) action;
                         externalPlugin.setServerConnection(null);
+                        externalPlugin.setSocketAddressForClient(null);
                         externalPlugin.onClientDisconnected();
                         externalPlugin.shutdownExecutor();
                     }
