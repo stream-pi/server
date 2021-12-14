@@ -343,15 +343,17 @@ public class ClientConnection extends Thread
                     logger.log(Level.SEVERE, e.getMessage());
                     e.printStackTrace();
 
-                    serverListener.clearTemp();
 
                     if(!stop.get())
                     {
                         removeConnection();
+                        serverListener.clearTemp();
                         throw new MinorException(I18N.getString("connection.ClientConnection.accidentallyDisconnectedFromClient", getClient().getName()));
                     }
 
                     exitAndRemove();
+
+                    serverListener.clearTemp();
 
                     return;
                 }
@@ -461,6 +463,7 @@ public class ClientConnection extends Thread
         }
 
         exitAndRemove();
+        serverListener.clearTemp();
     }
 
     public void getProfilesFromClient() throws StreamPiException

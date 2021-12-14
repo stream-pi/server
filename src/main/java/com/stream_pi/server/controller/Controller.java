@@ -277,7 +277,12 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         });
 
         windowMenuBar.getFileMenu().getDisconnectFromAllClients().disableProperty().bind(ClientConnections.getInstance().getSizeProperty().isEqualTo(0));
-        windowMenuBar.getFileMenu().getDisconnectFromAllClients().setOnAction(event -> ClientConnections.getInstance().disconnectAll());
+        windowMenuBar.getFileMenu().getDisconnectFromAllClients().setOnAction(event -> {
+            ServerExecutorService.getExecutorService().submit(()->{
+                ClientConnections.getInstance().disconnectAll();
+                clearTemp();
+            });
+        });
 
         windowMenuBar.getFileMenu().getExitMenuItem().setOnAction(event -> fullExit());
 

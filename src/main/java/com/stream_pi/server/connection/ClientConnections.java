@@ -65,15 +65,13 @@ public class ClientConnections
 
     public void disconnectAll()
     {
-        new Thread(()->{
-            for(ClientConnection clientConnection : connections)
-            {
-                clientConnection.exit(false);
-            }
+        for(ClientConnection clientConnection : connections)
+        {
+            clientConnection.exit(false);
+        }
 
-            sizeProperty.set(0);
-            connections.clear();
-        }).start();
+        sizeProperty.set(0);
+        connections.clear();
     }
 
     public ClientConnection getClientConnectionBySocketAddress(SocketAddress socketAddress)
