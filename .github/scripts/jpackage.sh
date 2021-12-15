@@ -19,9 +19,9 @@ $JPACKAGE_HOME/bin/jpackage \
 --main-jar server-$VERSION.jar \
 --main-class $MAIN_CLASS \
 --description "Stream-Pi Server" \
---vendor "Stream-Pi" \
+--vendor "Debayan Sutradhar, Samuel Quiñones" \
 --verbose \
---copyright "Copyright 2019-21 Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)" \
+--copyright "Copyright 2019-21 Debayan Sutradhar (rnayabed), Samuel Quiñones (SamuelQuinones)" \
 --dest $INSTALL_DIR \
 --name 'Stream-Pi Server' \
 --java-options '-Dprism.lcdtext=false -Dprism.forceGPU=true -Dprism.verbose=true -Djavafx.verbose=true -Dprism.dirtyopts=false' \

@@ -20,7 +20,7 @@ set /p VERSION=<version.txt
 --add-modules %REQ_MODULES% ^
 --name "Stream-Pi Server" ^
 --description "Stream-Pi Server" ^
---copyright "Copyright 2019-21 Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)" ^
+--copyright "Copyright 2019-21 Debayan Sutradhar (rnayabed), Samuel Quiñones (SamuelQuinones)" ^
 --input target/lib ^
 --main-jar server-%VERSION%.jar ^
 --type msi ^
@@ -32,7 +32,7 @@ set /p VERSION=<version.txt
 --win-dir-chooser ^
 --win-menu ^
 --win-menu-group "Stream-Pi" ^
---vendor "Stream-Pi"
+--vendor "Debayan Sutradhar, Samuel Quiñones"
 
 echo Done now renaming ..
 cd %INSTALL_DIR%
