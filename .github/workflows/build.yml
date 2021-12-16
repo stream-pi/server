@@ -193,12 +193,7 @@ jobs:
 
           mv "${INSTALL_DIR}/Stream-Pi Server" "${INSTALL_DIR}/Stream-Pi Server.AppDir"
 
-
           /tmp/appimagetool-i686.AppImage --appimage-extract
-
-          ls -l
-          ls -l squashfs-root/
-
           squashfs-root/AppRun "${INSTALL_DIR}/Stream-Pi Server.AppDir" "stream-pi-server-linux-x86-${{ env.VERSION }}.AppImage"
 
 
