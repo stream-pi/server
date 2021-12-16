@@ -360,7 +360,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 17
-          distribution: temurin
+          distribution: zulu
           architecture: x86
       - name: Delete Default.zip
         run: |
