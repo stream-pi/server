@@ -129,8 +129,8 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 17
-          distribution: temurin
-          architecture: x32
+          distribution: zulu
+          architecture: x86
       - name: Delete Default.zip
         run: |
           rm -rf src/main/resources/com/stream_pi/server/Default.zip
