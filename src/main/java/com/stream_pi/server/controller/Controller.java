@@ -301,7 +301,6 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             openSettingsAnimation.play();
         });
 
-
     }
 
     private void showIPPortConfiguration()
