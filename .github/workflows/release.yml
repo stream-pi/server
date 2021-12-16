@@ -15,14 +15,14 @@ jobs:
         with:
           workflow: init.yml
           name: version
-      - name: Download BUILD_NUMBER
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: init.yml
-          name: build_number
       - name: Add VERSION to environment
         run: |
           echo "VERSION=$(<version.txt)" >> $GITHUB_ENV
+      - name: Download BUILD_NUMBER
+        uses: dawidd6/action-download-artifact@v2
+        with:
+            workflow: init.yml
+            name: build_number
       - name: Add BUILD_NUMBER to environment
         run: |
           echo "BUILD_NUMBER=$(<build_number.txt)" >> $GITHUB_ENV
@@ -86,6 +86,9 @@ jobs:
         run: |
           touch body.md
 
+          echo XXX
+          echo $VERSION
+          echo $BUILD_NUMBER
           echo "Build Number : `${BUILD_NUMBER}`" >> body.md
 
           if [[ $VERSION == *"SNAPSHOT"* ]]; then
