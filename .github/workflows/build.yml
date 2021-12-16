@@ -192,7 +192,9 @@ jobs:
           cp assets/AppImage/* "${INSTALL_DIR}/Stream-Pi Server/"
 
           mv "${INSTALL_DIR}/Stream-Pi Server" "${INSTALL_DIR}/Stream-Pi Server.AppDir"
-          /tmp/appimagetool-i686.AppImage --appimage-extract "${INSTALL_DIR}/Stream-Pi Server.AppDir" "stream-pi-server-linux-x86-${{ env.VERSION }}.AppImage"
+          sudo mount -o loop /tmp/appimagetool-i686.AppImage /tmp/appimagetool
+          #/tmp/appimagetool-i686.AppImage --appimage-extract "${INSTALL_DIR}/Stream-Pi Server.AppDir" "stream-pi-server-linux-x86-${{ env.VERSION }}.AppImage"
+          /tmp/appimagetool/AppRun --appimage-extract "${INSTALL_DIR}/Stream-Pi Server.AppDir" "stream-pi-server-linux-x86-${{ env.VERSION }}.AppImage"
 
 
           NEW_V=${{ env.VERSION }}
