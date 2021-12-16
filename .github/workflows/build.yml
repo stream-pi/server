@@ -130,7 +130,7 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-          architecture: x86
+          architecture: x32
       - name: Delete Default.zip
         run: |
           rm -rf src/main/resources/com/stream_pi/server/Default.zip
