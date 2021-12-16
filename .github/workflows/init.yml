@@ -90,7 +90,7 @@ jobs:
           path: version.txt
       - name: Saving BUILD_NUMBER
         run: |
-          echo BUILD_NUMBER > build_number.txt
+          echo $BUILD_NUMBER > build_number.txt
       - name: Uploading BUILD_NUMBER
         uses: actions/upload-artifact@v2
         with:
