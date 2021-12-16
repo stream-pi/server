@@ -20,6 +20,8 @@ jobs:
           echo "VERSION=$(<version.txt)" >> $GITHUB_ENV
       - name: Add BUILD_NUMBER to environment
         run: |
+          pwd
+          ls -l
           RAW_BUILD_NUMBER=$(sed '4q;d' src/main/resources/com/stream_pi/server/info/build.properties)
           echo "BUILD_NUMBER=$(RAW_BUILD_NUMBER#*=)" >> $GITHUB_ENV
       - name: Download Windows x64 msi
