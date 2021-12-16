@@ -62,7 +62,7 @@ jobs:
       - name: Set Build Number
         run: |
           RAW_BUILD_NUMBER=$(sed '4q;d' src/main/resources/com/stream_pi/server/info/build.properties)
-          echo "BUILD_NUMBER=$(RAW_BUILD_NUMBER#*=)" >> $GITHUB_ENV
+          echo "BUILD_NUMBER=${RAW_BUILD_NUMBER#*=}" >> $GITHUB_ENV
       - name: Calculate required modules
         run: |
           JDEPS_MODULES=$(jdeps --module-path $JAVAFX_SDK/:target/lib/ --print-module-deps --ignore-missing-deps target/lib/server-$VERSION.jar)
