@@ -15,16 +15,17 @@ jobs:
         with:
           workflow: init.yml
           name: version
-      - name: Add Version to environment
+      - name: Download BUILD_NUMBER
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: init.yml
+          name: build_number
+      - name: Add VERSION to environment
         run: |
           echo "VERSION=$(<version.txt)" >> $GITHUB_ENV
       - name: Add BUILD_NUMBER to environment
         run: |
-          cd ..
-          pwd
-          ls -l
-          RAW_BUILD_NUMBER=$(sed '4q;d' src/main/resources/com/stream_pi/server/info/build.properties)
-          echo "BUILD_NUMBER=$(RAW_BUILD_NUMBER#*=)" >> $GITHUB_ENV
+          echo "BUILD_NUMBER=$(<build_number.txt)" >> $GITHUB_ENV
       - name: Download Windows x64 msi
         uses: dawidd6/action-download-artifact@v2
         with:
