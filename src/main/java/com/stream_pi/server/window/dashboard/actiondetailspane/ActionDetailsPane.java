@@ -243,6 +243,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
                     getAction().addIcon("default", iconFileByteArray);
                     getAction().setCurrentIconState("default");
                     setSendIcon(true);
+
+                    actionBackgroundColourTransparentCheckBox.setSelected(true);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1269,6 +1271,4 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
     {
         actionGridPaneListener.clearActionBox(col, row, colSpan, rowSpan);
     }
-
-
 }

@@ -99,7 +99,6 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     public void clearActionBox(int col, int row, int colSpan, int rowSpan)
     {
         showNonUsedBoxes(col, row, colSpan, rowSpan);
-
         actionBoxes[col][row].clear();
     }
 

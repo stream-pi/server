@@ -48,6 +48,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
+import java.util.Stack;
 
 public class ActionBox extends StackPane
 {
@@ -78,6 +79,7 @@ public class ActionBox extends StackPane
     {
         setStyle(null);
         setAction(null);
+        setIcon(null);
         setBackground(Background.EMPTY);
         removeFontIcon();
         getChildren().clear();
@@ -177,18 +179,19 @@ public class ActionBox extends StackPane
                     newAction.setProfileID(actionGridPaneListener.getCurrentProfile().getID());
                     newAction.setSocketAddressForClient(actionGridPaneListener.getClientConnection().getRemoteSocketAddress());
 
-                    actionGridPaneListener.addActionToCurrentClientProfile(newAction);
-
                     setAction(newAction);
                     init();
 
+                    actionGridPaneListener.addActionToCurrentClientProfile(newAction);
+
+                    if(newAction.isHasIcon())
+                    {
+                        actionDetailsPaneListener.setSendIcon(true);
+                    }
 
                     actionDetailsPaneListener.onActionClicked(newAction, this);
 
-                    if(newAction.isHasIcon())
-                        actionDetailsPaneListener.setSendIcon(true);
-
-                    ServerExecutorService.getExecutorService().execute(()->{
+                    ServerExecutorService.getExecutorService().submit(()->{
 
                         if (newAction instanceof ExternalPlugin)
                         {
@@ -289,7 +292,6 @@ public class ActionBox extends StackPane
                     }
                 }
             }
-
         });
     }
 
@@ -303,7 +305,6 @@ public class ActionBox extends StackPane
         getStyleClass().add("action_box");
         getStyleClass().add("action_box_"+row+"_"+col);
 
-        setIcon(null);
 
         actionContextMenu = new ContextMenu();
 
@@ -399,7 +400,6 @@ public class ActionBox extends StackPane
         baseInit();
 
         initMouseAndTouchListeners();
-
     }
 
     private int iconSize;
@@ -505,11 +505,14 @@ public class ActionBox extends StackPane
 
     public void init(boolean start)
     {
-        setBackground(null);
-        setStyle(null);
-
         getStyleClass().add("action_box_"+getAction().getID());
-        getStyleClass().add("action_box_"+getAction().getUniqueID().replace(".","-"));
+        getStyleClass().add("action_box_type_"+getAction().getActionType());
+
+        if (getAction().getUniqueID()!=null) // NORMAL, TOGGLE, GAUGE
+        {
+            getStyleClass().add("action_box_"+getAction().getUniqueID().replace(".","-"));
+        }
+
 
         showToggleOffMenuItem.setVisible(getAction().getActionType() == ActionType.TOGGLE);
         showToggleOnMenuItem.setVisible(getAction().getActionType() == ActionType.TOGGLE);
@@ -771,11 +774,12 @@ public class ActionBox extends StackPane
     }
 
 
-
     public void setBackgroundColour(String colour)
     {
         if(!colour.isEmpty())
+        {
             setStyle("-fx-background-color : "+colour);
+        }
     }
 
     public void setSelected(boolean status)

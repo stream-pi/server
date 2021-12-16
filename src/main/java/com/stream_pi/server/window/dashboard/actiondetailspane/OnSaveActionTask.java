@@ -274,6 +274,7 @@ public class OnSaveActionTask extends Task<Void>
                     try
                     {
                         actionDetailsPaneListener.renderAction(action);
+                        actionBox.setSelected(true);
                     }
                     catch (MinorException e)
                     {
