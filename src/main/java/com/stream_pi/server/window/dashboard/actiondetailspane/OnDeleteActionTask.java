@@ -81,7 +81,6 @@ public class OnDeleteActionTask extends Task<Void>
                     exceptionAndAlertHandler.handleMinorException("Display Text: "+action.getDisplayText()+"\nDetailed message : \n\n"+e.getMessage(), e);
                 }
 
-                ((ExternalPlugin) action).shutdownExecutor();
             }
 
 

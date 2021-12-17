@@ -164,14 +164,11 @@ public class ClientConnection extends Thread
                     try
                     {
                         ExternalPlugin externalPlugin = (ExternalPlugin) action;
-                        externalPlugin.setServerConnection(null);
-                        externalPlugin.setSocketAddressForClient(null);
                         externalPlugin.onClientDisconnected();
-                        externalPlugin.shutdownExecutor();
                     }
                     catch (MinorException e)
                     {
-                        exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onClientDisconnectedFailed()", action.getUniqueID(), e.getMessage()), e);
+                        exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "callOnClientDisconnectOnAllActions()", action.getUniqueID(), e.getMessage()), e);
                     }
                 }
             }

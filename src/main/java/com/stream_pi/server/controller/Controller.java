@@ -36,7 +36,6 @@ import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.server.window.firsttimeuse.FirstTimeUse;
 import com.stream_pi.server.combobox.IPChooserComboBox;
 import com.stream_pi.server.window.windowmenubar.WindowMenuBar;
-import com.stream_pi.server.window.windowmenubar.filemenu.FileMenu;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertButton;
 import com.stream_pi.util.alert.StreamPiAlertListener;
@@ -54,14 +53,11 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
 import javafx.scene.input.*;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioClip;
 import javafx.stage.WindowEvent;
@@ -78,11 +74,7 @@ import java.io.File;
 import java.net.*;
 import java.util.Enumeration;
 import java.util.Locale;
-import java.util.Objects;
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 
@@ -277,12 +269,10 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         });
 
         windowMenuBar.getFileMenu().getDisconnectFromAllClients().disableProperty().bind(ClientConnections.getInstance().getSizeProperty().isEqualTo(0));
-        windowMenuBar.getFileMenu().getDisconnectFromAllClients().setOnAction(event -> {
-            ServerExecutorService.getExecutorService().submit(()->{
-                ClientConnections.getInstance().disconnectAll();
-                clearTemp();
-            });
-        });
+        windowMenuBar.getFileMenu().getDisconnectFromAllClients().setOnAction(event -> ServerExecutorService.getExecutorService().submit(()->{
+            ClientConnections.getInstance().disconnectAll();
+            clearTemp();
+        }));
 
         windowMenuBar.getFileMenu().getExitMenuItem().setOnAction(event -> fullExit());
 
@@ -947,6 +937,17 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         {
             handleSevereException(e);
         }
+    }
+
+    @Override
+    public boolean isConnected(SocketAddress socketAddress)
+    {
+        return ClientConnections.getInstance().getClientConnectionBySocketAddress(socketAddress) != null;
+    }
+
+    @Override
+    public ExecutorService getExecutorService() {
+        return ServerExecutorService.getExecutorService();
     }
 
     @Override

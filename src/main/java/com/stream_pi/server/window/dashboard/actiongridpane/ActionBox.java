@@ -193,6 +193,8 @@ public class ActionBox extends StackPane
 
                     ServerExecutorService.getExecutorService().submit(()->{
 
+                        actionDetailsPaneListener.saveAction(false, false);
+
                         if (newAction instanceof ExternalPlugin)
                         {
                             try
@@ -220,7 +222,6 @@ public class ActionBox extends StackPane
                             }
                         }
 
-                        actionDetailsPaneListener.saveAction(false, false);
                     });
                 }
             }
