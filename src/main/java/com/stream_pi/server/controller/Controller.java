@@ -942,12 +942,6 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             clientConnection.updateActionTemporaryDisplayText(profileID, action, displayText);
 
             action.setTemporaryDisplayText(displayText);
-            ActionBox actionBox = getDashboardBase().getActionGridPane().getActionBoxByProfileAndID(profileID, actionID);
-
-            if (actionBox != null)
-            {
-                Platform.runLater(()-> actionBox.updateTemporaryDisplayText(displayText));
-            }
         }
         catch (SevereException e)
         {

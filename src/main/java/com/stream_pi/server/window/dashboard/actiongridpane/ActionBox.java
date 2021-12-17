@@ -558,7 +558,7 @@ public class ActionBox extends StackPane
                     {
                         setDisplayTextAlignment(action.getDisplayTextAlignment());
                         setDisplayTextFontColourAndSize(action.getDisplayTextFontColourHex());
-                        updateDisplayTextLabel();
+                        displayTextLabel.setText(getAction().getDisplayText());
                     }
                     else
                     {
@@ -690,11 +690,6 @@ public class ActionBox extends StackPane
         }
     }
 
-    public void updateDisplayTextLabel()
-    {
-        displayTextLabel.setText((getAction().getTemporaryDisplayText() == null) ? getAction().getDisplayText() : getAction().getTemporaryDisplayText());
-    }
-
     public void clearDisplayTextLabel()
     {
         displayTextLabel.setText("");
@@ -792,11 +787,5 @@ public class ActionBox extends StackPane
         {
             getStyleClass().remove("action_box_selected");
         }
-    }
-
-    public void updateTemporaryDisplayText(String displayText)
-    {
-        getAction().setTemporaryDisplayText(displayText);
-        updateDisplayTextLabel();
     }
 }
