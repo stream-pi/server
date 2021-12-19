@@ -24,6 +24,6 @@ $JPACKAGE_HOME/bin/jpackage \
 --copyright "Copyright 2019-21 Debayan Sutradhar (rnayabed), Samuel Quiñones (SamuelQuinones)" \
 --dest $INSTALL_DIR \
 --name 'Stream-Pi Server' \
---java-options '-Dprism.lcdtext=false -Dprism.forceGPU=true -Dprism.verbose=true -Djavafx.verbose=true -Dprism.dirtyopts=false' \
+--java-options '-Djavafx.verbose=true -Dprism.verbose=true -Dprism.lcdtext=false -Dprism.dirtyopts=false -Dprism.forceGPU=true' \
 --arguments "Stream-Pi.startupRunnerFileName='Stream-Pi Server' Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation=true" \
 "$@"

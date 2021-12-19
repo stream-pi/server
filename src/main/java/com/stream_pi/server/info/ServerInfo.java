@@ -30,6 +30,7 @@ import com.stream_pi.util.version.Version;
 import javafx.scene.control.Label;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -95,7 +96,10 @@ public class ServerInfo
 
         try
         {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(ServerInfo.class.getResourceAsStream("LICENSE"))));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+                    Objects.requireNonNull(ServerInfo.class.getResourceAsStream("LICENSE")),
+                    StandardCharsets.UTF_8
+            ));
 
             StringBuilder licenseTxt = new StringBuilder();
             while(true)

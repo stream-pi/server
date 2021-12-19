@@ -24,7 +24,7 @@ set /p VERSION=<version.txt
 --input target/lib ^
 --main-jar server-%VERSION%.jar ^
 --type msi ^
---java-options "-Dprism.verbose=true -Djavafx.verbose=true -Dprism.dirtyopts=false" ^
+--java-options "-Djavafx.verbose=true -Dprism.verbose=true -Dprism.lcdtext=false -Dprism.dirtyopts=false" ^
 --arguments "Stream-Pi.startupRunnerFileName='Stream-Pi Server.exe'" ^
 --main-class %MAIN_CLASS% ^
 --icon assets/windows-icon.ico ^

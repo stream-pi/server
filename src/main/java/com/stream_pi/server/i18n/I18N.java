@@ -19,6 +19,7 @@ import com.stream_pi.util.i18n.language.Language;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class I18N
@@ -68,7 +69,10 @@ public class I18N
         {
             languages = new ArrayList<>();
 
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(I18N.class.getResourceAsStream("i18n.properties"))));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
+                    Objects.requireNonNull(I18N.class.getResourceAsStream("i18n.properties")),
+                    StandardCharsets.UTF_8
+            ));
 
             while(true)
             {
