@@ -19,7 +19,7 @@ $JPACKAGE_HOME/bin/jpackage \
 --main-jar server-$VERSION.jar \
 --main-class $MAIN_CLASS \
 --description "Stream-Pi Server" \
---vendor "Debayan Sutradhar, Samuel Quiñones" \
+--vendor "Debayan Sutradhar (rnayabed), Samuel Quiñones (SamuelQuinones)" \
 --verbose \
 --copyright "Copyright 2019-21 Debayan Sutradhar (rnayabed), Samuel Quiñones (SamuelQuinones)" \
 --dest $INSTALL_DIR \

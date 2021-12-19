@@ -32,7 +32,7 @@ set /p VERSION=<version.txt
 --win-dir-chooser ^
 --win-menu ^
 --win-menu-group "Stream-Pi" ^
---vendor "Debayan Sutradhar, Samuel Quiñones"
+--vendor "Debayan Sutradhar (rnayabed), Samuel Quiñones (SamuelQuinones)"
 
 echo Done now renaming ..
 cd %INSTALL_DIR%
