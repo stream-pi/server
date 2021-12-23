@@ -96,7 +96,6 @@ public class ActionBox extends StackPane
             if(dragEvent.getDragboard().hasContent(ActionDataFormats.ACTION_TYPE))
             {
                 dragEvent.acceptTransferModes(TransferMode.ANY);
-
                 dragEvent.consume();
             }
         });
@@ -116,7 +115,6 @@ public class ActionBox extends StackPane
                     if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE || actionType == ActionType.GAUGE)
                     {
                         String moduleName = (String) dragEvent.getDragboard().getContent(ActionDataFormats.UNIQUE_ID);
-
 
                         newAction = actionGridPaneListener.createNewActionFromExternalPlugin(moduleName);
 
@@ -184,12 +182,14 @@ public class ActionBox extends StackPane
 
                     actionGridPaneListener.addActionToCurrentClientProfile(newAction);
 
+
+                    actionDetailsPaneListener.onActionClicked(newAction, this);
+
                     if(newAction.isHasIcon())
                     {
                         actionDetailsPaneListener.setSendIcon(true);
                     }
 
-                    actionDetailsPaneListener.onActionClicked(newAction, this);
 
                     ServerExecutorService.getExecutorService().submit(()->{
 
@@ -768,7 +768,6 @@ public class ActionBox extends StackPane
             gauge.setForegroundBaseColor(newCol.getColor());
         }
     }
-
 
     public void setBackgroundColour(String colour)
     {

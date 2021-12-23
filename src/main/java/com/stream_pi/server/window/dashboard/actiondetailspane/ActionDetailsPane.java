@@ -752,7 +752,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         buttonBar.setVisible(true);
 
-
         displayTextAlignmentComboBox.getSelectionModel().select(getAction().getDisplayTextAlignment());
 
         if(!getAction().getBgColourHex().isEmpty())
@@ -810,7 +809,6 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             normalActionsPropsVBox.setVisible(false);
             normalToggleActionCommonPropsVBox.setVisible(false);
             gaugeActionsPropsVBox.setVisible(false);
-            hideDisplayTextCheckBox.setSelected(false);
             hideDisplayTextCheckBox.setVisible(false);
 
             displayNameLabelFontSizeTextFieldHBox.setVisible(false);
@@ -1027,7 +1025,8 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
         this.sendIcon = sendIcon;
     }
 
-    public void addActionToCurrentClientProfile(Action newAction) throws CloneNotSupportedException {
+    public void addActionToCurrentClientProfile(Action newAction) throws CloneNotSupportedException
+    {
         getClientProfile().addAction(newAction);
     }
 
