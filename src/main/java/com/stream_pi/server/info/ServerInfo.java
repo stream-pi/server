@@ -51,8 +51,8 @@ public class ServerInfo
 
     private ServerInfo()
     {
-        version = new Version(1,0,0);
-        communicationProtocolVersion = new Version(1,0,0);
+        version = new Version(2,0,0);
+        communicationProtocolVersion = new Version(2,0,0);
 
         releaseStatus = ReleaseStatus.EA;
         prePath = System.getProperty("user.home") + File.separator + "Stream-Pi" + File.separator + "Server" + File.separator;
