@@ -7,7 +7,7 @@
 
 Server Software for the Stream-Pi Platform
 
-![version](https://img.shields.io/badge/Version-1.0.0%20EA+3-green)
+![version](https://img.shields.io/badge/Version-2.0.0--SNAPSHOT-green)
 
 [![Discord](https://discordapp.com/api/guilds/582313435149238295/widget.png?style=shield)](https://discord.gg/BExqGmk)
 [![Matrix](https://img.shields.io/matrix/stream-pi-general:matrix.org?label=Matrix)](https://matrix.to/#/!hTwUYZonUXThjkMhCD:matrix.org?via=matrix.org)
@@ -15,7 +15,7 @@ Server Software for the Stream-Pi Platform
 ![Total Downloads](https://img.shields.io/github/downloads/stream-pi/server/total?label=Total%20Downloads)
 
 ### [Website](https://stream-pi.com)
-#### [Download latest release](https://github.com/stream-pi/server/releases/tag/1.0.0-EA%2B3) | [Download latest snapshot](https://github.com/stream-pi/server/releases/tag/1.0.0-EA%2B4-SNAPSHOT)
+#### [Download latest release](https://github.com/stream-pi/server/releases/tag/1.0.0-EA%2B3) | [Download latest snapshot](https://github.com/stream-pi/server/releases/tag/2.0.0-SNAPSHOT)
 #### [Help us Translate!](https://github.com/stream-pi/server/blob/master/i18n.md)
 </div>
 
