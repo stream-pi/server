@@ -28,6 +28,9 @@ import com.stream_pi.theme_api.ThemeAPI;
 import com.stream_pi.theme_api.Themes;
 import com.stream_pi.util.Util;
 import com.stream_pi.util.alert.StreamPiAlert;
+import com.stream_pi.util.alert.StreamPiAlertButton;
+import com.stream_pi.util.alert.StreamPiAlertListener;
+import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.iohelper.IOHelper;
@@ -214,49 +217,49 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
     private void checkPrePathDirectory() throws SevereException
     {
-        try
+        File serverDataFolder = new File(getServerInfo().getPrePath());
+
+        if (serverDataFolder.exists())
         {
-            File configFile = new File(ServerInfo.getInstance().getPrePath()+"config.xml");
-
-            if(!configFile.exists())
+            if (new File(getServerInfo().getPrePath()+"config.xml").exists())
             {
-                if(configFile.getParentFile().exists())
+                Config tempConfig = new Config();
+
+                if (tempConfig.getVersion() == null || tempConfig.getVersion().getMajor() != getServerInfo().getVersion().getMajor())
                 {
-                    File pluginsFolder = new File(configFile.getParentFile().getAbsolutePath() + File.separator + "Plugins");
-
-                    if (pluginsFolder.exists())
-                    {
-                        logger.info("Found old Plugins folder. Deleting it ...");
-
-                        if(!IOHelper.deleteFile(pluginsFolder, false))
-                        {
-                            logger.severe("Unable to delete old Plugins folder!");
-                        }
-                    }
+                    IOHelper.deleteFile(getServerInfo().getPrePath(), false);
                 }
-                else
-                {
-                    if(!configFile.getParentFile().mkdirs())
-                    {
-                        setPrefSize(300,300);
-                        clearStylesheets();
-                        applyDefaultStylesheet();
-                        applyDefaultIconsStylesheet();
-                        applyGlobalDefaultStylesheet();
-                        getStage().show();
-                        throw new SevereException(I18N.getString("window.Base.noStoragePermission"));
-                    }
-                }
+            }
+            else
+            {
+                IOHelper.deleteFile(getServerInfo().getPrePath(), false);
+            }
+        }
 
+
+        if (!serverDataFolder.exists())
+        {
+            try
+            {
                 Config.unzipToDefaultPrePath();
                 initLogger();
             }
+            catch (MinorException e)
+            {
+                throwStoragePermErrorAlert(e.getMessage());
+            }
         }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            throw new SevereException(e.getMessage());
-        }
+    }
+
+    private void throwStoragePermErrorAlert(String msg) throws SevereException
+    {
+        setPrefSize(300,300);
+        clearStylesheets();
+        applyDefaultStylesheet();
+        applyDefaultIconsStylesheet();
+        applyGlobalDefaultStylesheet();
+        getStage().show();
+        throw new SevereException(msg);
     }
 
     public void initThemes() throws SevereException 

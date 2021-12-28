@@ -38,11 +38,11 @@ import java.util.logging.Logger;
 
 public class ServerInfo
 {
-    private Version version;
+    private final Version version;
     private final ReleaseStatus releaseStatus;
     private final Platform platform;
-    private String prePath;
-    private Version communicationProtocolVersion;
+    private final String prePath;
+    private final Version communicationProtocolVersion;
     private String buildNumber;
     private String license;
 

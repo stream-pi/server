@@ -41,22 +41,24 @@ import javax.xml.transform.stream.StreamResult;
 import com.stream_pi.server.Main;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.info.ServerInfo;
+import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.iohelper.IOHelper;
+import com.stream_pi.util.version.Version;
 import com.stream_pi.util.xmlconfighelper.XMLConfigHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public class Config
 {
-
     private static Config instance = null;
   
     private final File configFile;
 
-    private Document document;
+    private final Document document;
 
-    private Config() throws SevereException
+    public Config() throws SevereException
     {
         try
         {
@@ -75,7 +77,9 @@ public class Config
     public static synchronized Config getInstance() throws SevereException
     {
         if(instance == null)
+        {
             instance = new Config();
+        }
 
         return instance;
     }
@@ -105,6 +109,26 @@ public class Config
             throw new SevereException(I18N.getString("io.config.Config.unableToSaveConfig", e.getMessage()));
         }
     }
+
+    public Version getVersion()
+    {
+        try
+        {
+            Node versionNode = document.getElementsByTagName("version").item(0);
+
+            if (versionNode == null)
+            {
+                return null;
+            }
+
+            return new Version(versionNode.getTextContent());
+        }
+        catch (MinorException e)
+        {
+            return null;
+        }
+    }
+
 
 
     //Getters
@@ -550,12 +574,11 @@ public class Config
         getOthersElement().getElementsByTagName("first-time-use").item(0).setTextContent(value+"");
     }
 
-    public static void unzipToDefaultPrePath() throws Exception
+    public static void unzipToDefaultPrePath() throws MinorException, SevereException
     {
         IOHelper.unzip(Objects.requireNonNull(Main.class.getResourceAsStream("Default.zip")), ServerInfo.getInstance().getPrePath());
 
-        Config config = Config.getInstance();
-
+        Config config = new Config();
         config.setThemesPath(config.getDefaultThemesPath());
         config.setPluginsPath(config.getDefaultPluginsPath());
         config.setCurrentLanguageLocale(config.getDefaultLanguageLocale());

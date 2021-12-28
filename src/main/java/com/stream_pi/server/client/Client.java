@@ -30,7 +30,7 @@ public class Client
     private final SocketAddress remoteSocketAddress;
     private final Platform platform;
     private final Version version;
-    private final Version commStandardVersion;
+    private final Version communicationProtocolVersion;
     private final Version themeAPIVersion;
     private final ReleaseStatus releaseStatus;
 
@@ -45,13 +45,13 @@ public class Client
 
     private Orientation orientation;
 
-    public Client(Version version, ReleaseStatus releaseStatus, Version commStandardVersion,
+    public Client(Version version, ReleaseStatus releaseStatus, Version communicationProtocolVersion,
                   Version themeAPIVersion, String name, Platform platform, SocketAddress remoteSocketAddress,
                   Orientation orientation)
     {
         this.version = version;
         this.releaseStatus = releaseStatus;
-        this.commStandardVersion = commStandardVersion;
+        this.communicationProtocolVersion = communicationProtocolVersion;
         this.themeAPIVersion = themeAPIVersion;
         this.name = name;
         this.remoteSocketAddress = remoteSocketAddress;
@@ -151,9 +151,9 @@ public class Client
         return version;
     }
 
-    public Version getCommStandardVersion()
+    public Version getCommunicationProtocolVersion()
     {
-        return commStandardVersion;
+        return communicationProtocolVersion;
     }
 
     public Version getThemeAPIVersion()

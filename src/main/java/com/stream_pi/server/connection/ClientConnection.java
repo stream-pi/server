@@ -210,29 +210,29 @@ public class ClientConnection extends Thread
         logger.info("Setting up client object ...");
 
         Version clientVersion;
-        Version commsStandard;
-        Version themesStandard;
+        Version communicationProtocol;
+        Version themeAPIVersion;
 
         ReleaseStatus releaseStatus;
 
         clientVersion = (Version) message.getValue("version");
         releaseStatus = (ReleaseStatus) message.getValue("release_status");
-        commsStandard = (Version) message.getValue("communication_protocol_version");
-        themesStandard = (Version) message.getValue("min_theme_standard");
+        communicationProtocol = (Version) message.getValue("communication_protocol_version");
+        themeAPIVersion = (Version) message.getValue("theme_api_version");
 
-        if(!commsStandard.isEqual(ServerInfo.getInstance().getCommunicationProtocolVersion()))
+        if (communicationProtocol.getMajor() != ServerInfo.getInstance().getCommunicationProtocolVersion().getMajor())
         {
             disconnect(DisconnectReason.COMMUNICATION_PROTOCOL_MISMATCH);
             throw new MinorException(DisconnectReason.COMMUNICATION_PROTOCOL_MISMATCH.getMessage()+"\n"+
                     I18N.getString("connection.ClientConnection.serverClientCommunicationProtocolVersions",
-                            ServerInfo.getInstance().getCommunicationProtocolVersion().getText(), commsStandard.getText()
+                            ServerInfo.getInstance().getCommunicationProtocolVersion().getText(), communicationProtocol.getText()
                     )
             );
         }
 
         Orientation orientation = (Orientation) message.getValue("orientation");
 
-        client = new Client(clientVersion, releaseStatus, commsStandard, themesStandard, (String) message.getValue("name"),
+        client = new Client(clientVersion, releaseStatus, communicationProtocol, themeAPIVersion, (String) message.getValue("name"),
                 (Platform) message.getValue("platform"), socket.getRemoteSocketAddress(), orientation);
 
         client.setDisplayWidth((Double) message.getValue("display_width"));

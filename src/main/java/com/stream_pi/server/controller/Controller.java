@@ -75,7 +75,6 @@ import java.net.*;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 
 
@@ -598,28 +597,29 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     }
 
     @Override
-    public void handleMinorException(MinorException e)
+    public StreamPiAlert handleMinorException(MinorException e)
     {
-        handleMinorException(e.getMessage(), e);
+       return handleMinorException(e.getMessage(), e);
     }
 
     @Override
-    public void handleMinorException(String message, MinorException e)
+    public StreamPiAlert handleMinorException(String message, MinorException e)
     {
-
         getLogger().log(Level.SEVERE, message, e);
         e.printStackTrace();
-        new StreamPiAlert(e.getTitle(), message, StreamPiAlertType.WARNING).show();
+        StreamPiAlert alert = new StreamPiAlert(e.getTitle(), message, StreamPiAlertType.WARNING);
+        alert.show();
+        return alert;
     }
 
     @Override
-    public void handleSevereException(SevereException e)
+    public StreamPiAlert handleSevereException(SevereException e)
     {
-        handleSevereException(e.getMessage(), e);
+        return handleSevereException(e.getMessage(), e);
     }
 
     @Override
-    public void handleSevereException(String message, SevereException e)
+    public StreamPiAlert handleSevereException(String message, SevereException e)
     {
         getLogger().log(Level.SEVERE, message, e);
         e.printStackTrace();
@@ -636,6 +636,8 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         });
 
         alert.show();
+
+        return alert;
     }
 
     private AudioClip audioClip = null;
@@ -763,7 +765,9 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         {
             ExternalPlugins.getInstance().saveServerSettings();
             getSettingsBase().getPluginsSettings().loadPlugins();
-        } catch (MinorException e) {
+        }
+        catch (MinorException e)
+        {
             e.printStackTrace();
             handleMinorException(e);
         }
