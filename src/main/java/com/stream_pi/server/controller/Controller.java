@@ -709,10 +709,15 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     @Override
     public synchronized void onInputEventInAction(Client client, String profileID, String actionID, StreamPiInputEvent streamPiInputEvent)
     {
-        Action action = client.getProfileByID(profileID).getActionByID(actionID);
+        System.out.println("X");
+        ClientProfile profile = client.getProfileByID(profileID);
 
+        Action action = profile.getActionByID(actionID);
+
+        System.out.println("Y");
         if(action.isInvalid())
         {
+            System.out.println("YWEA");
             if (!action.getUniqueID().equals(invalidActionUniqueID))
             {
                 invalidActionUniqueID = action.getUniqueID();
@@ -723,20 +728,78 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         }
 
         invalidActionUniqueID = null;
+        System.out.println("Z");
+
 
         ServerExecutorService.getExecutorService().submit(()->{
             try
             {
+
+                System.out.println("1");
                 if(streamPiInputEvent.getEventType() == MouseEvent.MOUSE_CLICKED)
                 {
+                    System.out.println("3");
+                    System.out.println("action type:"+action.getActionType());
+                    System.out.println("action name:"+action.getDisplayText());
                     if(action.getActionType() == ActionType.NORMAL)
                     {
+                        System.out.println("4");
                         ((NormalAction) action).onActionClicked();
+                    }
+                    else if(action.getActionType() == ActionType.COMBINE)
+                    {
+                        for(int i = 0;i<action.getClientProperties().getSize(); i++)
+                        {
+                            System.out.println("J");
+                            try
+                            {
+                                System.out.println("K");
+                                Action childAction = profile.getActionByID(
+                                        action.getClientProperties().getSingleProperty(i+"").getRawValue()
+                                );
+
+                                System.out.println("L");
+                                Thread.sleep(childAction.getDelayBeforeExecuting());
+
+                                if (childAction.getActionType() == ActionType.NORMAL)
+                                {
+                                    System.out.println("M");
+                                    ((NormalAction) childAction).onActionClicked();
+                                }
+                                else if (childAction.getActionType() == ActionType.TOGGLE)
+                                {
+                                    ToggleAction toggleAction = (ToggleAction) childAction;
+
+                                    setToggleStatus(
+                                            !toggleAction.getCurrentStatus(),
+                                            profileID,
+                                            actionID,
+                                            client.getRemoteSocketAddress()
+                                    );
+
+                                    onSetToggleStatus(
+                                            client,
+                                            profileID,
+                                            actionID,
+                                            toggleAction.getCurrentStatus()
+                                    );
+                                }
+                            }
+                            catch (MinorException e)
+                            {
+                                handleMinorException(e);
+                            }
+                            catch (InterruptedException e)
+                            {
+                                e.printStackTrace();
+                            }
+                        }
                     }
 
                     playSound();
                 }
 
+                System.out.println("2");
                 ((ExternalPlugin) action).onInputEventReceived(streamPiInputEvent);
             }
             catch (MinorException e)

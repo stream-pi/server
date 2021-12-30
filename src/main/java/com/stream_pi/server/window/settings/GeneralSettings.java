@@ -17,6 +17,7 @@ package com.stream_pi.server.window.settings;
 import com.stream_pi.server.Main;
 import com.stream_pi.server.combobox.IPChooserComboBox;
 import com.stream_pi.server.combobox.LanguageChooserComboBox;
+import com.stream_pi.server.connection.ClientConnections;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.info.StartupFlags;
@@ -150,7 +151,16 @@ public class GeneralSettings extends VBox
         factoryResetButton.setOnAction(actionEvent -> onFactoryResetButtonClicked());
         
         restartButton = new Button(I18N.getString("window.settings.GeneralSettings.restart"));
-        restartButton.setOnAction(event->showRestartPrompt(I18N.getString("window.settings.GeneralSettings.restartPromptWarning")));
+        restartButton.setOnAction(event->{
+            if (ClientConnections.getInstance().getConnections().size() > 0)
+            {
+                showRestartPrompt(I18N.getString("window.settings.GeneralSettings.restartPromptWarning"));
+            }
+            else
+            {
+                serverListener.restart();
+            }
+        });
 
         serverNameTextField.setPrefWidth(200);
 
