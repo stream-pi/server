@@ -190,10 +190,10 @@ public class GeneralSettings extends VBox
                 startOnBootHBox,
                 showAlertsPopupHBox,
                 factoryResetButton,
-                checkForUpdatesButton,
                 restartButton
         );
 
+        // checkForUpdatesButton removed until Update API is finalised
 
 
         vbox.getStyleClass().add("general_settings_vbox");
