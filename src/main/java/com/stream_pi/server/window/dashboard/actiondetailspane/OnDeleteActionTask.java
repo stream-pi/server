@@ -93,21 +93,17 @@ public class OnDeleteActionTask extends Task<Void>
 
                 combineActionPropertiesPane.renderProps();
 
-                try {
-
-
-                    System.out.println(combineActionPropertiesPane.getCombineAction().getDisplayText());
-
+                try
+                {
                     connection.saveActionDetails(clientProfile.getID(), combineActionPropertiesPane.getCombineAction());
 
                     actionDetailsPane.onActionClicked(
                             combineActionPropertiesPane.getCombineAction(),
                             actionBox
                     );
-
-
-
-                } catch (MinorException e) {
+                }
+                catch (MinorException e)
+                {
                     e.printStackTrace();
                 }
             }

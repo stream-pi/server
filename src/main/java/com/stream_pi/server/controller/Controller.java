@@ -678,6 +678,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         if(action.isInvalid())
         {
             handleMinorException(new MinorException(I18N.getString("controller.Controller.pluginNotInstalledOnServer", action.getUniqueID())));
+            return;
         }
 
         ToggleAction toggleAction = (ToggleAction) action;
@@ -685,16 +686,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         ServerExecutorService.getExecutorService().submit(()->{
             try
             {
-                toggleAction.setCurrentStatus(toggleStatus);
-
-                if(toggleStatus)
-                {
-                    toggleAction.onToggleOn();
-                }
-                else
-                {
-                    toggleAction.onToggleOff();
-                }
+                runToggleOnOffMethod(toggleAction, toggleStatus);
             }
             catch (MinorException e)
             {
@@ -703,21 +695,32 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         });
     }
 
+    public void runToggleOnOffMethod(ToggleAction toggleAction, boolean toggleStatus) throws MinorException
+    {
+        toggleAction.setCurrentStatus(toggleStatus);
+
+        if(toggleStatus)
+        {
+            toggleAction.onToggleOn();
+        }
+        else
+        {
+            toggleAction.onToggleOff();
+        }
+    }
+
 
     private String invalidActionUniqueID = null;
 
     @Override
     public synchronized void onInputEventInAction(Client client, String profileID, String actionID, StreamPiInputEvent streamPiInputEvent)
     {
-        System.out.println("X");
         ClientProfile profile = client.getProfileByID(profileID);
 
         Action action = profile.getActionByID(actionID);
 
-        System.out.println("Y");
         if(action.isInvalid())
         {
-            System.out.println("YWEA");
             if (!action.getUniqueID().equals(invalidActionUniqueID))
             {
                 invalidActionUniqueID = action.getUniqueID();
@@ -728,60 +731,44 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         }
 
         invalidActionUniqueID = null;
-        System.out.println("Z");
 
 
         ServerExecutorService.getExecutorService().submit(()->{
             try
             {
-
-                System.out.println("1");
                 if(streamPiInputEvent.getEventType() == MouseEvent.MOUSE_CLICKED)
                 {
-                    System.out.println("3");
-                    System.out.println("action type:"+action.getActionType());
-                    System.out.println("action name:"+action.getDisplayText());
                     if(action.getActionType() == ActionType.NORMAL)
                     {
-                        System.out.println("4");
                         ((NormalAction) action).onActionClicked();
                     }
                     else if(action.getActionType() == ActionType.COMBINE)
                     {
                         for(int i = 0;i<action.getClientProperties().getSize(); i++)
                         {
-                            System.out.println("J");
                             try
                             {
-                                System.out.println("K");
                                 Action childAction = profile.getActionByID(
                                         action.getClientProperties().getSingleProperty(i+"").getRawValue()
                                 );
 
-                                System.out.println("L");
                                 Thread.sleep(childAction.getDelayBeforeExecuting());
 
                                 if (childAction.getActionType() == ActionType.NORMAL)
                                 {
-                                    System.out.println("M");
                                     ((NormalAction) childAction).onActionClicked();
                                 }
                                 else if (childAction.getActionType() == ActionType.TOGGLE)
                                 {
                                     ToggleAction toggleAction = (ToggleAction) childAction;
 
-                                    setToggleStatus(
-                                            !toggleAction.getCurrentStatus(),
-                                            profileID,
-                                            actionID,
-                                            client.getRemoteSocketAddress()
-                                    );
+                                    runToggleOnOffMethod(toggleAction, !toggleAction.getCurrentStatus());
 
-                                    onSetToggleStatus(
-                                            client,
+                                    setToggleStatus(
+                                            toggleAction.getCurrentStatus(),
                                             profileID,
-                                            actionID,
-                                            toggleAction.getCurrentStatus()
+                                            childAction.getID(),
+                                            client.getRemoteSocketAddress()
                                     );
                                 }
                             }
@@ -799,7 +786,6 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
                     playSound();
                 }
 
-                System.out.println("2");
                 ((ExternalPlugin) action).onInputEventReceived(streamPiInputEvent);
             }
             catch (MinorException e)
@@ -1197,7 +1183,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
             return;
         }
 
-        new Thread(new Task<Void>() {
+        ServerExecutorService.getExecutorService().submit(new Task<Void>() {
             @Override
             protected Void call()
             {
@@ -1211,8 +1197,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
                 }
                 return null;
             }
-        }).start();
-
+        });
     }
 
     @Override
