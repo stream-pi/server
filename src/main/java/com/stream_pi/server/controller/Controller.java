@@ -813,11 +813,9 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         try
         {
             ExternalPlugins.getInstance().saveServerSettings();
-            getSettingsBase().getPluginsSettings().loadPlugins();
         }
         catch (MinorException e)
         {
-            e.printStackTrace();
             handleMinorException(e);
         }
     }

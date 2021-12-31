@@ -23,11 +23,9 @@ import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.helper.Helper;
 import com.stream_pi.util.exception.MinorException;
-import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import com.stream_pi.util.uihelper.SpaceFiller;
 
 import javafx.geometry.Insets;
-import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import javafx.application.HostServices;
@@ -37,9 +35,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,9 +129,8 @@ public class PluginsSettings extends VBox
 
             //save
             for (PluginProperties pp : pluginProperties) {
-                for (int j = 0; j < pp.getServerPropertyUIBox().size(); j++) {
-
-
+                for (int j = 0; j < pp.getServerPropertyUIBox().size(); j++)
+                {
                     UIPropertyBox serverProperty = pp.getServerPropertyUIBox().get(j);
 
                     String rawValue = serverProperty.getRawValue();
@@ -169,8 +164,8 @@ public class PluginsSettings extends VBox
         });
     }
 
-    public void loadPlugins() throws MinorException {
-
+    public void loadPlugins() throws MinorException
+    {
         pluginProperties.clear();
 
         List<ExternalPlugin> actions = ExternalPlugins.getInstance().getPlugins();
@@ -257,12 +252,17 @@ public class PluginsSettings extends VBox
             pluginProperties.add(pp);
 
 
-
-            Platform.runLater(()->{
+            Platform.runLater(()->
+            {
                 VBox vBox = new VBox();
                 vBox.getStyleClass().add("plugins_settings_each_plugin_box");
                 vBox.setSpacing(5.0);
                 vBox.getChildren().addAll(headerHBox, authorLabel, moduleLabel, versionLabel, serverPropertiesVBox);
+
+                if(action.getServerSettingsNodes()!=null)
+                {
+                    vBox.getChildren().addAll(action.getServerSettingsNodes());
+                }
 
                 if(action.getServerSettingsButtonBar()!=null)
                 {
