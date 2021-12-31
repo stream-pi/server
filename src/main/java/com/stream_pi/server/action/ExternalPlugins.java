@@ -431,6 +431,39 @@ public class ExternalPlugins
         }
     }
 
+    public void runOnServerPropertiesSavedByUser() throws MinorException
+    {
+        StringBuilder errors = new StringBuilder();
+        boolean isError = false;
+
+        for(ExternalPlugin eachPlugin : externalPlugins)
+        {
+            try
+            {
+                eachPlugin.onServerPropertiesSavedByUser();
+            }
+            catch (MinorException e)
+            {
+                e.printStackTrace();
+                isError = true;
+                errors.append("\n* ")
+                        .append(eachPlugin.getName())
+                        .append(" - ")
+                        .append(eachPlugin.getUniqueID())
+                        .append("\n");
+
+                errors.append(e.getMessage());
+
+                errors.append("\n");
+            }
+        }
+
+        if(isError)
+        {
+            throw new MinorException(errors.toString());
+        }
+    }
+
     HashMap<String, ArrayList<ExternalPlugin>> sortedPlugins;
 
     /**

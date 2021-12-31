@@ -808,15 +808,39 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     }
 
     @Override
-    public void saveServerProperties()
+    public void saveServerProperties(String uniqueID)
     {
         try
         {
             ExternalPlugins.getInstance().saveServerSettings();
+            getSettingsBase().getPluginsSettings().reloadPlugin(uniqueID);
         }
         catch (MinorException e)
         {
             handleMinorException(e);
+        }
+    }
+
+    @Override
+    public boolean saveServerPropertiesProvidedByUser(String uniqueID)
+    {
+        try
+        {
+            StringBuilder errors = getSettingsBase().getPluginsSettings().validatePluginProperties(uniqueID);
+
+            if(!errors.toString().isEmpty())
+            {
+                throw new MinorException(I18N.getString("validationError", errors));
+            }
+
+            getSettingsBase().getPluginsSettings().saveServerPropertiesFromFields(uniqueID);
+
+            return true;
+        }
+        catch (MinorException e)
+        {
+            handleMinorException(e);
+            return false;
         }
     }
 
@@ -1145,7 +1169,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
                         getSettingsBase().getClientsSettings().loadData();
 
                         getSettingsBase().getGeneralSettings().loadData();
-                        getSettingsBase().getPluginsSettings().loadPlugins();
+                        getSettingsBase().getPluginsSettings().reloadPlugins();
 
                         getSettingsBase().getThemesSettings().setThemes(getThemes());
                         getSettingsBase().getThemesSettings().setCurrentThemeFullName(getCurrentTheme().getFullName());

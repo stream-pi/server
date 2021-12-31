@@ -35,9 +35,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.logging.Logger;
+
 public class FinalConfigPane extends VBox
 {
-    private TextField serverNicknameTextField;
+    private TextField serverNameTextField;
     private TextField serverPortTextField;
     private IPChooserComboBox ipChooserComboBox;
     private Button nextButton;
@@ -58,12 +62,12 @@ public class FinalConfigPane extends VBox
         label.setWrapText(true);
         label.getStyleClass().add("first_time_use_pane_final_config_label");
 
-        serverNicknameTextField = new TextField();
+        serverNameTextField = new TextField();
         serverPortTextField = new TextField(Config.getDefaultPort()+"");
         ipChooserComboBox = new IPChooserComboBox(exceptionAndAlertHandler);
         ipChooserComboBox.configureOptions();
 
-        HBoxInputBox serverNickNameInputBox = new HBoxInputBox(I18N.getString("serverName"), serverNicknameTextField, 200);
+        HBoxInputBox serverNickNameInputBox = new HBoxInputBox(I18N.getString("serverName"), serverNameTextField, 200);
         HBoxInputBox serverPortInputBox = new HBoxInputBox(I18N.getString("serverPort"), serverPortTextField);
         HBoxWithSpaceBetween ipChooserHBox = new HBoxWithSpaceBetween(I18N.getString("serverIPBinding"), ipChooserComboBox);
 
@@ -77,6 +81,15 @@ public class FinalConfigPane extends VBox
         setSpacing(10.0);
 
         setVisible(false);
+
+        try
+        {
+            serverNameTextField.setText(InetAddress.getLocalHost().getHostName());
+        }
+        catch (UnknownHostException e)
+        {
+            Logger.getLogger(getClass().getName()).warning("Hostname lookup failed! Not setting any placeholder for serverNameTextField.");
+        }
     }
 
     public void makeChangesToNextButton()
@@ -98,7 +111,7 @@ public class FinalConfigPane extends VBox
 
         StringBuilder errors = new StringBuilder();
 
-        String serverNameStr = serverNicknameTextField.getText();
+        String serverNameStr = serverNameTextField.getText();
         String serverPortStr = serverPortTextField.getText();
 
         if(serverNameStr.isBlank())

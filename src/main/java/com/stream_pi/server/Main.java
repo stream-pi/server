@@ -35,8 +35,6 @@ public class Main extends Application
      */
     public void start(Stage stage)
     {
-
-
         Controller d = new Controller();
         Scene s = new Scene(d);
         stage.setScene(s);
