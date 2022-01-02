@@ -16,14 +16,11 @@ Opensource Libraries/Technology used in Stream-Pi Server:
 1. JavaFX - GNU General Public License with Classpath Exception
 https://openjdk.java.net/legal/gplv2+ce.html
 
-2. GSON - Apache License 2.0
-https://github.com/google/gson/blob/master/LICENSE
-
-3. Ikonli - Apache License
+2. Ikonli - Apache License
 https://github.com/kordamp/ikonli/blob/master/LICENSE
 
-4. ControlsFX - BSD 3-Clause License
+3. ControlsFX - BSD 3-Clause License
 https://github.com/controlsfx/controlsfx/blob/jfx-13/license.txt
 
-5. Medusa - Apache License 2.0
+4. Medusa - Apache License 2.0
 https://github.com/HanSolo/medusa/blob/master/LICENSE
