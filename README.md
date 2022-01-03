@@ -48,7 +48,7 @@ You may also reach us via any of the following platforms:
 This software is licensed to [GNU General Public License v3.0](https://github.com/stream-pi/server/blob/master/LICENSE).
 ```
 Stream-Pi - Free, Open-Source, Modular, Cross-Platform and Programmable Macro Pad
-Copyright (C) 2019-2021  Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+Copyright (C) 2019-2022 Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -65,18 +65,12 @@ Opensource Libraries/Technology used in Stream-Pi Server:
 1. JavaFX - GNU General Public License with Classpath Exception
 https://openjdk.java.net/legal/gplv2+ce.html
 
-2. GSON - Apache License 2.0
-https://github.com/google/gson/blob/master/LICENSE
-
-3. Ikonli - Apache License
+2. Ikonli - Apache License
 https://github.com/kordamp/ikonli/blob/master/LICENSE
 
-4. ControlsFX - BSD 3-Clause License
+3. ControlsFX - BSD 3-Clause License
 https://github.com/controlsfx/controlsfx/blob/jfx-13/license.txt
 
-5. Medusa - Apache License 2.0
+4. Medusa - Apache License 2.0
 https://github.com/HanSolo/medusa/blob/master/LICENSE
 ```
-
-
-
