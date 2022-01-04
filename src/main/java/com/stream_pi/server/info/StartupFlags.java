@@ -14,6 +14,8 @@
 
 package com.stream_pi.server.info;
 
+import javafx.application.Application;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +31,9 @@ public class StartupFlags
     public static final String APPEND_PATH_BEFORE_RUNNER_FILE_TO_OVERCOME_JPACKAGE_LIMITATION_ARG = "Stream-Pi.appendPathBeforeRunnerFileToOvercomeJPackageLimitation";
     public static final String ALLOW_ROOT_ARG = "Stream-Pi.allowRoot";
 
-    public static void init(String[] args)
+    public static void init(Application.Parameters parameters)
     {
-        for (String arg : args)
+        for (String arg : parameters.getRaw())
         {
             String[] arr = arg.split("=");
 

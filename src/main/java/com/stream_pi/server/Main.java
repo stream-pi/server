@@ -18,6 +18,7 @@ import com.stream_pi.server.controller.Controller;
 import com.stream_pi.server.info.ServerInfo;
 
 import com.stream_pi.server.info.StartupFlags;
+import com.stream_pi.util.exception.GlobalUncaughtExceptionHandler;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -35,6 +36,8 @@ public class Main extends Application
      */
     public void start(Stage stage)
     {
+        StartupFlags.init(getParameters());
+        GlobalUncaughtExceptionHandler.init();
         Controller d = new Controller();
         Scene s = new Scene(d);
         stage.setScene(s);
@@ -48,7 +51,6 @@ public class Main extends Application
      */
     public static void main(String[] args) 
     {
-        StartupFlags.init(args);
         launch(args);
     }
 }
