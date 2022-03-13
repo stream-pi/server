@@ -285,7 +285,6 @@ public class ClientConnection extends Thread
             {
                 try
                 {
-
                     Message message = (Message) ois.readObject();
 
                     String header = message.getHeader();
