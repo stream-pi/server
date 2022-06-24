@@ -24,38 +24,33 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
 
-        <gluonfx.plugin.version>1.0.5</gluonfx.plugin.version>
-        <javafx.version>18-ea+7</javafx.version>
-        <javafx.maven.plugin.version>0.0.6</javafx.maven.plugin.version>
+        <gluonfx.plugin.version>1.0.14</gluonfx.plugin.version>
+        <javafx.version>19-ea+8</javafx.version>
+        <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
 
         <action.api.version>2.0.0-SNAPSHOT</action.api.version>
         <theme.api.version>2.0.0-SNAPSHOT</theme.api.version>
         <util.version>2.0.0-SNAPSHOT</util.version>
 
-        <controlsfx.version>11.1.0</controlsfx.version>
+        <controlsfx.version>11.1.1</controlsfx.version>
 
-        <commons.bean.util.version>1.9.4</commons.bean.util.version>
-        <commons.configuration.version>2.7</commons.configuration.version>
-
-        <log4j.version>2.14.0</log4j.version>
-        <ikonli.version>12.2.0</ikonli.version>
+        <ikonli.version>12.3.1</ikonli.version>
         <medusa.version>11.7</medusa.version>
-        <main.class.name>com.stream_pi.server.Main</main.class.name>
+        <main.class.name>com.stream_pi.server/com.stream_pi.server.Main</main.class.name>
 
         <maven.test.skip>true</maven.test.skip>
 
-        <source.plugin.version>2.2.1</source.plugin.version>
-        <javadoc.plugin.version>3.1.0</javadoc.plugin.version>
-        <gpg.plugin.version>1.6</gpg.plugin.version>
-        <shade.plugin.version>3.2.4</shade.plugin.version>
-        <compiler.plugin.version>3.8.1</compiler.plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M7</maven-surefire-plugin.version>
 
-        <jar.plugin.version>3.2.0</jar.plugin.version>
+        <buildnumber.plugin.version>3.0.0</buildnumber.plugin.version>
 
-        <buildnumber.plugin.version>1.4</buildnumber.plugin.version>
+        <source.plugin.version>3.2.1</source.plugin.version>
+        <javadoc.plugin.version>3.4.0</javadoc.plugin.version>
+        <gpg.plugin.version>3.0.1</gpg.plugin.version>
+        <jar.plugin.version>3.2.2</jar.plugin.version>
+        <compiler.plugin.version>3.10.1</compiler.plugin.version>
     </properties>
 
 
@@ -182,6 +177,12 @@
                     <doUpdate>false</doUpdate>
                     <revisionOnScmFailure>-1</revisionOnScmFailure>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
             </plugin>
 
             <plugin>
