@@ -177,5 +177,4 @@ public class GeneralSettingsPresenter implements GeneralSettingsViewListener
     public ObservableBooleanValue isSettingsBeingSaved() {
         return settingsBeingSaved;
     }
-
 }
