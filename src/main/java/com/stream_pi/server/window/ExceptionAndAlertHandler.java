@@ -18,6 +18,8 @@ import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.exception.SevereException;
 
+//TODO: Deprecated. To be replaced with GlobalExceptionAndAlertHandler
+
 public interface ExceptionAndAlertHandler
 {
     StreamPiAlert handleMinorException(MinorException e);

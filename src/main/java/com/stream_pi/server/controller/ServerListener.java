@@ -53,4 +53,6 @@ public interface ServerListener
     void initSoundOnActionClicked();
 
     void showUserChooseIPAndPortDialog();
+
+    void fullExit();
 }

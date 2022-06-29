@@ -16,6 +16,7 @@ package com.stream_pi.server.combobox;
 
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
+import com.stream_pi.server.window.GlobalExceptionAndAlertHandler;
 import com.stream_pi.util.exception.SevereException;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
@@ -30,12 +31,10 @@ import java.util.Enumeration;
 
 public class IPChooserComboBox extends ComboBox<String>
 {
-    private final ExceptionAndAlertHandler exceptionAndAlertHandler;
+    private final GlobalExceptionAndAlertHandler exceptionAndAlertHandler = GlobalExceptionAndAlertHandler.getInstance();
 
-    public IPChooserComboBox(ExceptionAndAlertHandler exceptionAndAlertHandler)
+    public IPChooserComboBox()
     {
-        this.exceptionAndAlertHandler = exceptionAndAlertHandler;
-
         Callback<ListView<String>, ListCell<String>> callbackFactory = new Callback<>() {
             @Override
             public ListCell<String> call(ListView<String> str) {

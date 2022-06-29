@@ -32,6 +32,7 @@ import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.info.StartupFlags;
 import com.stream_pi.server.io.Config;
 import com.stream_pi.server.window.Base;
+import com.stream_pi.server.window.GlobalExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.server.window.firsttimeuse.FirstTimeUse;
 import com.stream_pi.server.combobox.IPChooserComboBox;
@@ -113,6 +114,9 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     {
         try
         {
+            //TODO: Refactor some stuff
+
+            GlobalExceptionAndAlertHandler.initialise(this);
             initBase();
             setupDashWindow();
 
@@ -186,7 +190,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
                     {
                         try
                         {
-                            getSettingsBase().getGeneralSettings().loadData();
+                            getSettingsBase().getGeneralSettings().load();
 
                             //themes
                             getSettingsBase().getThemesSettings().setThemes(getThemes());
@@ -344,7 +348,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         vBox.getStyleClass().add("user_choose_ip_and_port_dialog");
         vBox.setAlignment(Pos.CENTER);
 
-        IPChooserComboBox ipChooserComboBox = new IPChooserComboBox(this);
+        IPChooserComboBox ipChooserComboBox = new IPChooserComboBox();
         ipChooserComboBox.configureOptions();
 
         TextField portTextField = new TextField(getConfig().getPort()+"");
@@ -437,7 +441,8 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         streamPiAlert.show();
     }
 
-    private void fullExit()
+    @Override
+    public void fullExit()
     {
         onQuitApp();
         exit();
@@ -1168,7 +1173,7 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
                     try {
                         getSettingsBase().getClientsSettings().loadData();
 
-                        getSettingsBase().getGeneralSettings().loadData();
+                        getSettingsBase().getGeneralSettings().load();
                         getSettingsBase().getPluginsSettings().reloadPlugins();
 
                         getSettingsBase().getThemesSettings().setThemes(getThemes());
@@ -1176,10 +1181,6 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
                         getSettingsBase().getThemesSettings().loadThemes();
 
                         getSettingsBase().setDefaultTabToGeneral();
-                    }
-                    catch (SevereException e)
-                    {
-                        handleSevereException(e);
                     }
                     catch (MinorException e)
                     {

@@ -18,6 +18,7 @@ import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.settings.about.About;
+import com.stream_pi.server.window.settings.general.GeneralSettingsPresenter;
 import javafx.application.HostServices;
 import javafx.event.Event;
 import javafx.geometry.Insets;
@@ -34,7 +35,7 @@ public class SettingsBase extends VBox
 
     private Tab generalSettingsTab, pluginsSettingsTab, themesSettingsTab, clientsSettingsTab, aboutTab;
 
-    private GeneralSettings generalSettings;
+    private GeneralSettingsPresenter generalSettings;
     private PluginsSettings pluginsSettings;
     private ThemesSettings themesSettings;
     private ClientsSettings clientsSettings;
@@ -56,8 +57,8 @@ public class SettingsBase extends VBox
         VBox.setVgrow(tabPane, Priority.ALWAYS);
 
         generalSettingsTab = new Tab(I18N.getString("general"));
-        generalSettings = new GeneralSettings(exceptionAndAlertHandler, serverListener, hostServices);
-        generalSettingsTab.setContent(generalSettings);
+        generalSettings = new GeneralSettingsPresenter(exceptionAndAlertHandler, serverListener, hostServices);
+        generalSettingsTab.setContent(generalSettings.getView());
 
         pluginsSettingsTab = new Tab(I18N.getString("plugins"));
         pluginsSettings = new PluginsSettings(exceptionAndAlertHandler, hostServices);
@@ -104,7 +105,7 @@ public class SettingsBase extends VBox
         return closeButton;
     }
 
-    public GeneralSettings getGeneralSettings()
+    public GeneralSettingsPresenter getGeneralSettings()
     {
         return generalSettings;
     }

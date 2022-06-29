@@ -53,14 +53,8 @@ public class WelcomePane extends VBox
         LanguageChooserComboBox languageChooserComboBox = new LanguageChooserComboBox();
         languageChooserComboBox.getStyleClass().add("first_time_use_welcome_pane_language_chooser_combo_box");
 
-        try
-        {
-            languageChooserComboBox.getSelectionModel().select(I18N.getLanguage(Config.getInstance().getCurrentLanguageLocale()));
-        }
-        catch (SevereException e)
-        {
-            exceptionAndAlertHandler.handleSevereException(e);
-        }
+        languageChooserComboBox.getSelectionModel().select(I18N.getLanguage(Config.getInstance().getCurrentLanguageLocale()));
+
 
         languageChooserComboBox.valueProperty().addListener((observableValue, oldVal, newVal) ->
         {

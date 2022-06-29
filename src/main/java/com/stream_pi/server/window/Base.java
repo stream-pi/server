@@ -157,6 +157,8 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
 
         checkPrePathDirectory();
 
+        Config.initialise();
+
         config = Config.getInstance();
 
         initI18n();

@@ -64,7 +64,7 @@ public class FinalConfigPane extends VBox
 
         serverNameTextField = new TextField();
         serverPortTextField = new TextField(Config.getDefaultPort()+"");
-        ipChooserComboBox = new IPChooserComboBox(exceptionAndAlertHandler);
+        ipChooserComboBox = new IPChooserComboBox();
         ipChooserComboBox.configureOptions();
 
         HBoxInputBox serverNickNameInputBox = new HBoxInputBox(I18N.getString("serverName"), serverNameTextField, 200);

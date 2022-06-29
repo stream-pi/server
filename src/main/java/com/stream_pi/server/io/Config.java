@@ -74,19 +74,24 @@ public class Config
         }
     }
 
-    public static synchronized Config getInstance() throws SevereException
+    public static synchronized Config getInstance()
     {
-        if(instance == null)
-        {
-            instance = new Config();
-        }
-
         return instance;
     }
 
     public static void nullify()
     {
         instance = null;
+    }
+
+    public static void initialise() throws SevereException
+    {
+        if(instance != null)
+        {
+            Logger.getLogger(Config.class.getName()).warning("Config was already loaded! Re-loading ...");
+        }
+
+        instance = new Config();
     }
 
     Logger logger = Logger.getLogger(Config.class.getName());

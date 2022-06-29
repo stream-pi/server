@@ -306,9 +306,10 @@
     -fx-alignment: CENTER_RIGHT;
 }
 
-.general_settings_vbox
+.general_settings_grid_pane
 {
-    -fx-spacing: 5;
+    -fx-vgap:10;
+    -fx-hgap:10;
     -fx-padding: 0 10 0 10;
 }
 
@@ -320,7 +321,7 @@
 .general_settings
 {
     -fx-spacing: 5;
-    -fx-alignment: TOP_RIGHT;
+    -fx-alignment: CENTER;
 }
 
 .settings_base
@@ -374,4 +375,9 @@
 {
     -fx-background-insets: -5;
     -fx-background-color: transparent;
+}
+
+.validated_text_field_error_prompt_label
+{
+    -fx-text-fill: red;
 }

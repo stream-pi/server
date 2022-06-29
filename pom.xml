@@ -206,6 +206,8 @@
                 <version>${javafx.maven.plugin.version}</version>
                 <configuration>
                     <options>
+                        <!--TODO:Not Optimal. Ref: https://github.com/controlsfx/controlsfx/issues/1148-->
+                        <option>--add-opens=javafx.graphics/javafx.scene=org.controlsfx.controls</option>
                         <option>-Dprism.verbose=true</option>
                         <option>-Djavafx.verbose=true</option>
                         <option>-Dprism.lcdtext=false</option>
