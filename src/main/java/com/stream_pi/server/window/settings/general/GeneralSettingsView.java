@@ -6,11 +6,17 @@ import com.stream_pi.server.connection.ClientConnections;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
+import com.stream_pi.util.alert.StreamPiAlert;
+import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.uihelper.*;
+import com.stream_pi.util.validation.ValidatedControl;
+import com.stream_pi.util.validation.ValidationResult;
 import com.stream_pi.util.validation.ValidationSupport;
 import com.stream_pi.util.validation.Validator;
 import javafx.application.HostServices;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -24,6 +30,7 @@ import javafx.stage.FileChooser;
 import org.controlsfx.control.ToggleSwitch;
 
 import java.awt.*;
+import java.io.File;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -41,14 +48,10 @@ public class GeneralSettingsView extends VBox
     private final CheckBox actionGridPaneActionBoxGapIsDefaultCheckBox;
     private final CheckBox actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox;
     private final ToggleSwitch startOnBootToggleSwitch;
-    private final HBoxWithSpaceBetween startOnBootHBox;
-    private final TextField soundOnActionClickedFilePathTextField;
+    private final ValidatedTextField soundOnActionClickedFilePathTextField;
     private final ToggleSwitch soundOnActionClickedToggleSwitch;
-    private final HBoxWithSpaceBetween soundOnActionClickedToggleSwitchHBox;
     private final ToggleSwitch minimiseToSystemTrayOnCloseToggleSwitch;
-    private final HBoxWithSpaceBetween minimiseToSystemTrayOnCloseHBox;
     private final ToggleSwitch showAlertsPopupToggleSwitch;
-    private final HBoxWithSpaceBetween showAlertsPopupHBox;
     private final Button saveButton;
     private final Button checkForUpdatesButton;
     private final Button factoryResetButton;
@@ -92,14 +95,10 @@ public class GeneralSettingsView extends VBox
         actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox = new CheckBox(I18N.getString("window.settings.GeneralSettings.followProfileDefaults"));
 
         startOnBootToggleSwitch = new ToggleSwitch();
-        startOnBootHBox = new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.startOnBoot"), startOnBootToggleSwitch);
-        startOnBootHBox.managedProperty().bind(startOnBootHBox.visibleProperty());
 
         soundOnActionClickedToggleSwitch = new ToggleSwitch();
-        soundOnActionClickedToggleSwitchHBox = new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.soundOnActionClicked"), soundOnActionClickedToggleSwitch);
 
-
-        soundOnActionClickedFilePathTextField = new TextField();
+        soundOnActionClickedFilePathTextField = new ValidatedTextField();
 
         FileChooserField soundOnActionClickedFilePathFileChooserField =  new FileChooserField(soundOnActionClickedFilePathTextField,
                 new FileChooser.ExtensionFilter("Sounds","*.mp3","*.mp4", "*.m4a", "*.m4v","*.wav","*.aif", "*.aiff","*.fxm","*.flv","*.m3u8"));
@@ -108,13 +107,42 @@ public class GeneralSettingsView extends VBox
         soundOnActionClickedFilePathFileChooserField.setRememberThis(false);
         soundOnActionClickedFilePathFileChooserField.getFileChooseButton().disableProperty().bind(soundOnActionClickedToggleSwitch.selectedProperty().not());
 
+        soundOnActionClickedFilePathFileChooserField.getFileChooseButton().disabledProperty().addListener((observableValue, oldValue, newValue) -> {
+            if(newValue)
+            {
+                validationSupport.deRegisterValidator(soundOnActionClickedFilePathTextField);
+            }
+            else
+            {
+                validationSupport.registerValidator(soundOnActionClickedFilePathTextField, (validatedControl, o) -> {
+
+                    ValidationResult validationResult = new ValidationResult();
+                    String soundFileAbsolutePath = ((ValidatedTextField) validatedControl).getText();
+
+                    if(soundFileAbsolutePath.trim().isEmpty())
+                    {
+                        validationResult.addErrorIf(I18N.getString("window.settings.GeneralSettings.soundFileCannotBeEmpty"), ((TextField) validatedControl.getControl()).getText().isBlank());
+                    }
+                    else
+                    {
+                        File soundFile = new File(soundFileAbsolutePath);
+                        if (!soundFile.exists() || !soundFile.isFile()) {
+                            validationResult.addErrorIf(I18N.getString("window.settings.GeneralSettings.soundFileNotFound"), ((TextField) validatedControl.getControl()).getText().isBlank());
+                        }
+                    }
+
+                    return validationResult;
+                });
+
+                validationSupport.manuallyValidateControl(soundOnActionClickedFilePathTextField);
+            }
+        });
+
+
+
         minimiseToSystemTrayOnCloseToggleSwitch = new ToggleSwitch();
-        minimiseToSystemTrayOnCloseHBox = new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.minimiseToTrayOnClose"), minimiseToSystemTrayOnCloseToggleSwitch);
-        minimiseToSystemTrayOnCloseHBox.managedProperty().bind(minimiseToSystemTrayOnCloseHBox.visibleProperty());
-        minimiseToSystemTrayOnCloseHBox.setVisible(SystemTray.isSupported());
         
         showAlertsPopupToggleSwitch = new ToggleSwitch();
-        showAlertsPopupHBox = new HBoxWithSpaceBetween(I18N.getString("window.settings.GeneralSettings.showPopupOnAlert"), showAlertsPopupToggleSwitch);
 
         checkForUpdatesButton = new Button(I18N.getString("window.settings.GeneralSettings.checkForUpdates"));
         checkForUpdatesButton.setOnAction(event-> generalSettingsViewListener.onCheckForUpdatesButtonClicked(checkForUpdatesButton));
@@ -157,13 +185,20 @@ public class GeneralSettingsView extends VBox
                 .addRow(generateSubHeading(I18N.getString("window.settings.GeneralSettings.locations")))
                 .addRow(I18N.getString("window.settings.GeneralSettings.plugins"), pluginsPathDirectoryChooserField)
                 .addRow(I18N.getString("window.settings.GeneralSettings.themes"), themesPathDirectoryChooserField)
-                .addRow(I18N.getString("window.settings.GeneralSettings.soundOnActionClicked"), soundOnActionClickedFilePathFileChooserField)
+
+                .addRow(generateSubHeading(I18N.getString("window.settings.GeneralSettings.soundOnActionClicked")))
+                .addRow("Status", soundOnActionClickedToggleSwitch) //TODO: Implement new I18N for Sound On Action Clicked
+                .addRow("Sound File", soundOnActionClickedFilePathFileChooserField)
 
                 .addRow(generateSubHeading(I18N.getString("window.settings.GeneralSettings.others")))
-                .addRow(I18N.getString("window.settings.GeneralSettings.language"), languageChooserComboBox)
-                .addRow(I18N.getString("window.settings.GeneralSettings.soundOnActionClicked"), soundOnActionClickedToggleSwitch)
-                .addRow(I18N.getString("window.settings.GeneralSettings.minimiseToTrayOnClose"), minimiseToSystemTrayOnCloseToggleSwitch)
-                .addRow(I18N.getString("window.settings.GeneralSettings.startOnBoot"), startOnBootToggleSwitch)
+                .addRow(I18N.getString("window.settings.GeneralSettings.language"), languageChooserComboBox);
+
+        if(SystemTray.isSupported())
+        {
+            form.addRow(I18N.getString("window.settings.GeneralSettings.minimiseToTrayOnClose"), minimiseToSystemTrayOnCloseToggleSwitch);
+        }
+
+        form.addRow(I18N.getString("window.settings.GeneralSettings.startOnBoot"), startOnBootToggleSwitch)
                 .addRow(I18N.getString("window.settings.GeneralSettings.showPopupOnAlert"), showAlertsPopupToggleSwitch)
                 .addRow(I18N.getString("window.settings.GeneralSettings.factoryReset"), factoryResetButton)
                 .addRow(I18N.getString("window.settings.GeneralSettings.restart"), restartButton);

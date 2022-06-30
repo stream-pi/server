@@ -57,8 +57,6 @@ public class GeneralSettingsModel
 
         boolean soundOnActionClicked = newSettingsRecord.soundOnActionClickedStatus();
 
-        String soundOnActionClickedFilePath = newSettingsRecord.soundOnActionClickedFilePath();
-
 
         Config config = Config.getInstance();
 
@@ -117,29 +115,6 @@ public class GeneralSettingsModel
             }
         }
 
-        if(soundOnActionClicked)
-        {
-            if(soundOnActionClickedFilePath.isBlank())
-            {
-                StreamPiAlert alert = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.soundFileCannotBeEmpty"), StreamPiAlertType.ERROR);
-                alert.show();
-
-                soundOnActionClicked = false;
-            }
-            else
-            {
-                File soundFile = new File(soundOnActionClickedFilePath);
-                if(!soundFile.exists() || !soundFile.isFile())
-                {
-
-                    StreamPiAlert alert = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.soundFileNotFound"), StreamPiAlertType.ERROR);
-                    alert.show();
-
-                    soundOnActionClicked = false;
-                }
-            }
-        }
-
         config.setServerName(newSettingsRecord.serverName());
         config.setPort(newSettingsRecord.port());
         config.setActionGridActionGap(newSettingsRecord.actionGridActionGap());
@@ -158,18 +133,16 @@ public class GeneralSettingsModel
         config.setShowAlertsPopup(showAlertsPopup);
         config.setStartupOnBoot(startOnBoot);
 
+
+        config.setSoundOnActionClickedStatus(soundOnActionClicked);
+        config.setSoundOnActionClickedFilePath(newSettingsRecord.soundOnActionClickedFilePath());
+
+        config.save();
+
         if(soundOnActionClicked)
         {
             serverListener.initSoundOnActionClicked();
         }
-
-        config.setSoundOnActionClickedStatus(soundOnActionClicked);
-
-
-
-        config.setSoundOnActionClickedFilePath(soundOnActionClickedFilePath);
-
-        config.save();
 
         loadSettings();
     }
