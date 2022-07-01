@@ -30,7 +30,7 @@ import com.stream_pi.server.connection.MainServer;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.info.StartupFlags;
-import com.stream_pi.server.io.Config;
+import com.stream_pi.server.config.Config;
 import com.stream_pi.server.window.Base;
 import com.stream_pi.server.window.GlobalExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;

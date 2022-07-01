@@ -26,7 +26,7 @@ import com.stream_pi.server.client.Client;
 import com.stream_pi.server.client.ClientProfile;
 import com.stream_pi.server.connection.ClientConnection;
 import com.stream_pi.server.i18n.I18N;
-import com.stream_pi.server.io.Config;
+import com.stream_pi.server.config.Config;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.window.dashboard.actiondetailspane.ActionDetailsPaneListener;
 import com.stream_pi.util.exception.MinorException;

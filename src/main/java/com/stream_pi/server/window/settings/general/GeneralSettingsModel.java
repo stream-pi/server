@@ -5,9 +5,9 @@ import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.i18n.I18N;
 import com.stream_pi.server.info.ServerInfo;
 import com.stream_pi.server.info.StartupFlags;
-import com.stream_pi.server.io.Config;
-import com.stream_pi.server.window.ExceptionAndAlertHandler;
+import com.stream_pi.server.config.Config;
 import com.stream_pi.server.window.GlobalExceptionAndAlertHandler;
+import com.stream_pi.server.config.record.*;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertType;
 import com.stream_pi.util.exception.MinorException;
@@ -15,13 +15,9 @@ import com.stream_pi.util.exception.SevereException;
 import com.stream_pi.util.platform.PlatformType;
 import com.stream_pi.util.startonboot.StartOnBoot;
 
-import java.awt.*;
-import java.io.File;
-import java.util.Locale;
-
 public class GeneralSettingsModel
 {
-    private GeneralSettingsRecord currentSettings;
+    private GeneralSettings currentSettings;
     private final GlobalExceptionAndAlertHandler exceptionAndAlertHandler = GlobalExceptionAndAlertHandler.getInstance();
 
     private ServerListener serverListener;
@@ -33,7 +29,7 @@ public class GeneralSettingsModel
     {
         Config config = Config.getInstance();
 
-        currentSettings = new GeneralSettingsRecord(config.getServerName(), config.getPort(), config.getActionGridActionDisplayTextFontSize(),
+        /*currentSettings = new GeneralSettings(config.getServerName(), config.getPort(), config.getActionGridActionDisplayTextFontSize(),
                 config.getPluginsPath(), config.getThemesPath(),
                 config.getActionGridActionSize(),
                 config.getActionGridUseSameActionSizeAsProfile(), config.getActionGridUseSameActionGapAsProfile(),
@@ -41,36 +37,62 @@ public class GeneralSettingsModel
                 config.getActionGridActionGap(),
                 config.getMinimiseToSystemTrayOnClose(), config.isShowAlertsPopup(), config.isStartOnBoot(),
                 config.getSoundOnActionClickedStatus(), config.getSoundOnActionClickedFilePath(),
-                config.getIP(), config.getCurrentLanguageLocale());
+                config.getIP(), config.getCurrentLanguageLocale());*/
+
+        currentSettings = new GeneralSettings(
+                new ConnectionSettings(config.getServerName(), config.getPort(), config.getIP()),
+                new ActionGridSettings(
+                        config.getActionGridActionSize(), config.getActionGridUseSameActionSizeAsProfile(),
+                        config.getActionGridActionGap(), config.getActionGridUseSameActionGapAsProfile(),
+                        config.getActionGridActionDisplayTextFontSize(),config.getActionGridUseSameActionDisplayTextFontSizeAsProfile()
+                ),
+                new LocationsSettings(config.getPluginsPath(), config.getThemesPath()),
+                new SoundOnActionClickedSettings(config.getSoundOnActionClickedFilePath(), config.getSoundOnActionClickedStatus()),
+                new OthersSettings(config.getCurrentLanguageLocale(), config.getMinimiseToSystemTrayOnClose(), config.isStartOnBoot(), config.isShowAlertsPopup())
+        );
     }
 
-    public GeneralSettingsRecord getCurrentSettings()
+    public GeneralSettings getCurrentSettings()
     {
         return currentSettings;
     }
 
-    public void saveSettings(GeneralSettingsRecord newSettingsRecord) throws SevereException
+    public void saveSettings(GeneralSettings newSettings) throws SevereException
     {
-        boolean minimiseToSystemTrayOnClose = newSettingsRecord.minimiseToSystemTrayOnClose();
-        boolean showAlertsPopup = newSettingsRecord.showAlertsPopup();
-        boolean startOnBoot = newSettingsRecord.startOnBoot();
-
-        boolean soundOnActionClicked = newSettingsRecord.soundOnActionClickedStatus();
-
-
         Config config = Config.getInstance();
 
-        boolean actionGridUseSameActionSizeAsProfile = newSettingsRecord.actionGridUseSameActionSizeAsProfile();
-        boolean actionGridUseSameActionGapAsProfile = newSettingsRecord.actionGridUseSameActionGapAsProfile();
-        boolean actionGridUseSameActionDisplayTextFontSizeAsProfile = newSettingsRecord.actionGridUseSameActionDisplayTextFontSizeAsProfile();
+        ConnectionSettings connectionSettings = newSettings.connection();
+        config.setServerName(connectionSettings.serverName());
+        config.setPort(connectionSettings.port());
+        config.setIP(connectionSettings.IP());
+
+        ActionGridSettings actionGridSettings = newSettings.actionGrid();
+        config.setActionGridActionSize(actionGridSettings.actionGridActionSize());
+        config.setActionGridUseSameActionSizeAsProfile(actionGridSettings.actionGridUseSameActionSizeAsProfile());
+        config.setActionGridActionGap(actionGridSettings.actionGridActionGap());
+        config.setActionGridUseSameActionGapAsProfile(actionGridSettings.actionGridUseSameActionGapAsProfile());
+        config.setActionGridActionDisplayTextFontSize(actionGridSettings.actionGridActionDisplayTextFontSize());
+        config.setActionGridUseSameActionDisplayTextFontSizeAsProfile(actionGridSettings.actionGridUseSameActionDisplayTextFontSizeAsProfile());
+
+        LocationsSettings locationsSettings = newSettings.locations();
+        config.setPluginsPath(locationsSettings.pluginsPath());
+        config.setThemesPath(locationsSettings.themesPath());
+
+        SoundOnActionClickedSettings soundOnActionClickedSettings = newSettings.soundOnActionClicked();
+        config.setSoundOnActionClickedFilePath(soundOnActionClickedSettings.soundOnActionClickedFilePath());
+        boolean soundOnActionClicked = soundOnActionClickedSettings.soundOnActionClickedStatus();
+        config.setSoundOnActionClickedStatus(soundOnActionClicked);
+        if(soundOnActionClicked)
+        {
+            serverListener.initSoundOnActionClicked();
+        }
 
 
+        OthersSettings othersSettings = newSettings.others();
+        config.setCurrentLanguageLocale(othersSettings.currentLanguageLocale());
+        config.setMinimiseToSystemTrayOnClose(othersSettings.minimiseToSystemTrayOnClose());
 
-        config.setIP(newSettingsRecord.IP());
-
-        config.setCurrentLanguageLocale(newSettingsRecord.currentLanguageLocale());
-
-
+        boolean startOnBoot = othersSettings.startOnBoot();
         if(config.isStartOnBoot() != startOnBoot)
         {
             StartOnBoot startAtBoot = new StartOnBoot(PlatformType.SERVER, ServerInfo.getInstance().getPlatform(),
@@ -103,80 +125,53 @@ public class GeneralSettingsModel
                 }
             }
         }
-
-        if(minimiseToSystemTrayOnClose)
-        {
-            if(!SystemTray.isSupported())
-            {
-                StreamPiAlert alert = new StreamPiAlert(I18N.getString("window.settings.GeneralSettings.traySystemNotSupported"), StreamPiAlertType.ERROR);
-                alert.show();
-
-                minimiseToSystemTrayOnClose = false;
-            }
-        }
-
-        config.setServerName(newSettingsRecord.serverName());
-        config.setPort(newSettingsRecord.port());
-        config.setActionGridActionGap(newSettingsRecord.actionGridActionGap());
-        config.setActionGridActionSize(newSettingsRecord.actionGridActionSize());
-        config.setActionGridActionDisplayTextFontSize(newSettingsRecord.actionGridActionDisplayTextFontSize());
-        config.setPluginsPath(newSettingsRecord.pluginsPath());
-        config.setThemesPath(newSettingsRecord.themesPath());
-
-        config.setActionGridUseSameActionGapAsProfile(actionGridUseSameActionGapAsProfile);
-        config.setActionGridUseSameActionSizeAsProfile(actionGridUseSameActionSizeAsProfile);
-        config.setActionGridUseSameActionDisplayTextFontSizeAsProfile(actionGridUseSameActionDisplayTextFontSizeAsProfile);
-
-
-        config.setMinimiseToSystemTrayOnClose(minimiseToSystemTrayOnClose);
-        StreamPiAlert.setIsShowPopup(showAlertsPopup);
-        config.setShowAlertsPopup(showAlertsPopup);
         config.setStartupOnBoot(startOnBoot);
 
-
-        config.setSoundOnActionClickedStatus(soundOnActionClicked);
-        config.setSoundOnActionClickedFilePath(newSettingsRecord.soundOnActionClickedFilePath());
+        boolean showAlertsPopup = othersSettings.showAlertsPopup();
+        StreamPiAlert.setIsShowPopup(showAlertsPopup);
+        config.setShowAlertsPopup(showAlertsPopup);
 
         config.save();
-
-        if(soundOnActionClicked)
-        {
-            serverListener.initSoundOnActionClicked();
-        }
 
         loadSettings();
     }
 
-    public boolean shouldServerBeReloaded(GeneralSettingsRecord newSettingsRecord)
+    public boolean shouldServerBeReloaded(GeneralSettings newSettings)
     {
         boolean reload = false;
 
-        if(!currentSettings.serverName().equals(newSettingsRecord.serverName()))
+        ConnectionSettings currentConnectionSettings = currentSettings.connection();
+        ConnectionSettings newConnectionSettings = newSettings.connection();
+
+        if(!currentConnectionSettings.serverName().equals(newConnectionSettings.serverName()))
         {
             reload = true;
         }
 
-        if(currentSettings.port()!=newSettingsRecord.port())
+        if(currentConnectionSettings.port()!=newConnectionSettings.port())
         {
             reload = true;
         }
 
-        if(!currentSettings.pluginsPath().equals(newSettingsRecord.pluginsPath()))
+        if (!currentConnectionSettings.IP().equals(newConnectionSettings.IP()))
         {
             reload = true;
         }
 
-        if(!currentSettings.themesPath().equals(newSettingsRecord.themesPath()))
+        LocationsSettings currentLocationsSettings = currentSettings.locations();
+        LocationsSettings newLocationsSettings = newSettings.locations();
+
+        if(!currentLocationsSettings.pluginsPath().equals(newLocationsSettings.pluginsPath()))
         {
             reload = true;
         }
 
-        if (!currentSettings.IP().equals(newSettingsRecord.IP()))
+        if(!currentLocationsSettings.themesPath().equals(newLocationsSettings.themesPath()))
         {
             reload = true;
         }
 
-        if (!currentSettings.currentLanguageLocale().equals(newSettingsRecord.currentLanguageLocale()))
+        if (!currentSettings.others().currentLanguageLocale().equals(newSettings.others().currentLanguageLocale()))
         {
             reload = true;
         }
@@ -184,32 +179,34 @@ public class GeneralSettingsModel
         return reload;
     }
 
-    public boolean shouldServerDashboardBeReloaded(GeneralSettingsRecord newSettingsRecord)
+    public boolean shouldServerDashboardBeReloaded(GeneralSettings newSettings)
     {
         boolean reload = false;
 
-        if(currentSettings.actionGridActionSize() != newSettingsRecord.actionGridActionSize())
+        ActionGridSettings currentActionGridSettings = currentSettings.actionGrid();
+        ActionGridSettings newActionGridSettings = newSettings.actionGrid();
+
+        if(currentActionGridSettings.actionGridActionSize() != newActionGridSettings.actionGridActionSize())
         {
             reload = true;
         }
 
-        if(currentSettings.actionGridUseSameActionSizeAsProfile() != newSettingsRecord.actionGridUseSameActionSizeAsProfile())
+        if(currentActionGridSettings.actionGridUseSameActionSizeAsProfile() != newActionGridSettings.actionGridUseSameActionSizeAsProfile())
         {
             reload = true;
         }
 
-
-        if(currentSettings.actionGridActionGap() != newSettingsRecord.actionGridActionGap())
+        if(currentActionGridSettings.actionGridActionGap() != newActionGridSettings.actionGridActionGap())
         {
             reload = true;
         }
 
-        if(currentSettings.actionGridUseSameActionGapAsProfile() != newSettingsRecord.actionGridUseSameActionGapAsProfile())
+        if(currentActionGridSettings.actionGridUseSameActionGapAsProfile() != newActionGridSettings.actionGridUseSameActionGapAsProfile())
         {
             reload = true;
         }
 
-        if (currentSettings.actionGridUseSameActionDisplayTextFontSizeAsProfile() != newSettingsRecord.actionGridUseSameActionDisplayTextFontSizeAsProfile())
+        if (currentActionGridSettings.actionGridUseSameActionDisplayTextFontSizeAsProfile() != newActionGridSettings.actionGridUseSameActionDisplayTextFontSizeAsProfile())
         {
             reload = true;
         }

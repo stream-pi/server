@@ -20,7 +20,7 @@ Contributor(s) : Debayan Sutradhar (@rnayabed)
 handler for config.xml
  */
 
-package com.stream_pi.server.io;
+package com.stream_pi.server.config;
 
 import java.awt.*;
 import java.io.File;

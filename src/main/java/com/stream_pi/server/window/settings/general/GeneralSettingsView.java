@@ -2,22 +2,13 @@ package com.stream_pi.server.window.settings.general;
 
 import com.stream_pi.server.combobox.IPChooserComboBox;
 import com.stream_pi.server.combobox.LanguageChooserComboBox;
-import com.stream_pi.server.connection.ClientConnections;
-import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.i18n.I18N;
-import com.stream_pi.server.window.ExceptionAndAlertHandler;
-import com.stream_pi.util.alert.StreamPiAlert;
-import com.stream_pi.util.alert.StreamPiAlertType;
+import com.stream_pi.server.config.record.*;
 import com.stream_pi.util.uihelper.*;
-import com.stream_pi.util.validation.ValidatedControl;
 import com.stream_pi.util.validation.ValidationResult;
 import com.stream_pi.util.validation.ValidationSupport;
 import com.stream_pi.util.validation.Validator;
-import javafx.application.HostServices;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -31,8 +22,6 @@ import org.controlsfx.control.ToggleSwitch;
 
 import java.awt.*;
 import java.io.File;
-import java.util.Locale;
-import java.util.logging.Logger;
 
 public class GeneralSettingsView extends VBox
 {
@@ -63,7 +52,6 @@ public class GeneralSettingsView extends VBox
     public GeneralSettingsView(GeneralSettingsViewListener generalSettingsViewListener)
     {
         serverNameTextField = new ValidatedTextField();
-        serverNameTextField.setPrefWidth(200);
         validationSupport.registerValidator(serverNameTextField, Validator.createEmptyValidator(I18N.getString("serverNameCannotBeBlank")));
 
         serverPortTextField = new IntegerField(validationSupport, 1024, 65535);
@@ -83,15 +71,12 @@ public class GeneralSettingsView extends VBox
         themesPathDirectoryChooserField.setAlignment(Pos.TOP_RIGHT);
 
         actionGridPaneActionBoxSizeDoubleField = new DoubleField(validationSupport, 1);
-        HBox.setHgrow(actionGridPaneActionBoxSizeDoubleField, Priority.ALWAYS);
         actionGridPaneActionBoxSizeIsDefaultCheckBox = new CheckBox(I18N.getString("window.settings.GeneralSettings.followProfileDefaults"));
 
         actionGridPaneActionBoxGapDoubleField = new DoubleField(validationSupport, 0);
-        HBox.setHgrow(actionGridPaneActionBoxGapDoubleField, Priority.ALWAYS);
         actionGridPaneActionBoxGapIsDefaultCheckBox = new CheckBox(I18N.getString("window.settings.GeneralSettings.followProfileDefaults"));
 
         actionGridActionDisplayTextFontSizeTextField = new DoubleField(validationSupport, 1);
-        HBox.setHgrow(actionGridActionDisplayTextFontSizeTextField, Priority.ALWAYS);
         actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox = new CheckBox(I18N.getString("window.settings.GeneralSettings.followProfileDefaults"));
 
         startOnBootToggleSwitch = new ToggleSwitch();
@@ -155,17 +140,19 @@ public class GeneralSettingsView extends VBox
 
         saveButton = new Button(I18N.getString("save"));
         saveButton.disableProperty().bind(validationSupport.invalidProperty().or(generalSettingsViewListener.isSettingsBeingSaved()));
-        saveButton.setOnAction(actionEvent -> generalSettingsViewListener.onSaveButtonClicked(saveButton,
-                new GeneralSettingsRecord(
-                        serverNameTextField.getText(), serverPortTextField.getIntegerValue(), actionGridActionDisplayTextFontSizeTextField.getDoubleValue(),
-                        pluginsPathTextField.getText(), themesPathTextField.getText(),
-                        actionGridPaneActionBoxSizeDoubleField.getDoubleValue(), actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected(), actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected(),
-                        actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox.isSelected(),
-                        actionGridPaneActionBoxGapDoubleField.getDoubleValue(),
-                        minimiseToSystemTrayOnCloseToggleSwitch.isSelected(), showAlertsPopupToggleSwitch.isSelected(), startOnBootToggleSwitch.isSelected(),
-                        soundOnActionClickedToggleSwitch.isSelected(), soundOnActionClickedFilePathTextField.getText(),
-                        ipChooserComboBox.getSelectedIP(), languageChooserComboBox.getSelectedLocale()
-                )));
+        saveButton.setOnAction(actionEvent -> {
+            generalSettingsViewListener.onSaveButtonClicked(saveButton, new GeneralSettings(
+                    new ConnectionSettings(serverNameTextField.getText(), serverPortTextField.getIntegerValue(), ipChooserComboBox.getSelectedIP()),
+                    new ActionGridSettings(
+                            actionGridPaneActionBoxSizeDoubleField.getDoubleValue(), actionGridPaneActionBoxSizeIsDefaultCheckBox.isSelected(),
+                            actionGridPaneActionBoxGapDoubleField.getDoubleValue(), actionGridPaneActionBoxGapIsDefaultCheckBox.isSelected(),
+                            actionGridActionDisplayTextFontSizeTextField.getDoubleValue(), actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox.isSelected()
+                    ),
+                    new LocationsSettings(pluginsPathTextField.getText(), themesPathTextField.getText()),
+                    new SoundOnActionClickedSettings(soundOnActionClickedFilePathTextField.getText(), soundOnActionClickedToggleSwitch.isSelected()),
+                    new OthersSettings(languageChooserComboBox.getSelectedLocale(), minimiseToSystemTrayOnCloseToggleSwitch.isSelected(), startOnBootToggleSwitch.isSelected(), showAlertsPopupToggleSwitch.isSelected())
+            ));
+        });
 
 
         FormBuilder form = new FormBuilder();
@@ -208,7 +195,8 @@ public class GeneralSettingsView extends VBox
 
 
         ScrollPane scrollPane = new ScrollPane();
-        scrollPane.maxWidthProperty().bind(widthProperty().multiply(0.8));
+        scrollPane.setMaxWidth(800);
+        //scrollPane.maxWidthProperty().bind(widthProperty().multiply(0.8));
         scrollPane.getStyleClass().add("general_settings_scroll_pane");
         scrollPane.setFitToWidth(true);
         scrollPane.setContent(form);
@@ -233,31 +221,36 @@ public class GeneralSettingsView extends VBox
         return label;
     }
 
-    public void updateFields(GeneralSettingsRecord generalSettingsRecord)
+    public void updateFields(GeneralSettings generalSettings)
     {
         Platform.runLater(()->
         {
-            serverNameTextField.setText(generalSettingsRecord.serverName());
-            serverPortTextField.setText(generalSettingsRecord.port()+"");
-            actionGridActionDisplayTextFontSizeTextField.setText(generalSettingsRecord.actionGridActionDisplayTextFontSize()+"");
-            pluginsPathTextField.setText(generalSettingsRecord.pluginsPath());
-            themesPathTextField.setText(generalSettingsRecord.themesPath());
-            actionGridPaneActionBoxSizeDoubleField.setText(generalSettingsRecord.actionGridActionDisplayTextFontSize()+"");
-            actionGridPaneActionBoxSizeIsDefaultCheckBox.setSelected(generalSettingsRecord.actionGridUseSameActionSizeAsProfile());
-            actionGridPaneActionBoxGapIsDefaultCheckBox.setSelected(generalSettingsRecord.actionGridUseSameActionGapAsProfile());
-            actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox.setSelected(generalSettingsRecord.actionGridUseSameActionDisplayTextFontSizeAsProfile());
-            actionGridPaneActionBoxGapDoubleField.setText(generalSettingsRecord.actionGridActionGap()+"");
+            ConnectionSettings connectionSettings = generalSettings.connection();
+            serverNameTextField.setText(connectionSettings.serverName());
+            serverPortTextField.setText(connectionSettings.port()+"");
+            ipChooserComboBox.configureOptions(connectionSettings.IP());
 
-            minimiseToSystemTrayOnCloseToggleSwitch.setSelected(generalSettingsRecord.minimiseToSystemTrayOnClose());
-            showAlertsPopupToggleSwitch.setSelected(generalSettingsRecord.showAlertsPopup());
-            startOnBootToggleSwitch.setSelected(generalSettingsRecord.startOnBoot());
+            ActionGridSettings actionGridSettings = generalSettings.actionGrid();
+            actionGridPaneActionBoxSizeDoubleField.setText(actionGridSettings.actionGridActionDisplayTextFontSize()+"");
+            actionGridPaneActionBoxSizeIsDefaultCheckBox.setSelected(actionGridSettings.actionGridUseSameActionSizeAsProfile());
+            actionGridPaneActionBoxGapDoubleField.setText(actionGridSettings.actionGridActionGap()+"");
+            actionGridPaneActionBoxGapIsDefaultCheckBox.setSelected(actionGridSettings.actionGridUseSameActionGapAsProfile());
+            actionGridActionDisplayTextFontSizeTextField.setText(actionGridSettings.actionGridActionDisplayTextFontSize()+"");
+            actionGridPaneActionDisplayTextFontSizeIsDefaultCheckBox.setSelected(actionGridSettings.actionGridUseSameActionDisplayTextFontSizeAsProfile());
 
-            soundOnActionClickedToggleSwitch.setSelected(generalSettingsRecord.soundOnActionClickedStatus());
-            soundOnActionClickedFilePathTextField.setText(generalSettingsRecord.soundOnActionClickedFilePath());
+            LocationsSettings locationsSettings = generalSettings.locations();
+            pluginsPathTextField.setText(locationsSettings.pluginsPath());
+            themesPathTextField.setText(locationsSettings.themesPath());
 
-            ipChooserComboBox.configureOptions(generalSettingsRecord.IP());
+            SoundOnActionClickedSettings soundOnActionClickedSettings = generalSettings.soundOnActionClicked();
+            soundOnActionClickedFilePathTextField.setText(soundOnActionClickedSettings.soundOnActionClickedFilePath());
+            soundOnActionClickedToggleSwitch.setSelected(soundOnActionClickedSettings.soundOnActionClickedStatus());
 
-            languageChooserComboBox.getSelectionModel().select(I18N.getLanguage(generalSettingsRecord.currentLanguageLocale()));
+            OthersSettings othersSettings = generalSettings.others();
+            languageChooserComboBox.getSelectionModel().select(I18N.getLanguage(othersSettings.currentLanguageLocale()));
+            minimiseToSystemTrayOnCloseToggleSwitch.setSelected(othersSettings.minimiseToSystemTrayOnClose());
+            startOnBootToggleSwitch.setSelected(othersSettings.startOnBoot());
+            showAlertsPopupToggleSwitch.setSelected(othersSettings.showAlertsPopup());
         });
     }
 }
