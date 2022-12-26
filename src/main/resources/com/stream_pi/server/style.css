@@ -318,6 +318,13 @@
     -fx-padding: 0 5 0 0;
 }
 
+.plugins_settings_unsaved_changes_label
+{
+    -fx-padding: 10 0 10 0;
+    -fx-font-size: 1.5em;
+    -fx-text-fill: red;
+}
+
 .general_settings
 {
     -fx-spacing: 5;

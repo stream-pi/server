@@ -22,12 +22,14 @@ import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.server.action.ExternalPlugins;
 import com.stream_pi.server.controller.ServerListener;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
+import com.stream_pi.server.window.helper.ControlNodePair;
 import com.stream_pi.server.window.helper.Helper;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import com.stream_pi.util.uihelper.SpaceFiller;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
@@ -50,7 +52,7 @@ import java.util.logging.Logger;
 public class PluginsSettings extends VBox
 {
 
-    private VBox pluginsSettingsVBox;
+    private final VBox pluginsSettingsVBox;
 
     private ServerListener serverListener;
 
@@ -59,6 +61,8 @@ public class PluginsSettings extends VBox
     private ExceptionAndAlertHandler exceptionAndAlertHandler;
 
     private HostServices hostServices;
+
+    private javafx.beans.property.IntegerProperty unsavedChanges;
 
     public PluginsSettings(ExceptionAndAlertHandler exceptionAndAlertHandler, HostServices hostServices)
     {
@@ -71,6 +75,11 @@ public class PluginsSettings extends VBox
         pluginsSettingsVBox.getStyleClass().add("plugins_settings_vbox");
         pluginsSettingsVBox.setAlignment(Pos.TOP_CENTER);
 
+        unsavedChanges = new SimpleIntegerProperty(0);
+        Label unsavedLabel = new Label(I18N.getString("window.settings.PluginsSettings.unsavedChanges"));
+        unsavedLabel.visibleProperty().bind(unsavedChanges.greaterThan(0));
+        unsavedLabel.getStyleClass().add("plugins_settings_unsaved_changes_label");
+
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.getStyleClass().add("plugins_settings_scroll_pane");
         scrollPane.setFitToWidth(true);
@@ -80,8 +89,6 @@ public class PluginsSettings extends VBox
 
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
-
-
         saveButton = new Button(I18N.getString("save"));
         HBox.setMargin(saveButton, new Insets(0,10, 0, 0));
         saveButton.setOnAction(event -> onSaveButtonClicked());
@@ -90,7 +97,7 @@ public class PluginsSettings extends VBox
         HBox hBox = new HBox(saveButton);
         hBox.setAlignment(Pos.CENTER_RIGHT);
 
-        getChildren().addAll(scrollPane, hBox);
+        getChildren().addAll(unsavedLabel, scrollPane, hBox);
         getStyleClass().add("plugins_settings");
     }
 
@@ -137,6 +144,8 @@ public class PluginsSettings extends VBox
             ExternalPlugins.getInstance().saveServerSettings();
 
             ExternalPlugins.getInstance().runOnServerPropertiesSavedByUser();
+
+            unsavedChanges.setValue(0);
         }
         catch (MinorException e)
         {
@@ -173,6 +182,7 @@ public class PluginsSettings extends VBox
 
         ExternalPlugins.getInstance().saveServerSettings();
 
+        unsavedChanges.setValue(0);
         reloadPlugin(uniqueID);
     }
 
@@ -228,6 +238,8 @@ public class PluginsSettings extends VBox
         pluginProperties.clear();
 
         List<ExternalPlugin> actions = ExternalPlugins.getInstance().getPlugins();
+
+        unsavedChanges.setValue(0);
 
         Platform.runLater(()-> pluginsSettingsVBox.getChildren().clear());
 
@@ -300,7 +312,7 @@ public class PluginsSettings extends VBox
 
                 if(!eachProperty.isVisible())
                     continue;
-                Helper.ControlNodePair controlNodePair = new Helper().getControlNode(eachProperty);
+                ControlNodePair controlNodePair = Helper.createControlNodePair(eachProperty, unsavedChanges);
                 UIPropertyBox serverProperty = new UIPropertyBox(j, eachProperty.getDisplayName(), controlNodePair.getControlNode(), eachProperty.getControlType(), eachProperty.getType(), eachProperty.isCanBeBlank());
                 serverPropertyArrayList.add(serverProperty);
                 serverPropertiesVBox.getChildren().add(controlNodePair.getUINode());
@@ -339,6 +351,8 @@ public class PluginsSettings extends VBox
 
     public void reloadPlugins() throws MinorException
     {
+        unsavedChanges.setValue(0);
+
         for (int i = 0;i<pluginProperties.size();i++)
         {
             reloadPlugin(i);
@@ -361,7 +375,9 @@ public class PluginsSettings extends VBox
     {
         ArrayList<UIPropertyBox> uiPropertyBoxes = pluginProperties.get(pluginPropertiesIndex).getServerPropertyUIBox();
 
-        ServerProperties serverProperties = ExternalPlugins.getInstance().getPlugins().get(pluginPropertiesIndex).getServerProperties();
+        ServerProperties serverProperties = ExternalPlugins.getInstance()
+                        .getPluginByModuleName(pluginProperties.get(pluginPropertiesIndex).getUniqueID()).getServerProperties();
+
         for(int j = 0;j<serverProperties.getSize();j++)
         {
             Property property = serverProperties.get().get(j);

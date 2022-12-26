@@ -1038,7 +1038,10 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
     @Override
     public void sendActionFailed(MinorException exception, SocketAddress socketAddress, String profileID, Action action)
     {
-        exception.setTitle(I18N.getString("controller.Controller.errorWhileRunningAction", action.getDisplayText()));
+        exception.setTitle(
+                I18N.getString("controller.Controller.errorWhileRunningAction",
+                (action.getDisplayText() == null) ? action.getName() : action.getDisplayText())
+        );
 
         handleMinorException(exception);
 

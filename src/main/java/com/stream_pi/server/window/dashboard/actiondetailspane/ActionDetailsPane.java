@@ -35,6 +35,7 @@ import com.stream_pi.server.window.dashboard.actiongridpane.ActionBox;
 import com.stream_pi.server.window.ExceptionAndAlertHandler;
 import com.stream_pi.server.controller.ActionDataFormats;
 import com.stream_pi.server.window.dashboard.actiongridpane.ActionGridPaneListener;
+import com.stream_pi.server.window.helper.ControlNodePair;
 import com.stream_pi.server.window.helper.Helper;
 import com.stream_pi.util.alert.StreamPiAlert;
 import com.stream_pi.util.alert.StreamPiAlertButton;
@@ -994,7 +995,7 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
             if(!eachProperty.isVisible())
                 continue;
-            Helper.ControlNodePair controlNodePair = new Helper().getControlNode(eachProperty);
+            ControlNodePair controlNodePair = Helper.createControlNodePair(eachProperty);
             UIPropertyBox clientProperty = new UIPropertyBox(i, eachProperty.getDisplayName(), controlNodePair.getControlNode(),
                     eachProperty.getControlType(), eachProperty.getType(), eachProperty.isCanBeBlank());
             actionClientProperties.add(clientProperty);

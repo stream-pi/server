@@ -20,6 +20,10 @@ import com.stream_pi.server.uipropertybox.UIPropertyBox;
 import com.stream_pi.util.exception.MinorException;
 import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
@@ -28,31 +32,17 @@ import org.controlsfx.control.ToggleSwitch;
 
 public class Helper
 {
-    public class ControlNodePair
+
+    public static ControlNodePair createControlNodePair(Property property) throws MinorException
     {
-        private Node controlNode = null;
-        private Node UINode = null;
-        
-        public ControlNodePair(Node controlNode, Node UINode)
-        {
-            this.controlNode = controlNode;
-            this.UINode = UINode;
-        }
-
-        public Node getUINode()
-        {
-            return UINode;
-        }
-
-        public Node getControlNode()
-        {
-            return controlNode;
-        }
+        return createControlNodePair(property, null);
     }
-    
-    public ControlNodePair getControlNode(Property property) throws MinorException
+
+    public static ControlNodePair createControlNodePair(Property property, IntegerProperty unsavedChanges) throws MinorException
     {
-        Node UINode = null, controlNode = null;
+        ControlNodePair controlNodePair = new ControlNodePair();
+
+        Node controlNode = null, uiNode = null;
         
         if(property.getControlType() == ControlType.COMBO_BOX)
         {
@@ -84,17 +74,53 @@ public class Helper
             comboBox.setButtonCell(clientsComboBoxFactory.call(null));
 
             comboBox.getSelectionModel().select(property.getSelectedIndex());
-            
+
+            if (unsavedChanges != null)
+            {
+                comboBox.getSelectionModel().selectedIndexProperty()
+                        .addListener((observableValue, v1, v2) -> {
+                    if (!v1.equals(v2) && !controlNodePair.isChanged())
+                    {
+                        unsavedChanges.setValue(unsavedChanges.getValue() + 1);
+                        controlNodePair.setChanged(true);
+                    }
+                });
+            }
+
             controlNode = comboBox;
         }
         else if(property.getControlType() == ControlType.TEXT_FIELD)
         {
-            controlNode = new TextField(property.getRawValue());
+            TextField textField = new TextField(property.getRawValue());
+
+            if (unsavedChanges != null)
+            {
+                textField.textProperty().addListener((observableValue, v1, v2) -> {
+                    if (!v1.equals(v2) && !controlNodePair.isChanged())
+                    {
+                        unsavedChanges.setValue(unsavedChanges.getValue() + 1);
+                        controlNodePair.setChanged(true);
+                    }
+                });
+            }
+
+            controlNode = textField;
         }
         else if(property.getControlType() == ControlType.TEXT_FIELD_MASKED)
         {
             PasswordField textField = new PasswordField();
             textField.setText(property.getRawValue());
+
+            if (unsavedChanges != null)
+            {
+                textField.textProperty().addListener((observableValue, v1, v2) -> {
+                    if (!v1.equals(v2) && !controlNodePair.isChanged())
+                    {
+                        unsavedChanges.setValue(unsavedChanges.getValue() + 1);
+                        controlNodePair.setChanged(true);
+                    }
+                });
+            }
 
             controlNode = textField;
         }
@@ -102,6 +128,18 @@ public class Helper
         {
             ToggleSwitch toggleSwitch = new ToggleSwitch();
             toggleSwitch.setSelected(property.getBoolValue());
+
+            if (unsavedChanges != null)
+            {
+                toggleSwitch.selectedProperty().addListener((observableValue, v1, v2) -> {
+                    if (!v1.equals(v2) && !controlNodePair.isChanged())
+                    {
+                        unsavedChanges.setValue(unsavedChanges.getValue() + 1);
+                        controlNodePair.setChanged(true);
+                    }
+                });
+            }
+
             controlNode = toggleSwitch;
         }
         else if(property.getControlType() == ControlType.SLIDER_DOUBLE)
@@ -110,6 +148,17 @@ public class Helper
             slider.setValue(property.getDoubleValue());
             slider.setMax(property.getMaxDoubleValue());
             slider.setMin(property.getMinDoubleValue());
+
+            if (unsavedChanges != null)
+            {
+                slider.valueProperty().addListener((observableValue, v1, v2) -> {
+                    if (!v1.equals(v2) && !controlNodePair.isChanged())
+                    {
+                        unsavedChanges.setValue(unsavedChanges.getValue() + 1);
+                        controlNodePair.setChanged(true);
+                    }
+                });
+            }
 
             controlNode = slider;
         }
@@ -123,11 +172,33 @@ public class Helper
             slider.setBlockIncrement(1.0);
             slider.setSnapToTicks(true);
 
+            if (unsavedChanges != null)
+            {
+                slider.valueProperty().addListener((observableValue, v1, v2) -> {
+                    if (!v1.equals(v2) && !controlNodePair.isChanged())
+                    {
+                        unsavedChanges.setValue(unsavedChanges.getValue() + 1);
+                        controlNodePair.setChanged(true);
+                    }
+                });
+            }
+
             controlNode = slider;
         }
         else if(property.getControlType() == ControlType.FILE_PATH)
         {
             TextField textField = new TextField(property.getRawValue());
+
+            if (unsavedChanges != null)
+            {
+                textField.textProperty().addListener((observableValue, v1, v2) -> {
+                    if (!v1.equals(v2) && !controlNodePair.isChanged())
+                    {
+                        unsavedChanges.setValue(unsavedChanges.getValue() + 1);
+                        controlNodePair.setChanged(true);
+                    }
+                });
+            }
 
             FileExtensionFilter[] fileExtensionFilters = property.getExtensionFilters();
             FileChooser.ExtensionFilter[] extensionFilters = new FileChooser.ExtensionFilter[fileExtensionFilters.length];
@@ -140,18 +211,21 @@ public class Helper
                 );
             }
 
-            UINode = new HBoxInputBoxWithFileChooser(property.getDisplayName(), textField, null,
-                    extensionFilters);
+            uiNode = new HBoxInputBoxWithFileChooser(property.getDisplayName(),
+                    textField, null, extensionFilters);
 
-            controlNode =textField;
+            controlNode = textField;
         }
 
         if(property.getControlType() != ControlType.FILE_PATH)
         {
-            UINode = new HBoxWithSpaceBetween(new Label(property.getDisplayName()), controlNode);
+            uiNode = new HBoxWithSpaceBetween(new Label(property.getDisplayName()), controlNode);
         }
 
-        return new ControlNodePair(controlNode, UINode);
+        controlNodePair.setUINode(uiNode);
+        controlNodePair.setControlNode(controlNode);
+
+        return controlNodePair;
     }
 
     public static String validateProperty(String value, UIPropertyBox property)
