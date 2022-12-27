@@ -10,9 +10,6 @@ public class ControlNodePair
 
     private boolean changed = false;
 
-    public ControlNodePair()
-    {}
-
     public void setUINode(Node UINode) {
         this.UINode = UINode;
     }

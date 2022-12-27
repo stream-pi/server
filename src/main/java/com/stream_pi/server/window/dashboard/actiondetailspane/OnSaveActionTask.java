@@ -1,6 +1,6 @@
 /*
  * Stream-Pi - Free, Open-Source, Modular, Cross-Platform and Programmable Macro Pad
- * Copyright (C) 2019-2022 Debayan Sutradhar (rnayabed),  Samuel Quiñones (SamuelQuinones)
+ * Copyright (C) 2019-2022 Debayan Sutradhar (rnayabed), Samuel Quiñones (SamuelQuinones)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -222,7 +222,7 @@ public class OnSaveActionTask extends Task<Void>
 
             //properties
             for (UIPropertyBox clientProperty : actionClientProperties) {
-                action.getClientProperties().get().get(clientProperty.getIndex()).setRawValue(clientProperty.getRawValue());
+                action.getClientProperties().get().get(clientProperty.getIndex()).setRawValue(clientProperty.getControlNodeRawValue());
             }
         }
 

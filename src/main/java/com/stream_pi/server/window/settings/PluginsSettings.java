@@ -46,7 +46,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class PluginsSettings extends VBox
@@ -68,7 +70,7 @@ public class PluginsSettings extends VBox
     {
         this.hostServices = hostServices;
         this.exceptionAndAlertHandler = exceptionAndAlertHandler;
-        pluginProperties = new ArrayList<>();
+        pluginProperties = new HashMap<>();
         logger = Logger.getLogger(PluginsSettings.class.getName());
 
         pluginsSettingsVBox = new VBox();
@@ -90,6 +92,7 @@ public class PluginsSettings extends VBox
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
         saveButton = new Button(I18N.getString("save"));
+        saveButton.disableProperty().bind(unsavedChanges.isEqualTo(0));
         HBox.setMargin(saveButton, new Insets(0,10, 0, 0));
         saveButton.setOnAction(event -> onSaveButtonClicked());
 
@@ -110,7 +113,7 @@ public class PluginsSettings extends VBox
             //form validation
             StringBuilder finalErrors = new StringBuilder();
 
-            for (PluginProperties properties : pluginProperties)
+            for (PluginProperties properties : pluginProperties.values())
             {
                 StringBuilder errors = validatePluginProperties(properties);
 
@@ -126,13 +129,15 @@ public class PluginsSettings extends VBox
             }
 
             //save
-            for (PluginProperties pp : pluginProperties)
+            for (PluginProperties pp : pluginProperties.values())
             {
                 for (int j = 0; j < pp.getServerPropertyUIBox().size(); j++)
                 {
                     UIPropertyBox serverProperty = pp.getServerPropertyUIBox().get(j);
 
-                    String rawValue = serverProperty.getRawValue();
+                    serverProperty.setChanged(false);
+
+                    String rawValue = serverProperty.getControlNodeRawValue();
 
                     ExternalPlugins.getInstance().getActionFromIndex(pp.getIndex())
                             .getServerProperties().get()
@@ -144,8 +149,6 @@ public class PluginsSettings extends VBox
             ExternalPlugins.getInstance().saveServerSettings();
 
             ExternalPlugins.getInstance().runOnServerPropertiesSavedByUser();
-
-            unsavedChanges.setValue(0);
         }
         catch (MinorException e)
         {
@@ -163,26 +166,19 @@ public class PluginsSettings extends VBox
             throw new MinorException(I18N.getString("validationError", errors));
         }
 
-        for (PluginProperties pp : pluginProperties)
+        PluginProperties pp = pluginProperties.get(uniqueID);
+        for (int j = 0; j < pp.getServerPropertyUIBox().size(); j++)
         {
-            if (pp.getUniqueID().equals(uniqueID))
-            {
-                for (int j = 0; j < pp.getServerPropertyUIBox().size(); j++)
-                {
-                    UIPropertyBox serverProperty = pp.getServerPropertyUIBox().get(j);
+            UIPropertyBox serverProperty = pp.getServerPropertyUIBox().get(j);
 
-                    String rawValue = serverProperty.getRawValue();
+            String rawValue = serverProperty.getControlNodeRawValue();
 
-                    ExternalPlugins.getInstance().getActionFromIndex(pp.getIndex())
-                            .getServerProperties().get()
-                            .get(serverProperty.getIndex()).setRawValue(rawValue);
-                }
-            }
+            ExternalPlugins.getInstance().getActionFromIndex(pp.getIndex())
+                    .getServerProperties().get()
+                    .get(serverProperty.getIndex()).setRawValue(rawValue);
         }
 
         ExternalPlugins.getInstance().saveServerSettings();
-
-        unsavedChanges.setValue(0);
         reloadPlugin(uniqueID);
     }
 
@@ -192,17 +188,12 @@ public class PluginsSettings extends VBox
         for(int j = 0; j < pluginProperties.getServerPropertyUIBox().size(); j++)
         {
             UIPropertyBox serverProperty = pluginProperties.getServerPropertyUIBox().get(j);
-            Node controlNode = serverProperty.getControlNode();
 
-            if (controlNode instanceof TextField)
+            String error = serverProperty.validateProperty();
+
+            if (error != null)
             {
-                String value = ((TextField) controlNode).getText();
-                String error = Helper.validateProperty(value, serverProperty);
-
-                if (error != null)
-                {
-                    errors.append("        -> ").append(error).append(("\n"));
-                }
+                errors.append("        -> ").append(error).append(("\n"));
             }
         }
 
@@ -211,18 +202,11 @@ public class PluginsSettings extends VBox
 
     public StringBuilder validatePluginProperties(String uniqueID)
     {
-        for (PluginProperties properties : pluginProperties)
-        {
-            if (properties.getUniqueID().equals(uniqueID))
-            {
-                return validatePluginProperties(properties);
-            }
-        }
-
-        return null;
+        return validatePluginProperties(pluginProperties.get(uniqueID));
     }
 
-    private final ArrayList<PluginProperties> pluginProperties;
+    private final HashMap<String, PluginProperties> pluginProperties;
+    //private final ArrayList<PluginProperties> pluginProperties;
 
 
     public void showPluginInitError()
@@ -239,7 +223,7 @@ public class PluginsSettings extends VBox
 
         List<ExternalPlugin> actions = ExternalPlugins.getInstance().getPlugins();
 
-        unsavedChanges.setValue(0);
+     //   unsavedChanges.setValue(0);
 
         Platform.runLater(()-> pluginsSettingsVBox.getChildren().clear());
 
@@ -312,15 +296,15 @@ public class PluginsSettings extends VBox
 
                 if(!eachProperty.isVisible())
                     continue;
-                ControlNodePair controlNodePair = Helper.createControlNodePair(eachProperty, unsavedChanges);
-                UIPropertyBox serverProperty = new UIPropertyBox(j, eachProperty.getDisplayName(), controlNodePair.getControlNode(), eachProperty.getControlType(), eachProperty.getType(), eachProperty.isCanBeBlank());
+
+                UIPropertyBox serverProperty = new UIPropertyBox(j, eachProperty, unsavedChanges);
                 serverPropertyArrayList.add(serverProperty);
-                serverPropertiesVBox.getChildren().add(controlNodePair.getUINode());
+                serverPropertiesVBox.getChildren().add(serverProperty.getUINode());
             }
 
-            PluginProperties pp = new PluginProperties(i, serverPropertyArrayList, action.getName(), action.getUniqueID());
+            PluginProperties pp = new PluginProperties(i, serverPropertyArrayList, action.getName());
 
-            pluginProperties.add(pp);
+            pluginProperties.put(action.getUniqueID(), pp);
 
 
             Platform.runLater(()->
@@ -351,68 +335,20 @@ public class PluginsSettings extends VBox
 
     public void reloadPlugins() throws MinorException
     {
-        unsavedChanges.setValue(0);
-
-        for (int i = 0;i<pluginProperties.size();i++)
+        for (PluginProperties pp : pluginProperties.values())
         {
-            reloadPlugin(i);
+            reloadPlugin(pp);
         }
     }
 
     public void reloadPlugin(String uniqueID) throws MinorException
     {
-        for (int i = 0;i<pluginProperties.size();i++)
-        {
-            if (pluginProperties.get(i).getUniqueID().equals(uniqueID))
-            {
-                reloadPlugin(i);
-                break;
-            }
-        }
+        reloadPlugin(pluginProperties.get(uniqueID));
     }
 
-    public void reloadPlugin(int pluginPropertiesIndex) throws MinorException
+    public void reloadPlugin(PluginProperties pp)
     {
-        ArrayList<UIPropertyBox> uiPropertyBoxes = pluginProperties.get(pluginPropertiesIndex).getServerPropertyUIBox();
-
-        ServerProperties serverProperties = ExternalPlugins.getInstance()
-                        .getPluginByModuleName(pluginProperties.get(pluginPropertiesIndex).getUniqueID()).getServerProperties();
-
-        for(int j = 0;j<serverProperties.getSize();j++)
-        {
-            Property property = serverProperties.get().get(j);
-            ControlType controlType = uiPropertyBoxes.get(j).getControlType();
-            Node controlNode = uiPropertyBoxes.get(j).getControlNode();
-
-            if(controlType == ControlType.COMBO_BOX)
-            {
-                ((ComboBox<ListValue>) controlNode).getSelectionModel().select(property.getSelectedIndex());
-            }
-            else if(property.getControlType() == ControlType.TEXT_FIELD)
-            {
-                ((TextField) controlNode).setText(property.getRawValue());
-            }
-            else if(property.getControlType() == ControlType.TEXT_FIELD_MASKED)
-            {
-                ((PasswordField) controlNode).setText(property.getRawValue());
-            }
-            else if(property.getControlType() == ControlType.TOGGLE)
-            {
-                ((ToggleSwitch) controlNode).setSelected(property.getBoolValue());
-            }
-            else if(property.getControlType() == ControlType.SLIDER_DOUBLE)
-            {
-                ((Slider) controlNode).setValue(property.getDoubleValue());
-            }
-            else if(property.getControlType() == ControlType.SLIDER_INTEGER)
-            {
-                ((Slider) controlNode).setValue(property.getIntValue());
-            }
-            else if(property.getControlType() == ControlType.FILE_PATH)
-            {
-                ((TextField) controlNode).setText(property.getRawValue());
-            }
-        }
+        pp.getServerPropertyUIBox().forEach(UIPropertyBox::reloadValue);
     }
 
     public class PluginProperties
@@ -420,14 +356,12 @@ public class PluginsSettings extends VBox
         private int index;
         private ArrayList<UIPropertyBox> serverProperty;
         private String name;
-        private String uniqueID;
 
-        public PluginProperties(int index, ArrayList<UIPropertyBox> serverProperty, String name, String uniqueID)
+        public PluginProperties(int index, ArrayList<UIPropertyBox> serverProperty, String name)
         {
             this.index = index;
             this.serverProperty = serverProperty;
             this.name = name;
-            this.uniqueID = uniqueID;
         }
 
         public String getName()
@@ -435,11 +369,7 @@ public class PluginsSettings extends VBox
             return name;
         }
 
-        public String getUniqueID()
-        {
-            return uniqueID;
-        }
-
+        // remove this
         public int getIndex() {
             return index;
         }

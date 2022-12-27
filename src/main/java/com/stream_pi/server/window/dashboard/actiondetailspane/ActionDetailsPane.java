@@ -995,11 +995,10 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
             if(!eachProperty.isVisible())
                 continue;
-            ControlNodePair controlNodePair = Helper.createControlNodePair(eachProperty);
-            UIPropertyBox clientProperty = new UIPropertyBox(i, eachProperty.getDisplayName(), controlNodePair.getControlNode(),
-                    eachProperty.getControlType(), eachProperty.getType(), eachProperty.isCanBeBlank());
+
+            UIPropertyBox clientProperty = new UIPropertyBox(i, eachProperty);
             actionClientProperties.add(clientProperty);
-            clientPropertiesVBox.getChildren().add(controlNodePair.getUINode());
+            clientPropertiesVBox.getChildren().add(clientProperty.getUINode());
         }
     }
 
@@ -1207,17 +1206,11 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
 
         for (UIPropertyBox clientProperty : actionClientProperties)
         {
-            Node controlNode = clientProperty.getControlNode();
+            String error = clientProperty.validateProperty();
 
-            if (controlNode instanceof TextField)
+            if (error != null)
             {
-                String value = ((TextField) controlNode).getText();
-                String error = Helper.validateProperty(value, clientProperty);
-
-                if (error != null)
-                {
-                    finalErrors.append("        -> ").append(error).append(("\n"));
-                }
+                finalErrors.append("        -> ").append(error).append(("\n"));
             }
         }
 
