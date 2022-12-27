@@ -48,6 +48,7 @@ import com.stream_pi.util.uihelper.HBoxInputBoxWithFileChooser;
 import com.stream_pi.util.uihelper.HBoxWithSpaceBetween;
 import com.stream_pi.util.uihelper.SpaceFiller;
 import javafx.application.HostServices;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
@@ -996,9 +997,9 @@ public class ActionDetailsPane extends VBox implements ActionDetailsPaneListener
             if(!eachProperty.isVisible())
                 continue;
 
-            UIPropertyBox clientProperty = new UIPropertyBox(i, eachProperty);
-            actionClientProperties.add(clientProperty);
-            clientPropertiesVBox.getChildren().add(clientProperty.getUINode());
+            UIPropertyBox clientPropertyBox = new UIPropertyBox(i, eachProperty);
+            actionClientProperties.add(clientPropertyBox);
+            clientPropertiesVBox.getChildren().add(clientPropertyBox.getUINode());
         }
     }
 

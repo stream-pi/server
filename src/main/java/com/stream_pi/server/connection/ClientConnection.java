@@ -607,14 +607,14 @@ public class ClientConnection extends Thread
 
         //action toBeAdded = null;
 
-        String moduleName = (String) message.getValue("unique_ID");
+        String uniqueID = (String) message.getValue("unique_ID");
         boolean isInvalidAction = false;
 
         if(actionType == ActionType.NORMAL || actionType == ActionType.TOGGLE || actionType == ActionType.GAUGE)
         {
             Version version = (Version) message.getValue("version");
 
-            ExternalPlugin originalAction = ExternalPlugins.getInstance().getPluginByModuleName(moduleName);
+            ExternalPlugin originalAction = ExternalPlugins.getInstance().getPluginByUniqueID(uniqueID);
 
             if(originalAction == null)
             {
@@ -693,7 +693,7 @@ public class ClientConnection extends Thread
                                 }
                                 catch (MinorException e)
                                 {
-                                    exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onClientConnected()", moduleName, e.getMessage()), e);
+                                    exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onClientConnected()", uniqueID, e.getMessage()), e);
                                 }
 
                                 try
@@ -709,11 +709,11 @@ public class ClientConnection extends Thread
                                 }
                                 catch (MinorException e)
                                 {
-                                    exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onGaugeInit()", moduleName, e.getMessage()), e);
+                                    exceptionAndAlertHandler.handleMinorException(I18N.getString("methodCallFailed", "onGaugeInit()", uniqueID, e.getMessage()), e);
                                 }
                                 catch (SevereException e)
                                 {
-                                    exceptionAndAlertHandler.handleSevereException(I18N.getString("methodCallFailed", "updateActionGaugeProperties", moduleName, e.getMessage()), e);
+                                    exceptionAndAlertHandler.handleSevereException(I18N.getString("methodCallFailed", "updateActionGaugeProperties", uniqueID, e.getMessage()), e);
                                 }
                                 return null;
                             }
@@ -723,7 +723,7 @@ public class ClientConnection extends Thread
                     }
                     catch (CloneNotSupportedException e)
                     {
-                        exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("connection.ClientConnection.failedToCloneAction", moduleName)));
+                        exceptionAndAlertHandler.handleMinorException(new MinorException(I18N.getString("connection.ClientConnection.failedToCloneAction", uniqueID)));
                     }
 
                     checkIfReady();
@@ -739,7 +739,7 @@ public class ClientConnection extends Thread
         {
             Version version = (Version) message.getValue("version");
 
-            action = new Action(moduleName);
+            action = new Action(uniqueID);
             action.setInvalid(true);
             action.setVersion(version);
         }

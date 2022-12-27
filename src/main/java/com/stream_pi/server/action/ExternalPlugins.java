@@ -43,10 +43,7 @@ import java.lang.module.ModuleFinder;
 import java.lang.module.ModuleReference;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ServiceLoader;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -93,7 +90,7 @@ public class ExternalPlugins
     private ExternalPlugins()
     {
         logger = Logger.getLogger(ExternalPlugins.class.getName());
-        externalPluginsHashmap = new HashMap<>();
+        externalPlugins = new HashMap<>();
     }
 
     /**
@@ -110,31 +107,24 @@ public class ExternalPlugins
      *
      * @return List of plugins
      */
-    public List<ExternalPlugin> getPlugins()
+    public Collection<ExternalPlugin> getPlugins()
     {
-        return externalPlugins;
+        return externalPlugins.values();
     }
 
     /**
      * Returns a plugin by its module name
      *
-     * @param name Module Namerefact
+     * @param uniqueID Module Unique ID
      * @return The plugin. If not found, then null is returned
      */
-    public ExternalPlugin getPluginByModuleName(String name)
+    public ExternalPlugin getPluginByUniqueID(String uniqueID)
     {
-        logger.info("Plugin being requested : "+name);
-        Integer index = externalPluginsHashmap.getOrDefault(name, -1);
-        if(index != -1)
-        {
-            return externalPlugins.get(index);
-        }
-
-        return null;
+        logger.info("Plugin being requested : "+uniqueID);
+        return externalPlugins.getOrDefault(uniqueID, null);
     }
 
-    private List<ExternalPlugin> externalPlugins = null;
-    HashMap<String, Integer> externalPluginsHashmap;
+    HashMap<String, ExternalPlugin> externalPlugins;
 
     /**
      * Used to register plugins from plugin location
@@ -158,8 +148,10 @@ public class ExternalPlugins
             throw new SevereException(I18N.getString("action.ExternalPlugins.configXMLParseFailed", configFile.getAbsolutePath()));
         }
 
-        ArrayList<ExternalPlugin> errorModules = new ArrayList<>();
-        ArrayList<String> errorModuleError = new ArrayList<>();
+      //  ArrayList<ExternalPlugin> pluginErrors = new ArrayList<>();
+      //  ArrayList<String> errorModuleError = new ArrayList<>();
+
+        HashMap<String, String> pluginErrors = new HashMap<>();
 
         HashMap<String, PluginConfig> pluginsConfigs = new HashMap<>();
 
@@ -247,10 +239,11 @@ public class ExternalPlugins
                             ClassLoader.getSystemClassLoader());
 
             logger.info("Loading plugins from jar ...");
-            externalPlugins = ServiceLoader
-                    .load(moduleLayer, ExternalPlugin.class).stream()
-                    .map(ServiceLoader.Provider::get)
-                    .collect(Collectors.toList());
+
+            externalPlugins = new HashMap<>();
+            ServiceLoader.load(moduleLayer, ExternalPlugin.class).stream().map(ServiceLoader.Provider::get).forEach(plugin -> {
+                externalPlugins.put(plugin.getUniqueID(), plugin);
+            });
 
             logger.info("...Done!");
 
@@ -267,7 +260,7 @@ public class ExternalPlugins
 
         sortedPlugins = new HashMap<>();
 
-        for (ExternalPlugin eachPlugin : externalPlugins)
+        for (ExternalPlugin eachPlugin : externalPlugins.values())
         {
             try
             {
@@ -332,8 +325,7 @@ public class ExternalPlugins
             catch (MinorException e)
             {
                 e.printStackTrace();
-                errorModules.add(eachPlugin);
-                errorModuleError.add(e.getMessage());
+                pluginErrors.put(eachPlugin.getUniqueID(), "\n * "+eachPlugin.getName()+" ("+e.getMessage()+")");
             }
         }
 
@@ -347,21 +339,15 @@ public class ExternalPlugins
 
         logger.log(Level.INFO, "All plugins registered!");
 
-        if(errorModules.size() > 0)
+        if(pluginErrors.size() > 0)
         {
             StringBuilder errors = new StringBuilder();
-            for(int i = 0; i<errorModules.size(); i++)
+            for (String eachErrorPluginUniqueID: pluginErrors.keySet())
             {
-                externalPlugins.remove(errorModules.get(i));
-                errors.append("\n * ").append(errorModules.get(i).getUniqueID()).append("\n(")
-                    .append(errorModuleError.get(i)).append(")");
+                externalPlugins.remove(eachErrorPluginUniqueID);
+                errors.append(pluginErrors.get(eachErrorPluginUniqueID));
             }
             throw new MinorException(I18N.getString("action.ExternalPlugins.theFollowingPluginsCouldNotBeLoaded", errors));
-        }
-
-        for(int i=0; i<externalPlugins.size(); i++)
-        {
-            externalPluginsHashmap.put(externalPlugins.get(i).getUniqueID(), i);
         }
     }
 
@@ -397,7 +383,7 @@ public class ExternalPlugins
 
         ArrayList<ExternalPlugin> pluginsToBeRemoved = new ArrayList<>();
 
-        for(ExternalPlugin eachPlugin : externalPlugins)
+        for(ExternalPlugin eachPlugin : externalPlugins.values())
         {
             try
             {
@@ -436,7 +422,7 @@ public class ExternalPlugins
         StringBuilder errors = new StringBuilder();
         boolean isError = false;
 
-        for(ExternalPlugin eachPlugin : externalPlugins)
+        for(ExternalPlugin eachPlugin : externalPlugins.values())
         {
             try
             {
@@ -493,7 +479,7 @@ public class ExternalPlugins
     {
         XMLConfigHelper.removeChilds(getActionsElement());
 
-        for(ExternalPlugin externalPlugin : externalPlugins)
+        for(ExternalPlugin externalPlugin : externalPlugins.values())
         {
             Element actionElement = document.createElement("action");
             getActionsElement().appendChild(actionElement);
@@ -589,7 +575,7 @@ public class ExternalPlugins
     {
         if(externalPlugins != null)
         {
-            for(ExternalPlugin eachPlugin : externalPlugins)
+            for(ExternalPlugin eachPlugin : externalPlugins.values())
             {
                 try
                 {

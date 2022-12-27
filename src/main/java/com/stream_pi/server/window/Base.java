@@ -139,7 +139,6 @@ public abstract class Base extends StackPane implements ExceptionAndAlertHandler
         alertStackPane = new StackPane();
         alertStackPane.setCache(true);
         alertStackPane.setCacheHint(CacheHint.SPEED);
-        alertStackPane.setOpacity(0);
 
         StreamPiAlert.setParent(alertStackPane);
 

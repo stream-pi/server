@@ -418,6 +418,8 @@ public class Controller extends Base implements ServerConnection, ToggleExtras, 
         });
 
         streamPiAlert.show();
+
+        System.out.println("SHOW@!!!!!");
     }
 
     @Override

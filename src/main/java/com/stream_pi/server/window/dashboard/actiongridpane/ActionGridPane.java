@@ -110,9 +110,9 @@ public class ActionGridPane extends ScrollPane implements ActionGridPaneListener
     private String currentParent = null;
 
     @Override
-    public ExternalPlugin createNewActionFromExternalPlugin(String moduleName) throws CloneNotSupportedException
+    public ExternalPlugin createNewActionFromExternalPlugin(String uniqueID) throws CloneNotSupportedException
     {
-        ExternalPlugin newAction = ExternalPlugins.getInstance().getPluginByModuleName(moduleName).clone();
+        ExternalPlugin newAction = ExternalPlugins.getInstance().getPluginByUniqueID(uniqueID).clone();
 
         if(newAction.getActionType() == ActionType.TOGGLE)
         {

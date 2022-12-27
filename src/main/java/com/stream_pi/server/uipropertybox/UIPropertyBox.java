@@ -41,7 +41,7 @@ public class UIPropertyBox
 
     public UIPropertyBox(int index, Property property) throws MinorException
     {
-        new UIPropertyBox(index, property, null);
+        this(index, property, null);
     }
 
     public UIPropertyBox(int index, Property property, IntegerProperty unsavedChanges) throws MinorException
@@ -50,14 +50,17 @@ public class UIPropertyBox
 
         changed = new SimpleBooleanProperty(false);
 
-        changed.addListener((ob, oldValue, newValue)->{
-            if (oldValue == newValue) return;
-            unsavedChanges.set(
-                    newValue == property.getRawValue().equals("true")
-                    ? (unsavedChanges.get() - 1)
-                    : (unsavedChanges.get() + 1)
-            );
-        });
+        if (unsavedChanges != null)
+        {
+            changed.addListener((ob, oldValue, newValue)->{
+                if (oldValue == newValue) return;
+                unsavedChanges.set(
+                        newValue == property.getRawValue().equals("true")
+                                ? (unsavedChanges.get() - 1)
+                                : (unsavedChanges.get() + 1)
+                );
+            });
+        }
 
 
         if(property.getControlType() == ControlType.COMBO_BOX)
@@ -249,6 +252,12 @@ public class UIPropertyBox
         {
             ((Slider) controlNode).setValue(Integer.parseInt(property.getRawValue()));
         }
+    }
+
+    public void saveValue()
+    {
+        getProperty().setRawValue(getControlNodeRawValue());
+        changed.set(false);
     }
     
     public int getIndex() {
